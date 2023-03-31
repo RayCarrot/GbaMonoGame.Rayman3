@@ -1,0 +1,9 @@
+[submodule "sub-modules/BinarySerializer"]
+	path = sub-modules/BinarySerializer
+	url = https://github.com/BinarySerializer/BinarySerializer
+[submodule "sub-modules/BinarySerializer.Nintendo"]
+	path = sub-modules/BinarySerializer.Nintendo
+	url = https://github.com/BinarySerializer/BinarySerializer.Nintendo
+[submodule "sub-modules/BinarySerializer.Onyx.Gba"]
+	path = sub-modules/BinarySerializer.Onyx.Gba
+	url = https://github.com/BinarySerializer/BinarySerializer.Onyx.Gba

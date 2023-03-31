@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Onyx.Gba.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.AnimEngine\OnyxCs.Gba.AnimEngine.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.Engine2d\OnyxCs.Gba.Engine2d.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.Sdk\OnyxCs.Gba.Sdk.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.TgxEngine\OnyxCs.Gba.TgxEngine.csproj" />
+  </ItemGroup>
+
+</Project>

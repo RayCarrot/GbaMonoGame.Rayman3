@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Onyx.Gba.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.AnimEngine\OnyxCs.Gba.AnimEngine.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.Engine2d\OnyxCs.Gba.Engine2d.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.Sdk\OnyxCs.Gba.Sdk.csproj" />
+    <ProjectReference Include="..\OnyxCs.Gba.TgxEngine\OnyxCs.Gba.TgxEngine.csproj" />
+  </ItemGroup>
+</Project>
