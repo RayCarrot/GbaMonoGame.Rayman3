@@ -250,10 +250,11 @@ public class AnimatedObject : AObject
                         AnimationPlayer.Instance.SoundEventRequest(channel.SoundId);
                     break;
 
-                case AnimationChannelType.Unknown:
+                case AnimationChannelType.DisplacementVector:
                     if (!HasExecutedFrame)
                     {
-                        // TODO: Handle unknown channel type
+                        // Unused in Rayman 3, so we can probably ignore this for now
+                        throw new NotImplementedException("Not implemented displacement vectors");
                     }
                     break;
 
