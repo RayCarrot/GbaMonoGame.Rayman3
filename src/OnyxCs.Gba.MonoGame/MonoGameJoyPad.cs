@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Sdk;
 
+namespace OnyxCs.Gba.MonoGame;
+
 public class MonoGameJoyPad : JoyPad
 {
     private KeyboardState _state;

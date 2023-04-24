@@ -4,6 +4,8 @@ using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 
+namespace OnyxCs.Gba.MonoGame;
+
 // TODO: Improve the sprite performance drawing like what was done for the backgrounds
 
 // Handles drawing a sprite

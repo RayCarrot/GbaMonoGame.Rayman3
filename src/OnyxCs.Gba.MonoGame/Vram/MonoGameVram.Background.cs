@@ -3,6 +3,8 @@ using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 
+namespace OnyxCs.Gba.MonoGame;
+
 // Handles drawing a background
 public partial class MonoGameVram
 {

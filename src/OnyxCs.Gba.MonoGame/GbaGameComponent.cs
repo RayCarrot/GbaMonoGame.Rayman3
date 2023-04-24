@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 using GameTime = Microsoft.Xna.Framework.GameTime;
 
-namespace OnyxCs.Gba.MonoGame.Rayman3;
+namespace OnyxCs.Gba.MonoGame;
 
 public class GbaGameComponent : GameComponent
 {

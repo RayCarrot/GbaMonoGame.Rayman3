@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OnyxCs.Gba.Sdk;
 
+namespace OnyxCs.Gba.MonoGame;
+
 /// <summary>
 /// Handles updating and drawing the GBA screen similarly to how the PPU would
 /// </summary>

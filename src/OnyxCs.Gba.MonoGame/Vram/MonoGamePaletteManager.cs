@@ -3,6 +3,8 @@ using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 
+namespace OnyxCs.Gba.MonoGame;
+
 public class MonoGamePaletteManager : PaletteManager
 {
     private readonly Dictionary<Palette, Color[]> Palettes = new();
