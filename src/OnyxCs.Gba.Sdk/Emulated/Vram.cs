@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Sdk;
 
-public class Vram : Singleton<Vram>
+public abstract class Vram
 {
-    public Vram()
+    protected Vram()
     {
         _sprites = new List<Sprite>();
         _backgrounds = new Background[4];
@@ -16,8 +16,8 @@ public class Vram : Singleton<Vram>
     private readonly List<Sprite> _sprites;
     private readonly Background[] _backgrounds;
 
-    public PaletteManager? SpritePaletteManager { get; set; }
-    public PaletteManager? BackgroundPaletteManager { get; set; }
+    public virtual PaletteManager? SpritePaletteManager => null;
+    public virtual PaletteManager? BackgroundPaletteManager => null;
 
     public void ClearSprites() => _sprites.Clear();
     public void AddSprite(Sprite sprite) => _sprites.Add(sprite);

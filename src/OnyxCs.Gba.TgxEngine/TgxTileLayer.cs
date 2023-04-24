@@ -36,7 +36,7 @@ public class TgxTileLayer : GameLayer
     public void LoadTileKit(TileKit tileKit, TileMappingTable tileMappingTable, int defaultPalette)
     {
         // Load the palette
-        Vram.Instance.BackgroundPaletteManager?.Load(tileKit.Palettes[defaultPalette].Palette);
+        Engine.Instance.Vram.BackgroundPaletteManager?.Load(tileKit.Palettes[defaultPalette].Palette);
 
         byte[] tileSet;
 

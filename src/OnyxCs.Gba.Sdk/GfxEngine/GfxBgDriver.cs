@@ -6,7 +6,7 @@ public class GfxBgDriver
 {
     private GfxBgDriver(int bgIndex)
     {
-        _bg = Vram.Instance.GetBackground(bgIndex);
+        _bg = Engine.Instance.Vram.GetBackground(bgIndex);
     }
 
     private readonly Background _bg;

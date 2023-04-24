@@ -5,7 +5,6 @@ using BinarySerializer;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using OnyxCs.Gba.Rayman3;
 using GameTime = Microsoft.Xna.Framework.GameTime;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
@@ -51,7 +50,7 @@ public class Rayman3 : Game
 
     private void Window_ClientSizeChanged(object sender, EventArgs e)
     {
-        _gbaGame.GbaScreen.SetSize(GraphicsDevice, Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
+        _gbaGame.MonoGameVram.SetSize(GraphicsDevice, Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2);
     }
 
     private readonly GraphicsDeviceManager _graphics;
@@ -101,7 +100,9 @@ public class Rayman3 : Game
             });
         }
 
-        _gbaGame = new GbaGameComponent(this, context, new Intro(), _config.Width, _config.Height);
+        MonoGameVram vram = new(GraphicsDevice, _config.Width, _config.Height);
+
+        _gbaGame = new GbaGameComponent(this, context, new Gba.Rayman3.Rayman3(vram, new MonoGameJoyPad()), vram);
 
         Components.Add(_gbaGame);
 
@@ -128,7 +129,7 @@ public class Rayman3 : Game
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
         // Draw screen
-        _gbaGame.GbaScreen.Draw(_spriteBatch, Vector2.Zero, new Vector2(_config.Scale));
+        _gbaGame.MonoGameVram.Draw(_spriteBatch, Vector2.Zero, new Vector2(_config.Scale));
         
         _spriteBatch.End();
             

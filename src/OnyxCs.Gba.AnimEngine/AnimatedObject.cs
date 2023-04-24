@@ -5,6 +5,9 @@ using OnyxCs.Gba.Sdk;
 
 namespace OnyxCs.Gba.AnimEngine;
 
+// TODO: The game has different types of AnimatedObject. They however all act the same, just with some different properties
+//       depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
+
 /// <summary>
 /// An object which can execute a sprite animation
 /// </summary>
@@ -152,7 +155,7 @@ public class AnimatedObject : AObject
     public override void Load()
     {
         foreach (Palette palette in Resource.Palettes.Palettes)
-            Vram.Instance.SpritePaletteManager?.Load(palette);
+            Engine.Instance.Vram.SpritePaletteManager?.Load(palette);
     }
 
     public override void Execute(Vram vram)

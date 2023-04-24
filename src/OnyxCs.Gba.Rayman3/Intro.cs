@@ -21,8 +21,8 @@ public class Intro : Frame
 
     public override void Init(FrameMngr frameMngr)
     {
-        Vram.Instance.ClearSprites();
-        Vram.Instance.ClearBackgrounds();
+        Engine.Instance.Vram.ClearSprites();
+        Engine.Instance.Vram.ClearBackgrounds();
 
         FrameMngr = frameMngr;
         Menu = new MenuAll(0);
@@ -115,8 +115,8 @@ public class Intro : Frame
     {
         // TODO: This should be changed to use the camera
         ScrollY++;
-        Vram.Instance.GetBackground(1).Offset = new Vec2Int(0, ScrollY);
-        Vram.Instance.GetBackground(3).Offset = new Vec2Int(0, ScrollY);
+        Engine.Instance.Vram.GetBackground(1).Offset = new Vec2Int(0, ScrollY);
+        Engine.Instance.Vram.GetBackground(3).Offset = new Vec2Int(0, ScrollY);
 
         if (ScrollY > 0xAF)
         {
@@ -146,7 +146,7 @@ public class Intro : Frame
         }
 
         // TODO: This is just temporary code to make it work for now. Replace once we implement the camera!
-        Background bg = Vram.Instance.GetBackground(1);
+        Background bg = Engine.Instance.Vram.GetBackground(1);
         if (bg.Offset.Y == bg.Height * 8 - 160)
         {
             _currentStepAction = Step_5;
@@ -173,7 +173,7 @@ public class Intro : Frame
 
     private void Step_6()
     {
-        if ((FrameMngr.GameTime.GetElapsedFrames() & 0x10) != 0)
+        if ((Engine.Instance.GameTime.GetElapsedFrames() & 0x10) != 0)
             AnimationPlayer.Instance.AddObject1(PressStartObj);
 
         AnimationPlayer.Instance.AddObject1(BlackLumAndLogoObj);
@@ -182,7 +182,7 @@ public class Intro : Frame
     public override void Step()
     {
         // TODO: Update animated tiles
-        AnimationPlayer.Instance.Execute(Vram.Instance);
+        AnimationPlayer.Instance.Execute(Engine.Instance.Vram);
 
         _currentStepAction();
     }

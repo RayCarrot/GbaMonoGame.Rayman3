@@ -7,16 +7,16 @@ namespace OnyxCs.Gba.MonoGame.Rayman3;
 
 public class GbaGameComponent : GameComponent
 {
-    public GbaGameComponent(Game game, Context context, Frame firstFrame, int width, int height) : base(game)
+    public GbaGameComponent(Game game, Context context, Engine engine, MonoGameVram vram) : base(game)
     {
         Context = context;
-        FrameManager = new FrameMngr(firstFrame);
-        GbaScreen = new GbaScreen(game.GraphicsDevice, width, height, Vram.Instance);
+        Engine = engine;
+        MonoGameVram = vram;
     }
 
     public Context Context { get; }
-    public FrameMngr FrameManager { get; }
-    public GbaScreen GbaScreen { get; }
+    public Engine Engine { get; }
+    public MonoGameVram MonoGameVram { get; }
 
     public override void Initialize()
     {
@@ -26,9 +26,9 @@ public class GbaGameComponent : GameComponent
     public override void Update(GameTime gameTime)
     {
         // Update game engine
-        FrameManager.Step();
+        Engine.Step();
 
         // Update screen
-        GbaScreen.Update();
+        MonoGameVram.Update();
     }
 }

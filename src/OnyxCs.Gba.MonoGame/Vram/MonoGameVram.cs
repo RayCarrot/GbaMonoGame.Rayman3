@@ -9,26 +9,22 @@ using OnyxCs.Gba.Sdk;
 /// <summary>
 /// Handles updating and drawing the GBA screen similarly to how the PPU would
 /// </summary>
-public partial class GbaScreen
+public partial class MonoGameVram : Vram
 {
-    public GbaScreen(GraphicsDevice graphicsDevice, int width, int height, Vram vram)
+    public MonoGameVram(GraphicsDevice graphicsDevice, int width, int height)
     {
         SetSize(graphicsDevice, width, height);
 
-        _spritePaletteManager = new MonoGamePaletteManager();
-        _bgPaletteManager = new MonoGamePaletteManager();
-
-        Vram = vram;
-        vram.SpritePaletteManager = _spritePaletteManager;
-        vram.BackgroundPaletteManager = _bgPaletteManager;
+        SpritePaletteManager = new MonoGamePaletteManager();
+        BackgroundPaletteManager = new MonoGamePaletteManager();
     }
 
     private Texture2D _frame;
     private Color[] _imgBuffer;
-    private readonly MonoGamePaletteManager _spritePaletteManager;
-    private readonly MonoGamePaletteManager _bgPaletteManager;
 
-    public Vram Vram { get; }
+    public override MonoGamePaletteManager SpritePaletteManager { get; }
+    public override MonoGamePaletteManager BackgroundPaletteManager { get; }
+
     public Rectangle VisibleScreenRect { get; private set; }
     public Rectangle ImgBufferRect { get; private set; }
 
@@ -76,11 +72,11 @@ public partial class GbaScreen
         for (int i = 3; i >= 0; i--)
         {
             // Draw backgrounds
-            foreach (Background bg in Vram.GetBackgrounds().Where(x => x.Priority == i))
+            foreach (Background bg in GetBackgrounds().Where(x => x.Priority == i))
                 DrawBackground(bg);
 
             // Draw sprites
-            foreach (Sprite sprite in Vram.GetSprites().Where(x => x.Priority == i).Reverse())
+            foreach (Sprite sprite in GetSprites().Where(x => x.Priority == i).Reverse())
                 DrawSprite(sprite);
         }
 

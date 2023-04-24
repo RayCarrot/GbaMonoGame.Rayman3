@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 
 // Handles drawing a background
-public partial class GbaScreen
+public partial class MonoGameVram
 {
     private void DrawBackground(Background bg)
     {
@@ -51,7 +51,7 @@ public partial class GbaScreen
     private void DrawRegularBackground_4bpp(Background bg, Vec2Int pos)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(pos, bg.Width, bg.Height);
-        Color[] pal = _bgPaletteManager.GetPalette(bg.Palette!);
+        Color[] pal = BackgroundPaletteManager.GetPalette(bg.Palette!);
 
         int absTileY = pos.Y + VisibleScreenRect.Y + (visibleTilesArea.Y * Constants.TileSize);
 
@@ -86,7 +86,7 @@ public partial class GbaScreen
     private void DrawRegularBackground_8bpp(Background bg, Vec2Int pos)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(pos, bg.Width, bg.Height);
-        Color[] pal = _bgPaletteManager.GetPalette(bg.Palette!);
+        Color[] pal = BackgroundPaletteManager.GetPalette(bg.Palette!);
 
         int absTileY = pos.Y + VisibleScreenRect.Y + (visibleTilesArea.Y * Constants.TileSize);
 

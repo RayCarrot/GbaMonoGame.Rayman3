@@ -7,7 +7,7 @@ using OnyxCs.Gba.Sdk;
 // TODO: Improve the sprite performance drawing like what was done for the backgrounds
 
 // Handles drawing a sprite
-public partial class GbaScreen
+public partial class MonoGameVram
 {
     private void DrawSprite(Sprite spr)
     {
@@ -21,7 +21,7 @@ public partial class GbaScreen
     {
         Constants.Size shape = Constants.GetSpriteShape(spr.SpriteShape, spr.SpriteSize);
         int tileSetIndex = spr.TileIndex * 0x20;
-        Color[] pal = _spritePaletteManager.GetPalette(spr.Palette);
+        Color[] pal = SpritePaletteManager.GetPalette(spr.Palette);
 
         int absTileY = spr.Position.Y + VisibleScreenRect.X;
 
@@ -87,7 +87,7 @@ public partial class GbaScreen
         Constants.Size shape = Constants.GetSpriteShape(spr.SpriteShape, spr.SpriteSize);
         bool doubleSize = spr.Mode == OBJ_ATTR_ObjectMode.AFF_DBL;
         int tileSetIndex = spr.TileIndex * 0x20;
-        Color[] pal = _spritePaletteManager.GetPalette(spr.Palette);
+        Color[] pal = SpritePaletteManager.GetPalette(spr.Palette);
 
         int height = doubleSize ? shape.Height * 2 : shape.Height;
         int width = doubleSize ? shape.Width * 2 : shape.Width;
