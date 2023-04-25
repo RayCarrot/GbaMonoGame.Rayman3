@@ -36,7 +36,8 @@ public class TgxTileLayer : GameLayer
     public void LoadTileKit(TileKit tileKit, TileMappingTable tileMappingTable, int defaultPalette)
     {
         // Load the palette
-        Engine.Instance.Vram.BackgroundPaletteManager?.Load(tileKit.Palettes[defaultPalette].Palette);
+        Palette pal = new(tileKit.Palettes[defaultPalette].Palette);
+        Engine.Instance.Vram.AddBackgroundPalette(pal);
 
         byte[] tileSet;
 
@@ -75,6 +76,6 @@ public class TgxTileLayer : GameLayer
             }
         }
 
-        Screen.BackgroundDriver?.SetTileSet(tileSet, tileKit.Palettes[defaultPalette].Palette);
+        Screen.BackgroundDriver?.SetTileSet(tileSet, pal);
     }
 }

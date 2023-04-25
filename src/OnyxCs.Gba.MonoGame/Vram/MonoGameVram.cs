@@ -16,21 +16,25 @@ public partial class MonoGameVram : Vram
     public MonoGameVram(GraphicsDevice graphicsDevice, int width, int height)
     {
         SetSize(graphicsDevice, width, height);
-
-        SpritePaletteManager = new MonoGamePaletteManager();
-        BackgroundPaletteManager = new MonoGamePaletteManager();
     }
 
     private Texture2D _frame;
     private Color[] _imgBuffer;
 
-    public override MonoGamePaletteManager SpritePaletteManager { get; }
-    public override MonoGamePaletteManager BackgroundPaletteManager { get; }
-
     public Rectangle VisibleScreenRect { get; private set; }
     public Rectangle ImgBufferRect { get; private set; }
 
     private void Clear() => Array.Fill(_imgBuffer, Color.Black);
+
+    private Color[] ConvertPalette(Palette palette)
+    {
+        Color[] colors = new Color[palette.Colors.Length];
+
+        for (int i = 0; i < colors.Length; i++)
+            colors[i] = new Color(palette.Colors[i].R, palette.Colors[i].G, palette.Colors[i].B);
+
+        return colors;
+    }
 
     private Rectangle GetVisibleTilesArea(Vec2Int pos, int tilesWidth, int tilesHeight)
     {
@@ -69,6 +73,10 @@ public partial class MonoGameVram : Vram
 
         // Clear the screen
         Clear();
+
+        // Update palettes
+        UpdateBackgroundPalettes();
+        UpdateSpritePalettes();
 
         // Draw objects
         for (int i = 3; i >= 0; i--)

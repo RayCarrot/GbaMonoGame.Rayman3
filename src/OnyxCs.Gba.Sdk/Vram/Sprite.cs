@@ -8,7 +8,7 @@ public class Sprite
         Vec2Int position, 
         byte spriteShape, 
         byte spriteSize, 
-        OBJ_ATTR_ObjectMode mode, 
+        OBJ_ATTR_ObjectMode mode,
         Palette palette,
         byte[] tileSet, 
         int tileIndex)

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
@@ -8,6 +9,38 @@ namespace OnyxCs.Gba.MonoGame;
 // Handles drawing a background
 public partial class MonoGameVram
 {
+    private readonly Dictionary<Palette, Color[]> _backgroundPalettes = new();
+
+    private Color[] GetBackgroundPalette(Palette palette) => _backgroundPalettes[palette];
+
+    public override void ClearBackgroundPalettes()
+    {
+        base.ClearBackgroundPalettes();
+        _backgroundPalettes.Clear();
+    }
+
+    public override void AddBackgroundPalette(Palette palette)
+    {
+        base.AddBackgroundPalette(palette);
+
+        if (_backgroundPalettes.ContainsKey(palette))
+            return;
+
+        _backgroundPalettes.Add(palette, ConvertPalette(palette));
+    }
+
+    public void UpdateBackgroundPalettes()
+    {
+        foreach (Palette pal in GetBackgroundPalettes())
+        {
+            if (pal.IsDirty)
+            {
+                _backgroundPalettes[pal] = ConvertPalette(pal);
+                pal.IsDirty = false;
+            }
+        }
+    }
+
     private void DrawBackground(Background bg)
     {
         if (!bg.IsEnabled || bg.Width == 0 || bg.Height == 0 || bg.Map == null || bg.TileSet == null || bg.Palette == null)
@@ -53,7 +86,7 @@ public partial class MonoGameVram
     private void DrawRegularBackground_4bpp(Background bg, Vec2Int pos)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(pos, bg.Width, bg.Height);
-        Color[] pal = BackgroundPaletteManager.GetPalette(bg.Palette!);
+        Color[] pal = GetBackgroundPalette(bg.Palette!);
 
         int absTileY = pos.Y + VisibleScreenRect.Y + (visibleTilesArea.Y * Constants.TileSize);
 
@@ -88,7 +121,7 @@ public partial class MonoGameVram
     private void DrawRegularBackground_8bpp(Background bg, Vec2Int pos)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(pos, bg.Width, bg.Height);
-        Color[] pal = BackgroundPaletteManager.GetPalette(bg.Palette!);
+        Color[] pal = GetBackgroundPalette(bg.Palette!);
 
         int absTileY = pos.Y + VisibleScreenRect.Y + (visibleTilesArea.Y * Constants.TileSize);
 

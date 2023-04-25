@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
-using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
 
 namespace OnyxCs.Gba.MonoGame;
@@ -11,6 +11,38 @@ namespace OnyxCs.Gba.MonoGame;
 // Handles drawing a sprite
 public partial class MonoGameVram
 {
+    private readonly Dictionary<Palette, Color[]> _spritePalettes = new();
+
+    private Color[] GetSpritePalette(Palette palette) => _spritePalettes[palette];
+
+    public override void ClearSpritePalettes()
+    {
+        base.ClearSpritePalettes();
+        _spritePalettes.Clear();
+    }
+
+    public override void AddSpritePalette(Palette palette)
+    {
+        base.AddSpritePalette(palette);
+
+        if (_spritePalettes.ContainsKey(palette))
+            return;
+
+        _spritePalettes.Add(palette, ConvertPalette(palette));
+    }
+
+    public void UpdateSpritePalettes()
+    {
+        foreach (Palette pal in GetSpritePalettes())
+        {
+            if (pal.IsDirty)
+            {
+                _spritePalettes[pal] = ConvertPalette(pal);
+                pal.IsDirty = false;
+            }
+        }
+    }
+
     private void DrawSprite(Sprite spr)
     {
         if (spr.Mode == OBJ_ATTR_ObjectMode.REG)
@@ -23,7 +55,7 @@ public partial class MonoGameVram
     {
         Constants.Size shape = Constants.GetSpriteShape(spr.SpriteShape, spr.SpriteSize);
         int tileSetIndex = spr.TileIndex * 0x20;
-        Color[] pal = SpritePaletteManager.GetPalette(spr.Palette);
+        Color[] pal = GetSpritePalette(spr.Palette);
 
         int absTileY = spr.Position.Y + VisibleScreenRect.X;
 
@@ -89,7 +121,7 @@ public partial class MonoGameVram
         Constants.Size shape = Constants.GetSpriteShape(spr.SpriteShape, spr.SpriteSize);
         bool doubleSize = spr.Mode == OBJ_ATTR_ObjectMode.AFF_DBL;
         int tileSetIndex = spr.TileIndex * 0x20;
-        Color[] pal = SpritePaletteManager.GetPalette(spr.Palette);
+        Color[] pal = GetSpritePalette(spr.Palette);
 
         int height = doubleSize ? shape.Height * 2 : shape.Height;
         int width = doubleSize ? shape.Width * 2 : shape.Width;

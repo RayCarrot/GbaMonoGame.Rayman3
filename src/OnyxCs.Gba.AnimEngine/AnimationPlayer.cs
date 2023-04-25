@@ -27,7 +27,7 @@ public class AnimationPlayer : Singleton<AnimationPlayer>
         AnimatedObjects2.Clear();
         Is8Bit = is8Bit;
         Engine.Instance.Vram.ClearSprites();
-        Engine.Instance.Vram.SpritePaletteManager?.UnloadAll();
+        Engine.Instance.Vram.ClearSpritePalettes();
     }
 
     public void AddObject1(AObject obj)

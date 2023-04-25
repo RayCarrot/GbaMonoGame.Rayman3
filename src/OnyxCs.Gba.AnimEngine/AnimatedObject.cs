@@ -35,6 +35,7 @@ public class AnimatedObject : AObject
     #region Public Properties
 
     public AnimatedObjectResource Resource { get; set; }
+    public Palette[] Palettes { get; set; }
 
     // Flags
     public bool IsSoundEnabled { get; set; }
@@ -143,6 +144,39 @@ public class AnimatedObject : AObject
 
     public Animation GetAnimation() => Resource.Animations[AnimationIndex];
 
+    public void SetCurrentFrame(int frame)
+    {
+        Animation anim = GetAnimation();
+
+        if (frame != FrameIndex)
+        {
+            if (frame == 0)
+            {
+                ChannelIndex = 0;
+            }
+            else if (frame > FrameIndex)
+            {
+                int framesDiff = frame - FrameIndex;
+
+                for (int i = 0; i < framesDiff; i++)
+                    ChannelIndex += anim.ChannelsPerFrame[FrameIndex + i];
+            }
+            else
+            {
+                int framesDiff = FrameIndex - frame;
+
+                for (int i = 0; i < framesDiff; i++)
+                    ChannelIndex += anim.ChannelsPerFrame[FrameIndex - i - 1];
+            }
+
+            FrameIndex = frame;
+        }
+
+        Timer = anim.Speed;
+        HasExecutedFrame = false;
+        EndOfAnimation = false;
+    }
+
     public void ResetBoxTable()
     {
         if (BoxTable == null)
@@ -154,8 +188,14 @@ public class AnimatedObject : AObject
 
     public override void Load()
     {
-        foreach (Palette palette in Resource.Palettes.Palettes)
-            Engine.Instance.Vram.SpritePaletteManager?.Load(palette);
+        Palettes = new Palette[Resource.PalettesCount];
+
+        for (int i = 0; i < Resource.Palettes.Palettes.Length; i++)
+        {
+            Palette pal = new(Resource.Palettes.Palettes[i]);
+            Palettes[i] = pal;
+            Engine.Instance.Vram.AddSpritePalette(pal);
+        }
     }
 
     public override void Execute(Vram vram)
@@ -235,7 +275,7 @@ public class AnimatedObject : AObject
                             spriteShape: channel.SpriteShape,
                             spriteSize: channel.SpriteSize,
                             mode: channel.ObjectMode,
-                            palette: Resource.Palettes.Palettes[channel.PalIndex],
+                            palette: Palettes[channel.PalIndex],
                             tileSet: Resource.SpriteTable.Data,
                             tileIndex: channel.TileIndex)
                         {

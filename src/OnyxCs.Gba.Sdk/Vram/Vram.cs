@@ -6,6 +6,8 @@ public abstract class Vram
 {
     protected Vram()
     {
+        _spritePalettes = new List<Palette>();
+        _backgroundPalettes = new List<Palette>();
         _sprites = new List<Sprite>();
         _backgrounds = new Background[4];
 
@@ -13,16 +15,27 @@ public abstract class Vram
             _backgrounds[i] = new Background();
     }
 
+    private readonly List<Palette> _spritePalettes;
+    private readonly List<Palette> _backgroundPalettes;
     private readonly List<Sprite> _sprites;
     private readonly Background[] _backgrounds;
 
-    public virtual PaletteManager? SpritePaletteManager => null;
-    public virtual PaletteManager? BackgroundPaletteManager => null;
+    // Sprite palettes
+    public virtual void ClearSpritePalettes() => _spritePalettes.Clear();
+    public virtual void AddSpritePalette(Palette palette) => _spritePalettes.Add(palette);
+    public IReadOnlyList<Palette> GetSpritePalettes() => _spritePalettes;
 
+    // Background palettes
+    public virtual void ClearBackgroundPalettes() => _backgroundPalettes.Clear();
+    public virtual void AddBackgroundPalette(Palette palette) => _backgroundPalettes.Add(palette);
+    public IReadOnlyList<Palette> GetBackgroundPalettes() => _backgroundPalettes;
+
+    // Sprites
     public void ClearSprites() => _sprites.Clear();
     public void AddSprite(Sprite sprite) => _sprites.Add(sprite);
     public IReadOnlyList<Sprite> GetSprites() => _sprites;
 
+    // Backgrounds
     public void ClearBackgrounds()
     {
         foreach (Background bg in _backgrounds)
