@@ -189,9 +189,8 @@ public class Intro : Frame
 
         AnimationPlayer.Instance.AddObject1(BlackLumAndLogoObj);
 
-        // TODO: This is supposed to start the menu, but we loop the intro for now
         if (Engine.Instance.JoyPad.Check(Input.Start))
-            Engine.Instance.FrameMngr.SetNextFrame(new Intro());
+            Engine.Instance.FrameMngr.SetNextFrame(Menu);
     }
 
     private void Step_Skip_1()
@@ -254,7 +253,7 @@ public class Intro : Frame
         Engine.Instance.Vram.ClearBackgrounds();
 
         FrameMngr = frameMngr;
-        Menu = new MenuAll(0);
+        Menu = new MenuAll(MenuAll.Page.Language);
 
         // TODO: Create GameInfo
         // TODO: Load GameInfo

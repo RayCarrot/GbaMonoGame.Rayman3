@@ -20,7 +20,7 @@ public class AnimationPlayer : Singleton<AnimationPlayer>
 
     public bool Is8Bit { get; set; }
 
-    public void Init(bool is8Bit, Action<int> soundEventCallback)
+    public void Init(bool is8Bit, Action<int>? soundEventCallback)
     {
         SoundEventCallback = soundEventCallback;
         AnimatedObjects1.Clear();
