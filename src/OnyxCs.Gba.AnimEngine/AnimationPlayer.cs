@@ -4,46 +4,44 @@ using OnyxCs.Gba.Sdk;
 
 namespace OnyxCs.Gba.AnimEngine;
 
-public class AnimationPlayer : Singleton<AnimationPlayer>
+public class AnimationPlayer
 {
-    public AnimationPlayer()
+    public AnimationPlayer(Vram vram, bool is8Bit, Action<int>? soundEventCallback)
     {
+        Vram = vram;
+        Is8Bit = is8Bit;
+        SoundEventCallback = soundEventCallback;
+
         AnimatedObjects1 = new Stack<AObject>();
         AnimatedObjects2 = new Stack<AObject>();
+
+        Vram.ClearSprites();
+        Vram.ClearSpritePalettes();
     }
 
-    public Action<int>? SoundEventCallback { get; set; }
+    private Vram Vram { get; }
+    private Action<int>? SoundEventCallback { get; }
 
     // TODO: What's the different between these two?
-    public Stack<AObject> AnimatedObjects1 { get; }
-    public Stack<AObject> AnimatedObjects2 { get; }
+    private Stack<AObject> AnimatedObjects1 { get; }
+    private Stack<AObject> AnimatedObjects2 { get; }
 
-    public bool Is8Bit { get; set; }
-
-    public void Init(bool is8Bit, Action<int>? soundEventCallback)
-    {
-        SoundEventCallback = soundEventCallback;
-        AnimatedObjects1.Clear();
-        AnimatedObjects2.Clear();
-        Is8Bit = is8Bit;
-        Engine.Instance.Vram.ClearSprites();
-        Engine.Instance.Vram.ClearSpritePalettes();
-    }
+    public bool Is8Bit { get; }
 
     public void AddObject1(AObject obj)
     {
         AnimatedObjects1.Push(obj);
     }
 
-    public void Execute(Vram vram)
+    public void Execute()
     {
-        vram.ClearSprites();
+        Vram.ClearSprites();
 
         foreach (AObject obj in AnimatedObjects1)
-            obj.Execute(vram);
+            obj.Execute(Vram, SoundEventRequest);
 
         foreach (AObject obj in AnimatedObjects2)
-            obj.Execute(vram);
+            obj.Execute(Vram, SoundEventRequest);
 
         AnimatedObjects1.Clear();
         AnimatedObjects2.Clear();

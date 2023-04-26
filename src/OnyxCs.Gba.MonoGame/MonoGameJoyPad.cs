@@ -9,8 +9,10 @@ public class MonoGameJoyPad : JoyPad
 
     public override bool Check(Input input)
     {
-        if ((input & Input.Start) != 0)
-            return _state.IsKeyDown(Keys.V);
+        // TODO: Add all inputs and read key bindings from config. Also support a controller.
+
+        if ((input & Input.Start) != 0 && _state.IsKeyDown(Keys.V))
+            return true;
 
         return false;
     }

@@ -24,7 +24,7 @@ public partial class MonoGameVram : Vram
     public Rectangle VisibleScreenRect { get; private set; }
     public Rectangle ImgBufferRect { get; private set; }
 
-    private void Clear() => Array.Fill(_imgBuffer, Color.Black);
+    private void ClearScreen() => Array.Fill(_imgBuffer, Color.Black);
 
     private Color[] ConvertPalette(Palette palette)
     {
@@ -72,7 +72,7 @@ public partial class MonoGameVram : Vram
 #endif
 
         // Clear the screen
-        Clear();
+        ClearScreen();
 
         // Update palettes
         UpdateBackgroundPalettes();

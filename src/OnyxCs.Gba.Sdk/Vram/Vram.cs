@@ -48,4 +48,12 @@ public abstract class Vram
     }
     public Background GetBackground(int bg) => _backgrounds[bg];
     public IReadOnlyList<Background> GetBackgrounds() => _backgrounds;
+
+    public void ClearAll()
+    {
+        ClearBackgroundPalettes();
+        ClearSpritePalettes();
+        ClearSprites();
+        ClearBackgrounds();
+    }
 }

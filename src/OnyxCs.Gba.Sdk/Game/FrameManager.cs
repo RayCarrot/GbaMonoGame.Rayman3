@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Sdk;
 
-public class FrameMngr
+public class FrameManager
 {
-    public FrameMngr(Frame initialFrame)
+    public FrameManager(Frame initialFrame)
     {
         NextFrame = initialFrame;
     }
@@ -14,12 +14,12 @@ public class FrameMngr
 
     public void SetNextFrame(Frame frame) => NextFrame = frame;
 
-    public void Step()
+    public void Step(Engine engine)
     {
         if (NextFrame != null)
         {
             CurrentFrame?.UnInit();
-            NextFrame.Init(this);
+            NextFrame.Init(engine);
             CurrentFrame = NextFrame;
             NextFrame = null;
         }

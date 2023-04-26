@@ -26,12 +26,6 @@ public class AnimatedObject : AObject
 
     #endregion
 
-    #region Private Fields
-
-    private int _animationIndex;
-
-    #endregion
-
     #region Public Properties
 
     public AnimatedObjectResource Resource { get; set; }
@@ -52,22 +46,8 @@ public class AnimatedObject : AObject
     public bool FlipY { get; set; }
     public int Priority { get; set; }
 
-    public int AnimationIndex
-    {
-        get => _animationIndex;
-        set
-        {
-            _animationIndex = value;
-
-            FrameIndex = 0;
-            ChannelIndex = 0;
-            Timer = GetAnimation().Speed;
-            EndOfAnimation = false;
-            HasExecutedFrame = false;
-        }
-    }
-
-    public int FrameIndex { get; set; }
+    public int AnimationIndex { get; private set; }
+    public int FrameIndex { get; private set; }
     public int ChannelIndex { get; set; }
     public int Timer { get; set; }
 
@@ -144,6 +124,16 @@ public class AnimatedObject : AObject
 
     public Animation GetAnimation() => Resource.Animations[AnimationIndex];
 
+    public void SetCurrentAnimation(int animation)
+    {
+        AnimationIndex = animation;
+        FrameIndex = 0;
+        ChannelIndex = 0;
+        Timer = GetAnimation().Speed;
+        EndOfAnimation = false;
+        HasExecutedFrame = false;
+    }
+
     public void SetCurrentFrame(int frame)
     {
         Animation anim = GetAnimation();
@@ -198,7 +188,7 @@ public class AnimatedObject : AObject
         }
     }
 
-    public override void Execute(Vram vram)
+    public override void Execute(Vram vram, Action<int> soundEventCallback)
     {
         Animation anim = GetAnimation();
 
@@ -290,7 +280,7 @@ public class AnimatedObject : AObject
 
                 case AnimationChannelType.Sound:
                     if (!HasExecutedFrame && IsSoundEnabled)
-                        AnimationPlayer.Instance.SoundEventRequest(channel.SoundId);
+                        soundEventCallback(channel.SoundId);
                     break;
 
                 case AnimationChannelType.DisplacementVector:

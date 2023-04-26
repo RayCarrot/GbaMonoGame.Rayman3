@@ -1,22 +1,19 @@
 ﻿using BinarySerializer;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.Sdk;
-using GameTime = Microsoft.Xna.Framework.GameTime;
 
 namespace OnyxCs.Gba.MonoGame;
 
 public class GbaGameComponent : GameComponent
 {
-    public GbaGameComponent(Game game, Context context, Engine engine, MonoGameVram vram) : base(game)
+    public GbaGameComponent(Game game, Context context, Frame initialFrame, int width, int height) : base(game)
     {
         Context = context;
-        Engine = engine;
-        MonoGameVram = vram;
+        Engine = new MonoGameEngine(initialFrame, game.GraphicsDevice, width, height);
     }
 
     public Context Context { get; }
-    public Engine Engine { get; }
-    public MonoGameVram MonoGameVram { get; }
+    public MonoGameEngine Engine { get; }
 
     public override void Initialize()
     {
@@ -29,6 +26,6 @@ public class GbaGameComponent : GameComponent
         Engine.Step();
 
         // Update screen
-        MonoGameVram.Update();
+        Engine.Vram.Update();
     }
 }

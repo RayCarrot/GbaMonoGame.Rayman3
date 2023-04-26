@@ -4,6 +4,7 @@ using BinarySerializer.Onyx.Gba;
 
 namespace OnyxCs.Gba.Sdk;
 
+// TODO: Handle caching
 public class Storage
 {
     public Storage(Context context)

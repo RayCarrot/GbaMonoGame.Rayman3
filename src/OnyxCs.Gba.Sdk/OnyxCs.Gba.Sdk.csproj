@@ -10,8 +10,4 @@
     <ProjectReference Include="..\..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Onyx.Gba.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

@@ -1,8 +1,8 @@
 ﻿namespace OnyxCs.Gba.TgxEngine;
 
-public abstract class GameLayer
+public abstract class TgxGameLayer
 {
-    protected GameLayer(GameLayerResource resource)
+    protected TgxGameLayer(GameLayerResource resource)
     {
         Width = resource.Width;
         Height = resource.Height;

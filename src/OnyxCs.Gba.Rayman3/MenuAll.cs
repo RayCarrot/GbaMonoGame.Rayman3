@@ -1,4 +1,4 @@
-﻿using BinarySerializer.Onyx.Gba;
+﻿#nullable disable
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Sdk;
 using OnyxCs.Gba.TgxEngine;
@@ -18,22 +18,34 @@ public class MenuAll : Frame
 
     #region Public Properties
 
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public TgxPlayfield2D Playfield { get; set; }
+
     public Page CurrentPage { get; set; }
+
+    #endregion
+
+    #region Private Methods
+
+    private void LoadPlayfield()
+    {
+        PlayfieldResource menuPlayField = Storage.ReadResource<PlayfieldResource>(0x5b);
+        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
+    }
 
     #endregion
 
     #region Public Override Methods
 
-    public override void Init(FrameMngr frameMngr)
+    public override void Init(Engine engine)
     {
-        Engine.Instance.Vram.ClearSprites();
-        Engine.Instance.Vram.ClearBackgrounds();
+        base.Init(engine);
 
-        AnimationPlayer.Instance.Init(false, null);
+        Engine.Vram.ClearAll();
 
-        PlayfieldResource menuPlayField = Storage.ReadResource<Playfield>(0x5b);
+        AnimationPlayer = new AnimationPlayer(Engine.Vram, false, null);
 
-        TgxPlayfield.Load(menuPlayField);
+        LoadPlayfield();
     }
 
     public override void UnInit() { }

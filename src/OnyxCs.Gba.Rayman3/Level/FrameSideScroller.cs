@@ -5,7 +5,7 @@ namespace OnyxCs.Gba.Rayman3;
 
 public abstract class FrameSideScroller : Frame
 {
-    public override void Init(FrameMngr frameMngr)
+    public override void Init(Engine engine)
     {
         throw new NotImplementedException();
     }
