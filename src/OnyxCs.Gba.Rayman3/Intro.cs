@@ -156,10 +156,16 @@ public class Intro : Frame
 
     private void Step_4()
     {
-        // TODO: This should be changed to use the camera
-        ScrollY++;
-        Engine.Vram.GetBackground(1).Offset = new Vec2Int(0, ScrollY);
-        Engine.Vram.GetBackground(3).Offset = new Vec2Int(0, ScrollY);
+        // Get the main cluster
+        TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
+
+        // Scroll if we haven't yet reached the bottom
+        if (!mainCluster.IsOnLimit(TgxClusterLimit.Bottom))
+        {
+            ScrollY++;
+            Playfield.Camera.Move(new Vec2(0, 1));
+            Engine.Vram.GetBackground(3).Offset = new Vec2Int(0, ScrollY);
+        }
 
         if (ScrollY > 0xAF)
         {
@@ -193,13 +199,8 @@ public class Intro : Frame
 
         if (IsSkipping)
             Skip();
-
-        // TODO: This is just temporary code to make it work for now. Replace once we implement the camera!
-        Background bg = Engine.Vram.GetBackground(1);
-        if (bg.Offset.Y == bg.Height * 8 - 160)
-        {
+        else if (mainCluster.IsOnLimit(TgxClusterLimit.Bottom))
             CurrentStepAction = Step_5;
-        }
     }
 
     private void Step_5()

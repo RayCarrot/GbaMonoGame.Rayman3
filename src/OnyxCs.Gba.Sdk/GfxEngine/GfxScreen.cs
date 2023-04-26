@@ -50,4 +50,10 @@ public class GfxScreen
         Is8Bit = is8Bit;
         BackgroundDriver?.SetColorMode(Is8Bit);
     }
+
+    public void SetOffset(Vec2Int offset)
+    {
+        Position = offset;
+        BackgroundDriver?.SetOffset(offset);
+    }
 }

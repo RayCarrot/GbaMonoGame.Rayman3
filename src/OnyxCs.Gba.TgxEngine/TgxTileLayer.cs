@@ -5,7 +5,7 @@ using OnyxCs.Gba.Sdk;
 
 namespace OnyxCs.Gba.TgxEngine;
 
-public class TgxTileLayer : GameLayer
+public class TgxTileLayer : TgxGameLayer
 {
     public TgxTileLayer(GameLayerResource resource) : base(resource)
     {

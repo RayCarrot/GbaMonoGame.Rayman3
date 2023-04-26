@@ -11,4 +11,7 @@ public readonly struct Vec2
 
     public float X { get; }
     public float Y { get; }
+
+    public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
+    public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
 }
