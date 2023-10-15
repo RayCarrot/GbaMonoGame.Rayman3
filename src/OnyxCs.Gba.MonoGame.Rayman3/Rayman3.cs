@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using BinarySerializer;
@@ -25,6 +26,9 @@ public class Rayman3 : Game
         // Force frame-rate to 60
         SetFramerate(60);
     }
+
+    private SpriteFont DebugFont { get; set; }
+    private long PrevUpdateTimeTicks { get; set; }
 
     private void SetFramerate(float fps)
     {
@@ -111,13 +115,19 @@ public class Rayman3 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        DebugFont = Content.Load<SpriteFont>("DebugFont");
     }
 
     protected override void Update(GameTime gameTime)
     {
         // TODO: Add custom update code
 
+        Stopwatch sw = Stopwatch.StartNew();
+
         base.Update(gameTime);
+
+        sw.Stop();
+        PrevUpdateTimeTicks = sw.ElapsedTicks;
     }
 
     protected override void Draw(GameTime gameTime)
@@ -129,7 +139,15 @@ public class Rayman3 : Game
 
         // Draw screen
         _gbaGame.Engine.Vram.Draw(_spriteBatch, Vector2.Zero, new Vector2(_config.Scale));
-        
+
+        _spriteBatch.DrawString(DebugFont, $"Game time: {gameTime.ElapsedGameTime.Ticks / 10_000f:N3}\n" +
+                                           $"Update time: {PrevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 10), Color.White);
+
+        if (gameTime.IsRunningSlowly)
+        {
+            _spriteBatch.DrawString(DebugFont, "SLOW!", new Vector2(10, 65), Color.Red);
+        }
+
         _spriteBatch.End();
             
         base.Draw(gameTime);
