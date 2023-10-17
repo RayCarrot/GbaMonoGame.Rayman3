@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
-using OnyxCs.Gba.Sdk;
+using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;
 
 // TODO: Add debug mode to the game where we can freely move the camera with arrow keys and speed up by holding space
 public class TgxCamera2D : TgxCamera
 {
-    public TgxCamera2D()
-    {
-        Clusters = new List<TgxCluster>();
-    }
-
-    private TgxCluster? MainCluster { get; set; }
-    private List<TgxCluster> Clusters { get; }
-    private Vec2 Position { get; set; }
+    private TgxCluster MainCluster { get; set; }
+    private List<TgxCluster> Clusters { get; } = new();
+    private Vector2 Position { get; set; }
 
     public TgxCluster GetMainCluster() => GetCluster(0);
 
@@ -40,10 +35,10 @@ public class TgxCamera2D : TgxCamera
         cluster.AddLayer(layer);
     }
 
-    public override void Move(Vec2 deltaPos)
+    public override void Move(Vector2 deltaPos)
     {
         Position += deltaPos;
-        Vec2Int moved = GetMainCluster().Move((Vec2Int)deltaPos);
+        Vector2 moved = GetMainCluster().Move(deltaPos);
 
         if (moved is { X: 0, Y: 0 }) 
             return;

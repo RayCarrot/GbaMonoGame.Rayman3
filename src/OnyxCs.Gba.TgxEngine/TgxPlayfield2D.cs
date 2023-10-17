@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Onyx.Gba;
-using OnyxCs.Gba.Sdk;
 
 namespace OnyxCs.Gba.TgxEngine;
 
@@ -8,8 +7,7 @@ public class TgxPlayfield2D : TgxPlayfield
 {
     public TgxPlayfield2D(PlayfieldResource playfieldResource)
     {
-        Screens = new GfxScreen[4];
-        TileLayers = new List<TgxTileLayer>();
+        List<TgxTileLayer> tileLayers = new();
 
         Camera = new TgxCamera2D();
 
@@ -23,8 +21,8 @@ public class TgxPlayfield2D : TgxPlayfield
             if (layerResource.Type == GameLayerType.TileLayer)
             {
                 TgxTileLayer layer = new(layerResource);
-                TileLayers.Add(layer);
-                Screens[layer.LayerId] = layer.Screen;
+                tileLayers.Add(layer);
+                //Screens[layer.LayerId] = layer.Screen;
 
                 layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
                 
@@ -36,9 +34,10 @@ public class TgxPlayfield2D : TgxPlayfield
                 CollisionLayer = new TgxTileCollisionLayer(layerResource);
             }
         }
+
+        TileLayers = tileLayers;
     }
 
     public TgxCamera2D Camera { get; }
-    public GfxScreen[] Screens { get; }
-    public List<TgxTileLayer> TileLayers { get; }
+    public IReadOnlyList<TgxTileLayer> TileLayers { get; }
 }

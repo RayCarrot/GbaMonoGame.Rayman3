@@ -1,9 +1,9 @@
-﻿using OnyxCs.Gba.Sdk;
+﻿using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.AnimEngine;
 
 public class BoxTable
 {
-    public Box AttackBox { get; set; }
-    public Box VulnerabilityBox { get; set; }
+    public Rectangle AttackBox { get; set; }
+    public Rectangle VulnerabilityBox { get; set; }
 }

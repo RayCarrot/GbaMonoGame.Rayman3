@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using OnyxCs.Gba.Sdk;
+﻿using System.Collections.Generic;
 
 namespace OnyxCs.Gba.AnimEngine;
 
 public class AnimationPlayer
 {
-    public AnimationPlayer(Vram vram, bool is8Bit, Action<int>? soundEventCallback)
+    public AnimationPlayer(bool is8Bit)
     {
-        Vram = vram;
         Is8Bit = is8Bit;
-        SoundEventCallback = soundEventCallback;
 
+        AnimationSpriteManager = new AnimationSpriteManager();
         AnimatedObjects1 = new Stack<AObject>();
         AnimatedObjects2 = new Stack<AObject>();
 
-        Vram.ClearSprites();
-        Vram.ClearSpritePalettes();
+        Gfx.Sprites.Clear();
     }
 
-    private Vram Vram { get; }
-    private Action<int>? SoundEventCallback { get; }
+    private AnimationSpriteManager AnimationSpriteManager { get; }
 
     // TODO: What's the different between these two?
     private Stack<AObject> AnimatedObjects1 { get; }
@@ -35,13 +30,13 @@ public class AnimationPlayer
 
     public void Execute()
     {
-        Vram.ClearSprites();
+        Gfx.Sprites.Clear();
 
         foreach (AObject obj in AnimatedObjects1)
-            obj.Execute(Vram, SoundEventRequest);
+            obj.Execute(AnimationSpriteManager, SoundEventRequest);
 
         foreach (AObject obj in AnimatedObjects2)
-            obj.Execute(Vram, SoundEventRequest);
+            obj.Execute(AnimationSpriteManager, SoundEventRequest);
 
         AnimatedObjects1.Clear();
         AnimatedObjects2.Clear();
@@ -49,6 +44,6 @@ public class AnimationPlayer
 
     public void SoundEventRequest(int soundId)
     {
-        SoundEventCallback?.Invoke(soundId);
+        SoundManager.Play(soundId);
     }
 }

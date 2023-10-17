@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
-using OnyxCs.Gba.Sdk;
+using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;
 
@@ -11,9 +11,9 @@ public class TgxCluster
  
     public TgxCluster(ClusterResource cluster)
     {
-        ScrollFactor = new Vec2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
+        ScrollFactor = new Vector2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
         // TODO: Support different screen sizes
-        MaxPosition = new Vec2Int(
+        MaxPosition = new Vector2(
             x: cluster.SizeX * Constants.TileSize - Constants.ScreenWidth, 
             y: cluster.SizeY * Constants.TileSize - Constants.ScreenHeight);
         Layers = new List<TgxTileLayer>();
@@ -23,12 +23,12 @@ public class TgxCluster
     private int Width { get; set; }
     private int Height { get; set; }
 
-    private Vec2Int MaxPosition { get; }
+    private Vector2 MaxPosition { get; }
 
-    private Vec2Int Position { get; set; }
+    private Vector2 Position { get; set; }
 
-    private Vec2 ScrollFactor { get; }
-    private Vec2 Scrolled { get; set; }
+    private Vector2 ScrollFactor { get; }
+    private Vector2 Scrolled { get; set; }
 
     private List<TgxTileLayer> Layers { get; }
 
@@ -45,34 +45,35 @@ public class TgxCluster
         Layers.Add(layer);
     }
 
-    public bool IsOnLimit(TgxClusterLimit limit)
+    public bool IsOnLimit(Edge limit)
     {
         return limit switch
         {
-            TgxClusterLimit.Top => Position.Y == 0,
-            TgxClusterLimit.Right => Position.X == MaxPosition.X,
-            TgxClusterLimit.Bottom => Position.Y == MaxPosition.Y,
-            TgxClusterLimit.Left => Position.X == 0,
+            // In the game these are == checks, but since we're dealing with floats here they're <= and >=
+            Edge.Top => Position.Y <= 0,
+            Edge.Right => Position.X >= MaxPosition.X,
+            Edge.Bottom => Position.Y >= MaxPosition.Y,
+            Edge.Left => Position.X <= 0,
             _ => throw new ArgumentOutOfRangeException(nameof(limit), limit, null)
         };
     }
 
     // TODO: This is confusing. Maybe change?
-    public Vec2Int Scroll(Vec2Int deltaPos)
+    public Vector2 Scroll(Vector2 deltaPos)
     {
-        Scrolled += new Vec2(deltaPos.X * ScrollFactor.X, deltaPos.Y * ScrollFactor.Y);
-        Scrolled = new Vec2(
-            x: MathHelpers.Clamp(Scrolled.X, 0, MaxPosition.X),
-            y: MathHelpers.Clamp(Scrolled.Y, 0, MaxPosition.Y));
+        Scrolled += new Vector2(deltaPos.X * ScrollFactor.X, deltaPos.Y * ScrollFactor.Y);
+        Scrolled = new Vector2(
+            x: Math.Clamp(Scrolled.X, 0, MaxPosition.X),
+            y: Math.Clamp(Scrolled.Y, 0, MaxPosition.Y));
 
-        return new Vec2Int((int)Scrolled.X - Position.X, (int)Scrolled.Y - Position.Y);
+        return new Vector2((int)Scrolled.X - Position.X, (int)Scrolled.Y - Position.Y);
     }
 
-    public Vec2Int Move(Vec2Int deltaPos)
+    public Vector2 Move(Vector2 deltaPos)
     {
-        Vec2Int newPos = new(
-            x: MathHelpers.Clamp(Position.X + deltaPos.X, 0, MaxPosition.X), 
-            y: MathHelpers.Clamp(Position.Y + deltaPos.Y, 0, MaxPosition.Y));
+        Vector2 newPos = new(
+            x: Math.Clamp(Position.X + deltaPos.X, 0, MaxPosition.X), 
+            y: Math.Clamp(Position.Y + deltaPos.Y, 0, MaxPosition.Y));
         deltaPos = newPos - Position;
 
         if (deltaPos is { X: 0, Y: 0 })
@@ -81,7 +82,7 @@ public class TgxCluster
         Position += deltaPos;
 
         foreach (TgxTileLayer layer in Layers)
-            layer.Screen.SetOffset(Position);
+            layer.Screen.Offset = new Vector2(Position.X, Position.Y);
 
         return deltaPos;
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
-using OnyxCs.Gba.Sdk;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace OnyxCs.Gba.TgxEngine;
 
@@ -13,12 +13,13 @@ public class TgxTileLayer : TgxGameLayer
         LayerId = resource.LayerId;
         IsDynamic = resource.IsDynamic;
 
-        Screen = new GfxScreen();
-        Screen.SetBgDriver(LayerId);
-        Screen.SetPriority(3 - LayerId);
-        Screen.SetBgOverflowProcess(OverflowProcess.Wrap);
-        Screen.SetColorMode(resource.Is8Bit);
-        Screen.BackgroundDriver?.SetTileMap(TileMap, Width, Height);
+        Screen = Gfx.Screens[LayerId];
+        Screen.IsEnabled = true;
+        Screen.Offset = Vector2.Zero;
+        Screen.Priority = 3 - LayerId;
+        Screen.Wrap = true;
+        Screen.Is8Bit = resource.Is8Bit;
+        Screen.IsEnabled = true;
 
         if (resource.HasAlphaBlending)
         {
@@ -35,27 +36,36 @@ public class TgxTileLayer : TgxGameLayer
 
     public void LoadTileKit(TileKit tileKit, TileMappingTable tileMappingTable, int defaultPalette)
     {
-        // Load the palette
-        Palette pal = new(tileKit.Palettes[defaultPalette].Palette);
-        Engine.Instance.Vram.AddBackgroundPalette(pal);
-
-        byte[] tileSet;
+        if (tileKit.Idx_AnimatedTileKit != 0xFF)
+        {
+            // TODO: Load animated tiles
+        }
 
         if (IsDynamic)
         {
-            if (Screen.Is8Bit)
-            {
-                tileSet = new byte[0x40 + tileKit.Tiles8bpp.Length];
-                Array.Copy(tileKit.Tiles8bpp, 0, tileSet, 0x40, tileKit.Tiles8bpp.Length);
-            }
-            else
-            {
-                tileSet = new byte[0x20 + tileKit.Tiles4bpp.Length];
-                Array.Copy(tileKit.Tiles4bpp, 0, tileSet, 0x20, tileKit.Tiles4bpp.Length);
-            }
+            //if (Screen.Is8Bit)
+            //{
+            //    tileSet = new byte[0x40 + tileKit.Tiles8bpp.Length];
+            //    Array.Copy(tileKit.Tiles8bpp, 0, tileSet, 0x40, tileKit.Tiles8bpp.Length);
+            //}
+            //else
+            //{
+            //    tileSet = new byte[0x20 + tileKit.Tiles4bpp.Length];
+            //    Array.Copy(tileKit.Tiles4bpp, 0, tileSet, 0x20, tileKit.Tiles4bpp.Length);
+            //}
+
+            //TiledTexture2D tex = new(Width, Height, tileSet, TileMap, new Palette(tileKit.Palettes[defaultPalette].Palette), Screen.Is8Bit);
+            //Screen.Renderer = new TextureScreenRenderer(tex);
+
+            // TODO: Although this makes dealing with animations easier it does however cause lag if fullscreen.
+            //       Maybe render to single texture like in commented out code above, and overlay animated tiles?
+            byte[] tileSet = Screen.Is8Bit ? tileKit.Tiles8bpp : tileKit.Tiles4bpp;
+            Screen.Renderer = new TileMapScreenRenderer(Width, Height, TileMap, tileSet, new Palette(tileKit.Palettes[defaultPalette].Palette), Screen.Is8Bit);
         }
         else
         {
+            byte[] tileSet;
+
             if (Screen.Is8Bit)
             {
                 tileSet = new byte[1024 * 0x40];
@@ -74,8 +84,9 @@ public class TgxTileLayer : TgxGameLayer
                     Array.Copy(tileKit.Tiles4bpp, value * 0x20, tileSet, (i + 2) * 0x20, 0x20);
                 }
             }
-        }
 
-        Screen.BackgroundDriver?.SetTileSet(tileSet, pal);
+            TiledTexture2D tex = new(Width, Height, tileSet, TileMap, new Palette(tileKit.Palettes[defaultPalette].Palette), Screen.Is8Bit);
+            Screen.Renderer = new TextureScreenRenderer(tex);
+        }
     }
 }

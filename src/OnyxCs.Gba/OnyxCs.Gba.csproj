@@ -11,6 +11,5 @@
     <ProjectReference Include="..\..\sub-modules\BinarySerializer.Nintendo\src\BinarySerializer.Nintendo.csproj" />
     <ProjectReference Include="..\..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Onyx.Gba.csproj" />
     <ProjectReference Include="..\..\sub-modules\BinarySerializer\src\BinarySerializer.csproj" />
-    <ProjectReference Include="..\OnyxCs.Gba\OnyxCs.Gba.csproj" />
   </ItemGroup>
 </Project>

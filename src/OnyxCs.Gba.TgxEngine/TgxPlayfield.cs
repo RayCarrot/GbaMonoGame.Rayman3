@@ -5,7 +5,7 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxPlayfield
 {
-    public TgxTileCollisionLayer? CollisionLayer { get; set; }
+    public TgxTileCollisionLayer CollisionLayer { get; set; }
 
     public static TgxPlayfield Load(PlayfieldResource playfieldResource) => Load<TgxPlayfield>(playfieldResource);
 

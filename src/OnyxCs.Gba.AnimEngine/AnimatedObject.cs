@@ -1,7 +1,8 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
-using OnyxCs.Gba.Sdk;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;
 
@@ -20,8 +21,6 @@ public class AnimatedObject : AObject
         IsSoundEnabled = true;
         IsDynamic = isDynamic;
         Resource = resource;
-
-        Load();
     }
 
     #endregion
@@ -29,11 +28,10 @@ public class AnimatedObject : AObject
     #region Public Properties
 
     public AnimatedObjectResource Resource { get; set; }
-    public Palette[] Palettes { get; set; }
 
     // Flags
     public bool IsSoundEnabled { get; set; }
-    public bool IsDynamic { get; set; } // Unused in CS port
+    public bool IsDynamic { get; set; } // TODO: If not dynamic we might want to pre-load the sprites?
     public bool EndOfAnimation { get; set; }
     public bool EnableBox { get; set; }
     public bool HasExecutedFrame { get; set; }
@@ -41,7 +39,7 @@ public class AnimatedObject : AObject
     public bool IsPaused { get; set; }
     public uint VisibleChannels { get; set; } // One bit per channel
 
-    public Vec2Int ScreenPos { get; set; }
+    public Vector2 ScreenPos { get; set; }
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
     public int Priority { get; set; }
@@ -51,13 +49,13 @@ public class AnimatedObject : AObject
     public int ChannelIndex { get; set; }
     public int Timer { get; set; }
 
-    public BoxTable? BoxTable { get; set; }
+    public BoxTable BoxTable { get; set; }
 
     #endregion
 
     #region Private Methods
 
-    private Box TransformChannelBoxToEngineBox(ChannelBox box) => new(box.MinX, box.MinY, box.MaxX, box.MaxY);
+    private Rectangle TransformChannelBoxToEngineBox(ChannelBox box) => new(box.MinX, box.MinY, box.MaxX, box.MaxY);
 
     private void PlayChannelBox()
     {
@@ -172,23 +170,11 @@ public class AnimatedObject : AObject
         if (BoxTable == null)
             return;
 
-        BoxTable.AttackBox = new Box();
-        BoxTable.VulnerabilityBox = new Box();
+        BoxTable.AttackBox = new Rectangle();
+        BoxTable.VulnerabilityBox = new Rectangle();
     }
 
-    public override void Load()
-    {
-        Palettes = new Palette[Resource.PalettesCount];
-
-        for (int i = 0; i < Resource.Palettes.Palettes.Length; i++)
-        {
-            Palette pal = new(Resource.Palettes.Palettes[i]);
-            Palettes[i] = pal;
-            Engine.Instance.Vram.AddSpritePalette(pal);
-        }
-    }
-
-    public override void Execute(Vram vram, Action<int> soundEventCallback)
+    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<int> soundEventCallback)
     {
         Animation anim = GetAnimation();
 
@@ -222,7 +208,7 @@ public class AnimatedObject : AObject
                         bool isAffine = channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL;
 
                         // Get x position
-                        int xPos = channel.XPosition;
+                        float xPos = channel.XPosition;
 
                         if (!FlipX)
                             xPos += ScreenPos.X;
@@ -230,10 +216,10 @@ public class AnimatedObject : AObject
                             xPos = ScreenPos.X - xPos - shape.Width;
 
                         if (isAffine)
-                            xPos -= shape.Width / 2;
+                            xPos -= shape.Width / 2f;
 
                         // Get y position
-                        int yPos = channel.YPosition;
+                        float yPos = channel.YPosition;
 
                         if (!FlipY)
                             yPos += ScreenPos.Y;
@@ -241,7 +227,7 @@ public class AnimatedObject : AObject
                             yPos = ScreenPos.Y - yPos - shape.Height;
 
                         if (isAffine)
-                            yPos -= shape.Height / 2;
+                            yPos -= shape.Height / 2f;
 
                         AffineMatrix affineMatrix = new();
 
@@ -260,21 +246,20 @@ public class AnimatedObject : AObject
                         // is more complicated. If the object is dynamic then it loads
                         // in the data to vram first, then for all sprites it adds an
                         // entry to the list of object attributes in OAM memory.
-                        vram.AddSprite(new Sprite(
-                            position: new Vec2Int(xPos, yPos),
+                        Texture2D tex = animationSpriteManager.GetSpriteTexture(
+                            resource: Resource, 
                             spriteShape: channel.SpriteShape,
-                            spriteSize: channel.SpriteSize,
+                            spriteSize: channel.SpriteSize, 
+                            tileIndex: channel.TileIndex, 
+                            paletteIndex: channel.PalIndex);
+                        Gfx.Sprites.Add(new Sprite(
+                            texture: tex,
+                            position: new Vector2(xPos, yPos),
+                            flipX: channel.FlipX,
+                            flipY: channel.FlipY,
+                            priority: Priority,
                             mode: channel.ObjectMode,
-                            palette: Palettes[channel.PalIndex],
-                            tileSet: Resource.SpriteTable.Data,
-                            tileIndex: channel.TileIndex)
-                        {
-                            FlipX = channel.FlipX,
-                            FlipY = channel.FlipY,
-                            Is8Bit = Resource.Is8Bit,
-                            AffineMatrix = affineMatrix,
-                            Priority = Priority,
-                        });
+                            affineMatrix: affineMatrix));
                     }
                     break;
 
