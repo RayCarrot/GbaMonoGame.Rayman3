@@ -4,7 +4,6 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxCamera
 {
-    //public abstract void GetPosition();
+    public abstract Vector2 Position { get; set; }
     public abstract void Move(Vector2 deltaPos);
-    //public abstract void SetPosition();
 }

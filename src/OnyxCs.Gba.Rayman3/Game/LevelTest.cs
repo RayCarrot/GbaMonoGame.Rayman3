@@ -10,7 +10,7 @@ public class LevelTest : Frame
 
     public override void Init()
     {
-        base.Init();
+        Gfx.Clear();
 
         Scene2D scene = Storage.LoadResource<Scene2D>(0x00);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
@@ -18,6 +18,6 @@ public class LevelTest : Frame
 
     public override void Step()
     {
-        Playfield.Camera.Move(new Vector2(1, 0));
+        // TODO: Implement
     }
 }

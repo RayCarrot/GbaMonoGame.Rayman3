@@ -4,12 +4,28 @@ using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;
 
-// TODO: Add debug mode to the game where we can freely move the camera with arrow keys and speed up by holding space
 public class TgxCamera2D : TgxCamera
 {
     private TgxCluster MainCluster { get; set; }
     private List<TgxCluster> Clusters { get; } = new();
-    private Vector2 Position { get; set; }
+
+    public override Vector2 Position
+    {
+        get => MainCluster.Position;
+        set
+        {
+            TgxCluster mainCluster = GetMainCluster();
+            mainCluster.Position = value;
+
+            foreach (TgxCluster cluster in Clusters)
+            {
+                if (cluster.Stationary)
+                    continue;
+
+                cluster.Position = value * cluster.ScrollFactor;
+            }
+        }
+    }
 
     public TgxCluster GetMainCluster() => GetCluster(0);
 
@@ -19,6 +35,15 @@ public class TgxCamera2D : TgxCamera
             return MainCluster ?? throw new Exception("The main cluster hasn't been added yet");
         else
             return Clusters[clusterId - 1];
+    }
+
+    public IEnumerable<TgxCluster> GetClusters(bool includeMain)
+    {
+        if (includeMain)
+            yield return GetMainCluster();
+
+        foreach (TgxCluster cluster in Clusters)
+            yield return cluster;
     }
 
     public void AddCluster(ClusterResource clusterResource)
@@ -35,20 +60,21 @@ public class TgxCamera2D : TgxCamera
         cluster.AddLayer(layer);
     }
 
+    // TODO: Is there a point of this?
     public override void Move(Vector2 deltaPos)
     {
-        Position += deltaPos;
-        Vector2 moved = GetMainCluster().Move(deltaPos);
+        TgxCluster mainCluster = GetMainCluster();
+        Vector2 moved = mainCluster.Move(deltaPos);
 
         if (moved is { X: 0, Y: 0 }) 
             return;
         
         foreach (TgxCluster cluster in Clusters)
         {
-            if (cluster.CanNotMove)   
+            if (cluster.Stationary)
                 continue;
 
-            cluster.Move(cluster.Scroll(moved));
+            cluster.Move(moved * cluster.ScrollFactor);
         }
     }
 }

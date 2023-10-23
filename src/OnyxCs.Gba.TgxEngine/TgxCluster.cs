@@ -7,8 +7,6 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxCluster
 {
-    // TODO: Clean up math code, use more operators
- 
     public TgxCluster(ClusterResource cluster)
     {
         ScrollFactor = new Vector2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
@@ -17,32 +15,43 @@ public class TgxCluster
             x: cluster.SizeX * Constants.TileSize - Constants.ScreenWidth, 
             y: cluster.SizeY * Constants.TileSize - Constants.ScreenHeight);
         Layers = new List<TgxTileLayer>();
-        CanNotMove = cluster.Stationary;
+        Stationary = cluster.Stationary;
     }
 
-    private int Width { get; set; }
-    private int Height { get; set; }
-
-    private Vector2 MaxPosition { get; }
-
-    private Vector2 Position { get; set; }
-
-    private Vector2 ScrollFactor { get; }
-    private Vector2 Scrolled { get; set; }
+    private Vector2 _position;
 
     private List<TgxTileLayer> Layers { get; }
 
-    public bool CanNotMove { get; }
+    public Vector2 MaxPosition { get; }
+    public Vector2 ScrollFactor { get; }
+    public bool Stationary { get; }
+
+    public Vector2 Position
+    {
+        get => _position;
+        set
+        {
+            // TODO: Also check for less than 0?
+            if (value.X > MaxPosition.X)
+                value.X = MaxPosition.X;
+            if (value.Y > MaxPosition.Y)
+                value.Y = MaxPosition.Y;
+
+            _position = value;
+
+            foreach (TgxTileLayer layer in Layers)
+                layer.Screen.Offset = value;
+        }
+    }
 
     public void AddLayer(TgxTileLayer layer)
     {
-        if (Layers.Count == 0)
-        {
-            Width = layer.Width;
-            Height = layer.Height;
-        }
-
         Layers.Add(layer);
+    }
+
+    public IReadOnlyList<TgxTileLayer> GetLayers()
+    {
+        return Layers;
     }
 
     public bool IsOnLimit(Edge limit)
@@ -58,17 +67,7 @@ public class TgxCluster
         };
     }
 
-    // TODO: This is confusing. Maybe change?
-    public Vector2 Scroll(Vector2 deltaPos)
-    {
-        Scrolled += new Vector2(deltaPos.X * ScrollFactor.X, deltaPos.Y * ScrollFactor.Y);
-        Scrolled = new Vector2(
-            x: Math.Clamp(Scrolled.X, 0, MaxPosition.X),
-            y: Math.Clamp(Scrolled.Y, 0, MaxPosition.Y));
-
-        return new Vector2((int)Scrolled.X - Position.X, (int)Scrolled.Y - Position.Y);
-    }
-
+    // TODO: Is there a point of this?
     public Vector2 Move(Vector2 deltaPos)
     {
         Vector2 newPos = new(
@@ -82,7 +81,7 @@ public class TgxCluster
         Position += deltaPos;
 
         foreach (TgxTileLayer layer in Layers)
-            layer.Screen.Offset = new Vector2(Position.X, Position.Y);
+            layer.Screen.Offset = Position;
 
         return deltaPos;
     }
