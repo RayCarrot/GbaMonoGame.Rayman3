@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnyxCs.Gba.TgxEngine", "Ony
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnyxCs.Gba.AnimEngine", "OnyxCs.Gba.AnimEngine\OnyxCs.Gba.AnimEngine.csproj", "{A779C5B6-9A08-4670-B4CD-0355EE081257}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnyxCs.Gba.Engine2d", "OnyxCs.Gba.Engine2d\OnyxCs.Gba.Engine2d.csproj", "{15EF567B-73A2-4E28-A01F-A31780BAF9FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnyxCs.Gba.Engine2d", "OnyxCs.Gba.Engine2d\OnyxCs.Gba.Engine2d.csproj", "{15EF567B-73A2-4E28-A01F-A31780BAF9FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

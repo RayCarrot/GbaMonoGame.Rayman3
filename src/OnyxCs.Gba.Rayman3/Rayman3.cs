@@ -16,6 +16,7 @@ public class Rayman3 : Game
     public Rayman3()
     {
         _graphics = new GraphicsDeviceManager(this);
+        _debugRenderer = new DebugRenderer();
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
@@ -31,12 +32,19 @@ public class Rayman3 : Game
     #region Private Fields
 
     private readonly GraphicsDeviceManager _graphics;
+    private readonly DebugRenderer _debugRenderer;
     private SpriteBatch _spriteBatch;
     private GfxRenderer _renderer;
     private GameConfig _config;
     private Context _context;
     private SpriteFont _debugFont;
     private long _prevUpdateTimeTicks;
+
+    #endregion
+
+    #region Public Properties
+
+    public bool IsEnginePaused { get; set; }
 
     #endregion
 
@@ -142,6 +150,8 @@ public class Rayman3 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _renderer = new GfxRenderer(_spriteBatch, Matrix.CreateScale(_config.Scale));
+        _debugRenderer.LoadContent(this);
+
         _debugFont = Content.Load<SpriteFont>("DebugFont");
     }
 
@@ -149,9 +159,14 @@ public class Rayman3 : Game
     {
         Stopwatch sw = Stopwatch.StartNew();
 
-        JoyPad.Scan();
-        FrameManager.Step();
-        GameTime.Update();
+        _debugRenderer.Update(gameTime);
+
+        if (!IsEnginePaused)
+        {
+            JoyPad.Scan();
+            FrameManager.Step();
+            GameTime.Update();
+        }
 
         base.Update(gameTime);
 
@@ -164,23 +179,23 @@ public class Rayman3 : Game
         // Clear screen
         GraphicsDevice.Clear(Color.Black);
 
-        _renderer.Begin();
-
         // Draw screen
+        _renderer.Begin();
         Gfx.Draw(_renderer);
-
         _renderer.End();
 
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         _spriteBatch.DrawString(_debugFont, $"FPS: {1000 / (gameTime.ElapsedGameTime.Ticks / 10_000f):N1}\n" +
                                             $"Game time: {gameTime.ElapsedGameTime.Ticks / 10_000f:N3}\n" +
-                                            $"Update time: {_prevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 10), Color.White);
+                                            $"Update time: {_prevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 25), Color.White);
 
         if (gameTime.IsRunningSlowly)
         {
-            _spriteBatch.DrawString(_debugFont, "SLOW!", new Vector2(10, 85), Color.Red);
+            _spriteBatch.DrawString(_debugFont, "SLOW!", new Vector2(10, 100), Color.Red);
         }
         _spriteBatch.End();
+
+        _debugRenderer.Draw(gameTime);
 
         base.Draw(gameTime);
     }
