@@ -1,4 +1,6 @@
-﻿namespace OnyxCs.Gba.Rayman3;
+﻿using OnyxCs.Gba.TgxEngine;
+
+namespace OnyxCs.Gba.Rayman3;
 
 public class WoodLight : FrameSideScroller
 {
@@ -7,6 +9,9 @@ public class WoodLight : FrameSideScroller
     public override void Init()
     {
         base.Init();
+
+        TgxTileLayer cloudsLayer = Scene.Playfield.TileLayers[0];
+        cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(((TextureScreenRenderer)cloudsLayer.Screen.Renderer).Texture);
     }
 
     public override void Step()
