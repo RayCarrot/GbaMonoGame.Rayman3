@@ -12,6 +12,7 @@ public class AnimationPlayer
         AnimatedObjects1 = new Stack<AObject>();
         AnimatedObjects2 = new Stack<AObject>();
 
+        // TODO: Might not need this if every frame clears GFX on init
         Gfx.Sprites.Clear();
     }
 

@@ -5,3 +5,4 @@ global using Vector2 = Microsoft.Xna.Framework.Vector2;
 global using AnimatedObjectResource = BinarySerializer.Onyx.Gba.AnimatedObject;
 global using PlayfieldResource = BinarySerializer.Onyx.Gba.Playfield;
 global using PaletteResource = BinarySerializer.Nintendo.GBA.Palette;
+global using ActorResource = BinarySerializer.Onyx.Gba.Actor;

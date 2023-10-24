@@ -19,7 +19,6 @@ public class DebugRenderer
     {
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.Language)),
-        new("Level test", () => new LevelTest()),
     };
 
     private void DrawMenu()
@@ -54,6 +53,19 @@ public class DebugRenderer
                     {
                         FrameManager.SetNextFrame(frameFactory.CreateFrame());
                     }
+                }
+
+                if (ImGui.BeginMenu("Levels"))
+                {
+                    foreach (LevelInfo levelInfo in GameInfo.Levels)
+                    {
+                        if (ImGui.MenuItem(levelInfo.LevelId.ToString()))
+                        {
+                            FrameManager.SetNextFrame((Frame)Activator.CreateInstance(levelInfo.FrameType, levelInfo.LevelId));
+                        }
+                    }
+
+                    ImGui.EndMenu();
                 }
 
                 ImGui.EndMenu();

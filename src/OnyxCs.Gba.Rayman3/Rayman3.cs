@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -6,6 +7,7 @@ using BinarySerializer;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -128,6 +130,10 @@ public class Rayman3 : Game
     {
         Gfx.GraphicsDevice = GraphicsDevice;
         Gfx.ScreenSize = new Vector2(_config.Width, _config.Height);
+        ObjectFactory.Init(new Dictionary<ActorId, ObjectFactory.CreateActor>()
+        {
+            { ActorId.Rayman, (id, resource) => new Rayman(resource) },
+        });
     }
 
     #endregion
@@ -163,9 +169,17 @@ public class Rayman3 : Game
 
         if (!IsEnginePaused)
         {
-            JoyPad.Scan();
-            FrameManager.Step();
-            GameTime.Update();
+            try
+            {
+                JoyPad.Scan();
+                FrameManager.Step();
+                GameTime.Update();
+            }
+            catch
+            {
+                _context.Dispose();
+                throw;
+            }
         }
 
         base.Update(gameTime);
@@ -184,16 +198,16 @@ public class Rayman3 : Game
         Gfx.Draw(_renderer);
         _renderer.End();
 
-        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _spriteBatch.DrawString(_debugFont, $"FPS: {1000 / (gameTime.ElapsedGameTime.Ticks / 10_000f):N1}\n" +
-                                            $"Game time: {gameTime.ElapsedGameTime.Ticks / 10_000f:N3}\n" +
-                                            $"Update time: {_prevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 25), Color.White);
+        //_spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        //_spriteBatch.DrawString(_debugFont, $"FPS: {1000 / (gameTime.ElapsedGameTime.Ticks / 10_000f):N1}\n" +
+        //                                    $"Game time: {gameTime.ElapsedGameTime.Ticks / 10_000f:N3}\n" +
+        //                                    $"Update time: {_prevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 25), Color.White);
 
-        if (gameTime.IsRunningSlowly)
-        {
-            _spriteBatch.DrawString(_debugFont, "SLOW!", new Vector2(10, 100), Color.Red);
-        }
-        _spriteBatch.End();
+        //if (gameTime.IsRunningSlowly)
+        //{
+        //    _spriteBatch.DrawString(_debugFont, "SLOW!", new Vector2(10, 100), Color.Red);
+        //}
+        //_spriteBatch.End();
 
         _debugRenderer.Draw(gameTime);
 
