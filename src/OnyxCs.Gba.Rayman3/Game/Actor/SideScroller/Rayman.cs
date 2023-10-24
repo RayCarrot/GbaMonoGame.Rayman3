@@ -8,6 +8,6 @@ public class Rayman : BaseActor
     {
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic);
         AnimatedObject.SetCurrentAnimation(64);
-        AnimatedObject.ScreenPos = new Vector2(actorResource.Pos.X, actorResource.Pos.Y);
+        Position = new Vector2(actorResource.Pos.X, actorResource.Pos.Y);
     }
 }

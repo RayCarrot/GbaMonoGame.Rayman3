@@ -37,8 +37,9 @@ public abstract class FrameSideScroller : Frame
     {
         // TODO: Implement
         Scene.AnimationPlayer.Execute();
-        Scene.AnimationPlayer.AddObject1(Scene.Objects.Actors[0].AnimatedObject);
 
+        foreach (BaseActor actor in Scene.Objects.Actors)
+            actor.Draw(Scene.AnimationPlayer);
         ProcessDialogs();
     }
 }
