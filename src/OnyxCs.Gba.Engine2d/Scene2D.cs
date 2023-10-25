@@ -36,7 +36,7 @@ public class Scene2D
     {
         foreach (Dialog dialog in Dialogs)
         {
-            dialog.Fsm();
+            dialog.Fsm.Step();
             dialog.Draw(AnimationPlayer);
         }
     }
@@ -84,5 +84,27 @@ public class Scene2D
             if (actor.IsEnabled)
                 actor.Draw(AnimationPlayer, false);
         }
+    }
+
+    public MovableActor GetMainActor()
+    {
+        return (MovableActor)Objects.Actors[0];
+    }
+
+    public bool IsHitMainActor(InteractableActor actor)
+    {
+        // TODO: Implement
+
+        return false;
+    }
+
+    public void DamageMainActor(int damage)
+    {
+        MovableActor mainActor = GetMainActor();
+
+        if (damage < mainActor.HitPoints)
+            mainActor.HitPoints -= damage;
+        else
+            mainActor.HitPoints = 0;
     }
 }

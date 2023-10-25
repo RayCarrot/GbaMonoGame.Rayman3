@@ -1,4 +1,6 @@
-﻿namespace OnyxCs.Gba.Engine2d;
+﻿using Microsoft.Xna.Framework;
+
+namespace OnyxCs.Gba.Engine2d;
 
 public class GameObject
 {
@@ -14,7 +16,16 @@ public class GameObject
     // Flags
     public bool IsEnabled { get; set; } = true;
 
-    public virtual bool ProcessMessage(Frame frame, Message message, object param)
+    public Rectangle GetAbsoluteBox(Rectangle box)
+    {
+        box.Offset(Position);
+        return box;
+    }
+
+    public void SendMessage(Message message) => ProcessMessage(message, null);
+    public void SendMessage(Message message, object param) => ProcessMessage(message, param);
+
+    protected virtual bool ProcessMessage(Message message, object param)
     {
         switch (message)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OnyxCs.Gba.Engine2d;
@@ -40,5 +41,18 @@ public class GameObjects
     {
         // TODO: This should only enumerate actors in the current knot!
         return Actors.Skip(AlwaysActorsCount);
+    }
+
+    public BaseActor SpawnActor<T>(T actorType)
+        where T : Enum
+    {
+        return SpawnActor((int)(object)actorType);
+    }
+
+    public BaseActor SpawnActor(int actorType)
+    {
+        BaseActor actor = EnumerateActors().Concat(EnumerateAlwaysActors()).FirstOrDefault(x => x.Type == actorType);
+        actor?.SendMessage(Message.Spawn);
+        return actor;
     }
 }

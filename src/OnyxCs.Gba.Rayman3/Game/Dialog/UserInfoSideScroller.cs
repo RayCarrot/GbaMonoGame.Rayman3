@@ -7,8 +7,6 @@ public class UserInfoSideScroller : Dialog
 {
     public UserInfoSideScroller(bool hasBlueLum)
     {
-        Fsm = () => { };
-
         LifeBar = new LifeBar();
 
         if (GameInfo.MapId == MapId.Challenge1000Lums)

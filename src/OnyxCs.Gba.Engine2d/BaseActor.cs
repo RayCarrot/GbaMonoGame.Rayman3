@@ -13,7 +13,7 @@ public class BaseActor : GameObject
     public BaseActor(int id, ActorResource actorResource) : base(id, actorResource)
     {
         ActorModel = actorResource.Model;
-        ActorType = actorResource.Id;
+        Type = actorResource.Id;
 
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic);
         AnimatedObject.SetCurrentAnimation(0);
@@ -22,11 +22,13 @@ public class BaseActor : GameObject
     }
 
     public ActorModel ActorModel { get; }
-    public int ActorType { get; }
+    public int Type { get; }
     public AnimatedObject AnimatedObject { get; }
     public Rectangle ViewBox { get; }
 
-    public Fsm Fsm { get; set; }
+    public FiniteStateMachine Fsm { get; } = new();
+
+    public bool IsInvulnerable { get; set; }
 
     public virtual void Init() { }
 

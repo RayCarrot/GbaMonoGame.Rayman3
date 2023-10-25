@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public abstract class Dialog
 {
-    public Fsm Fsm { get; set; }
+    public FiniteStateMachine Fsm { get; } = new();
 
     public abstract void ProcessMessage();
     public abstract void Load();
