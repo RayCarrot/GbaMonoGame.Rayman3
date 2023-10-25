@@ -31,7 +31,18 @@ public static class GameInfo
             cagesCount: 1,
             hasBlueLum: false,
             frameType: typeof(WoodLight),
-            nextLevelId: 1,
+            nextLevelId: MapId.WoodsOfLight_M1,
             levelId: MapId.WoodsOfLight_M1),
+        new LevelInfo(
+            levelMusic: 0x98,
+            finishLevelMusic: 0x99,
+            globalLumsIndex: 25,
+            globalCagesIndex: 1,
+            yellowLumsCount: 30,
+            cagesCount: 2,
+            hasBlueLum: false,
+            frameType: typeof(WoodLight), // TODO: Different type
+            nextLevelId: (MapId)54,
+            levelId: MapId.WoodsOfLight_M2),
     };
 }

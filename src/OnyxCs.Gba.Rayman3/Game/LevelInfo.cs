@@ -12,8 +12,8 @@ public class LevelInfo
         int yellowLumsCount, 
         int cagesCount, 
         bool hasBlueLum, 
-        Type frameType, 
-        int nextLevelId,
+        Type frameType,
+        MapId nextLevelId,
         MapId levelId)
     {
         LevelMusic = levelMusic;
@@ -36,6 +36,6 @@ public class LevelInfo
     public int CagesCount { get; }
     public bool HasBlueLum { get; }
     public Type FrameType { get; }
-    public int NextLevelId { get; }
+    public MapId NextLevelId { get; }
     public MapId LevelId { get; }
 }
