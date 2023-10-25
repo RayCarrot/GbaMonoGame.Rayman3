@@ -17,16 +17,22 @@ public static class Gfx
             new GfxScreen(3),
         };
         Sprites = new List<Sprite>();
+        DebugBoxes = new List<DebugBox>();
     }
 
     public static IReadOnlyList<GfxScreen> Screens { get; }
     public static List<Sprite> Sprites { get; }
+    public static List<DebugBox> DebugBoxes { get; }
 
     public static GraphicsDevice GraphicsDevice { get; set; }
     public static Vector2 ScreenSize { get; set; }
 
+    public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
+    public static void AddDebugBox(DebugBox debugBox) => DebugBoxes.Add(debugBox);
+
     public static void Draw(GfxRenderer renderer)
     {
+        // Draw each game layer
         for (int i = 3; i >= 0; i--)
         {
             // Draw screens
@@ -37,13 +43,15 @@ public static class Gfx
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
         }
+
+        // Draw debug boxes
+        foreach (DebugBox debugBox in DebugBoxes)
+            renderer.DrawFilledRectangle(debugBox.Rectangle, new Color(debugBox.Color, 0.3f), 0);
     }
 
-    public static void Clear()
+    public static void ClearSprites()
     {
-        foreach (GfxScreen screen in Screens)
-            screen.Clear();
-
         Sprites.Clear();
+        DebugBoxes.Clear();
     }
 }

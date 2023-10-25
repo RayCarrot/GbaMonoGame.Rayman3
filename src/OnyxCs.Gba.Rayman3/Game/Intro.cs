@@ -116,8 +116,6 @@ public class Intro : Frame
 
     public override void Init()
     {
-        Gfx.Clear();
-
         PreLoadMenu();
 
         AnimationPlayer = new AnimationPlayer(true);
@@ -220,7 +218,7 @@ public class Intro : Frame
                     BlackLumAndLogoObj.ScreenPos += new Vector2(0, -2);
                 }
                 Timer++;
-                AnimationPlayer.AddObject1(BlackLumAndLogoObj);
+                AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
             }
         }
 
@@ -248,15 +246,15 @@ public class Intro : Frame
             }
         }
 
-        AnimationPlayer.AddObject1(BlackLumAndLogoObj);
+        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
     }
 
     private void Step_6()
     {
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddObject1(PressStartObj);
+            AnimationPlayer.AddPrimaryObject(PressStartObj);
 
-        AnimationPlayer.AddObject1(BlackLumAndLogoObj);
+        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
 
         if (JoyPad.Check(Input.Start))
             FrameManager.SetNextFrame(Menu);
@@ -305,9 +303,9 @@ public class Intro : Frame
         }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddObject1(PressStartObj);
+            AnimationPlayer.AddPrimaryObject(PressStartObj);
 
-        AnimationPlayer.AddObject1(BlackLumAndLogoObj);
+        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
     }
 
     #endregion

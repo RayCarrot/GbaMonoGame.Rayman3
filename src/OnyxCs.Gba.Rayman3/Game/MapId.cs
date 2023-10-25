@@ -2,6 +2,8 @@
 
 public enum MapId
 {
-    LEVEL_WOOD_LIGHT_M1 = 0,
-    LEVEL_1000LUMS = 44,
+    WoodsOfLight_M1 = 0,
+    WoodsOfLight_M2 = 1,
+
+    Challenge1000Lums = 44,
 }

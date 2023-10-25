@@ -6,8 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;
 
-// TODO: The game has different types of AnimatedObject. They however all act the same, just with some different properties
-//       depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
+// TODO: Go through this more
+
+// The game has different types of AnimatedObject. They however all act the same, just with some different properties
+// depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
 
 /// <summary>
 /// An object which can execute a sprite animation
@@ -33,11 +35,8 @@ public class AnimatedObject : AObject
     public bool IsSoundEnabled { get; set; }
     public bool IsDynamic { get; set; } // TODO: If not dynamic we might want to pre-load the sprites?
     public bool EndOfAnimation { get; set; }
-    public bool EnableBox { get; set; }
     public bool HasExecutedFrame { get; set; }
-    public bool OnlyShowVisibleSpriteChannels { get; set; }
     public bool IsPaused { get; set; }
-    public uint VisibleChannels { get; set; } // One bit per channel
 
     public Vector2 ScreenPos { get; set; }
     public bool FlipX { get; set; }
@@ -54,8 +53,6 @@ public class AnimatedObject : AObject
     #endregion
 
     #region Private Methods
-
-    private Rectangle TransformChannelBoxToEngineBox(ChannelBox box) => new(box.MinX, box.MinY, box.MaxX, box.MaxY);
 
     private void PlayChannelBox()
     {
@@ -178,7 +175,7 @@ public class AnimatedObject : AObject
     {
         Animation anim = GetAnimation();
 
-        if (EnableBox && !HasExecutedFrame)
+        if (!HasExecutedFrame)
             ResetBoxTable();
 
         EndOfAnimation = false;
@@ -197,70 +194,67 @@ public class AnimatedObject : AObject
             switch (channel.ChannelType)
             {
                 case AnimationChannelType.Sprite:
-                    if (!OnlyShowVisibleSpriteChannels || (VisibleChannels & (1 << i)) != 0)
+                    // On GBA the size of a sprite is determined based on
+                    // the shape and size values. We use these to get the
+                    // actual width and height of the sprite.
+                    Constants.Size shape = Constants.GetSpriteShape(channel.SpriteShape, channel.SpriteSize);
+
+                    // Affine sprites support scaling and rotation
+                    bool isAffine = channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL;
+
+                    // Get x position
+                    float xPos = channel.XPosition;
+
+                    if (!FlipX)
+                        xPos += ScreenPos.X;
+                    else
+                        xPos = ScreenPos.X - xPos - shape.Width;
+
+                    if (isAffine)
+                        xPos -= shape.Width / 2f;
+
+                    // Get y position
+                    float yPos = channel.YPosition;
+
+                    if (!FlipY)
+                        yPos += ScreenPos.Y;
+                    else
+                        yPos = ScreenPos.Y - yPos - shape.Height;
+
+                    if (isAffine)
+                        yPos -= shape.Height / 2f;
+
+                    AffineMatrix affineMatrix = new();
+
+                    // Get the matrix if it's affine
+                    if (isAffine)
                     {
-                        // On GBA the size of a sprite is determined based on
-                        // the shape and size values. We use these to get the
-                        // actual width and height of the sprite.
-                        Constants.Size shape = Constants.GetSpriteShape(channel.SpriteShape, channel.SpriteSize);
-
-                        // Affine sprites support scaling and rotation
-                        bool isAffine = channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL;
-
-                        // Get x position
-                        float xPos = channel.XPosition;
-
-                        if (!FlipX)
-                            xPos += ScreenPos.X;
-                        else
-                            xPos = ScreenPos.X - xPos - shape.Width;
-
-                        if (isAffine)
-                            xPos -= shape.Width / 2f;
-
-                        // Get y position
-                        float yPos = channel.YPosition;
-
-                        if (!FlipY)
-                            yPos += ScreenPos.Y;
-                        else
-                            yPos = ScreenPos.Y - yPos - shape.Height;
-
-                        if (isAffine)
-                            yPos -= shape.Height / 2f;
-
-                        AffineMatrix affineMatrix = new();
-
-                        // Get the matrix if it's affine
-                        if (isAffine)
-                        {
-                            AffineMatrixResource matrix = anim.AffineMatrices.Matrices[channel.AffineMatrixIndex];
-                            affineMatrix = new AffineMatrix(
-                                pa: FlipX ? -matrix.Pa : matrix.Pa,
-                                pb: FlipY ? -matrix.Pb : matrix.Pb,
-                                pc: FlipX ? -matrix.Pc : matrix.Pc,
-                                pd: FlipY ? -matrix.Pd : matrix.Pd);
-                        }
-
-                        // Add the sprite to vram. In the original engine this part
-                        // is more complicated. If the object is dynamic then it loads
-                        // in the data to vram first, then for all sprites it adds an
-                        // entry to the list of object attributes in OAM memory.
-                        Texture2D tex = animationSpriteManager.GetSpriteTexture(
-                            resource: Resource, 
-                            spriteShape: channel.SpriteShape,
-                            spriteSize: channel.SpriteSize, 
-                            tileIndex: channel.TileIndex, 
-                            paletteIndex: channel.PalIndex);
-                        Gfx.Sprites.Add(new Sprite(
-                            texture: tex,
-                            position: new Vector2(xPos, yPos),
-                            flipX: channel.FlipX,
-                            flipY: channel.FlipY,
-                            priority: Priority,
-                            mode: channel.ObjectMode,
-                            affineMatrix: affineMatrix));
+                        AffineMatrixResource matrix = anim.AffineMatrices.Matrices[channel.AffineMatrixIndex];
+                        affineMatrix = new AffineMatrix(
+                            pa: FlipX ? -matrix.Pa : matrix.Pa,
+                            pb: FlipY ? -matrix.Pb : matrix.Pb,
+                            pc: FlipX ? -matrix.Pc : matrix.Pc,
+                            pd: FlipY ? -matrix.Pd : matrix.Pd);
                     }
+
+                    // Add the sprite to vram. In the original engine this part
+                    // is more complicated. If the object is dynamic then it loads
+                    // in the data to vram first, then for all sprites it adds an
+                    // entry to the list of object attributes in OAM memory.
+                    Texture2D tex = animationSpriteManager.GetSpriteTexture(
+                        resource: Resource,
+                        spriteShape: channel.SpriteShape,
+                        spriteSize: channel.SpriteSize,
+                        tileIndex: channel.TileIndex,
+                        paletteIndex: channel.PalIndex);
+                    Gfx.AddSprite(new Sprite(
+                        texture: tex,
+                        position: new Vector2(xPos, yPos),
+                        flipX: channel.FlipX,
+                        flipY: channel.FlipY,
+                        priority: Priority,
+                        mode: channel.ObjectMode,
+                        affineMatrix: affineMatrix));
                     break;
 
                 case AnimationChannelType.Sound:
@@ -278,17 +272,17 @@ public class AnimatedObject : AObject
 
                 case AnimationChannelType.AttackBox:
                     if (!HasExecutedFrame && BoxTable != null)
-                        BoxTable.AttackBox = TransformChannelBoxToEngineBox(channel.Box);
+                        BoxTable.AttackBox = channel.Box.ToRectangle();
                     break;
 
                 case AnimationChannelType.VulnerabilityBox:
                     if (!HasExecutedFrame && BoxTable != null)
-                        BoxTable.VulnerabilityBox = TransformChannelBoxToEngineBox(channel.Box);
+                        BoxTable.VulnerabilityBox = channel.Box.ToRectangle();
                     break;
             }
         }
 
-        if (EnableBox && BoxTable != null)
+        if (BoxTable != null)
             PlayChannelBox();
 
         StepTimer();

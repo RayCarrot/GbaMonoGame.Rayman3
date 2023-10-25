@@ -37,10 +37,6 @@ public class MenuAll : Frame
 
     public override void Init()
     {
-        base.Init();
-
-        Gfx.Clear();
-
         AnimationPlayer = new AnimationPlayer(false);
 
         LoadPlayfield();

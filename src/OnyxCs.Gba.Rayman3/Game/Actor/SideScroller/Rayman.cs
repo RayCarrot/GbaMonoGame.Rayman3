@@ -2,12 +2,10 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class Rayman : BaseActor
+public class Rayman : MovableActor
 {
-    public Rayman(ActorResource actorResource)
+    public Rayman(int id, ActorResource actorResource) : base(id, actorResource)
     {
-        AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic);
-        AnimatedObject.SetCurrentAnimation(64);
-        Position = new Vector2(actorResource.Pos.X, actorResource.Pos.Y);
+
     }
 }

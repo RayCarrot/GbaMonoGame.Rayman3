@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace OnyxCs.Gba;
+﻿namespace OnyxCs.Gba;
 
 public interface IScreenRenderer
 {

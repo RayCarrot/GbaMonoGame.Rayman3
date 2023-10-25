@@ -1,4 +1,7 @@
-﻿namespace OnyxCs.Gba.Engine2d;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace OnyxCs.Gba.Engine2d;
 
 public class GameObjects
 {
@@ -31,4 +34,11 @@ public class GameObjects
     public int AlwaysActorsCount { get; }
     public int CaptorsCount { get; }
     public BaseActor[] Actors { get; }
+
+    public IEnumerable<BaseActor> EnumerateAlwaysActors() => Actors.Take(AlwaysActorsCount);
+    public IEnumerable<BaseActor> EnumerateActors()
+    {
+        // TODO: This should only enumerate actors in the current knot!
+        return Actors.Skip(AlwaysActorsCount);
+    }
 }

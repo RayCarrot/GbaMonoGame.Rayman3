@@ -130,10 +130,29 @@ public class Rayman3 : Game
     {
         Gfx.GraphicsDevice = GraphicsDevice;
         Gfx.ScreenSize = new Vector2(_config.Width, _config.Height);
-        ObjectFactory.Init(new Dictionary<ActorId, ObjectFactory.CreateActor>()
+        ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
-            { ActorId.Rayman, (id, resource) => new Rayman(resource) },
+            { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
         });
+    }
+
+    private void StepEngine()
+    {
+        try
+        {
+            // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
+            // however makes more sense, so we always start each frame fresh.
+            Gfx.ClearSprites();
+
+            JoyPad.Scan();
+            FrameManager.Step();
+            GameTime.Update();
+        }
+        catch
+        {
+            _context.Dispose();
+            throw;
+        }
     }
 
     #endregion
@@ -168,19 +187,7 @@ public class Rayman3 : Game
         _debugRenderer.Update(gameTime);
 
         if (!IsEnginePaused)
-        {
-            try
-            {
-                JoyPad.Scan();
-                FrameManager.Step();
-                GameTime.Update();
-            }
-            catch
-            {
-                _context.Dispose();
-                throw;
-            }
-        }
+            StepEngine();
 
         base.Update(gameTime);
 

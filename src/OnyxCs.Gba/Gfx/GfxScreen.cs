@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace OnyxCs.Gba;
+﻿namespace OnyxCs.Gba;
 
 public class GfxScreen
 {
@@ -45,10 +42,5 @@ public class GfxScreen
         {
             Renderer?.Draw(renderer, this, -Offset);
         }
-    }
-
-    public void Clear()
-    {
-        Renderer = null;
     }
 }

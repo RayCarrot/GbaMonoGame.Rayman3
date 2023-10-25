@@ -1,6 +1,6 @@
 ﻿namespace OnyxCs.Gba.Rayman3;
 
-public enum ActorId
+public enum ActorType
 {
     Rayman = 0,
 }

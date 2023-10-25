@@ -11,7 +11,7 @@ public class UserInfoSideScroller : Dialog
 
         LifeBar = new LifeBar();
 
-        if (GameInfo.MapId == MapId.LEVEL_1000LUMS)
+        if (GameInfo.MapId == MapId.Challenge1000Lums)
         {
             // TODO: 1000 lums bar
         }

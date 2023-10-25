@@ -32,6 +32,6 @@ public static class GameInfo
             hasBlueLum: false,
             frameType: typeof(WoodLight),
             nextLevelId: 1,
-            levelId: MapId.LEVEL_WOOD_LIGHT_M1),
+            levelId: MapId.WoodsOfLight_M1),
     };
 }

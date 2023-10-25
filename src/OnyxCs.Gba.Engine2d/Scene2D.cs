@@ -31,4 +31,58 @@ public class Scene2D
         dialog.Load();
         dialog.Init();
     }
+
+    public void ProcessDialogs()
+    {
+        foreach (Dialog dialog in Dialogs)
+        {
+            dialog.Fsm();
+            dialog.Draw(AnimationPlayer);
+        }
+    }
+
+    public void RunActors()
+    {
+        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        {
+            if (actor.IsEnabled)
+                actor.DoBehavior();
+        }
+
+        foreach (BaseActor actor in Objects.EnumerateActors())
+        {
+            if (actor.IsEnabled)
+                actor.DoBehavior();
+        }
+    }
+
+    public void StepActors()
+    {
+        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        {
+            if (actor.IsEnabled)
+                actor.Step();
+        }
+
+        foreach (BaseActor actor in Objects.EnumerateActors())
+        {
+            if (actor.IsEnabled)
+                actor.Step();
+        }
+    }
+
+    public void DrawActors()
+    {
+        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        {
+            if (actor.IsEnabled)
+                actor.Draw(AnimationPlayer, false);
+        }
+
+        foreach (BaseActor actor in Objects.EnumerateActors())
+        {
+            if (actor.IsEnabled)
+                actor.Draw(AnimationPlayer, false);
+        }
+    }
 }
