@@ -133,6 +133,8 @@ public class Rayman3 : Game
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
+
+            { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
         });
     }
 

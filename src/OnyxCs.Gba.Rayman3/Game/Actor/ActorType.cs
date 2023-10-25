@@ -3,4 +3,7 @@
 public enum ActorType
 {
     Rayman = 0,
+
+    Piranha = 3,
+    Splash = 4,
 }
