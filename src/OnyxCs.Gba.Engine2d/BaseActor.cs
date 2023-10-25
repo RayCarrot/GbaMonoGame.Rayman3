@@ -44,7 +44,7 @@ public class BaseActor : GameObject
         // 2. Check with camera actor if it is framed
         // 3. Set IsFramed in AnimatedObject based on that
 
-        AnimatedObject.ScreenPos = Position - ((TgxPlayfield2D)TgxPlayfield.CurrentPlayfield).Camera.Position;
+        AnimatedObject.ScreenPos = Position - Frame.GetComponent<TgxPlayfield2D>().Camera.Position;
 
         bool isFramed = true;
 

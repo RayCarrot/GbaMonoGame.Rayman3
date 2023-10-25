@@ -32,7 +32,7 @@ public class DebugRenderer
                 ImGui.Separator();
                 ImGui.MenuItem("Scene");
 
-                if (TgxPlayfield.CurrentPlayfield != null)
+                if (Frame.GetComponent<TgxPlayfield>() != null)
                     _showPlayfieldWindow = ImGui.MenuItem("Playfield");
 
                 ImGui.EndMenu();
@@ -77,7 +77,7 @@ public class DebugRenderer
 
     private void DrawPlayfieldWindow()
     {
-        if (TgxPlayfield.CurrentPlayfield is TgxPlayfield2D playfield2D)
+        if (Frame.GetComponent<TgxPlayfield>() is TgxPlayfield2D playfield2D)
         {
             ImGui.Begin("Playfield2D", ref _showPlayfieldWindow);
 

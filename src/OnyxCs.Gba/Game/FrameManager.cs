@@ -2,8 +2,8 @@
 
 public static class FrameManager
 {
-    private static Frame CurrentFrame { get; set; }
-    private static Frame NextFrame { get; set; }
+    internal static Frame CurrentFrame { get; set; }
+    internal static Frame NextFrame { get; set; }
 
     public static void SetNextFrame(Frame frame)
     {

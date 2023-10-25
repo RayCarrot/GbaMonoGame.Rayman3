@@ -29,6 +29,7 @@ public class MenuAll : Frame
     {
         PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(0x5b);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
+        RegisterComponent(Playfield);
     }
 
     #endregion
