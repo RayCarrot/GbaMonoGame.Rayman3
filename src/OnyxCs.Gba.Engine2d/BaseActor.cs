@@ -34,7 +34,7 @@ public class BaseActor : GameObject
 
     public virtual void DoBehavior()
     {
-        //Fsm();
+        Fsm.Step();
     }
 
     public virtual void Step() { }
