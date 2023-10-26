@@ -8,10 +8,10 @@ public class GfxRenderer
 {
     #region Constructor
 
-    public GfxRenderer(SpriteBatch spriteBatch, Matrix transformMatrix)
+    public GfxRenderer(SpriteBatch spriteBatch, GfxCamera camera)
     {
         SpriteBatch = spriteBatch;
-        TransformMatrix = transformMatrix;
+        Camera = camera;
 
         Pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
         Pixel.SetData(new[] { Color.White });
@@ -22,13 +22,13 @@ public class GfxRenderer
     #region Private Properties
 
     private Texture2D Pixel { get; }
+    private SpriteBatch SpriteBatch { get; }
 
     #endregion
 
     #region Public Properties
 
-    public SpriteBatch SpriteBatch { get; }
-    public Matrix TransformMatrix { get; }
+    public GfxCamera Camera { get; }
 
     #endregion
 
@@ -36,11 +36,12 @@ public class GfxRenderer
 
     public void Begin()
     {
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: TransformMatrix);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TransformMatrix);
     }
 
     public void End()
     {
+        //DrawFilledRectangle(Camera.VisibleArea, new Color(Color.Red, 0.5f));
         SpriteBatch.End();
     }
 
@@ -51,13 +52,40 @@ public class GfxRenderer
     public void BeginAlpha()
     {
         SpriteBatch.End();
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.Additive, transformMatrix: TransformMatrix);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.Additive, transformMatrix: Camera.TransformMatrix);
     }
 
     public void EndAlpha()
     {
         SpriteBatch.End();
         Begin();
+    }
+
+    #endregion
+
+    #region Draw
+
+    public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color? color = null)
+    {
+        Rectangle destinationRectangle = new(position.ToPoint(), sourceRectangle.Size);
+
+        if (!Camera.IsVisible(destinationRectangle))
+            return;
+
+        var visibleRect = Camera.GetVisibleRectangle(sourceRectangle, destinationRectangle);
+
+        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White);
+    }
+
+    public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, float rotation, Vector2 origin, SpriteEffects effects, Color? color = null)
+    {
+        if (!Camera.IsVisible(destinationRectangle))
+            return;
+
+        sourceRectangle ??= texture.Bounds;
+        var visibleRect = Camera.GetVisibleRectangle(sourceRectangle.Value, destinationRectangle);
+
+        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White, rotation, origin, effects, 0);
     }
 
     #endregion

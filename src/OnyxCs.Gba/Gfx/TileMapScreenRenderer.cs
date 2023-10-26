@@ -36,8 +36,8 @@ public class TileMapScreenRenderer : IScreenRenderer
 
         int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
         int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
-        int xEnd = (int)Math.Ceiling((Math.Min(Gfx.ScreenSize.X, rect.Right) - rect.X) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min(Gfx.ScreenSize.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min((double)Gfx.GfxCamera.GameResolution.X, rect.Right) - rect.X) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min((double)Gfx.GfxCamera.GameResolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
@@ -81,7 +81,7 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (tile.FlipY)
                         effects |= SpriteEffects.FlipVertically;
 
-                    renderer.SpriteBatch.Draw(tex, new Vector2(absTileX, absTileY), null, Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
+                    renderer.Draw(tex, new Rectangle(new Vector2(absTileX, absTileY).ToPoint(), tex.Bounds.Size), null, 0, Vector2.Zero, effects, Color.White);
                 }
 
                 absTileX += Constants.TileSize;

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using BinarySerializer;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
@@ -52,7 +53,7 @@ public class Rayman3 : Game
 
     private void Window_ClientSizeChanged(object sender, EventArgs e)
     {
-        Gfx.ScreenSize = new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height);
+        _renderer.Camera.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift));
     }
 
     #endregion
@@ -127,26 +128,37 @@ public class Rayman3 : Game
     private void LoadEngine()
     {
         Gfx.GraphicsDevice = GraphicsDevice;
-        Gfx.ScreenSize = new Vector2(_config.Width, _config.Height);
+        Gfx.GfxCamera = new GfxCamera(_graphics, Window.ClientBounds.Size);
+    }
+
+    private void LoadGame()
+    {
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
 
             { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
         });
+
+        FrameManager.SetNextFrame(new Intro());
     }
 
     private void StepEngine()
     {
+
         try
         {
-            // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
-            // however makes more sense, so we always start each frame fresh.
-            Gfx.ClearSprites();
-
             JoyPad.Scan();
-            FrameManager.Step();
-            GameTime.Update();
+
+            if (!IsEnginePaused)
+            {
+                // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
+                // however makes more sense, so we always start each frame fresh.
+                Gfx.ClearSprites();
+
+                FrameManager.Step();
+                GameTime.Update();
+            }
         }
         catch
         {
@@ -162,11 +174,10 @@ public class Rayman3 : Game
     protected override void Initialize()
     {
         LoadConfig();
-        SetWindowSize((int)(_config.Width * _config.Scale), (int)(_config.Height * _config.Scale));
+        SetWindowSize(Constants.ScreenWidth * 4, Constants.ScreenHeight * 4); // TODO: Save resolution
         LoadRom();
         LoadEngine();
-
-        FrameManager.SetNextFrame(new Intro());
+        LoadGame();
 
         base.Initialize();
     }
@@ -174,17 +185,15 @@ public class Rayman3 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _renderer = new GfxRenderer(_spriteBatch, Matrix.CreateScale(_config.Scale));
+        _renderer = new GfxRenderer(_spriteBatch, Gfx.GfxCamera);
         _debugRenderer.LoadContent(this);
     }
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
-
         _debugRenderer.Update(gameTime);
 
-        if (!IsEnginePaused)
-            StepEngine();
+        StepEngine();
 
         base.Update(gameTime);
     }

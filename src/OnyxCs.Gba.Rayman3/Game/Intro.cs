@@ -223,7 +223,7 @@ public class Intro : Frame
             }
         }
 
-        if (JoyPad.Check(Input.Start) && ScrollY <= 0x35f)
+        if (JoyPad.Check(GbaInput.Start) && ScrollY <= 0x35f)
             IsSkipping = true;
 
         if (IsSkipping)
@@ -257,7 +257,7 @@ public class Intro : Frame
 
         AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
 
-        if (JoyPad.Check(Input.Start))
+        if (JoyPad.Check(GbaInput.Start))
             FrameManager.SetNextFrame(Menu);
     }
 

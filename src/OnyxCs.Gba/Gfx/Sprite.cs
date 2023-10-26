@@ -42,6 +42,6 @@ public class Sprite
         if (FlipY)
             effects |= SpriteEffects.FlipVertically;
 
-        renderer.SpriteBatch.Draw(Texture, Position, null, Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
+        renderer.Draw(Texture, new Rectangle(Position.ToPoint(), Texture.Bounds.Size), null, 0, Vector2.Zero, effects, Color.White);
     }
 }

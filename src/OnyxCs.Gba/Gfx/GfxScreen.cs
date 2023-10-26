@@ -30,9 +30,9 @@ public class GfxScreen
             float startX = 0 - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
             float startY = 0 - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
 
-            for (float y = startY; y < Gfx.ScreenSize.Y; y += size.Y)
+            for (float y = startY; y < Gfx.GfxCamera.GameResolution.Y; y += size.Y)
             {
-                for (float x = startX; x < Gfx.ScreenSize.X; x += size.X)
+                for (float x = startX; x < Gfx.GfxCamera.GameResolution.X; x += size.X)
                 {
                     Renderer?.Draw(renderer, this, new Vector2(x, y));
                 }

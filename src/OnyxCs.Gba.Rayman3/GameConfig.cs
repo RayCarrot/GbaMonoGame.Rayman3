@@ -9,13 +9,4 @@ public record GameConfig
 
     [JsonPropertyName("serializerLogFile")]
     public string SerializerLogFile { get; set; }
-
-    [JsonPropertyName("width")]
-    public int Width { get; set; } = 240;
-    
-    [JsonPropertyName("height")]
-    public int Height { get; set; } = 160;
-    
-    [JsonPropertyName("scale")]
-    public float Scale { get; set; } = 2;
 }

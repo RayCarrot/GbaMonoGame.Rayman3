@@ -15,6 +15,6 @@ public class TextureScreenRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
     {
-        renderer.SpriteBatch.Draw(Texture, position, Color.White);
+        renderer.Draw(Texture, position, Texture.Bounds, Color.White);
     }
 }

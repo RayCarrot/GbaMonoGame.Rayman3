@@ -3,7 +3,7 @@
 namespace OnyxCs.Gba;
 
 [Flags]
-public enum Input
+public enum GbaInput
 {
     None = 0,
     A = 1 << 0,

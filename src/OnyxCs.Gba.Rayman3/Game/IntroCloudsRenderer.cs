@@ -18,7 +18,7 @@ public class IntroCloudsRenderer : IScreenRenderer
         position += new Vector2(offsetX, 85 * index);
         Rectangle rect = new(0, 85 * index, Texture.Width, 85);
 
-        renderer.SpriteBatch.Draw(Texture, position, rect, 
+        renderer.Draw(Texture, position, rect, 
             // TODO: Implement this in a more proper way. The intro sequence changes the alpha coeff values during the steps, for multiple screens.
             new Color(Color.White, 4 / 16f));
     }

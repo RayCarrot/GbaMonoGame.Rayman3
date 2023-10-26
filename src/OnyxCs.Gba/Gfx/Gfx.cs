@@ -25,7 +25,7 @@ public static class Gfx
     public static List<DebugBox> DebugBoxes { get; }
 
     public static GraphicsDevice GraphicsDevice { get; set; }
-    public static Vector2 ScreenSize { get; set; }
+    public static GfxCamera GfxCamera { get; set; }
 
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void AddDebugBox(DebugBox debugBox) => DebugBoxes.Add(debugBox);
