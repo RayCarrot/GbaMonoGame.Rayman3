@@ -4,6 +4,7 @@ namespace OnyxCs.Gba;
 
 public static class JoyPad
 {
+    private static KeyboardState PreviousState { get; set; }
     private static KeyboardState State { get; set; }
 
     public static bool Check(GbaInput gbaInput)
@@ -21,8 +22,14 @@ public static class JoyPad
         return State.IsKeyDown(input);
     }
 
+    public static bool CheckSingle(Keys input)
+    {
+        return State.IsKeyDown(input) && PreviousState.IsKeyUp(input);
+    }
+
     public static void Scan()
     {
+        PreviousState = State;
         State = Keyboard.GetState();
     }
 }

@@ -1,25 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
 using ImGuiNET;
-using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 using MonoGame.ImGuiNet;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class DebugRenderer
+public class DebugLayout
 {
     private bool _showPlayfieldWindow;
 
+    private List<IntPtr> TexturePointers { get; } = new();
+    private Point PreviousWindowSize { get; set; }
     private ImGuiRenderer GuiRenderer { get; set; }
-    private KeyboardState PrevKeyboardState { get; set; }
-    private KeyboardState CurrentKeyboardState { get; set; }
-    private bool ShowDebug { get; set; }
-    private Rayman3 Game { get; set; }
+    private GameRenderTarget GameRenderTarget { get; set; }
+    private GameConfig Config { get; set; }
     private FrameFactory[] FrameFactories { get; } = 
     {
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.Language)),
     };
+
+    private void DrawGameWindow()
+    {
+        ImGui.Begin("Game");
+
+        Point newSize = new(
+            (int)ImGui.GetWindowContentRegionMax().X - (int)ImGui.GetWindowContentRegionMin().X,
+            (int)ImGui.GetWindowContentRegionMax().Y - (int)ImGui.GetWindowContentRegionMin().Y);
+
+        if (newSize != PreviousWindowSize)
+        {
+            PreviousWindowSize = newSize;
+            GameRenderTarget.ResizeGame(newSize);
+        }
+
+        if (GameRenderTarget.RenderTarget != null)
+        {
+            IntPtr texPtr = GuiRenderer.BindTexture(GameRenderTarget.RenderTarget);
+            ImGui.Image(texPtr, new System.Numerics.Vector2(GameRenderTarget.RenderTarget.Width, GameRenderTarget.RenderTarget.Height));
+            TexturePointers.Add(texPtr);
+        }
+
+        ImGui.End();
+    }
 
     private void DrawMenu()
     {
@@ -40,8 +65,8 @@ public class DebugRenderer
 
             if (ImGui.BeginMenu("Options"))
             {
-                if (ImGui.MenuItem("Pause", "", Game.IsEnginePaused))
-                    Game.IsEnginePaused = !Game.IsEnginePaused;
+                if (ImGui.MenuItem("Pause", "", Config.Paused))
+                    Config.Paused = !Config.Paused;
                 ImGui.EndMenu();
             }
 
@@ -130,35 +155,40 @@ public class DebugRenderer
         }
     }
 
-    public void LoadContent(Rayman3 game)
+    public void LoadContent(GameRenderTarget gameRenderTarget, Game game, GameConfig config)
     {
-        Game = game;
+        GameRenderTarget = gameRenderTarget;
+        Config = config;
+
         GuiRenderer = new ImGuiRenderer(game);
         GuiRenderer.RebuildFontAtlas();
     }
 
-    public void Update(Microsoft.Xna.Framework.GameTime gameTime)
+    public void EnableDebugMode()
     {
-        PrevKeyboardState = CurrentKeyboardState;
-        CurrentKeyboardState = Keyboard.GetState();
-
-        if (CurrentKeyboardState.IsKeyDown(Keys.Escape) && PrevKeyboardState.IsKeyUp(Keys.Escape))
-            ShowDebug = !ShowDebug;
+        // Reset previous size to force it to refresh
+        PreviousWindowSize = Point.Zero;
     }
 
     public void Draw(Microsoft.Xna.Framework.GameTime gameTime)
     {
-        if (!ShowDebug)
-            return;
-
         GuiRenderer.BeforeLayout(gameTime);
+
+        ImGuiIOPtr io = ImGui.GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+        ImGui.DockSpaceOverViewport();
 
         DrawMenu();
 
         if (_showPlayfieldWindow)
             DrawPlayfieldWindow();
 
+        DrawGameWindow();
+
         GuiRenderer.AfterLayout();
+
+        foreach (IntPtr ptr in TexturePointers)
+            GuiRenderer.UnbindTexture(ptr);
     }
 
     private record FrameFactory(string Name, Func<Frame> CreateFrame);

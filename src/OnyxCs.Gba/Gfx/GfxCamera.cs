@@ -37,7 +37,7 @@ public class GfxCamera
         return (source, visibleDestinationRectangle);
     }
 
-    public void Resize(Point newScreenSize, bool maintainAspectRatio, bool centerGame = true)
+    public void Resize(Point newScreenSize, bool maintainScreenRatio = false, bool centerGame = true, Action<Point> changeScreenSizeCallback = null)
     {
         float screenRatio = newScreenSize.X / (float)newScreenSize.Y;
         float gameRatio = GameResolution.X / (float)GameResolution.Y;
@@ -50,7 +50,7 @@ public class GfxCamera
         {
             scale = newScreenSize.Y / (float)GameResolution.Y;
 
-            if (maintainAspectRatio)
+            if (maintainScreenRatio)
                 newScreenSize = new Point((int)Math.Round(GameResolution.X * scale), (int)Math.Round(GameResolution.Y * scale));
 
             if (centerGame)
@@ -62,7 +62,7 @@ public class GfxCamera
         {
             scale = newScreenSize.X / (float)GameResolution.X;
 
-            if (maintainAspectRatio)
+            if (maintainScreenRatio)
                 newScreenSize = new Point((int)Math.Round(GameResolution.X * scale), (int)Math.Round(GameResolution.Y * scale));
 
             if (centerGame)
@@ -71,12 +71,8 @@ public class GfxCamera
             screenSize = new Point(newScreenSize.X, (int)Math.Round(GameResolution.Y * scale));
         }
 
-        if (maintainAspectRatio)
-        {
-            Graphics.PreferredBackBufferWidth = newScreenSize.X;
-            Graphics.PreferredBackBufferHeight = newScreenSize.Y;
-            Graphics.ApplyChanges();
-        }
+        if (maintainScreenRatio)
+            changeScreenSizeCallback?.Invoke(newScreenSize);
 
         ScreenRectangle = new Rectangle(screenPos, screenSize);
         TransformMatrix = Matrix.CreateScale(scale) *

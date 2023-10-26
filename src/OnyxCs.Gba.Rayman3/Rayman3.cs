@@ -19,7 +19,7 @@ public class Rayman3 : Game
     public Rayman3()
     {
         _graphics = new GraphicsDeviceManager(this);
-        _debugRenderer = new DebugRenderer();
+        _debugLayout = new DebugLayout();
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
@@ -35,17 +35,12 @@ public class Rayman3 : Game
     #region Private Fields
 
     private readonly GraphicsDeviceManager _graphics;
-    private readonly DebugRenderer _debugRenderer;
+    private readonly DebugLayout _debugLayout;
     private SpriteBatch _spriteBatch;
-    private GfxRenderer _renderer;
+    private GfxRenderer _gfxRenderer;
     private GameConfig _config;
     private Context _context;
-
-    #endregion
-
-    #region Public Properties
-
-    public bool IsEnginePaused { get; set; }
+    private GameRenderTarget _debugGameRenderTarget;
 
     #endregion
 
@@ -53,7 +48,8 @@ public class Rayman3 : Game
 
     private void Window_ClientSizeChanged(object sender, EventArgs e)
     {
-        _renderer.Camera.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift));
+        if (!_config.Debug)
+            SizeGameToWindow();
     }
 
     #endregion
@@ -81,6 +77,16 @@ public class Rayman3 : Game
         _graphics.PreferredBackBufferWidth = width;
         _graphics.PreferredBackBufferHeight = height;
         _graphics.ApplyChanges();
+    }
+
+    private void SizeGameToWindow()
+    {
+        Gfx.GfxCamera.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: newSize =>
+        {
+            _graphics.PreferredBackBufferWidth = newSize.X;
+            _graphics.PreferredBackBufferHeight = newSize.Y;
+            _graphics.ApplyChanges();
+        });
     }
 
     private void LoadRom()
@@ -145,20 +151,19 @@ public class Rayman3 : Game
 
     private void StepEngine()
     {
-
         try
         {
             JoyPad.Scan();
 
-            if (!IsEnginePaused)
-            {
-                // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
-                // however makes more sense, so we always start each frame fresh.
-                Gfx.ClearSprites();
+            if (_config.Paused) 
+                return;
+            
+            // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
+            // however makes more sense, so we always start each frame fresh.
+            Gfx.ClearSprites();
 
-                FrameManager.Step();
-                GameTime.Update();
-            }
+            FrameManager.Step();
+            GameTime.Update();
         }
         catch
         {
@@ -174,7 +179,7 @@ public class Rayman3 : Game
     protected override void Initialize()
     {
         LoadConfig();
-        SetWindowSize(Constants.ScreenWidth * 4, Constants.ScreenHeight * 4); // TODO: Save resolution
+        SetWindowSize(Constants.ScreenWidth * 4, Constants.ScreenHeight * 4); // TODO: Save window size in config, as well as if maximized etc.
         LoadRom();
         LoadEngine();
         LoadGame();
@@ -185,13 +190,24 @@ public class Rayman3 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _renderer = new GfxRenderer(_spriteBatch, Gfx.GfxCamera);
-        _debugRenderer.LoadContent(this);
+        _gfxRenderer = new GfxRenderer(_spriteBatch, Gfx.GfxCamera);
+        _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Gfx.GfxCamera);
+        _debugLayout.LoadContent(_debugGameRenderTarget, this, _config);
     }
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
-        _debugRenderer.Update(gameTime);
+        // Toggle debug mode
+        if (JoyPad.CheckSingle(Keys.Escape))
+        {
+            _config.Debug = !_config.Debug;
+
+            // Refresh sizes
+            if (_config.Debug)
+                _debugLayout.EnableDebugMode();
+            else
+                SizeGameToWindow();
+        }
 
         StepEngine();
 
@@ -200,16 +216,24 @@ public class Rayman3 : Game
 
     protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
     {
+        if (_config.Debug)
+            _debugGameRenderTarget.BeginRender();
+
         // Clear screen
         GraphicsDevice.Clear(Color.Black);
 
         // Draw screen
-        _renderer.Begin();
-        Gfx.Draw(_renderer);
-        _renderer.End();
+        _gfxRenderer.Begin();
+        Gfx.Draw(_gfxRenderer);
+        _gfxRenderer.End();
 
-        // Draw debug layout
-        _debugRenderer.Draw(gameTime);
+        if (_config.Debug)
+        {
+            _debugGameRenderTarget.EndRender();
+
+            // Draw debug layout
+            _debugLayout.Draw(gameTime);
+        }
 
         base.Draw(gameTime);
     }
