@@ -39,8 +39,6 @@ public class Rayman3 : Game
     private GfxRenderer _renderer;
     private GameConfig _config;
     private Context _context;
-    private SpriteFont _debugFont;
-    private long _prevUpdateTimeTicks;
 
     #endregion
 
@@ -178,13 +176,10 @@ public class Rayman3 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _renderer = new GfxRenderer(_spriteBatch, Matrix.CreateScale(_config.Scale));
         _debugRenderer.LoadContent(this);
-
-        _debugFont = Content.Load<SpriteFont>("DebugFont");
     }
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
-        Stopwatch sw = Stopwatch.StartNew();
 
         _debugRenderer.Update(gameTime);
 
@@ -192,9 +187,6 @@ public class Rayman3 : Game
             StepEngine();
 
         base.Update(gameTime);
-
-        sw.Stop();
-        _prevUpdateTimeTicks = sw.ElapsedTicks;
     }
 
     protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
@@ -207,17 +199,7 @@ public class Rayman3 : Game
         Gfx.Draw(_renderer);
         _renderer.End();
 
-        //_spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        //_spriteBatch.DrawString(_debugFont, $"FPS: {1000 / (gameTime.ElapsedGameTime.Ticks / 10_000f):N1}\n" +
-        //                                    $"Game time: {gameTime.ElapsedGameTime.Ticks / 10_000f:N3}\n" +
-        //                                    $"Update time: {_prevUpdateTimeTicks / 10_000f:N3}", new Vector2(10, 25), Color.White);
-
-        //if (gameTime.IsRunningSlowly)
-        //{
-        //    _spriteBatch.DrawString(_debugFont, "SLOW!", new Vector2(10, 100), Color.Red);
-        //}
-        //_spriteBatch.End();
-
+        // Draw debug layout
         _debugRenderer.Draw(gameTime);
 
         base.Draw(gameTime);
