@@ -4,23 +4,27 @@ using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
 
+/// <summary>
+/// Custom camera class for allow variable game and screen sizes
+/// </summary>
 public class GfxCamera
 {
-    public GfxCamera(GraphicsDeviceManager graphics, Point screenSize)
+    public GfxCamera(Point screenSize)
     {
-        Graphics = graphics;
         OriginalGameResolution = new Point(Constants.ScreenWidth, Constants.ScreenHeight);
         GameResolution = OriginalGameResolution;
-        Resize(screenSize, false);
+        ResizeScreen(screenSize);
     }
-
-    private GraphicsDeviceManager Graphics { get; }
 
     public Point GameResolution { get; private set; }
     public Point OriginalGameResolution { get; private set; }
     public Rectangle ScreenRectangle { get; private set; }
+    public Point ScreenSize { get; private set; }
     public Rectangle VisibleArea { get; private set; }
     public Matrix TransformMatrix { get; private set; }
+
+    public Vector2 ToGamePosition(Vector2 pos) => Vector2.Transform(pos, Matrix.Invert(TransformMatrix));
+    public Vector2 ToScreenPosition(Vector2 pos) => Vector2.Transform(pos, TransformMatrix);
 
     public bool IsVisible(Rectangle rect) => VisibleArea.Intersects(rect);
 
@@ -37,7 +41,19 @@ public class GfxCamera
         return (source, visibleDestinationRectangle);
     }
 
-    public void Resize(Point newScreenSize, bool maintainScreenRatio = false, bool centerGame = true, Action<Point> changeScreenSizeCallback = null)
+    public void ResizeGame(Point newGameSize)
+    {
+        GameResolution = newGameSize;
+
+        // Refresh
+        ResizeScreen(ScreenSize);
+    }
+
+    public void ResizeScreen(
+        Point newScreenSize, 
+        bool maintainScreenRatio = false, 
+        bool centerGame = true, 
+        Action<Point> changeScreenSizeCallback = null)
     {
         float screenRatio = newScreenSize.X / (float)newScreenSize.Y;
         float gameRatio = GameResolution.X / (float)GameResolution.Y;
@@ -73,6 +89,8 @@ public class GfxCamera
 
         if (maintainScreenRatio)
             changeScreenSizeCallback?.Invoke(newScreenSize);
+
+        ScreenSize = newScreenSize;
 
         ScreenRectangle = new Rectangle(screenPos, screenSize);
         TransformMatrix = Matrix.CreateScale(scale) *

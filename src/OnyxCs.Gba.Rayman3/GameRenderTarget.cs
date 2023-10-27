@@ -28,7 +28,7 @@ public class GameRenderTarget
     {
         if (PendingResize != null)
         {
-            GfxCamera.Resize(PendingResize.Value);
+            GfxCamera.ResizeScreen(PendingResize.Value);
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,

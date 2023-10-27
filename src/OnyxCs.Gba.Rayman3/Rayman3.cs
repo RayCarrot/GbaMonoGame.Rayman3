@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
+using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -81,7 +82,7 @@ public class Rayman3 : Game
 
     private void SizeGameToWindow()
     {
-        Gfx.GfxCamera.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: newSize =>
+        Gfx.GfxCamera.ResizeScreen(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: newSize =>
         {
             _graphics.PreferredBackBufferWidth = newSize.X;
             _graphics.PreferredBackBufferHeight = newSize.Y;
@@ -134,7 +135,7 @@ public class Rayman3 : Game
     private void LoadEngine()
     {
         Gfx.GraphicsDevice = GraphicsDevice;
-        Gfx.GfxCamera = new GfxCamera(_graphics, Window.ClientBounds.Size);
+        Gfx.GfxCamera = new GfxCamera(Window.ClientBounds.Size);
     }
 
     private void LoadGame()
@@ -149,15 +150,21 @@ public class Rayman3 : Game
         FrameManager.SetNextFrame(new Intro());
     }
 
+    private void SetGameZoom(float zoom)
+    {
+        Gfx.GfxCamera.ResizeGame(new Point(
+            (int)Math.Round(Gfx.GfxCamera.OriginalGameResolution.X * zoom), 
+            (int)Math.Round(Gfx.GfxCamera.OriginalGameResolution.Y * zoom)));
+        //Gfx.GfxCamera.ResizeScreen(Window.ClientBounds.Size);
+    }
+
     private void StepEngine()
     {
+        if (_config.Paused)
+            return;
+
         try
         {
-            JoyPad.Scan();
-
-            if (_config.Paused) 
-                return;
-            
             // The game doesn't clear sprites here, but rather in places such as the animation player. For us this
             // however makes more sense, so we always start each frame fresh.
             Gfx.ClearSprites();
@@ -170,6 +177,45 @@ public class Rayman3 : Game
             _context.Dispose();
             throw;
         }
+    }
+
+    private void UpdateGameZoom(Microsoft.Xna.Framework.GameTime gameTime)
+    {
+        MouseState mouse = JoyPad.GetMouseState();
+
+        if (mouse.MiddleButton == ButtonState.Pressed)
+        {
+            SetGameZoom(1);
+        }
+        else if (Frame.GetComponent<TgxPlayfield2D>() is { } playfield2D)
+        {
+            int mouseWheelDelta = JoyPad.GetMouseWheelDelta();
+
+            if (mouseWheelDelta != 0)
+            {
+                float deltaFloat = mouseWheelDelta * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                const float zoomSpeed = 0.03f;
+
+                TgxCluster mainCluster = playfield2D.Camera.GetMainCluster();
+
+                // TODO: Modify position if max zoom so that we can zoom more?
+                // TODO: Auto-correct zoom when playfield changes?
+                float maxZoom = Math.Min(
+                    (mainCluster.Size.X - mainCluster.Position.X) / Gfx.GfxCamera.OriginalGameResolution.X, 
+                    (mainCluster.Size.Y - mainCluster.Position.Y) / Gfx.GfxCamera.OriginalGameResolution.Y);
+
+                float zoom = Gfx.GfxCamera.GameResolution.X / (float)Gfx.GfxCamera.OriginalGameResolution.X;
+                zoom = Math.Clamp(zoom + zoomSpeed * deltaFloat * -1, 0.2f, maxZoom);
+
+                SetGameZoom(zoom);
+            }
+        }
+    }
+
+    private void UpdateGameScroll()
+    {
+        if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed && Frame.GetComponent<TgxPlayfield2D>() is { } playfield2D)
+            playfield2D.Camera.Position += JoyPad.GetMousePositionDelta() * -1;
     }
 
     #endregion
@@ -209,6 +255,9 @@ public class Rayman3 : Game
                 SizeGameToWindow();
         }
 
+        JoyPad.Scan();
+        UpdateGameZoom(gameTime);
+        UpdateGameScroll();
         StepEngine();
 
         base.Update(gameTime);

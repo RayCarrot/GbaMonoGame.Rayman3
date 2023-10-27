@@ -249,11 +249,12 @@ public class DebugLayout
             ImGui.Spacing();
             ImGui.SeparatorText("Clusters");
 
-            if (ImGui.BeginTable("_clusters", 5))
+            if (ImGui.BeginTable("_clusters", 6))
             {
                 ImGui.TableSetupColumn("Id");
                 ImGui.TableSetupColumn("Position");
                 ImGui.TableSetupColumn("Max position");
+                ImGui.TableSetupColumn("Scroll factor");
                 ImGui.TableSetupColumn("Type");
                 ImGui.TableSetupColumn("Layers");
                 ImGui.TableHeadersRow();
@@ -271,6 +272,9 @@ public class DebugLayout
 
                     ImGui.TableNextColumn();
                     ImGui.Text($"{cluster.MaxPosition.X:0.00} x {cluster.MaxPosition.Y:0.00}");
+
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{cluster.ScrollFactor.X:0.00} x {cluster.ScrollFactor.Y:0.00}");
 
                     ImGui.TableNextColumn();
                     ImGui.Text($"{(cluster.Stationary ? "Stationary" : "Scrollable")}");
