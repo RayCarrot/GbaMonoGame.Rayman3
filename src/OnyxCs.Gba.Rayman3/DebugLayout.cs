@@ -196,7 +196,7 @@ public class DebugLayout
             ImGui.Spacing();
             ImGui.SeparatorText("Actors");
 
-            ImGui.Text($"Count: {scene2D.Objects.Actors.Length - scene2D.Objects.AlwaysActorsCount}");
+            ImGui.Text($"Count: {scene2D.Objects.ActorsCount}");
             ImGui.Text("TODO: Implement");
 
             ImGui.Spacing();

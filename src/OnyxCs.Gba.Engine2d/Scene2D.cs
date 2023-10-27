@@ -88,7 +88,7 @@ public class Scene2D
 
     public MovableActor GetMainActor()
     {
-        return (MovableActor)Objects.Actors[0];
+        return (MovableActor)Objects.Objects[0];
     }
 
     public bool IsHitMainActor(InteractableActor actor)

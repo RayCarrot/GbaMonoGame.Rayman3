@@ -8,13 +8,14 @@ public class GameObject
     {
         Id = id;
         Position = gameObjectResource.Pos.ToVector2();
+        IsEnabled = gameObjectResource.IsActive;
     }
 
     public int Id { get; }
     public Vector2 Position { get; set; }
 
     // Flags
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled { get; set; }
 
     public Rectangle GetAbsoluteBox(Rectangle box)
     {

@@ -10,37 +10,41 @@ public class GameObjects
     {
         ObjectsCount = sceneResource.GameObjectCount;
         AlwaysActorsCount = sceneResource.AlwaysActorsCount;
+        ActorsCount = sceneResource.ActorsCount;
         CaptorsCount = sceneResource.CaptorsCount;
         
-        Actors = new BaseActor[ObjectsCount];
+        Objects = new GameObject[ObjectsCount];
 
         // Create always actors
         for (int i = 0; i < sceneResource.AlwaysActors.Length; i++)
-            Actors[i] = ObjectFactory.Create(i, sceneResource.AlwaysActors[i]);
+            Objects[i] = ObjectFactory.Create(i, sceneResource.AlwaysActors[i]);
 
         // Create actors
         for (int i = 0; i < sceneResource.Actors.Length; i++)
-            Actors[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, sceneResource.Actors[i]);
+            Objects[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, sceneResource.Actors[i]);
 
-        // TODO: Create captors
+        for (int i = 0; i < sceneResource.Captors.Length; i++)
+            Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, sceneResource.Captors[i]);
+
         // TODO: Create knots
 
-        foreach (BaseActor actor in Actors)
-        {
+        // Initialize actors
+        foreach (BaseActor actor in Objects.Take(AlwaysActorsCount + ActorsCount).Cast<BaseActor>())
             actor.Init();
-        }
     }
 
     public int ObjectsCount { get; }
     public int AlwaysActorsCount { get; }
+    public int ActorsCount { get; }
     public int CaptorsCount { get; }
-    public BaseActor[] Actors { get; }
 
-    public IEnumerable<BaseActor> EnumerateAlwaysActors() => Actors.Take(AlwaysActorsCount);
+    public GameObject[] Objects { get; }
+
+    public IEnumerable<BaseActor> EnumerateAlwaysActors() => Objects.Take(AlwaysActorsCount).Cast<BaseActor>();
     public IEnumerable<BaseActor> EnumerateActors()
     {
         // TODO: This should only enumerate actors in the current knot!
-        return Actors.Skip(AlwaysActorsCount);
+        return Objects.Skip(AlwaysActorsCount).Cast<BaseActor>();
     }
 
     public BaseActor SpawnActor<T>(T actorType)
