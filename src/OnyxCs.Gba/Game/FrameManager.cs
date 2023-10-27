@@ -15,6 +15,14 @@ public static class FrameManager
         if (NextFrame != null)
         {
             CurrentFrame?.UnInit();
+
+            // Reset all screens for the new frame
+            foreach (GfxScreen screen in Gfx.Screens)
+            {
+                screen.IsEnabled = false;
+                screen.Renderer = null;
+            }
+
             NextFrame.Init();
             CurrentFrame = NextFrame;
             NextFrame = null;
