@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using BinarySerializer.Onyx.Gba;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MonoGame.ImGuiNet;
@@ -7,9 +9,15 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Add options to show hitboxes and other kind of boxes
 public class DebugLayout
 {
-    private bool _showPlayfieldWindow;
+    // TODO: Save in config which windows are shown
+    private bool _showLogOutputWindow = true;
+    private bool _showGfxWindow = true;
+    private bool _showSceneWindow = true;
+    private bool _showGameObjectWindow = true;
+    private bool _showPlayfieldWindow = true;
 
     private List<IntPtr> TexturePointers { get; } = new();
     private Point PreviousWindowSize { get; set; }
@@ -21,30 +29,7 @@ public class DebugLayout
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.Language)),
     };
-
-    private void DrawGameWindow()
-    {
-        ImGui.Begin("Game");
-
-        Point newSize = new(
-            (int)ImGui.GetWindowContentRegionMax().X - (int)ImGui.GetWindowContentRegionMin().X,
-            (int)ImGui.GetWindowContentRegionMax().Y - (int)ImGui.GetWindowContentRegionMin().Y);
-
-        if (newSize != PreviousWindowSize)
-        {
-            PreviousWindowSize = newSize;
-            GameRenderTarget.ResizeGame(newSize);
-        }
-
-        if (GameRenderTarget.RenderTarget != null)
-        {
-            IntPtr texPtr = GuiRenderer.BindTexture(GameRenderTarget.RenderTarget);
-            ImGui.Image(texPtr, new System.Numerics.Vector2(GameRenderTarget.RenderTarget.Width, GameRenderTarget.RenderTarget.Height));
-            TexturePointers.Add(texPtr);
-        }
-
-        ImGui.End();
-    }
+    private GameObject SelectedGameObject { get; set; }
 
     private void DrawMenu()
     {
@@ -52,13 +37,20 @@ public class DebugLayout
         {
             if (ImGui.BeginMenu("Windows"))
             {
-                ImGui.MenuItem("Sprites");
-                ImGui.MenuItem("Screens");
-                ImGui.Separator();
-                ImGui.MenuItem("Scene");
+                if (ImGui.MenuItem("Log Output"))
+                    _showLogOutputWindow = true;
 
-                if (Frame.GetComponent<TgxPlayfield>() != null)
-                    _showPlayfieldWindow = ImGui.MenuItem("Playfield");
+                if (ImGui.MenuItem("Gfx"))
+                    _showGfxWindow = true;
+
+                if (ImGui.MenuItem("Scene"))
+                    _showSceneWindow = true;
+
+                if (ImGui.MenuItem("Game Object"))
+                    _showGameObjectWindow = true;
+
+                if (ImGui.MenuItem("Playfield"))
+                    _showPlayfieldWindow = true;
 
                 ImGui.EndMenu();
             }
@@ -100,59 +92,199 @@ public class DebugLayout
         }
     }
 
+    private void DrawGameWindow()
+    {
+        ImGui.Begin("Game");
+
+        Point newSize = new(
+            (int)ImGui.GetWindowContentRegionMax().X - (int)ImGui.GetWindowContentRegionMin().X,
+            (int)ImGui.GetWindowContentRegionMax().Y - (int)ImGui.GetWindowContentRegionMin().Y);
+
+        if (newSize != PreviousWindowSize)
+        {
+            PreviousWindowSize = newSize;
+            GameRenderTarget.ResizeGame(newSize);
+        }
+
+        if (GameRenderTarget.RenderTarget != null)
+        {
+            IntPtr texPtr = GuiRenderer.BindTexture(GameRenderTarget.RenderTarget);
+            ImGui.Image(texPtr, new System.Numerics.Vector2(GameRenderTarget.RenderTarget.Width, GameRenderTarget.RenderTarget.Height));
+            TexturePointers.Add(texPtr);
+        }
+
+        ImGui.End();
+    }
+
+    private void DrawLogOutputWindow()
+    {
+        ImGui.Begin("Log Output", ref _showLogOutputWindow);
+
+        ImGui.Text("TODO: Implement");
+
+        ImGui.End();
+    }
+
+    private void DrawGfxWindow()
+    {
+        ImGui.Begin("Gfx", ref _showGfxWindow);
+
+        ImGui.SeparatorText("Screens");
+
+        if (ImGui.BeginTable("_screens", 6))
+        {
+            ImGui.TableSetupColumn("Enabled");
+            ImGui.TableSetupColumn("Wrap");
+            ImGui.TableSetupColumn("Id");
+            ImGui.TableSetupColumn("Priority");
+            ImGui.TableSetupColumn("Offset");
+            ImGui.TableSetupColumn("Color mode");
+            ImGui.TableHeadersRow();
+
+            foreach (GfxScreen screen in Gfx.Screens)
+            {
+                ImGui.TableNextRow();
+
+                ImGui.TableNextColumn();
+                bool enabled = screen.IsEnabled;
+                ImGui.Checkbox($"##{screen.Id}_enabled", ref enabled);
+                screen.IsEnabled = enabled;
+
+                ImGui.TableNextColumn();
+                bool wrap = screen.Wrap;
+                ImGui.Checkbox($"##{screen.Id}_wrap", ref wrap);
+                screen.Wrap = wrap;
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Id}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Priority}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Offset.X:0.00} x {screen.Offset.Y:0.00}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{(screen.Is8Bit ? "8-bit" : "4-bit")}");
+            }
+            ImGui.EndTable();
+        }
+
+        ImGui.Spacing();
+        ImGui.Spacing();
+        ImGui.SeparatorText("Sprites");
+
+        ImGui.Text("TODO: Implement");
+
+        ImGui.End();
+    }
+
+    private void DrawSceneWindow()
+    {
+        ImGui.Begin("Scene", ref _showSceneWindow);
+
+        if (Frame.GetComponent<Scene2D>() is Scene2D scene2D)
+        {
+            ImGui.SeparatorText("Always actors");
+
+            ImGui.Text($"Count: {scene2D.Objects.AlwaysActorsCount}");
+            ImGui.Text("TODO: Implement");
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Actors");
+
+            ImGui.Text($"Count: {scene2D.Objects.Actors.Length - scene2D.Objects.AlwaysActorsCount}");
+            ImGui.Text("TODO: Implement");
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Captors");
+
+            ImGui.Text($"Count: {scene2D.Objects.CaptorsCount}");
+            ImGui.Text("TODO: Implement");
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Knots");
+
+            ImGui.Text($"Count: 0");
+            ImGui.Text("TODO: Implement");
+        }
+
+        ImGui.End();
+    }
+
+    private void DrawGameObjectWindow()
+    {
+        ImGui.Begin("Game Object", ref _showGameObjectWindow);
+
+        if (SelectedGameObject != null)
+        {
+            ImGui.Text("TODO: Implement");
+        }
+        else
+        {
+            ImGui.Text("No object has been selected");
+        }
+
+        ImGui.End();
+    }
+
     private void DrawPlayfieldWindow()
     {
+        ImGui.Begin("Playfield", ref _showPlayfieldWindow);
+
         if (Frame.GetComponent<TgxPlayfield>() is TgxPlayfield2D playfield2D)
         {
-            ImGui.Begin("Playfield2D", ref _showPlayfieldWindow);
-
             Vector2 pos = playfield2D.Camera.Position;
+
+            ImGui.SeparatorText("Camera position");
 
             ImGui.SliderFloat("Camera X", ref pos.X, 0, playfield2D.Camera.GetMainCluster().MaxPosition.X);
             ImGui.SliderFloat("Camera Y", ref pos.Y, 0, playfield2D.Camera.GetMainCluster().MaxPosition.Y);
-
-            ImGui.Spacing();
-            ImGui.Spacing();
-
             playfield2D.Camera.Position = pos;
 
-            int i = 0;
-            foreach (TgxCluster cluster in playfield2D.Camera.GetClusters(true))
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Clusters");
+
+            if (ImGui.BeginTable("_clusters", 5))
             {
-                if (ImGui.CollapsingHeader(i == 0 ? "Main cluster" : $"Cluster {i}"))
+                ImGui.TableSetupColumn("Id");
+                ImGui.TableSetupColumn("Position");
+                ImGui.TableSetupColumn("Max position");
+                ImGui.TableSetupColumn("Type");
+                ImGui.TableSetupColumn("Layers");
+                ImGui.TableHeadersRow();
+
+                int i = 0;
+                foreach (TgxCluster cluster in playfield2D.Camera.GetClusters(true))
                 {
-                    ImGui.Text($"Position: {cluster.Position}");
-                    ImGui.Text($"Max position: {cluster.MaxPosition}");
-                    ImGui.Text($"Stationary: {cluster.Stationary}");
+                    ImGui.TableNextRow();
 
-                    ImGui.Indent();
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{(i == 0 ? "Main" : $"{i}")}");
 
-                    foreach (TgxTileLayer tileLayer in cluster.GetLayers())
-                    {
-                        if (ImGui.CollapsingHeader($"Layer {tileLayer.LayerId}"))
-                        {
-                            bool isEnabled = tileLayer.Screen.IsEnabled;
-                            ImGui.Checkbox($"Enabled##{tileLayer.LayerId}", ref isEnabled);
-                            tileLayer.Screen.IsEnabled = isEnabled;
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{cluster.Position.X:0.00} x {cluster.Position.Y:0.00}");
 
-                            ImGui.Text($"Size: {tileLayer.Width}x{tileLayer.Height}");
-                            ImGui.Text($"Dynamic: {tileLayer.IsDynamic}");
-                            ImGui.Text($"Color mode: {(tileLayer.Screen.Is8Bit ? "8-bit" : "4-bit")}");
-                            ImGui.Text($"Offset: {tileLayer.Screen.Offset}");
-                            ImGui.Text($"Priority: {tileLayer.Screen.Priority}");
-                            ImGui.Text($"Wrap: {tileLayer.Screen.Wrap}");
-                            ImGui.Text($"Renderer: {tileLayer.Screen.Renderer.GetType().Name}");
-                        }
-                    }
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{cluster.MaxPosition.X:0.00} x {cluster.MaxPosition.Y:0.00}");
 
-                    ImGui.Unindent();
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{(cluster.Stationary ? "Stationary" : "Scrollable")}");
+
+                    ImGui.TableNextColumn();
+                    ImGui.Text($"{String.Join(", ", cluster.GetLayers().Select(x => x.LayerId))}");
+
+                    i++;
                 }
-
-                i++;
+                ImGui.EndTable();
             }
-
-            ImGui.End();
         }
+
+        ImGui.End();
     }
 
     public void LoadContent(GameRenderTarget gameRenderTarget, Game game, GameConfig config)
@@ -162,6 +294,9 @@ public class DebugLayout
 
         GuiRenderer = new ImGuiRenderer(game);
         GuiRenderer.RebuildFontAtlas();
+
+        ImGuiIOPtr io = ImGui.GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
     }
 
     public void EnableDebugMode()
@@ -174,11 +309,21 @@ public class DebugLayout
     {
         GuiRenderer.BeforeLayout(gameTime);
 
-        ImGuiIOPtr io = ImGui.GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
         ImGui.DockSpaceOverViewport();
 
         DrawMenu();
+
+        if (_showLogOutputWindow)
+            DrawLogOutputWindow();
+
+        if (_showGfxWindow)
+            DrawGfxWindow();
+
+        if (_showSceneWindow)
+            DrawSceneWindow();
+
+        if (_showGameObjectWindow)
+            DrawGameObjectWindow();
 
         if (_showPlayfieldWindow)
             DrawPlayfieldWindow();

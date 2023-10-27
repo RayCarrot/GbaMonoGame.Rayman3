@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.Rayman3;
@@ -31,8 +32,9 @@ public class GameRenderTarget
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,
-                PendingResize.Value.X,
-                PendingResize.Value.Y,
+                // Make sure the size doesn't reach 0 during resizing
+                Math.Max(PendingResize.Value.X, 1),
+                Math.Max(PendingResize.Value.Y, 1),
                 false,
                 GraphicsDevice.PresentationParameters.BackBufferFormat,
                 DepthFormat.Depth24);

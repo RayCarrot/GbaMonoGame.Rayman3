@@ -56,6 +56,7 @@ public class TgxCluster
 
     public bool IsOnLimit(Edge limit)
     {
+        // TODO: Doesn't work very well with floats, because it can get stuck on .999. Fix by using our own scrollfactor?
         return limit switch
         {
             // In the game these are == checks, but since we're dealing with floats here they're <= and >=
