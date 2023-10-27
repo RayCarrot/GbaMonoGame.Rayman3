@@ -44,7 +44,7 @@ public class GameObjects
     public IEnumerable<BaseActor> EnumerateActors()
     {
         // TODO: This should only enumerate actors in the current knot!
-        return Objects.Skip(AlwaysActorsCount).Cast<BaseActor>();
+        return Objects.Skip(AlwaysActorsCount).Take(ActorsCount).Cast<BaseActor>();
     }
 
     public BaseActor SpawnActor<T>(T actorType)
