@@ -4,7 +4,6 @@ using System.IO;
 using System.Text.Json;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -41,6 +40,7 @@ public class Rayman3 : Game
     private GfxRenderer _gfxRenderer;
     private GameConfig _config;
     private Context _context;
+    private RomLoader _romLoader;
     private GameRenderTarget _debugGameRenderTarget;
 
     #endregion
@@ -94,42 +94,15 @@ public class Rayman3 : Game
     {
         string romFilePath = Path.GetFullPath(_config.RomFile);
         string romDir = Path.GetDirectoryName(romFilePath);
-        string romFileName = Path.GetFileName(romFilePath);
 
         ISerializerLogger serializerLogger = _config.SerializerLogFile != null
             ? new FileSerializerLogger(_config.SerializerLogFile)
             : null;
 
         // TODO: Add a logger
-        // TODO: Disable caching and instead only cache resources from root table
         _context = new Context(romDir!, serializerLogger: serializerLogger);
-
-        using (FileStream file = File.OpenRead(romFilePath))
-        {
-            // TODO: Don't hard-code this
-            const int dataOffset = 0x29beec;
-            const int dataLength = 0x55FFB4;
-
-            file.Position = dataOffset;
-            byte[] data = new byte[dataLength];
-            int read = file.Read(data, 0, data.Length);
-
-            if (read != data.Length)
-                throw new EndOfStreamException();
-
-            _context.AddFile(new StreamFile(_context, romFileName, new MemoryStream(data), mode: VirtualFileMode.Maintain));
-        }
-
-        using (_context)
-        {
-            OffsetTable offsetTable = FileFactory.Read<OffsetTable>(_context, romFileName);
-            _context.AddSettings(new OnyxGbaSettings()
-            {
-                RootTable = offsetTable
-            });
-        }
-
-        Storage.SetContext(_context);
+        _romLoader = new RomLoader(_context, romFilePath);
+        _romLoader.Load();
     }
 
     private void LoadEngine()
@@ -140,11 +113,18 @@ public class Rayman3 : Game
 
     private void LoadGame()
     {
+        Storage.SetContext(_context);
+        GameInfo.Levels = _romLoader.LevelInfo;
+
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
 
             { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
+        });
+        LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
+        {
+            { MapId.WoodsOfLight_M1, id => new WoodOfLight_M1(id) },
         });
 
         FrameManager.SetNextFrame(new Intro());

@@ -12,6 +12,9 @@ public abstract class Frame
     public static T GetComponent<T>()
         where T : class
     {
+        if (CurrentFrame == null)
+            return null;
+
         foreach (object component in CurrentFrame.Components)
         {
             if (component is T c)

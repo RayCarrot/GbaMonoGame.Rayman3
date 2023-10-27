@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Onyx.Gba.Rayman3;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MonoGame.ImGuiNet;
@@ -74,11 +75,12 @@ public class DebugLayout
 
                 if (ImGui.BeginMenu("Levels"))
                 {
-                    foreach (LevelInfo levelInfo in GameInfo.Levels)
+                    for (int i = 0; i < GameInfo.Levels.Length; i++)
                     {
-                        if (ImGui.MenuItem(levelInfo.LevelId.ToString()))
+                        LevelInfo levelInfo = GameInfo.Levels[i];
+                        if (ImGui.MenuItem(((MapId)i).ToString()))
                         {
-                            FrameManager.SetNextFrame((Frame)Activator.CreateInstance(levelInfo.FrameType, levelInfo.LevelId));
+                            FrameManager.SetNextFrame(LevelFactory.Create((MapId)i));
                         }
                     }
 

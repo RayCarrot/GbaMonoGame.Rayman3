@@ -1,4 +1,7 @@
-﻿namespace OnyxCs.Gba.Rayman3;
+﻿using BinarySerializer.Onyx.Gba.Rayman3;
+using OnyxCs.Gba.Engine2d;
+
+namespace OnyxCs.Gba.Rayman3;
 
 public static class GameInfo
 {
@@ -20,29 +23,6 @@ public static class GameInfo
 
     }
 
-    public static LevelInfo[] Levels { get; } =
-    {
-        new LevelInfo(
-            levelMusic: 0x98,
-            finishLevelMusic: 0x99,
-            globalLumsIndex: 0,
-            globalCagesIndex: 0,
-            yellowLumsCount: 25,
-            cagesCount: 1,
-            hasBlueLum: false,
-            frameType: typeof(WoodLight),
-            nextLevelId: MapId.WoodsOfLight_M1,
-            levelId: MapId.WoodsOfLight_M1),
-        new LevelInfo(
-            levelMusic: 0x98,
-            finishLevelMusic: 0x99,
-            globalLumsIndex: 25,
-            globalCagesIndex: 1,
-            yellowLumsCount: 30,
-            cagesCount: 2,
-            hasBlueLum: false,
-            frameType: typeof(WoodLight), // TODO: Different type
-            nextLevelId: (MapId)54,
-            levelId: MapId.WoodsOfLight_M2),
-    };
+    // TODO: Read from ROM, separate array with types
+    public static LevelInfo[] Levels { get; set; }
 }

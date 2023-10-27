@@ -34,8 +34,8 @@ public class LumsBar : Bar
 
     public override void Load()
     {
-        TotalLumsDigit1.SetCurrentAnimation(GameInfo.Level.YellowLumsCount / 10);
-        TotalLumsDigit2.SetCurrentAnimation(GameInfo.Level.YellowLumsCount % 10);
+        TotalLumsDigit1.SetCurrentAnimation(GameInfo.Level.LumsCount / 10);
+        TotalLumsDigit2.SetCurrentAnimation(GameInfo.Level.LumsCount % 10);
 
         CollectedLumsDigit1.SetCurrentAnimation(0);
         CollectedLumsDigit2.SetCurrentAnimation(0);
