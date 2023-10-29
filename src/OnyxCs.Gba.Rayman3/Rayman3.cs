@@ -122,6 +122,8 @@ public class Rayman3 : Game
 
             { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
 
+            { ActorType.Cage, (id, resource) => new Cage(id, resource) },
+
             { ActorType.Butterfly, (id, resource) => new Butterfly(id, resource) },
         });
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
