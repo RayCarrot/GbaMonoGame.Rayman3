@@ -58,7 +58,7 @@ public abstract class FrameSideScroller : Frame
         Scene.RunActors();
         // TODO: Enable/disable actors
         Scene.StepActors();
-        // TODO: Move actors
+        Scene.MoveActors();
         // TODO: Check captors
         // TODO: Run camera
         Scene.ProcessDialogs();

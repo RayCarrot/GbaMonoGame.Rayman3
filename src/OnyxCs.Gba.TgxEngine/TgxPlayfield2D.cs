@@ -29,9 +29,9 @@ public class TgxPlayfield2D : TgxPlayfield
                 // The game does this in the layer constructor, but it's easier here since we have access to the camera
                 Camera.AddLayer(layerResource.ClusterIndex, layer);
             }
-            else if (layerResource.Type == GameLayerType.TileCollisionLayer)
+            else if (layerResource.Type == GameLayerType.TilePhysicalLayer)
             {
-                CollisionLayer = new TgxTileCollisionLayer(layerResource);
+                PhysicalLayer = new TgxTilePhysicalLayer(layerResource);
             }
         }
 

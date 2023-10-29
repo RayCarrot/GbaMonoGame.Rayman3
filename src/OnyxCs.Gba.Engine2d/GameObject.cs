@@ -19,7 +19,7 @@ public class GameObject
 
     public Rectangle GetAbsoluteBox(Rectangle box)
     {
-        box.Offset(Position);
+        box.Offset(Position); // TODO: This casts floats to int - a problem?
         return box;
     }
 

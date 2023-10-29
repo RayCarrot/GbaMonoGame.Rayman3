@@ -46,22 +46,25 @@ public class ActionActor : BaseActor
 
     public void ChangeAction()
     {
-        if (NewAction)
+        if (!NewAction) 
+            return;
+        
+        Action action = Actions[ActionId];
+
+        ActionBox = action.Box.ToRectangle();
+
+        AnimatedObject.SetCurrentAnimation(action.AnimationIndex);
+        AnimatedObject.FlipX = (action.Flags & ActionFlags.FlipX) != 0;
+        AnimatedObject.FlipY = (action.Flags & ActionFlags.FlipY) != 0;
+
+        if (action.MechModelType != null && this is MovableActor movableActor)
         {
-            Action action = Actions[ActionId];
-
-            ActionBox = action.Box.ToRectangle();
-
-            AnimatedObject.SetCurrentAnimation(action.AnimationIndex);
-            AnimatedObject.FlipX = (action.Flags & ActionFlags.FlipX) != 0;
-            AnimatedObject.FlipY = (action.Flags & ActionFlags.FlipY) != 0;
-
-            if (action.Type != null)
-            {
-                // TODO: Load movement data
-            }
-
-            NewAction = false;
+            float[] mechParams = new float[action.MechModel.Params.Length];
+            for (int i = 0; i < mechParams.Length; i++)
+                mechParams[i] = action.MechModel.Params[i];
+            movableActor.Mechanic.Init(action.MechModelType.Value, mechParams);
         }
+
+        NewAction = false;
     }
 }

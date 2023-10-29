@@ -43,16 +43,14 @@ public class Scene2D
 
     public void RunActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
         {
-            if (actor.IsEnabled)
-                actor.DoBehavior();
+            actor.DoBehavior();
         }
 
-        foreach (BaseActor actor in Objects.EnumerateActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
         {
-            if (actor.IsEnabled)
-                actor.DoBehavior();
+            actor.DoBehavior();
         }
     }
 
@@ -71,18 +69,31 @@ public class Scene2D
         }
     }
 
-    public void DrawActors()
+    public void MoveActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
         {
-            if (actor.IsEnabled)
-                actor.Draw(AnimationPlayer, false);
+            if (actor is MovableActor movableActor)
+                movableActor.Move();
         }
 
-        foreach (BaseActor actor in Objects.EnumerateActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
         {
-            if (actor.IsEnabled)
-                actor.Draw(AnimationPlayer, false);
+            if (actor is MovableActor movableActor)
+                movableActor.Move();
+        }
+    }
+
+    public void DrawActors()
+    {
+        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
+        {
+            actor.Draw(AnimationPlayer, false);
+        }
+
+        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
+        {
+            actor.Draw(AnimationPlayer, false);
         }
     }
 
@@ -106,5 +117,10 @@ public class Scene2D
             mainActor.HitPoints -= damage;
         else
             mainActor.HitPoints = 0;
+    }
+
+    public byte GetPhysicalType(Vector2 position)
+    {
+        return Playfield.GetPhysicalValue((position / 8).ToPoint());
     }
 }

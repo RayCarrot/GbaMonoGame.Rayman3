@@ -1,8 +1,8 @@
 ﻿namespace OnyxCs.Gba.TgxEngine;
 
-public class TgxTileCollisionLayer : TgxGameLayer
+public class TgxTilePhysicalLayer : TgxGameLayer
 {
-    public TgxTileCollisionLayer(GameLayerResource resource) : base(resource)
+    public TgxTilePhysicalLayer(GameLayerResource resource) : base(resource)
     {
         CollisionMap = resource.CollisionMap;
     }

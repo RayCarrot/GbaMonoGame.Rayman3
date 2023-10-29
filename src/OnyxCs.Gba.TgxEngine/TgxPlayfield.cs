@@ -1,11 +1,12 @@
 ﻿using System;
 using BinarySerializer.Onyx.Gba;
+using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxPlayfield
 {
-    public TgxTileCollisionLayer CollisionLayer { get; set; }
+    public TgxTilePhysicalLayer PhysicalLayer { get; set; }
 
     public static TgxPlayfield Load(PlayfieldResource playfieldResource) => Load<TgxPlayfield>(playfieldResource);
 
@@ -21,5 +22,13 @@ public abstract class TgxPlayfield
         };
 
         return playfield as T ?? throw new Exception($"Playfield of type {playfield.GetType()} is not of expected type {typeof(T)}");
+    }
+
+    public byte GetPhysicalValue(Point mapPoint)
+    {
+        if (mapPoint.X < 0 || mapPoint.Y < 0)
+            return 0xFF;
+        else
+            return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
     }
 }
