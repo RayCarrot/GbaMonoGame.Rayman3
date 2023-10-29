@@ -31,6 +31,7 @@ public class BaseActor : GameObject
     public bool IsInvulnerable { get; set; }
 
     public bool IsFacingLeft => AnimatedObject.FlipX;
+    public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
 
     public virtual void Init() { }
 

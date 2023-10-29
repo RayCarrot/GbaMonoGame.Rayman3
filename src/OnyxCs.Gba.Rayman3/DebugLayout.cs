@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using MonoGame.ImGuiNet;
+using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
@@ -19,6 +19,15 @@ public class DebugLayout
     private bool _showSceneWindow = true;
     private bool _showGameObjectWindow = true;
     private bool _showPlayfieldWindow = true;
+    
+    private bool _showViewBoxes;
+    private bool _showActionBoxes;
+    private bool _showDetectionBoxes;
+    private bool _showAttackBoxes;
+    private bool _showVulnerabilityBoxes;
+    private bool _showCaptorBoxes;
+
+    private bool _fillBoxes;
 
     private List<IntPtr> TexturePointers { get; } = new();
     private Point PreviousWindowSize { get; set; }
@@ -31,6 +40,21 @@ public class DebugLayout
         new("Menu", () => new MenuAll(MenuAll.Page.Language)),
     };
     private GameObject SelectedGameObject { get; set; }
+
+    private void DrawBox(GfxRenderer renderer, GameObject gameObject, Rectangle box, Color color)
+    {
+        if (box == Rectangle.Empty) 
+            return;
+
+        TgxPlayfield2D playfield = Frame.GetComponent<TgxPlayfield2D>();
+        
+        box.Offset(gameObject.Position - playfield.Camera.Position);
+
+        if (_fillBoxes)
+            renderer.DrawFilledRectangle(box, new Color(color, 0.1f));
+        else
+            renderer.DrawRectangle(box, color);
+    }
 
     private void DrawMenu()
     {
@@ -185,33 +209,91 @@ public class DebugLayout
     {
         ImGui.Begin("Scene", ref _showSceneWindow);
 
-        if (Frame.GetComponent<Scene2D>() is Scene2D scene2D)
+        if (Frame.GetComponent<Scene2D>() is { } scene2D)
         {
+            if (ImGui.Button("Deselect object"))
+                SelectedGameObject = null;
+
             ImGui.SeparatorText("Always actors");
 
             ImGui.Text($"Count: {scene2D.Objects.AlwaysActorsCount}");
-            ImGui.Text("TODO: Implement");
+
+            if (ImGui.BeginListBox("##_alwaysActors"))
+            {
+                foreach (BaseActor actor in scene2D.Objects.Objects.
+                             Take(scene2D.Objects.AlwaysActorsCount).
+                             Cast<BaseActor>())
+                {
+                    bool isSelected = SelectedGameObject == actor;
+                    if (ImGui.Selectable($"{actor.Id}. {(ActorType)actor.Type}", isSelected))
+                        SelectedGameObject = actor;
+                }
+
+                ImGui.EndListBox();
+            }
 
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.SeparatorText("Actors");
 
             ImGui.Text($"Count: {scene2D.Objects.ActorsCount}");
-            ImGui.Text("TODO: Implement");
+
+            if (ImGui.BeginListBox("##_actors"))
+            {
+                foreach (BaseActor actor in scene2D.Objects.Objects.
+                             Skip(scene2D.Objects.AlwaysActorsCount).
+                             Take(scene2D.Objects.ActorsCount).
+                             Cast<BaseActor>())
+                {
+                    bool isSelected = SelectedGameObject == actor;
+                    if (ImGui.Selectable($"{actor.Id}. {(ActorType)actor.Type}", isSelected))
+                        SelectedGameObject = actor;
+                }
+
+                ImGui.EndListBox();
+            }
 
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.SeparatorText("Captors");
 
             ImGui.Text($"Count: {scene2D.Objects.CaptorsCount}");
-            ImGui.Text("TODO: Implement");
+
+            if (scene2D.Objects.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
+            {
+                foreach (Captor captor in scene2D.Objects.Objects.
+                             Skip(scene2D.Objects.AlwaysActorsCount + scene2D.Objects.ActorsCount).
+                             Take(scene2D.Objects.CaptorsCount).
+                             Cast<Captor>())
+                {
+                    bool isSelected = SelectedGameObject == captor;
+                    if (ImGui.Selectable($"{captor.Id}. Captor", isSelected))
+                        SelectedGameObject = captor;
+                }
+
+                ImGui.EndListBox();
+            }
 
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.SeparatorText("Knots");
 
-            ImGui.Text($"Count: 0");
+            ImGui.Text("Count: 0");
             ImGui.Text("TODO: Implement");
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Boxes");
+
+            ImGui.Checkbox("Fill", ref _fillBoxes);
+            ImGui.Spacing();
+
+            ImGui.Checkbox("Show view boxes", ref _showViewBoxes);
+            ImGui.Checkbox("Show action boxes", ref _showActionBoxes);
+            ImGui.Checkbox("Show detection boxes", ref _showDetectionBoxes);
+            ImGui.Checkbox("Show attack boxes", ref _showAttackBoxes);
+            ImGui.Checkbox("Show vulnerability boxes", ref _showVulnerabilityBoxes);
+            ImGui.Checkbox("Show captor boxes", ref _showCaptorBoxes);
         }
 
         ImGui.End();
@@ -223,7 +305,13 @@ public class DebugLayout
 
         if (SelectedGameObject != null)
         {
-            ImGui.Text("TODO: Implement");
+            bool enabled = SelectedGameObject.IsEnabled;
+            ImGui.Checkbox("Enabled", ref enabled);
+            SelectedGameObject.IsEnabled = enabled;
+
+            System.Numerics.Vector2 pos = new(SelectedGameObject.Position.X, SelectedGameObject.Position.Y);
+            if (ImGui.InputFloat2("Position", ref pos))
+                SelectedGameObject.Position = new Vector2(pos.X, pos.Y);
         }
         else
         {
@@ -309,6 +397,50 @@ public class DebugLayout
     {
         // Reset previous size to force it to refresh
         PreviousWindowSize = Point.Zero;
+    }
+
+    public void DrawGame(GfxRenderer renderer)
+    {
+        if (Frame.GetComponent<Scene2D>() is { } scene2D)
+        {
+            foreach (BaseActor actor in scene2D.Objects.EnumerateEnabledAlwaysActors().
+                         Concat(scene2D.Objects.EnumerateEnabledActors()))
+            {
+                if (_showViewBoxes)
+                    DrawBox(renderer, actor, actor.ViewBox, Color.Lime);
+
+                if (actor is ActionActor actionActor)
+                {
+                    if (_showActionBoxes)
+                        DrawBox(renderer, actionActor, actionActor.ActionBox, Color.Blue);
+
+                    if (_showDetectionBoxes)
+                        DrawBox(renderer, actionActor, actionActor.DetectionBox, Color.DeepPink);
+                }
+
+                if (actor is InteractableActor interactableActor)
+                {
+                    if (_showAttackBoxes)
+                        DrawBox(renderer, interactableActor, interactableActor.AnimationBoxTable.AttackBox, Color.OrangeRed);
+
+                    if (_showVulnerabilityBoxes)
+                        DrawBox(renderer, interactableActor, interactableActor.AnimationBoxTable.VulnerabilityBox, Color.Green);
+                }
+            }
+
+            if (_showCaptorBoxes)
+            {
+                foreach (Captor captor in scene2D.Objects.EnumerateEnabledCaptors())
+                {
+                    DrawBox(renderer, captor, captor.CaptorBox, Color.DeepPink);
+                }
+            }
+        }
+
+        if (SelectedGameObject is BaseActor selectedActor)
+            DrawBox(renderer, selectedActor, selectedActor.ViewBox, Color.Red);
+        else if (SelectedGameObject is Captor selectedCaptor)
+            DrawBox(renderer, selectedCaptor, selectedCaptor.CaptorBox, Color.Red);
     }
 
     public void Draw(Microsoft.Xna.Framework.GameTime gameTime)

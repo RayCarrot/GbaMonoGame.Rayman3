@@ -48,6 +48,8 @@ public class GameObjects
         return Objects.Skip(AlwaysActorsCount).Take(ActorsCount).Cast<BaseActor>();
     }
     public IEnumerable<BaseActor> EnumerateEnabledActors() => EnumerateActors().Where(x => x.IsEnabled);
+    public IEnumerable<Captor> EnumerateCaptors() => Objects.Skip(AlwaysActorsCount + ActorsCount).Take(CaptorsCount).Cast<Captor>();
+    public IEnumerable<Captor> EnumerateEnabledCaptors() => EnumerateCaptors().Where(x => x.IsEnabled);
 
     public BaseActor SpawnActor<T>(T actorType)
         where T : Enum

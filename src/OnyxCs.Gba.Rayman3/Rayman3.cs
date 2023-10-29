@@ -256,6 +256,8 @@ public class Rayman3 : Game
         // Draw screen
         _gfxRenderer.Begin();
         Gfx.Draw(_gfxRenderer);
+        if (_config.Debug)
+            _debugLayout.DrawGame(_gfxRenderer);
         _gfxRenderer.End();
 
         if (_config.Debug)
