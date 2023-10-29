@@ -6,4 +6,6 @@ public enum ActorType
 
     Piranha = 3,
     Splash = 4,
+    
+    Butterfly = 37,
 }
