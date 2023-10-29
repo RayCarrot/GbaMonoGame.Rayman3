@@ -6,7 +6,7 @@ public abstract class Frame
 {
     public static Frame CurrentFrame => FrameManager.CurrentFrame;
 
-    protected void RegisterComponent(object component) => Components.Add(component);
+    public static void RegisterComponent(object component) => CurrentFrame.Components.Add(component);
 
     public static T GetComponent<T>()
         where T : class

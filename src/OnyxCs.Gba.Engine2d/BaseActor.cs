@@ -30,6 +30,8 @@ public class BaseActor : GameObject
 
     public bool IsInvulnerable { get; set; }
 
+    public bool IsFacingLeft => AnimatedObject.FlipX;
+
     public virtual void Init() { }
 
     public virtual void DoBehavior()

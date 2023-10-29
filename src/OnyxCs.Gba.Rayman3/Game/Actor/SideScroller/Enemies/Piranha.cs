@@ -35,7 +35,7 @@ public class Piranha : MovableActor
         {
             case FsmAction.Init:
                 Position = InitPos;
-                SetActionId(AnimatedObject.FlipX ? 3 : 2);
+                SetActionId(IsFacingLeft ? 3 : 2);
                 Timer = 0;
                 ShouldDraw = false;
                 break;
@@ -64,7 +64,7 @@ public class Piranha : MovableActor
         {
             case FsmAction.Init:
                 ShouldDraw = true;
-                SetActionId(AnimatedObject.FlipX ? 1 : 0);
+                SetActionId(IsFacingLeft ? 1 : 0);
                 SpawnSplash();
                 break;
 
@@ -97,7 +97,7 @@ public class Piranha : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                SetActionId(AnimatedObject.FlipX ? 3 : 2);
+                SetActionId(IsFacingLeft ? 3 : 2);
 
                 break;
 

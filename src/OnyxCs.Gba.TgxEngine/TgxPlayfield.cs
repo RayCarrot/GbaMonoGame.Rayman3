@@ -6,6 +6,11 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxPlayfield
 {
+    protected TgxPlayfield()
+    {
+        Frame.RegisterComponent(this);
+    }
+
     public TgxTilePhysicalLayer PhysicalLayer { get; set; }
 
     public static TgxPlayfield Load(PlayfieldResource playfieldResource) => Load<TgxPlayfield>(playfieldResource);

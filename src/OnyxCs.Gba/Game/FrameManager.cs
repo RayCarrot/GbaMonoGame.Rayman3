@@ -23,8 +23,8 @@ public static class FrameManager
                 screen.Renderer = null;
             }
 
-            NextFrame.Init();
             CurrentFrame = NextFrame;
+            NextFrame.Init();
             NextFrame = null;
         }
 

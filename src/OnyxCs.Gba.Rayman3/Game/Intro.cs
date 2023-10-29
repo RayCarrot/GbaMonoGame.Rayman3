@@ -67,7 +67,6 @@ public class Intro : Frame
     {
         PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(0x75);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
-        RegisterComponent(Playfield);
 
         Playfield.TileLayers[0].Screen.IsEnabled = false;
         Playfield.TileLayers[1].Screen.IsEnabled = false;

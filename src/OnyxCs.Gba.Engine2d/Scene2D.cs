@@ -6,8 +6,11 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class Scene2D
 {
-    public Scene2D(int id, int layersCount)
+    public Scene2D(int id, CameraActor camera, int layersCount)
     {
+        Frame.RegisterComponent(this);
+
+        Camera = camera;
         LayersCount = layersCount;
 
         AnimationPlayer = new AnimationPlayer(false);
@@ -17,8 +20,12 @@ public class Scene2D
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
         Objects = new GameObjects(scene);
+
+        Camera.LinkedObject = GetMainActor();
+        Camera.SetFirstPosition();
     }
 
+    public CameraActor Camera { get; }
     public List<Dialog> Dialogs { get; }
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield2D Playfield { get; }
@@ -95,6 +102,11 @@ public class Scene2D
         {
             actor.Draw(AnimationPlayer, false);
         }
+    }
+
+    public void RunCamera()
+    {
+        Camera.Fsm.Step();
     }
 
     public MovableActor GetMainActor()

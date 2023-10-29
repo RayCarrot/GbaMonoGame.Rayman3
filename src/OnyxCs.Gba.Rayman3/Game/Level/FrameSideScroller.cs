@@ -1,6 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
-using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -30,9 +28,7 @@ public abstract class FrameSideScroller : Frame
         GameInfo.GreenLums = 0;
         GameInfo.MapId = GameInfo.NextMapId;
         // TODO: More setup...
-        Scene = new Scene2D((int)GameInfo.MapId, 4);
-        RegisterComponent(Scene);
-        RegisterComponent(Scene.Playfield);
+        Scene = new Scene2D((int)GameInfo.MapId, new CameraSideScroller(), 4);
         // TODO: More setup...
         Scene.AddDialog(new UserInfoSideScroller(GameInfo.Level.HasBlueLum));
         // TODO: More setup...
@@ -60,7 +56,7 @@ public abstract class FrameSideScroller : Frame
         Scene.StepActors();
         Scene.MoveActors();
         // TODO: Check captors
-        // TODO: Run camera
+        Scene.RunCamera();
         Scene.ProcessDialogs();
         Scene.DrawActors();
 

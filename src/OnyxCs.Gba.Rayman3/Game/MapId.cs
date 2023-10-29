@@ -6,4 +6,9 @@ public enum MapId
     WoodsOfLight_M2 = 1,
 
     Challenge1000Lums = 44,
+
+    World1 = 54,
+    World2 = 55,
+    World3 = 56,
+    World4 = 57,
 }
