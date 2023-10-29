@@ -80,7 +80,7 @@ public class MovableActor : InteractableActor
     public void Move()
     {
         // Update the speed
-        Speed = Mechanic.UpdateSpeedAction(Speed);
+        Speed = Mechanic.UpdateSpeedAction();
 
         if (Speed == Vector2.Zero) 
             return;
