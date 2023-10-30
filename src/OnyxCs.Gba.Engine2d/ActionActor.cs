@@ -28,6 +28,14 @@ public class ActionActor : BaseActor
     public int ActionId { get; private set; }
     public bool NewAction { get; set; }
 
+    protected override bool ProcessMessage(Message message, object param)
+    {
+        if (message is Message.Enable or Message.Spawn)
+            HitPoints = ActorModel.HitPoints;
+
+        return base.ProcessMessage(message, param);
+    }
+
     public override void Step()
     {
         ChangeAction();
