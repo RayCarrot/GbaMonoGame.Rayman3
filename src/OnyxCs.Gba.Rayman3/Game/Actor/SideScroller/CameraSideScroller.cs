@@ -8,10 +8,10 @@ public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller()
     {
-        Byte_2F = 40; // TODO: 95 in multiplayer
+        HorOffset = 40; // TODO: 95 in multiplayer
     }
 
-    public byte Byte_2F { get; set; }
+    public byte HorOffset { get; set; }
     public Vector2 PreviousLinkedObjectPosition { get; set; }
 
     protected override bool ProcessMessage(Message message, object param)
@@ -25,11 +25,11 @@ public class CameraSideScroller : CameraActor2D
 
         Vector2 pos;
 
-        if (LinkedObject.Position.X < Byte_2F && !LinkedObject.IsFacingLeft)
+        if (LinkedObject.Position.X < HorOffset && !LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
-        else if (LinkedObject.Position.X < (Gfx.GfxCamera.GameResolution.X - Byte_2F) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < (Gfx.GfxCamera.GameResolution.X - HorOffset) && LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
@@ -37,18 +37,18 @@ public class CameraSideScroller : CameraActor2D
         {
             if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
             {
-                Byte_2F = 120;
-                pos = new Vector2(LinkedObject.Position.X - Byte_2F, LinkedObject.Position.Y);
+                HorOffset = 120;
+                pos = new Vector2(LinkedObject.Position.X - HorOffset, LinkedObject.Position.Y);
             }
             else
             {
                 if (!LinkedObject.IsFacingLeft)
                 {
-                    pos = new Vector2(LinkedObject.Position.X - Byte_2F, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X - HorOffset, LinkedObject.Position.Y);
                 }
                 else
                 {
-                    pos = new Vector2(LinkedObject.Position.X + Byte_2F - Gfx.GfxCamera.GameResolution.X, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X + HorOffset - Gfx.GfxCamera.GameResolution.X, LinkedObject.Position.Y);
                 }
             }
         }
