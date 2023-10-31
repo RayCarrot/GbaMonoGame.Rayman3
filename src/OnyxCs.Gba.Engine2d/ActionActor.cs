@@ -28,6 +28,8 @@ public class ActionActor : BaseActor
     public int ActionId { get; private set; }
     public bool NewAction { get; set; }
 
+    public bool IsActionFinished => AnimatedObject.EndOfAnimation;
+
     protected override bool ProcessMessage(Message message, object param)
     {
         if (message is Message.Enable or Message.Spawn)
@@ -45,11 +47,6 @@ public class ActionActor : BaseActor
     {
         ActionId = actionId;
         NewAction = true;
-    }
-
-    public bool IsActionFinished()
-    {
-        return AnimatedObject.EndOfAnimation;
     }
 
     public void ChangeAction()

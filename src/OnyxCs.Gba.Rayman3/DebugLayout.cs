@@ -10,7 +10,6 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-// TODO: Add options to show hitboxes and other kind of boxes
 public class DebugLayout
 {
     // TODO: Save in config which windows are shown

@@ -69,7 +69,7 @@ public class Piranha : MovableActor
                 break;
 
             case FsmAction.Step:
-                if (!AnimatedObject.EndOfAnimation)
+                if (!IsActionFinished)
                 {
                     Scene2D scene = Frame.GetComponent<Scene2D>();
                     if (scene.IsHitMainActor(this))
@@ -82,7 +82,7 @@ public class Piranha : MovableActor
 
                 if (HitPoints == 0)
                     Fsm.ChangeAction(Fsm_Dying);
-                else if (AnimatedObject.EndOfAnimation)
+                else if (IsActionFinished)
                     Fsm.ChangeAction(Fsm_Wait);   
                 break;
 
