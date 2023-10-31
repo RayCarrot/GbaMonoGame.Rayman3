@@ -81,7 +81,7 @@ public class DebugLayout
 
             if (ImGui.BeginMenu("Options"))
             {
-                if (ImGui.MenuItem("Pause", "", Config.Paused))
+                if (ImGui.MenuItem("Pause", "Ctrl+P", Config.Paused))
                     Config.Paused = !Config.Paused;
                 ImGui.EndMenu();
             }

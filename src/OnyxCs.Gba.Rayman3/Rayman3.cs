@@ -42,6 +42,7 @@ public class Rayman3 : Game
     private Context _context;
     private RomLoader _romLoader;
     private GameRenderTarget _debugGameRenderTarget;
+    private bool _runOneFrame;
 
     #endregion
 
@@ -227,6 +228,12 @@ public class Rayman3 : Game
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
+        if (_runOneFrame)
+        {
+            _runOneFrame = false;
+            _config.Paused = true;
+        }
+
         // Toggle debug mode
         if (JoyPad.CheckSingle(Keys.Escape))
         {
@@ -237,6 +244,19 @@ public class Rayman3 : Game
                 _debugLayout.EnableDebugMode();
             else
                 SizeGameToWindow();
+        }
+
+        // Toggle pause
+        if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
+        {
+            _config.Paused = !_config.Paused;
+        }
+
+        // Toggle pause
+        if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.F))
+        {
+            _config.Paused = false;
+            _runOneFrame = true;
         }
 
         JoyPad.Scan();
