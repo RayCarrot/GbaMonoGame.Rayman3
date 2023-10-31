@@ -25,10 +25,7 @@ public class ActionActor : BaseActor
 
     public Rectangle ActionBox { get; set; }
 
-    public int ActionId { get; private set; }
     public bool NewAction { get; set; }
-
-    public bool IsActionFinished => AnimatedObject.EndOfAnimation;
 
     protected override bool ProcessMessage(Message message, object param)
     {

@@ -122,6 +122,7 @@ public class Rayman3 : Game
             { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
 
             { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
+            { ActorType.Splash, (id, resource) => new Splash(id, resource) },
 
             { ActorType.Cage, (id, resource) => new Cage(id, resource) },
 

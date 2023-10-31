@@ -35,6 +35,7 @@ public class GameObject
                 return true;
 
             case Message.Enable:
+            case Message.Spawn:
                 IsEnabled = true;
                 return true;
 

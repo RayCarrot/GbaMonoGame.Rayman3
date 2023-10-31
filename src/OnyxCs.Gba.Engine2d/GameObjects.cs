@@ -40,15 +40,19 @@ public class GameObjects
 
     public GameObject[] Objects { get; }
 
-    public IEnumerable<BaseActor> EnumerateAlwaysActors() => Objects.Take(AlwaysActorsCount).Cast<BaseActor>();
+    private IEnumerable<BaseActor> EnumerateAlwaysActors() => Objects.Take(AlwaysActorsCount).Cast<BaseActor>();
     public IEnumerable<BaseActor> EnumerateEnabledAlwaysActors() => EnumerateAlwaysActors().Where(x => x.IsEnabled);
-    public IEnumerable<BaseActor> EnumerateActors()
+    public IEnumerable<BaseActor> EnumerateDisabledAlwaysActors() => EnumerateAlwaysActors().Where(x => !x.IsEnabled);
+
+    private IEnumerable<BaseActor> EnumerateActors()
     {
         // TODO: This should only enumerate actors in the current knot!
         return Objects.Skip(AlwaysActorsCount).Take(ActorsCount).Cast<BaseActor>();
     }
     public IEnumerable<BaseActor> EnumerateEnabledActors() => EnumerateActors().Where(x => x.IsEnabled);
-    public IEnumerable<Captor> EnumerateCaptors() => Objects.Skip(AlwaysActorsCount + ActorsCount).Take(CaptorsCount).Cast<Captor>();
+    public IEnumerable<BaseActor> EnumerateDisabledActors() => EnumerateActors().Where(x => !x.IsEnabled);
+
+    private IEnumerable<Captor> EnumerateCaptors() => Objects.Skip(AlwaysActorsCount + ActorsCount).Take(CaptorsCount).Cast<Captor>();
     public IEnumerable<Captor> EnumerateEnabledCaptors() => EnumerateCaptors().Where(x => x.IsEnabled);
 
     public BaseActor SpawnActor<T>(T actorType)
@@ -59,7 +63,7 @@ public class GameObjects
 
     public BaseActor SpawnActor(int actorType)
     {
-        BaseActor actor = EnumerateActors().Concat(EnumerateAlwaysActors()).FirstOrDefault(x => x.Type == actorType);
+        BaseActor actor = EnumerateDisabledActors().Concat(EnumerateDisabledAlwaysActors()).FirstOrDefault(x => x.Type == actorType);
         actor?.SendMessage(Message.Spawn);
         return actor;
     }

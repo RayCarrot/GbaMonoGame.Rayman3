@@ -28,10 +28,18 @@ public class BaseActor : GameObject
 
     public FiniteStateMachine Fsm { get; } = new();
 
+    public int ActionId { get; set; }
+    public bool IsActionFinished => AnimatedObject.EndOfAnimation;
+
     public bool IsInvulnerable { get; set; }
 
     public bool IsFacingLeft => AnimatedObject.FlipX;
     public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
+
+    public void RewindAction()
+    {
+        AnimatedObject.SetCurrentFrame(0);
+    }
 
     public virtual void Init() { }
 

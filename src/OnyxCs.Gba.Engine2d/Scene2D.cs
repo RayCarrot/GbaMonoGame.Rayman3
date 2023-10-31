@@ -63,16 +63,14 @@ public class Scene2D
 
     public void StepActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateAlwaysActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
         {
-            if (actor.IsEnabled)
-                actor.Step();
+            actor.Step();
         }
 
-        foreach (BaseActor actor in Objects.EnumerateActors())
+        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
         {
-            if (actor.IsEnabled)
-                actor.Step();
+            actor.Step();
         }
     }
 
