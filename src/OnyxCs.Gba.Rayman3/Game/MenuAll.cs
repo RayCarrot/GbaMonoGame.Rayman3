@@ -1,4 +1,5 @@
-﻿using OnyxCs.Gba.AnimEngine;
+﻿using System;
+using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
@@ -19,6 +20,11 @@ public class MenuAll : Frame
     private AnimationPlayer AnimationPlayer { get; set; }
     private TgxPlayfield2D Playfield { get; set; }
 
+    private MenuData Data { get; set; }
+    private Action CurrentStepAction { get; set; }
+
+    private int SelectedOption { get; set; }
+
     public Page CurrentPage { get; set; }
 
     #endregion
@@ -31,6 +37,32 @@ public class MenuAll : Frame
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
     }
 
+    private void SwitchPage()
+    {
+        switch (CurrentPage)
+        {
+            case Page.Language:
+                CurrentStepAction = Step_Language;
+                break;
+
+            case Page.GameModes:
+                throw new NotImplementedException();
+                break;
+
+            case Page.Options:
+                throw new NotImplementedException();
+                break;
+
+            case Page.MultiPak:
+                throw new NotImplementedException();
+                break;
+
+            case Page.SinglePak:
+                throw new NotImplementedException();
+                break;
+        }
+    }
+
     #endregion
 
     #region Public Override Methods
@@ -39,12 +71,49 @@ public class MenuAll : Frame
     {
         AnimationPlayer = new AnimationPlayer(false);
 
+        Data = new MenuData();
+
         LoadPlayfield();
+        SwitchPage();
     }
 
     public override void Step()
     {
-        // TODO: Implement
+        AnimationPlayer.Execute();
+        CurrentStepAction();
+    }
+
+    #endregion
+
+    #region Steps
+
+    private void Step_Language()
+    {
+        if (JoyPad.CheckSingle(GbaInput.Up))
+        {
+            if (SelectedOption == 0)
+                SelectedOption = 9;
+            else
+                SelectedOption--;
+
+            Data.LanguageList.SetCurrentAnimation(SelectedOption);
+        }
+        else if (JoyPad.CheckSingle(GbaInput.Down))
+        {
+            if (SelectedOption == 9)
+                SelectedOption = 0;
+            else
+                SelectedOption++;
+            
+            Data.LanguageList.SetCurrentAnimation(SelectedOption);
+        }
+        else if (JoyPad.CheckSingle(GbaInput.A))
+        {
+            // TODO: Select language
+        }
+
+
+        AnimationPlayer.AddSecondaryObject(Data.LanguageList);
     }
 
     #endregion

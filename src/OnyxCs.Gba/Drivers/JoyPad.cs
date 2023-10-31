@@ -1,10 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
 namespace OnyxCs.Gba;
 
 public static class JoyPad
 {
+    // TODO: Allow this to be configured
+    private static Dictionary<GbaInput, Keys> GbaButtonMapping { get; } = new Dictionary<GbaInput, Keys>()
+    {
+        [GbaInput.A] = Keys.Space,
+        [GbaInput.B] = Keys.S,
+        [GbaInput.Select] = Keys.C,
+        [GbaInput.Start] = Keys.V,
+        [GbaInput.Right] = Keys.Right,
+        [GbaInput.Left] = Keys.Left,
+        [GbaInput.Up] = Keys.Up,
+        [GbaInput.Down] = Keys.Down,
+        [GbaInput.R] = Keys.W,
+        [GbaInput.L] = Keys.Q,
+    };
+
     private static KeyboardState PreviousKeyboardState { get; set; }
     private static KeyboardState KeyboardState { get; set; }
     private static MouseState PreviousMouseState { get; set; }
@@ -12,12 +27,7 @@ public static class JoyPad
 
     public static bool Check(GbaInput gbaInput)
     {
-        // TODO: Add all inputs and read key bindings from config. Also support a controller.
-
-        if ((gbaInput & GbaInput.Start) != 0 && KeyboardState.IsKeyDown(Keys.V))
-            return true;
-
-        return false;
+        return Check(GbaButtonMapping[gbaInput]);
     }
 
     public static bool Check(Keys input)
@@ -28,6 +38,11 @@ public static class JoyPad
     public static bool CheckSingle(Keys input)
     {
         return KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
+    }
+
+    public static bool CheckSingle(GbaInput gbaInput)
+    {
+        return CheckSingle(GbaButtonMapping[gbaInput]);
     }
 
     public static Vector2 GetMousePosition()
