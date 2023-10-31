@@ -139,8 +139,8 @@ public class TiledTexture2D : Texture2D
             {
                 int value = tileSet[tileSetIndex];
 
-                int v1 = value >> 4;
-                int v2 = value & 0xF;
+                int v1 = value & 0xF;
+                int v2 = value >> 4;
 
                 // Set the pixel if not 0 (transparent)
                 if (v1 != 0)
@@ -199,8 +199,8 @@ public class TiledTexture2D : Texture2D
             {
                 int value = tileSet[tileSetIndex];
 
-                int v1 = value >> 4;
-                int v2 = value & 0xF;
+                int v1 = value & 0xF;
+                int v2 = value >> 4;
 
                 // Set the pixel if not 0 (transparent)
                 if (v1 != 0)
