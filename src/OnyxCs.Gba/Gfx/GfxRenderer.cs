@@ -77,7 +77,7 @@ public class GfxRenderer
         SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White);
     }
 
-    public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, float rotation, Vector2 origin, SpriteEffects effects, Color? color = null)
+    public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, SpriteEffects effects, Color? color = null)
     {
         if (!Camera.IsVisible(destinationRectangle))
             return;
@@ -85,7 +85,14 @@ public class GfxRenderer
         sourceRectangle ??= texture.Bounds;
         var visibleRect = Camera.GetVisibleRectangle(sourceRectangle.Value, destinationRectangle);
 
-        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White, rotation, origin, effects, 0);
+        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White, 0, Vector2.Zero, effects, 0);
+    }
+
+    public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
+    {
+        // TODO: Check camera for clipping
+
+        SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, rotation, origin, scale, effects, 0);
     }
 
     #endregion

@@ -81,7 +81,7 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (tile.FlipY)
                         effects |= SpriteEffects.FlipVertically;
 
-                    renderer.Draw(tex, new Rectangle(new Vector2(absTileX, absTileY).ToPoint(), tex.Bounds.Size), null, 0, Vector2.Zero, effects, Color.White);
+                    renderer.Draw(tex, new Rectangle(new Vector2(absTileX, absTileY).ToPoint(), tex.Bounds.Size), null, effects, Color.White);
                 }
 
                 absTileX += Constants.TileSize;

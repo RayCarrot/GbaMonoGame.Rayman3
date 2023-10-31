@@ -41,7 +41,7 @@ public class AnimatedObject : AObject
     public Vector2 ScreenPos { get; set; }
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
-    public int Priority { get; set; }
+    public int Priority { get; set; } // TODO: Set this to 1 for actors
 
     public int AnimationIndex { get; private set; }
     public int FrameIndex { get; private set; }
@@ -194,47 +194,25 @@ public class AnimatedObject : AObject
             switch (channel.ChannelType)
             {
                 case AnimationChannelType.Sprite:
-                    // On GBA the size of a sprite is determined based on
-                    // the shape and size values. We use these to get the
-                    // actual width and height of the sprite.
-                    Constants.Size shape = Constants.GetSpriteShape(channel.SpriteShape, channel.SpriteSize);
 
-                    // Affine sprites support scaling and rotation
-                    bool isAffine = channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL;
+                    if (channel.ObjectMode == OBJ_ATTR_ObjectMode.HIDE)
+                        continue;
 
-                    // Get x position
-                    float xPos = channel.XPosition;
-
-                    if (!FlipX)
-                        xPos += ScreenPos.X;
-                    else
-                        xPos = ScreenPos.X - xPos - shape.Width;
-
-                    if (isAffine)
-                        xPos -= shape.Width / 2f;
-
-                    // Get y position
-                    float yPos = channel.YPosition;
-
-                    if (!FlipY)
-                        yPos += ScreenPos.Y;
-                    else
-                        yPos = ScreenPos.Y - yPos - shape.Height;
-
-                    if (isAffine)
-                        yPos -= shape.Height / 2f;
+                    // Get the position
+                    float xPos = channel.XPosition + ScreenPos.X;
+                    float yPos = channel.YPosition + ScreenPos.Y;
 
                     AffineMatrix affineMatrix = new();
 
                     // Get the matrix if it's affine
-                    if (isAffine)
+                    if (channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL)
                     {
                         AffineMatrixResource matrix = anim.AffineMatrices.Matrices[channel.AffineMatrixIndex];
                         affineMatrix = new AffineMatrix(
-                            pa: FlipX ? -matrix.Pa : matrix.Pa,
-                            pb: FlipY ? -matrix.Pb : matrix.Pb,
-                            pc: FlipX ? -matrix.Pc : matrix.Pc,
-                            pd: FlipY ? -matrix.Pd : matrix.Pd);
+                            pa: matrix.Pa,
+                            pb: matrix.Pb,
+                            pc: matrix.Pc,
+                            pd: matrix.Pd);
                     }
 
                     // Add the sprite to vram. In the original engine this part
