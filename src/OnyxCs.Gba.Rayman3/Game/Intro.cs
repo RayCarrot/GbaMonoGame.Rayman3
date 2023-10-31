@@ -35,7 +35,7 @@ public class Intro : Frame
 
     private void PreLoadMenu()
     {
-        Menu = new MenuAll(MenuAll.Page.Language);
+        Menu = new MenuAll(MenuAll.Page.SelectLanguage);
         // TODO: Create GameInfo
         // TODO: Load GameInfo
         // TODO: Load data
@@ -191,7 +191,7 @@ public class Intro : Frame
         if (!mainCluster.IsOnLimit(Edge.Bottom))
         {
             ScrollY++;
-            Playfield.Camera.Move(new Vector2(0, 1));
+            Playfield.Camera.Position += new Vector2(0, 1);
             Gfx.Screens[3].Offset = new Vector2(0, ScrollY);
         }
 

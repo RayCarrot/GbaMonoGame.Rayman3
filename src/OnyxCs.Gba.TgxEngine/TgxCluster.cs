@@ -75,25 +75,4 @@ public class TgxCluster
             _ => throw new ArgumentOutOfRangeException(nameof(limit), limit, null)
         };
     }
-
-    // TODO: Is there a point of this?
-    public Vector2 Move(Vector2 deltaPos)
-    {
-        Vector2 maxPos = MaxPosition;
-
-        Vector2 newPos = new(
-            x: Math.Clamp(Position.X + deltaPos.X, 0, maxPos.X), 
-            y: Math.Clamp(Position.Y + deltaPos.Y, 0, maxPos.Y));
-        deltaPos = newPos - Position;
-
-        if (deltaPos is { X: 0, Y: 0 })
-            return deltaPos;
-
-        Position += deltaPos;
-
-        foreach (TgxTileLayer layer in Layers)
-            layer.Screen.Offset = Position;
-
-        return deltaPos;
-    }
 }

@@ -4,13 +4,14 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Add support for N-Gage menus as well as US version language selection?
 public class MenuAll : Frame
 {
     #region Constructor
 
-    public MenuAll(Page startPage)
+    public MenuAll(Page initialPage)
     {
-        CurrentPage = startPage;
+        InitialPage = initialPage;
     }
 
     #endregion
@@ -23,9 +24,17 @@ public class MenuAll : Frame
     private MenuData Data { get; set; }
     private Action CurrentStepAction { get; set; }
 
+    private int PrevSelectedOption { get; set; }
     private int SelectedOption { get; set; }
+    private int StemMode { get; set; }
 
-    public Page CurrentPage { get; set; }
+    private int LanguageOutTransitionYOffset { get; set; }
+    private int GameLogoYOffset { get; set; }
+    private int OtherGameLogoValue { get; set; }
+    private int WheelRotation { get; set; }
+    private int SteamTimer { get; set; }
+
+    public Page InitialPage { get; set; }
 
     #endregion
 
@@ -35,17 +44,21 @@ public class MenuAll : Frame
     {
         PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(0x5b);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
+
+        Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
+        Playfield.Camera.GetCluster(1).Position = new Vector2(0, 160);
+        Playfield.Camera.GetCluster(2).Position = Vector2.Zero;
     }
 
     private void SwitchPage()
     {
-        switch (CurrentPage)
+        switch (InitialPage)
         {
-            case Page.Language:
-                CurrentStepAction = Step_Language;
+            case Page.SelectLanguage:
+                CurrentStepAction = Step_SelectLanguage;
                 break;
 
-            case Page.GameModes:
+            case Page.SelectGameMode:
                 throw new NotImplementedException();
                 break;
 
@@ -63,6 +76,112 @@ public class MenuAll : Frame
         }
     }
 
+    private void MoveGameLogo()
+    {
+        // TODO: Implement
+        //if (GameLogoYOffset < 56)
+        //{
+        //    Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, GameLogoYOffset * 2 - 54);
+        //    GameLogoYOffset += 4;
+        //}
+        //else
+        //{
+        //    if (OtherGameLogoValue == 12)
+        //    {
+        //        if (Data.GameLogo.ScreenPos.Y > 16)
+        //        {
+        //            Data.GameLogo.ScreenPos -= new Vector2(0, 1);
+        //        }
+        //    }
+        //    else
+        //    {
+                
+        //    }
+        //}
+    }
+
+    private void ResetStem()
+    {
+        StemMode = 1;
+        Data.Stem.SetCurrentAnimation(12);
+    }
+
+    private void ManageCursorAndStem()
+    {
+        if (StemMode == 0)
+        {
+            // TODO: Implement
+        }
+        else if (StemMode == 1)
+        {
+            if (Data.Stem.AnimationIndex == 12 && Data.Stem.EndOfAnimation)
+            {
+                Data.Stem.SetCurrentAnimation(17);
+            }
+            else if (Data.Stem.AnimationIndex == 17 && Data.Stem.EndOfAnimation)
+            {
+                Data.Stem.SetCurrentAnimation(1);
+                StemMode = 2;
+            }
+        }
+        else if (StemMode == 2)
+        {
+            // TODO: Check for step actions we haven't implemented yet
+
+            if (SelectedOption != PrevSelectedOption)
+            {
+                if (SelectedOption < PrevSelectedOption)
+                {
+                    int yPos = SelectedOption * 16 + 67;
+
+                    if (yPos < Data.Cursor.ScreenPos.Y)
+                    {
+                        Data.Cursor.ScreenPos -= new Vector2(0, 4);
+                    }
+                    else
+                    {
+                        Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, yPos);
+                        PrevSelectedOption = SelectedOption;
+                    }
+                }
+                else
+                {
+                    int yPos = SelectedOption * 16 + 67;
+
+                    if (yPos > Data.Cursor.ScreenPos.Y)
+                    {
+                        Data.Cursor.ScreenPos += new Vector2(0, 4);
+                    }
+                    else
+                    {
+                        Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, yPos);
+                        PrevSelectedOption = SelectedOption;
+                    }
+                }
+            }
+        }
+
+        AnimationPlayer.AddSecondaryObject(Data.Stem);
+
+        // The cursor is usually included in the stem animation, except for animation 1
+        if (Data.Stem.AnimationIndex == 1)
+            AnimationPlayer.AddSecondaryObject(Data.Cursor);
+    }
+
+    private void SelectOption(int selectedOption, bool playSound)
+    {
+        if (StemMode is 2 or 3)
+        {
+            PrevSelectedOption = SelectedOption;
+            SelectedOption = selectedOption;
+
+            if (playSound)
+            {
+                // TODO: Play sound
+            }
+        }
+    }
+
     #endregion
 
     #region Public Override Methods
@@ -72,22 +191,71 @@ public class MenuAll : Frame
         AnimationPlayer = new AnimationPlayer(false);
 
         Data = new MenuData();
+        WheelRotation = 0;
 
         LoadPlayfield();
         SwitchPage();
+        SteamTimer = 0;
     }
 
     public override void Step()
     {
         AnimationPlayer.Execute();
+
         CurrentStepAction();
+
+        if (CurrentStepAction != Step_SelectLanguage)
+            ManageCursorAndStem();
+
+        WheelRotation += 4;
+
+        if (WheelRotation > 2047)
+            WheelRotation = 0;
+
+        float sin1 = MathF.Sin(2 * MathF.PI * ((byte)WheelRotation / 256f));
+        float cos1 = MathF.Cos(2 * MathF.PI * ((byte)WheelRotation / 256f));
+        Data.Wheel1.AffineMatrix = new AffineMatrix(cos1, sin1, -sin1, cos1);
+
+        float sin2 = MathF.Sin(2 * MathF.PI * ((255 - (byte)(WheelRotation >> 1)) / 256f));
+        float cos2 = MathF.Cos(2 * MathF.PI * ((255 - (byte)(WheelRotation >> 1)) / 256f));
+        Data.Wheel2.AffineMatrix = new AffineMatrix(cos2, sin2, -sin2, cos2);
+
+        float sin3 = MathF.Sin(2 * MathF.PI * ((byte)(WheelRotation >> 2) / 256f));
+        float cos3 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 2) / 256f));
+        Data.Wheel3.AffineMatrix = new AffineMatrix(cos3, sin3, -sin3, cos3);
+
+        float sin4 = MathF.Sin(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
+        float cos4 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
+        Data.Wheel4.AffineMatrix = new AffineMatrix(cos4, sin4, -sin4, cos4);
+
+        AnimationPlayer.AddSecondaryObject(Data.Wheel1);
+        AnimationPlayer.AddSecondaryObject(Data.Wheel2);
+        AnimationPlayer.AddSecondaryObject(Data.Wheel3);
+        AnimationPlayer.AddSecondaryObject(Data.Wheel4);
+
+        if (SteamTimer == 0)
+        {
+            if (!Data.Steam.EndOfAnimation)
+            {
+                AnimationPlayer.AddSecondaryObject(Data.Steam);
+            }
+            else
+            {
+                SteamTimer = Random.Shared.Next(60, 240);
+                Data.Steam.SetCurrentAnimation(Random.Shared.Next(200) < 100 ? 0 : 1);
+            }
+        }
+        else
+        {
+            SteamTimer--;
+        }
     }
 
     #endregion
 
     #region Steps
 
-    private void Step_Language()
+    private void Step_SelectLanguage()
     {
         if (JoyPad.CheckSingle(GbaInput.Up))
         {
@@ -109,11 +277,78 @@ public class MenuAll : Frame
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
-            // TODO: Select language
+            CurrentStepAction = Step_TransitionFromLanguage;
+            Localization.Language = SelectedOption;
+
+            LanguageOutTransitionYOffset = 0;
+            SelectedOption = 0;
+            PrevSelectedOption = 0;
+            GameLogoYOffset = 56;
+            OtherGameLogoValue = 12;
+
+            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+
+            // Center sprites if English
+            if (Localization.Language == 0)
+            {
+                Data.GameModeList.ScreenPos = new Vector2(86, Data.GameModeList.ScreenPos.Y);
+                Data.Cursor.ScreenPos = new Vector2(46, Data.Cursor.ScreenPos.Y);
+                Data.Stem.ScreenPos = new Vector2(60, Data.Stem.ScreenPos.Y);
+            }
+
+            ResetStem();
         }
 
-
         AnimationPlayer.AddSecondaryObject(Data.LanguageList);
+    }
+
+    private void Step_TransitionFromLanguage()
+    {
+        TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
+        mainCluster.Position += new Vector2(0, 3);
+
+        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, LanguageOutTransitionYOffset + 28);
+        AnimationPlayer.AddSecondaryObject(Data.LanguageList);
+
+        MoveGameLogo();
+
+        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
+        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+
+        if (LanguageOutTransitionYOffset < -207)
+        {
+            LanguageOutTransitionYOffset = 0;
+            CurrentStepAction = Step_SelectGameMode;
+        }
+        else
+        {
+            LanguageOutTransitionYOffset -= 3;
+        }
+    }
+
+    private void Step_SelectGameMode()
+    {
+        if (JoyPad.CheckSingle(GbaInput.Up))
+        {
+            SelectOption(SelectedOption == 0 ? 2 : SelectedOption - 1, true);
+
+            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+        }
+        else if (JoyPad.CheckSingle(GbaInput.Down))
+        {
+            SelectOption(SelectedOption == 2 ? 0 : SelectedOption + 1, true);
+
+            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+        }
+        else if (JoyPad.CheckSingle(GbaInput.A))
+        {
+            // TODO: Implement
+        }
+
+        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+        
+        MoveGameLogo();
+        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
     }
 
     #endregion
@@ -122,8 +357,8 @@ public class MenuAll : Frame
 
     public enum Page
     {
-        Language,
-        GameModes,
+        SelectLanguage,
+        SelectGameMode,
         Options,
         MultiPak,
         SinglePak,

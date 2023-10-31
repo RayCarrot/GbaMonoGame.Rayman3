@@ -59,22 +59,4 @@ public class TgxCamera2D : TgxCamera
         TgxCluster cluster = GetCluster(clusterId);
         cluster.AddLayer(layer);
     }
-
-    // TODO: Is there a point of this?
-    public override void Move(Vector2 deltaPos)
-    {
-        TgxCluster mainCluster = GetMainCluster();
-        Vector2 moved = mainCluster.Move(deltaPos);
-
-        if (moved is { X: 0, Y: 0 }) 
-            return;
-        
-        foreach (TgxCluster cluster in Clusters)
-        {
-            if (cluster.Stationary)
-                continue;
-
-            cluster.Move(moved * cluster.ScrollFactor);
-        }
-    }
 }

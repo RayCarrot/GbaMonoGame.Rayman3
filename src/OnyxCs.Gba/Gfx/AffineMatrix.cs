@@ -2,7 +2,7 @@
 
 public readonly struct AffineMatrix
 {
-    public AffineMatrix(int pa, int pb, int pc, int pd)
+    public AffineMatrix(float pa, float pb, float pc, float pd)
     {
         Pa = pa;
         Pb = pb;
@@ -10,8 +10,10 @@ public readonly struct AffineMatrix
         Pd = pd;
     }
 
-    public int Pa { get; }
-    public int Pb { get; }
-    public int Pc { get; }
-    public int Pd { get; }
+    public float Pa { get; }
+    public float Pb { get; }
+    public float Pc { get; }
+    public float Pd { get; }
+
+    public static AffineMatrix Identity => new(1, 0, 0, 1);
 }

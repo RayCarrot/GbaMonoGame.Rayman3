@@ -48,6 +48,8 @@ public class AnimatedObject : AObject
     public int ChannelIndex { get; set; }
     public int Timer { get; set; }
 
+    public AffineMatrix? AffineMatrix { get; set; }
+
     public BoxTable BoxTable { get; set; }
 
     #endregion
@@ -202,10 +204,14 @@ public class AnimatedObject : AObject
                     float xPos = channel.XPosition + ScreenPos.X;
                     float yPos = channel.YPosition + ScreenPos.Y;
 
-                    AffineMatrix affineMatrix = new();
+                    AffineMatrix? affineMatrix = null;
 
                     // Get the matrix if it's affine
-                    if (channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL)
+                    if (channel.ObjectMode == OBJ_ATTR_ObjectMode.REG && AffineMatrix != null)
+                    {
+                        affineMatrix = AffineMatrix.Value;
+                    }
+                    else if (channel.ObjectMode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL)
                     {
                         AffineMatrixResource matrix = anim.AffineMatrices.Matrices[channel.AffineMatrixIndex];
                         affineMatrix = new AffineMatrix(
@@ -231,7 +237,6 @@ public class AnimatedObject : AObject
                         flipX: channel.FlipX,
                         flipY: channel.FlipY,
                         priority: Priority,
-                        mode: channel.ObjectMode,
                         affineMatrix: affineMatrix));
                     break;
 

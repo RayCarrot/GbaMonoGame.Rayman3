@@ -1,5 +1,4 @@
 ﻿using System;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,7 +6,7 @@ namespace OnyxCs.Gba;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, OBJ_ATTR_ObjectMode mode, AffineMatrix affineMatrix)
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix)
     {
         Texture = texture;
         Position = position;
@@ -15,16 +14,16 @@ public class Sprite
         FlipY = flipY;
         Priority = priority;
 
-        if (mode is OBJ_ATTR_ObjectMode.AFF or OBJ_ATTR_ObjectMode.AFF_DBL)
+        if (affineMatrix != null)
         {
             // The following affine sprite rendering code has been re-implemented from Ray1Map. Credits to Droolie for writing it!
 
-            Rotation = MathF.Atan2(affineMatrix.Pb / 256f, affineMatrix.Pa / 256f);
+            Rotation = MathF.Atan2(affineMatrix.Value.Pb / 256f, affineMatrix.Value.Pa / 256f);
 
-            float a = affineMatrix.Pa / 256f;
-            float b = affineMatrix.Pb / 256f;
-            float c = affineMatrix.Pc / 256f;
-            float d = affineMatrix.Pd / 256f;
+            float a = affineMatrix.Value.Pa;
+            float b = affineMatrix.Value.Pb;
+            float c = affineMatrix.Value.Pc;
+            float d = affineMatrix.Value.Pd;
             float delta = a * d - b * c;
 
             Vector2 scale;

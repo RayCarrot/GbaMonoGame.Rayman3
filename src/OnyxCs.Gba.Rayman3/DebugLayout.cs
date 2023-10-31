@@ -36,7 +36,7 @@ public class DebugLayout
     private FrameFactory[] FrameFactories { get; } = 
     {
         new("Intro", () => new Intro()),
-        new("Menu", () => new MenuAll(MenuAll.Page.Language)),
+        new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
     };
     private GameObject SelectedGameObject { get; set; }
 
@@ -330,9 +330,11 @@ public class DebugLayout
 
             ImGui.SeparatorText("Camera position");
 
-            ImGui.SliderFloat("Camera X", ref pos.X, 0, playfield2D.Camera.GetMainCluster().MaxPosition.X);
-            ImGui.SliderFloat("Camera Y", ref pos.Y, 0, playfield2D.Camera.GetMainCluster().MaxPosition.Y);
-            playfield2D.Camera.Position = pos;
+            bool modifiedX = ImGui.SliderFloat("Camera X", ref pos.X, 0, playfield2D.Camera.GetMainCluster().MaxPosition.X);
+            bool modifiedY = ImGui.SliderFloat("Camera Y", ref pos.Y, 0, playfield2D.Camera.GetMainCluster().MaxPosition.Y);
+            
+            if (modifiedX || modifiedY)
+                playfield2D.Camera.Position = pos;
 
             ImGui.Spacing();
             ImGui.Spacing();
