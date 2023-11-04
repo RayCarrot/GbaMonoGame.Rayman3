@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;
-
-// TODO: Go through this more
 
 // The game has different types of AnimatedObject. They however all act the same, just with some different properties
 // depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
@@ -56,14 +55,35 @@ public class AnimatedObject : AObject
 
     #region Private Methods
 
+    private IEnumerable<AnimationChannel> EnumerateCurrentChannels()
+    {
+        Animation anim = GetAnimation();
+
+        for (int i = 0; i < anim.ChannelsPerFrame[FrameIndex]; i++)
+            yield return anim.Channels[i + ChannelIndex];
+    }
+
     private void PlayChannelBox()
     {
-        if (HasExecutedFrame)
+        if (HasExecutedFrame || BoxTable == null)
             return;
 
-        ResetBoxTable();
+        BoxTable.AttackBox = new Rectangle();
+        BoxTable.VulnerabilityBox = new Rectangle();
 
-        // TODO: Implement
+        foreach (AnimationChannel channel in EnumerateCurrentChannels())
+        {
+            switch (channel.ChannelType)
+            {
+                case AnimationChannelType.AttackBox:
+                    BoxTable.AttackBox = channel.Box.ToRectangle();
+                    break;
+
+                case AnimationChannelType.VulnerabilityBox:
+                    BoxTable.VulnerabilityBox = channel.Box.ToRectangle();
+                    break;
+            }
+        }
     }
 
     private void StepTimer()
@@ -164,21 +184,15 @@ public class AnimatedObject : AObject
         EndOfAnimation = false;
     }
 
-    public void ResetBoxTable()
-    {
-        if (BoxTable == null)
-            return;
-
-        BoxTable.AttackBox = new Rectangle();
-        BoxTable.VulnerabilityBox = new Rectangle();
-    }
-
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<int> soundEventCallback)
     {
         Animation anim = GetAnimation();
 
-        if (!HasExecutedFrame)
-            ResetBoxTable();
+        if (!HasExecutedFrame && BoxTable != null)
+        {
+            BoxTable.AttackBox = new Rectangle();
+            BoxTable.VulnerabilityBox = new Rectangle();
+        }
 
         EndOfAnimation = false;
 
@@ -188,10 +202,8 @@ public class AnimatedObject : AObject
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
-        for (int i = 0; i < anim.ChannelsPerFrame[FrameIndex]; i++)
+        foreach (AnimationChannel channel in EnumerateCurrentChannels())
         {
-            AnimationChannel channel = anim.Channels[i + ChannelIndex];
-
             // Play the channel based on the type
             switch (channel.ChannelType)
             {
@@ -248,7 +260,7 @@ public class AnimatedObject : AObject
                 case AnimationChannelType.DisplacementVector:
                     if (!HasExecutedFrame)
                     {
-                        // Unused in Rayman 3, so we can probably ignore this for now
+                        // Unused in Rayman 3, so we can probably ignore this
                         throw new NotImplementedException("Not implemented displacement vectors");
                     }
                     break;

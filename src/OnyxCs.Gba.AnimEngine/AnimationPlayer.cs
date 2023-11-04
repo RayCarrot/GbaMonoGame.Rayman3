@@ -20,6 +20,11 @@ public class AnimationPlayer
 
     public bool Is8Bit { get; }
 
+    private void SoundEventRequest(int soundId)
+    {
+        SoundManager.Play(soundId, -1);
+    }
+
     public void AddPrimaryObject(AObject obj)
     {
         PrimaryAnimationStack.Push(obj);
@@ -40,10 +45,5 @@ public class AnimationPlayer
 
         PrimaryAnimationStack.Clear();
         SecondaryAnimationStack.Clear();
-    }
-
-    public void SoundEventRequest(int soundId)
-    {
-        SoundManager.Play(soundId);
     }
 }
