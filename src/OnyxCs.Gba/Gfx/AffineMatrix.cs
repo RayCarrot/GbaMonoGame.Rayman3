@@ -1,5 +1,8 @@
 ﻿namespace OnyxCs.Gba;
 
+/// <summary>
+/// An affine matrix for rotation/scaling.
+/// </summary>
 public readonly struct AffineMatrix
 {
     public AffineMatrix(float pa, float pb, float pc, float pd)

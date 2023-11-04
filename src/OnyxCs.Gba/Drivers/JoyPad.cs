@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace OnyxCs.Gba;
 
+// TODO: Restructure this? In the game JoyPad is an abstract class with different implementations. For example the multiplayer
+//       mode has its own JoyPad. We probably don't need that, although supporting multiple input methods such as controllers
+//       and keyboard would be good. It also seems a bit weird having mouse support in a class named "JoyPad".
 public static class JoyPad
 {
     // TODO: Allow this to be configured

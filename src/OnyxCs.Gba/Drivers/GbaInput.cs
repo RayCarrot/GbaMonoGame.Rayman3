@@ -2,6 +2,7 @@
 
 namespace OnyxCs.Gba;
 
+// TODO: Replace this with a more game-specific input system where we have input actions for things like jump, confirm in menu etc.
 [Flags]
 public enum GbaInput
 {

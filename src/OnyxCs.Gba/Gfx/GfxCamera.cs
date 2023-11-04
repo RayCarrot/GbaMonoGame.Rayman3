@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace OnyxCs.Gba;
 
 /// <summary>
-/// Custom camera class for allow variable game and screen sizes
+/// Custom camera class for allow variable game and screen sizes.
 /// </summary>
 public class GfxCamera
 {
@@ -17,7 +17,7 @@ public class GfxCamera
     }
 
     public Point GameResolution { get; private set; }
-    public Point OriginalGameResolution { get; private set; }
+    public Point OriginalGameResolution { get; }
     public Rectangle ScreenRectangle { get; private set; }
     public Point ScreenSize { get; private set; }
     public Rectangle VisibleArea { get; private set; }
