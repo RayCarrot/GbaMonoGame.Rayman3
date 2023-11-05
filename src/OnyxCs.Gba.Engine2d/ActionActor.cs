@@ -11,11 +11,13 @@ public class ActionActor : BaseActor
         AttackPoints = actorResource.Model.AttackPoints;
         
         Actions = actorResource.Model.Actions;
-        SetActionId(actorResource.FirstActionId);
+        ActionId = actorResource.FirstActionId;
         ChangeAction();
 
         DetectionBox = actorResource.Model.DetectionBox.ToRectangle();
     }
+
+    private int _actionId;
 
     public Action[] Actions { get; }
     public Rectangle DetectionBox { get; }
@@ -25,12 +27,27 @@ public class ActionActor : BaseActor
 
     public Rectangle ActionBox { get; set; }
 
+    public sealed override int ActionId
+    {
+        get => _actionId;
+        set
+        {
+            _actionId = value;
+            NewAction = true;
+        }
+    }
+
     public bool NewAction { get; set; }
 
     protected override bool ProcessMessage(Message message, object param)
     {
-        if (message is Message.Enable or Message.Spawn)
-            HitPoints = ActorModel.HitPoints;
+        switch (message)
+        {
+            case Message.Enable:
+            case Message.Spawn:
+                HitPoints = ActorModel.HitPoints;
+                break;
+        }
 
         return base.ProcessMessage(message, param);
     }
@@ -43,7 +60,6 @@ public class ActionActor : BaseActor
     public void SetActionId(int actionId)
     {
         ActionId = actionId;
-        NewAction = true;
     }
 
     public void ChangeAction()

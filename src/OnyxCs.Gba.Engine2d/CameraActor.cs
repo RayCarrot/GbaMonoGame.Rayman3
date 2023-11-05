@@ -11,5 +11,5 @@ public abstract class CameraActor
     }
 
     public abstract void SetFirstPosition();
-    public abstract bool IsActorFramed(BaseActor actor, Vector2 screenPosition);
+    public abstract bool IsActorFramed(BaseActor actor);
 }

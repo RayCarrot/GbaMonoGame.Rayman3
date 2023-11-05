@@ -23,7 +23,7 @@ public static class ObjectFactory
 
     public static BaseActor Create(int id, ActorResource actorResource)
     {
-        if (!ActorCreations.TryGetValue(actorResource.Id, out CreateActor create))
+        if (!ActorCreations.TryGetValue(actorResource.Type, out CreateActor create))
             return new DummyActor(id, actorResource);
 
         return create(id, actorResource);

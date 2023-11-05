@@ -8,7 +8,15 @@ public class GameObject
     {
         Id = id;
         Position = gameObjectResource.Pos.ToVector2();
-        IsEnabled = gameObjectResource.IsActive;
+
+        IsEnabled = gameObjectResource.IsEnabled;
+        Flag_1 = gameObjectResource.Flag_1;
+        Flag_2 = false;
+        Flag_3 = gameObjectResource.Flag_3;
+        ResurrectsImmediately = gameObjectResource.ResurrectsImmediately;
+        ResurrectsInKnot = gameObjectResource.ResurrectsInKnot;
+        Flag_6 = gameObjectResource.Flag_6;
+        Flag_7 = gameObjectResource.Flag_7;
     }
 
     public int Id { get; }
@@ -16,6 +24,13 @@ public class GameObject
 
     // Flags
     public bool IsEnabled { get; set; }
+    public bool Flag_1 { get; set; }
+    public bool Flag_2 { get; set; }
+    public bool Flag_3 { get; set; }
+    public bool ResurrectsImmediately { get; set; }
+    public bool ResurrectsInKnot { get; set; }
+    public bool Flag_6 { get; set; }
+    public bool Flag_7 { get; set; }
 
     public Rectangle GetAbsoluteBox(Rectangle box)
     {
@@ -30,13 +45,28 @@ public class GameObject
     {
         switch (message)
         {
+            case Message.None:
+                return true;
+
+            case Message.SetFlag1:
+                Flag_1 = true;
+                return true;
+
+            case Message.ClearFlag1:
+                Flag_1 = false;
+                return true;
+
             case Message.Disable:
                 IsEnabled = false;
                 return true;
 
             case Message.Enable:
+                IsEnabled = true;
+                return true;
+
             case Message.Spawn:
                 IsEnabled = true;
+                Flag_1 = true;
                 return true;
 
             default:

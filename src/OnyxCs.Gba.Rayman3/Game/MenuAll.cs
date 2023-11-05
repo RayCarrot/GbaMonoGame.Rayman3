@@ -50,32 +50,6 @@ public class MenuAll : Frame
         Playfield.Camera.GetCluster(2).Position = Vector2.Zero;
     }
 
-    private void SwitchPage()
-    {
-        switch (InitialPage)
-        {
-            case Page.SelectLanguage:
-                CurrentStepAction = Step_SelectLanguage;
-                break;
-
-            case Page.SelectGameMode:
-                throw new NotImplementedException();
-                break;
-
-            case Page.Options:
-                throw new NotImplementedException();
-                break;
-
-            case Page.MultiPak:
-                throw new NotImplementedException();
-                break;
-
-            case Page.SinglePak:
-                throw new NotImplementedException();
-                break;
-        }
-    }
-
     private void MoveGameLogo()
     {
         // TODO: Implement
@@ -194,7 +168,30 @@ public class MenuAll : Frame
         WheelRotation = 0;
 
         LoadPlayfield();
-        SwitchPage();
+
+        switch (InitialPage)
+        {
+            case Page.SelectLanguage:
+                CurrentStepAction = Step_SelectLanguage;
+                break;
+
+            case Page.SelectGameMode:
+                throw new NotImplementedException();
+                break;
+
+            case Page.Options:
+                throw new NotImplementedException();
+                break;
+
+            case Page.MultiPak:
+                throw new NotImplementedException();
+                break;
+
+            case Page.SinglePak:
+                throw new NotImplementedException();
+                break;
+        }
+
         SteamTimer = 0;
     }
 
@@ -342,6 +339,22 @@ public class MenuAll : Frame
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
+            Data.Cursor.SetCurrentAnimation(16);
+
+            switch (SelectedOption)
+            {
+                case 0:
+                    // TODO: Single player
+                    break;
+
+                case 1:
+                    // TODO: Multiplayer
+                    break;
+
+                case 2:
+                    // TODO: Options
+                    break;
+            }
             // TODO: Implement
         }
 

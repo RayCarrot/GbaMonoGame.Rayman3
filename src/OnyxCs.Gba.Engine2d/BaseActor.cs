@@ -13,13 +13,20 @@ public class BaseActor : GameObject
     public BaseActor(int id, ActorResource actorResource) : base(id, actorResource)
     {
         ActorModel = actorResource.Model;
-        Type = actorResource.Id;
+        ActorFlag_6 = ActorModel.Flag_06;
+        IsAgainstCaptor = ActorModel.IsAgainstCaptor;
+        ReceivesDamage = ActorModel.ReceivesDamage;
+        Type = actorResource.Type;
+        ActorFlag_C = true;
 
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic);
         AnimatedObject.SetCurrentAnimation(0);
+        AnimatedObject.Priority = ActorDrawPriority;
 
         ViewBox = ActorModel.ViewBox.ToRectangle();
     }
+
+    public static int ActorDrawPriority { get; set; }
 
     public ActorModel ActorModel { get; }
     public int Type { get; }
@@ -28,13 +35,20 @@ public class BaseActor : GameObject
 
     public FiniteStateMachine Fsm { get; } = new();
 
-    public int ActionId { get; set; }
+    public virtual int ActionId { get; set; }
     public bool IsActionFinished => AnimatedObject.EndOfAnimation;
-
-    public bool IsInvulnerable { get; set; }
-
     public bool IsFacingLeft => AnimatedObject.FlipX;
     public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
+
+    // Flags
+    public bool ActorFlag_6 { get; set; }
+    public bool IsAgainstCaptor { get; set; }
+    public bool ReceivesDamage { get; set; }
+    public bool IsInvulnerable { get; set; }
+    public bool IsTouchingActor { get; set; }
+    public bool IsTouchingMap { get; set; }
+    public bool ActorFlag_C { get; set; }
+    public bool ActorFlag_E { get; set; }
 
     public void RewindAction()
     {
@@ -52,22 +66,15 @@ public class BaseActor : GameObject
 
     public virtual void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        // TODO: Properly implement this
-        // 1. Get screen position
-        // 2. Check with camera actor if it is framed
-        // 3. Set IsFramed in AnimatedObject based on that
+        CameraActor camera = Frame.GetComponent<Scene2D>().Camera;
 
-        AnimatedObject.ScreenPos = Position - Frame.GetComponent<TgxPlayfield2D>().Camera.Position;
-
-        bool isFramed = true;
-
-        if (isFramed)
+        if (camera.IsActorFramed(this) || forceDraw)
         {
             animationPlayer.AddSecondaryObject(AnimatedObject);
         }
         else
         {
-            // Execute animation without drawing?
+            AnimatedObject.ExecuteUnframed();
         }
     }
 }

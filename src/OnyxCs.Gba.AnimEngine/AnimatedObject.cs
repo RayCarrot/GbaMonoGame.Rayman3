@@ -184,6 +184,13 @@ public class AnimatedObject : AObject
         EndOfAnimation = false;
     }
 
+    public void ExecuteUnframed()
+    {
+        EndOfAnimation = false;
+        PlayChannelBox();
+        StepTimer();
+    }
+
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<int> soundEventCallback)
     {
         Animation anim = GetAnimation();
@@ -277,9 +284,7 @@ public class AnimatedObject : AObject
             }
         }
 
-        if (BoxTable != null)
-            PlayChannelBox();
-
+        PlayChannelBox();
         StepTimer();
     }
 

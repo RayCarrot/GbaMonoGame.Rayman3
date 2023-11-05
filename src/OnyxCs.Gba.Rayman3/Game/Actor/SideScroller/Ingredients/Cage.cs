@@ -8,6 +8,6 @@ public class Cage : InteractableActor
     {
         // TODO: Properly implement cage actor
 
-        SetActionId(actorResource.FirstActionId == 0 ? 0 : 6);
+        ActionId = actorResource.FirstActionId == 0 ? 0 : 6;
     }
 }

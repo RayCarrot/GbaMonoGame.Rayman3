@@ -8,14 +8,21 @@ public class MovableActor : InteractableActor
 {
     public MovableActor(int id, ActorResource actorResource) : base(id, actorResource)
     {
-        HasMapCollision = actorResource.Model.HasMapCollision;
         MapCollisionType = actorResource.Model.MapCollisionType;
+        HasMapCollision = actorResource.Model.HasMapCollision;
+        HasObjectCollision = actorResource.Model.HasObjectCollision;
+
+        ActorFlag_C = false;
     }
 
     public Mechanic Mechanic { get; } = new();
-    public Vector2 Speed { get; set; } = new();
-    public bool HasMapCollision { get; }
+    public MovableActor LinkedMovementActor { get; set; }
+    public Vector2 Speed { get; set; }
+
+    // Flags
     public ActorMapCollisionType MapCollisionType { get; }
+    public bool HasMapCollision { get; }
+    public bool HasObjectCollision { get; }
 
     private void CheckMapCollisionX()
     {
@@ -122,7 +129,7 @@ public class MovableActor : InteractableActor
 
     public override void Step()
     {
-        // TODO: Change some flags
+        IsTouchingActor = false;
         base.Step();
     }
 }
