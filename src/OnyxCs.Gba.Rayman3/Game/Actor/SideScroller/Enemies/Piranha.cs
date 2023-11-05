@@ -18,7 +18,7 @@ public class Piranha : MovableActor
 
     private void SpawnSplash()
     {
-        BaseActor splash = Frame.GetComponent<Scene2D>().Objects.SpawnActor(ActorType.Splash);
+        BaseActor splash = Frame.GetComponent<Scene2D>().GameObjects.SpawnActor(ActorType.Splash);
         if (splash != null)
             splash.Position = Position;
     }

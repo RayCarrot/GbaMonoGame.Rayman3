@@ -14,7 +14,7 @@ public class GameObject
         Flag_2 = false;
         Flag_3 = gameObjectResource.Flag_3;
         ResurrectsImmediately = gameObjectResource.ResurrectsImmediately;
-        ResurrectsInKnot = gameObjectResource.ResurrectsInKnot;
+        ResurrectsLater = gameObjectResource.ResurrectsLater;
         Flag_6 = gameObjectResource.Flag_6;
         Flag_7 = gameObjectResource.Flag_7;
     }
@@ -28,7 +28,7 @@ public class GameObject
     public bool Flag_2 { get; set; }
     public bool Flag_3 { get; set; }
     public bool ResurrectsImmediately { get; set; }
-    public bool ResurrectsInKnot { get; set; }
+    public bool ResurrectsLater { get; set; }
     public bool Flag_6 { get; set; }
     public bool Flag_7 { get; set; }
 
@@ -60,11 +60,11 @@ public class GameObject
                 IsEnabled = false;
                 return true;
 
-            case Message.Reset:
+            case Message.Resurrect:
                 IsEnabled = true;
                 return true;
 
-            case Message.ResetWakeUp:
+            case Message.ResurrectWakeUp:
                 IsEnabled = true;
                 IsAwake = true;
                 return true;

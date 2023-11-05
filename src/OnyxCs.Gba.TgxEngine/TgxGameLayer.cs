@@ -1,4 +1,6 @@
-﻿namespace OnyxCs.Gba.TgxEngine;
+﻿using BinarySerializer.Nintendo.GBA;
+
+namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxGameLayer
 {
@@ -10,4 +12,7 @@ public abstract class TgxGameLayer
 
     public int Width { get; }
     public int Height { get; }
+
+    public int PixelWidth => Width * Constants.TileSize;
+    public int PixelHeight => Height * Constants.TileSize;
 }

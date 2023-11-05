@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BinarySerializer.Onyx.Gba;
+using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -12,6 +14,7 @@ public class GameObjects
         AlwaysActorsCount = sceneResource.AlwaysActorsCount;
         ActorsCount = sceneResource.ActorsCount;
         CaptorsCount = sceneResource.CaptorsCount;
+        KnotsWidth = sceneResource.KnotsWidth;
         
         Objects = new GameObject[ObjectsCount];
 
@@ -26,7 +29,7 @@ public class GameObjects
         for (int i = 0; i < sceneResource.Captors.Length; i++)
             Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, sceneResource.Captors[i]);
 
-        // TODO: Create knots
+        Knots = sceneResource.Knots;
 
         // Initialize actors
         foreach (BaseActor actor in Objects.Take(AlwaysActorsCount + ActorsCount).Cast<BaseActor>())
@@ -39,21 +42,72 @@ public class GameObjects
     public int CaptorsCount { get; }
 
     public GameObject[] Objects { get; }
+    public Knot[] Knots { get; }
+    public byte KnotsWidth { get; }
+    public Knot CurrentKnot { get; set; }
+    public Knot PreviousKnot { get; set; }
 
-    private IEnumerable<BaseActor> EnumerateAlwaysActors() => Objects.Take(AlwaysActorsCount).Cast<BaseActor>();
-    public IEnumerable<BaseActor> EnumerateEnabledAlwaysActors() => EnumerateAlwaysActors().Where(x => x.IsEnabled);
-    public IEnumerable<BaseActor> EnumerateDisabledAlwaysActors() => EnumerateAlwaysActors().Where(x => !x.IsEnabled);
-
-    private IEnumerable<BaseActor> EnumerateActors()
+    public IEnumerable<BaseActor> EnumerateAlwaysActors(bool isEnabled)
     {
-        // TODO: This should only enumerate actors in the current knot!
-        return Objects.Skip(AlwaysActorsCount).Take(ActorsCount).Cast<BaseActor>();
+        return Objects.Take(AlwaysActorsCount).Where(x => x.IsEnabled == isEnabled).Cast<BaseActor>();
     }
-    public IEnumerable<BaseActor> EnumerateEnabledActors() => EnumerateActors().Where(x => x.IsEnabled);
-    public IEnumerable<BaseActor> EnumerateDisabledActors() => EnumerateActors().Where(x => !x.IsEnabled);
 
-    private IEnumerable<Captor> EnumerateCaptors() => Objects.Skip(AlwaysActorsCount + ActorsCount).Take(CaptorsCount).Cast<Captor>();
-    public IEnumerable<Captor> EnumerateEnabledCaptors() => EnumerateCaptors().Where(x => x.IsEnabled);
+    public IEnumerable<BaseActor> EnumerateActors(bool isEnabled, Knot knot = null)
+    {
+        knot ??= CurrentKnot;
+        return knot.ActorIds.Select(x => Objects[x]).Where(x => x.IsEnabled == isEnabled).Cast<BaseActor>();
+    }
+
+    public IEnumerable<BaseActor> EnumerateAllActors(bool isEnabled, Knot knot = null)
+    {
+        return EnumerateAlwaysActors(isEnabled).Concat(EnumerateActors(isEnabled, knot));
+    }
+
+    public IEnumerable<GameObject> EnumerateAllGameObjects(bool isEnabled, Knot knot = null)
+    {
+        return EnumerateAlwaysActors(isEnabled).
+            Concat(EnumerateActors(isEnabled, knot)).
+            Cast<GameObject>().
+            Concat(EnumerateCaptors(isEnabled, knot));
+    }
+
+    public IEnumerable<GameObject> EnumerateActorsAndCaptors(bool isEnabled, Knot knot = null)
+    {
+        return EnumerateActors(isEnabled, knot).
+            Cast<GameObject>().
+            Concat(EnumerateCaptors(isEnabled, knot));
+    }
+
+    public IEnumerable<Captor> EnumerateCaptors(bool isEnabled, Knot knot = null)
+    {
+        knot ??= CurrentKnot;
+        return knot.CaptorIds.Select(x => Objects[x]).Where(x => x.IsEnabled == isEnabled).Cast<Captor>();
+    }
+
+    public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos)
+    {
+        // TODO: Offset position if Mode7
+
+        TgxGameLayer physicalLayer = playfield.PhysicalLayer;
+
+        if (physicalLayer.PixelWidth - Gfx.GfxCamera.GameResolution.X <= camPos.X)
+            camPos = new Vector2(physicalLayer.PixelWidth - Gfx.GfxCamera.GameResolution.X - 1, camPos.Y);
+
+        if (physicalLayer.PixelHeight - Gfx.GfxCamera.GameResolution.Y <= camPos.Y)
+            camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Gfx.GfxCamera.GameResolution.Y - 1);
+
+        int knotX = (int)(camPos.X / Gfx.GfxCamera.OriginalGameResolution.X);
+        int knotY = (int)(camPos.Y / Gfx.GfxCamera.OriginalGameResolution.Y);
+        Knot knot = Knots[knotX + knotY * KnotsWidth];
+
+        if (knot == CurrentKnot)
+            return false;
+
+        PreviousKnot = CurrentKnot;
+        CurrentKnot = knot;
+
+        return true;
+    }
 
     public BaseActor SpawnActor<T>(T actorType)
         where T : Enum
@@ -63,8 +117,8 @@ public class GameObjects
 
     public BaseActor SpawnActor(int actorType)
     {
-        BaseActor actor = EnumerateDisabledActors().Concat(EnumerateDisabledAlwaysActors()).FirstOrDefault(x => x.Type == actorType);
-        actor?.SendMessage(Message.ResetWakeUp);
+        BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
+        actor?.SendMessage(Message.ResurrectWakeUp);
         return actor;
     }
 }

@@ -7,8 +7,8 @@ public class Captor : GameObject
 {
     public Captor(int id, CaptorResource captorResource) : base(id, captorResource)
     {
-        CaptorFlag_0 = captorResource.CaptorFlag_0;
-        CaptorFlag_1 = captorResource.CaptorFlag_1;
+        TriggerOnMainActorDetection = captorResource.TriggerOnMainActorDetection;
+        IsTriggering = captorResource.IsTriggering;
         CaptorFlag_2 = captorResource.CaptorFlag_2;
         
         Events = captorResource.Events.Events;
@@ -23,8 +23,8 @@ public class Captor : GameObject
     }
 
     // Flags
-    public bool CaptorFlag_0 { get; set; }
-    public bool CaptorFlag_1 { get; set; }
+    public bool TriggerOnMainActorDetection { get; set; }
+    public bool IsTriggering { get; set; }
     public bool CaptorFlag_2 { get; set; }
 
     public CaptorEvent[] Events { get; }
@@ -39,7 +39,7 @@ public class Captor : GameObject
         switch (message)
         {
             case Message.Captor_Trigger:
-                CaptorFlag_1 = true;
+                IsTriggering = true;
                 TriggerEvent();
                 return true;
         }
@@ -65,11 +65,11 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Frame.GetComponent<Scene2D>().Objects.Objects[evt.Param & 0xFF].SendMessage(msg, evt.Param >> 8);
+                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].SendMessage(msg, evt.Param >> 8);
                     break;
                 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Frame.GetComponent<Scene2D>().Objects.Objects[evt.Param & 0xFF].SendMessage(msg, this);
+                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].SendMessage(msg, this);
                     break;
             }
 
@@ -83,7 +83,7 @@ public class Captor : GameObject
             SendMessage(Message.Destroy);
             TriggeredCount = 0;
             EventsToTrigger = OriginalEventsToTrigger;
-            CaptorFlag_1 = false;
+            IsTriggering = false;
         }
     }
 }

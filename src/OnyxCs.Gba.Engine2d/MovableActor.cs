@@ -24,6 +24,26 @@ public class MovableActor : InteractableActor
     public bool HasMapCollision { get; }
     public bool HasObjectCollision { get; }
 
+    private bool CheckObjectCollision1(Rectangle actorDetectionBox, Rectangle otherDetectionBox)
+    {
+        if (!actorDetectionBox.Intersects(otherDetectionBox))
+            return false;
+
+        // TODO: Modify position and speed
+
+        return true;
+    }
+
+    private bool CheckObjectCollision2(Rectangle actorDetectionBox, Rectangle otherDetectionBox)
+    {
+        if (!actorDetectionBox.Intersects(otherDetectionBox))
+            return false;
+
+        // TODO: Modify position and speed
+
+        return true;
+    }
+
     private void CheckMapCollisionX()
     {
         // TODO: Implement
@@ -89,47 +109,94 @@ public class MovableActor : InteractableActor
         // Update the speed
         Speed = Mechanic.UpdateSpeedAction();
 
-        if (Speed == Vector2.Zero) 
-            return;
-        
-        Position += Speed;
-
-        if (HasMapCollision)
+        if (LinkedMovementActor != null)
         {
-            switch (MapCollisionType)
+            LinkedMovementActor.Move();
+            Speed += LinkedMovementActor.Speed;
+        }
+
+        if (Speed != Vector2.Zero)
+        {
+            Position += Speed;
+
+            if (HasObjectCollision)
             {
-                case ActorMapCollisionType.CheckX:
-                    CheckMapCollisionX();
-                    break;
+                IsTouchingActor = false;
 
-                case ActorMapCollisionType.CheckY:
-                    CheckMapCollisionY();
-                    break;
+                Rectangle detectionBox = GetAbsoluteBox(DetectionBox);
 
-                case ActorMapCollisionType.CheckXY:
-                    CheckMapCollisionY();
-                    CheckMapCollisionX();
-                    break;
+                foreach (BaseActor actor in Frame.GetComponent<Scene2D>().GameObjects.EnumerateAllActors(isEnabled: true))
+                {
+                    if (actor != this && actor.ActorFlag_6 && actor is ActionActor actionActor)
+                    {
+                        Rectangle otherDetectionBox = actionActor.GetAbsoluteBox(actionActor.DetectionBox);
 
-                case ActorMapCollisionType.CheckExtendedX:
-                    CheckMapCollisionExtendedX();
-                    break;
+                        if (!actionActor.ActorFlag_E)
+                        {
+                            if (CheckObjectCollision1(detectionBox, otherDetectionBox))
+                            {
+                                IsTouchingActor = true;
+                                detectionBox = GetAbsoluteBox(DetectionBox);
+                            }
+                        }
+                        else
+                        {
+                            if (CheckObjectCollision2(detectionBox, otherDetectionBox))
+                            {
+                                IsTouchingActor = true;
+                                detectionBox = GetAbsoluteBox(DetectionBox);
+                            }
+                        }
+                    }
+                }
+            }
 
-                case ActorMapCollisionType.CheckExtendedY:
-                    CheckMapCollisionExtendedY();
-                    break;
+            if (HasMapCollision)
+            {
+                IsTouchingMap = false;
 
-                case ActorMapCollisionType.CheckExtendedXY:
-                    CheckMapCollisionExtendedY();
-                    CheckMapCollisionExtendedX();
-                    break;
+                switch (MapCollisionType)
+                {
+                    case ActorMapCollisionType.CheckX:
+                        CheckMapCollisionX();
+                        break;
+
+                    case ActorMapCollisionType.CheckY:
+                        CheckMapCollisionY();
+                        break;
+
+                    case ActorMapCollisionType.CheckXY:
+                        CheckMapCollisionY();
+                        CheckMapCollisionX();
+                        break;
+
+                    case ActorMapCollisionType.CheckExtendedX:
+                        CheckMapCollisionExtendedX();
+                        break;
+
+                    case ActorMapCollisionType.CheckExtendedY:
+                        CheckMapCollisionExtendedY();
+                        break;
+
+                    case ActorMapCollisionType.CheckExtendedXY:
+                        CheckMapCollisionExtendedY();
+                        CheckMapCollisionExtendedX();
+                        break;
+                }
+            }
+
+            if (LinkedMovementActor != null)
+            {
+                Speed = new Vector2(Speed.X, 0);
             }
         }
+
+        ActorFlag_C = true;
     }
 
     public override void Step()
     {
-        IsTouchingActor = false;
+        IsTouchingMap = false;
         base.Step();
     }
 }

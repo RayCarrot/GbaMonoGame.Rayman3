@@ -8,8 +8,8 @@ public enum Message
     WakeUp = 100,
     Sleep = 101,
     Destroy = 102,
-    Reset = 103,
-    ResetWakeUp = 104,
+    Resurrect = 103,
+    ResurrectWakeUp = 104,
 
     // Captor
     Captor_Trigger = 200,

@@ -34,6 +34,11 @@ public abstract class FrameSideScroller : Frame
         // TODO: More setup...
         Scene.AddDialog(new UserInfoSideScroller(GameInfo.Level.HasBlueLum));
         // TODO: More setup...
+        Scene.ResurrectActors();
+        Scene.RunCamera();
+        Scene.ProcessDialogs();
+        Scene.DrawActors();
+        // TODO: More setup...
         CurrentStepAction = Step_Normal;
     }
 
@@ -54,10 +59,10 @@ public abstract class FrameSideScroller : Frame
     private void Step_Normal()
     {
         Scene.RunActors();
-        // TODO: Enable/disable actors
+        Scene.ResurrectActors();
         Scene.StepActors();
         Scene.MoveActors();
-        // TODO: Check captors
+        Scene.RunCaptors();
         Scene.RunCamera();
         Scene.ProcessDialogs();
         Scene.DrawActors();

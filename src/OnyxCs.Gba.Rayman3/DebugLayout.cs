@@ -147,6 +147,8 @@ public class DebugLayout
 
         ImGui.Text("TODO: Implement");
 
+        // TODO: Implement. Different log providers and levels to toggle?
+
         ImGui.End();
     }
 
@@ -215,12 +217,12 @@ public class DebugLayout
 
             ImGui.SeparatorText("Always actors");
 
-            ImGui.Text($"Count: {scene2D.Objects.AlwaysActorsCount}");
+            ImGui.Text($"Count: {scene2D.GameObjects.AlwaysActorsCount}");
 
             if (ImGui.BeginListBox("##_alwaysActors"))
             {
-                foreach (BaseActor actor in scene2D.Objects.Objects.
-                             Take(scene2D.Objects.AlwaysActorsCount).
+                foreach (BaseActor actor in scene2D.GameObjects.Objects.
+                             Take(scene2D.GameObjects.AlwaysActorsCount).
                              Cast<BaseActor>())
                 {
                     bool isSelected = SelectedGameObject == actor;
@@ -235,13 +237,13 @@ public class DebugLayout
             ImGui.Spacing();
             ImGui.SeparatorText("Actors");
 
-            ImGui.Text($"Count: {scene2D.Objects.ActorsCount}");
+            ImGui.Text($"Count: {scene2D.GameObjects.ActorsCount}");
 
             if (ImGui.BeginListBox("##_actors"))
             {
-                foreach (BaseActor actor in scene2D.Objects.Objects.
-                             Skip(scene2D.Objects.AlwaysActorsCount).
-                             Take(scene2D.Objects.ActorsCount).
+                foreach (BaseActor actor in scene2D.GameObjects.Objects.
+                             Skip(scene2D.GameObjects.AlwaysActorsCount).
+                             Take(scene2D.GameObjects.ActorsCount).
                              Cast<BaseActor>())
                 {
                     bool isSelected = SelectedGameObject == actor;
@@ -256,13 +258,13 @@ public class DebugLayout
             ImGui.Spacing();
             ImGui.SeparatorText("Captors");
 
-            ImGui.Text($"Count: {scene2D.Objects.CaptorsCount}");
+            ImGui.Text($"Count: {scene2D.GameObjects.CaptorsCount}");
 
-            if (scene2D.Objects.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
+            if (scene2D.GameObjects.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
             {
-                foreach (Captor captor in scene2D.Objects.Objects.
-                             Skip(scene2D.Objects.AlwaysActorsCount + scene2D.Objects.ActorsCount).
-                             Take(scene2D.Objects.CaptorsCount).
+                foreach (Captor captor in scene2D.GameObjects.Objects.
+                             Skip(scene2D.GameObjects.AlwaysActorsCount + scene2D.GameObjects.ActorsCount).
+                             Take(scene2D.GameObjects.CaptorsCount).
                              Cast<Captor>())
                 {
                     bool isSelected = SelectedGameObject == captor;
@@ -404,8 +406,7 @@ public class DebugLayout
     {
         if (Frame.GetComponent<Scene2D>() is { } scene2D)
         {
-            foreach (BaseActor actor in scene2D.Objects.EnumerateEnabledAlwaysActors().
-                         Concat(scene2D.Objects.EnumerateEnabledActors()))
+            foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
             {
                 if (_showViewBoxes)
                     DrawBox(renderer, actor, actor.ViewBox, Color.Lime);
@@ -431,7 +432,7 @@ public class DebugLayout
 
             if (_showCaptorBoxes)
             {
-                foreach (Captor captor in scene2D.Objects.EnumerateEnabledCaptors())
+                foreach (Captor captor in scene2D.GameObjects.EnumerateCaptors(isEnabled: true))
                 {
                     DrawBox(renderer, captor, captor.CaptorBox, Color.DeepPink);
                 }

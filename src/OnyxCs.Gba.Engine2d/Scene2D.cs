@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using BinarySerializer.Nintendo.GBA;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 
@@ -19,7 +21,7 @@ public class Scene2D
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
-        Objects = new GameObjects(scene);
+        GameObjects = new GameObjects(scene);
 
         Camera.LinkedObject = GetMainActor();
         Camera.SetFirstPosition();
@@ -30,7 +32,7 @@ public class Scene2D
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield2D Playfield { get; }
     public int LayersCount { get; }
-    public GameObjects Objects { get; }
+    public GameObjects GameObjects { get; }
 
     public void AddDialog(Dialog dialog)
     {
@@ -50,25 +52,38 @@ public class Scene2D
 
     public void RunActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
-        {
-            actor.DoBehavior();
-        }
-
-        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
+        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
         {
             actor.DoBehavior();
         }
     }
 
-    public void StepActors()
+    public void ResurrectActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
+        Vector2 camPos = Playfield.Camera.Position;
+        bool newKnot = GameObjects.UpdateCurrentKnot(Playfield, camPos);
+
+        foreach (GameObject obj in GameObjects.EnumerateAllGameObjects(isEnabled: false))
         {
-            actor.Step();
+            if (obj.ResurrectsImmediately)
+                obj.SendMessage(Message.Resurrect);
         }
 
-        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
+        if (newKnot && GameObjects.PreviousKnot != null)
+        {
+            foreach (GameObject obj in GameObjects.EnumerateActorsAndCaptors(isEnabled: false, knot: GameObjects.PreviousKnot))
+            {
+                if (obj.ResurrectsLater && GameObjects.CurrentKnot.ActorIds.Concat(GameObjects.CurrentKnot.CaptorIds).All(x => x != obj.Id))
+                {
+                    obj.SendMessage(Message.Resurrect);
+                }
+            }
+        }
+    }
+
+    public void StepActors()
+    {
+        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
         {
             actor.Step();
         }
@@ -76,27 +91,44 @@ public class Scene2D
 
     public void MoveActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
-        {
-            if (actor is MovableActor movableActor)
-                movableActor.Move();
-        }
-
-        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
+        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
         {
             if (actor is MovableActor movableActor)
                 movableActor.Move();
         }
     }
 
+    public void RunCaptors()
+    {
+        foreach (Captor captor in GameObjects.EnumerateCaptors(isEnabled: true))
+        {
+            if (captor.TriggerOnMainActorDetection)
+            {
+                MovableActor mainActor = GetMainActor();
+                captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(mainActor.GetAbsoluteBox(mainActor.DetectionBox));
+            }
+            else
+            {
+                if (!captor.IsTriggering)
+                {
+                    foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+                    {
+                        if (actor.IsAgainstCaptor && actor is ActionActor actionActor)
+                        {
+                            captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(actionActor.GetAbsoluteBox(actionActor.DetectionBox));
+                        }
+                    }
+                }
+            }
+
+            if (captor.IsTriggering)
+                captor.TriggerEvent();
+        }
+    }
+
     public void DrawActors()
     {
-        foreach (BaseActor actor in Objects.EnumerateEnabledAlwaysActors())
-        {
-            actor.Draw(AnimationPlayer, false);
-        }
-
-        foreach (BaseActor actor in Objects.EnumerateEnabledActors())
+        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
         {
             actor.Draw(AnimationPlayer, false);
         }
@@ -109,7 +141,8 @@ public class Scene2D
 
     public MovableActor GetMainActor()
     {
-        return (MovableActor)Objects.Objects[0];
+        // TODO: In multiplayer we get the actor from the machine id
+        return (MovableActor)GameObjects.Objects[0];
     }
 
     public bool IsHitMainActor(InteractableActor actor)
@@ -131,6 +164,6 @@ public class Scene2D
 
     public byte GetPhysicalType(Vector2 position)
     {
-        return Playfield.GetPhysicalValue((position / 8).ToPoint());
+        return Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint());
     }
 }
