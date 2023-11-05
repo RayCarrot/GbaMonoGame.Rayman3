@@ -43,8 +43,8 @@ public class ActionActor : BaseActor
     {
         switch (message)
         {
-            case Message.Enable:
-            case Message.Spawn:
+            case Message.Reset:
+            case Message.ResetWakeUp:
                 HitPoints = ActorModel.HitPoints;
                 break;
         }

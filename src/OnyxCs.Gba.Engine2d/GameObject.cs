@@ -10,7 +10,7 @@ public class GameObject
         Position = gameObjectResource.Pos.ToVector2();
 
         IsEnabled = gameObjectResource.IsEnabled;
-        Flag_1 = gameObjectResource.Flag_1;
+        IsAwake = gameObjectResource.IsAwake;
         Flag_2 = false;
         Flag_3 = gameObjectResource.Flag_3;
         ResurrectsImmediately = gameObjectResource.ResurrectsImmediately;
@@ -24,7 +24,7 @@ public class GameObject
 
     // Flags
     public bool IsEnabled { get; set; }
-    public bool Flag_1 { get; set; }
+    public bool IsAwake { get; set; }
     public bool Flag_2 { get; set; }
     public bool Flag_3 { get; set; }
     public bool ResurrectsImmediately { get; set; }
@@ -48,25 +48,25 @@ public class GameObject
             case Message.None:
                 return true;
 
-            case Message.SetFlag1:
-                Flag_1 = true;
+            case Message.WakeUp:
+                IsAwake = true;
                 return true;
 
-            case Message.ClearFlag1:
-                Flag_1 = false;
+            case Message.Sleep:
+                IsAwake = false;
                 return true;
 
-            case Message.Disable:
+            case Message.Destroy:
                 IsEnabled = false;
                 return true;
 
-            case Message.Enable:
+            case Message.Reset:
                 IsEnabled = true;
                 return true;
 
-            case Message.Spawn:
+            case Message.ResetWakeUp:
                 IsEnabled = true;
-                Flag_1 = true;
+                IsAwake = true;
                 return true;
 
             default:

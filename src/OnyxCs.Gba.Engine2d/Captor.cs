@@ -80,7 +80,7 @@ public class Captor : GameObject
 
         if (EventsToTrigger == 0)
         {
-            SendMessage(Message.Disable);
+            SendMessage(Message.Destroy);
             TriggeredCount = 0;
             EventsToTrigger = OriginalEventsToTrigger;
             CaptorFlag_1 = false;

@@ -5,11 +5,11 @@ public enum Message
     None = 0,
 
     // Object
-    SetFlag1 = 100,
-    ClearFlag1 = 101,
-    Disable = 102,
-    Enable = 103,
-    Spawn = 104,
+    WakeUp = 100,
+    Sleep = 101,
+    Destroy = 102,
+    Reset = 103,
+    ResetWakeUp = 104,
 
     // Captor
     Captor_Trigger = 200,
