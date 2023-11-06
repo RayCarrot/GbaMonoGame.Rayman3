@@ -313,6 +313,9 @@ public class DebugLayout
             System.Numerics.Vector2 pos = new(SelectedGameObject.Position.X, SelectedGameObject.Position.Y);
             if (ImGui.InputFloat2("Position", ref pos))
                 SelectedGameObject.Position = new Vector2(pos.X, pos.Y);
+
+            if (SelectedGameObject is BaseActor actor)
+                ImGui.Text($"State: {actor.Fsm}");
         }
         else
         {

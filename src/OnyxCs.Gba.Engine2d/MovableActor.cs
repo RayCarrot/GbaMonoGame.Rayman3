@@ -21,8 +21,8 @@ public class MovableActor : InteractableActor
 
     // Flags
     public ActorMapCollisionType MapCollisionType { get; }
-    public bool HasMapCollision { get; }
-    public bool HasObjectCollision { get; }
+    public bool HasMapCollision { get; set; }
+    public bool HasObjectCollision { get; set; }
 
     private bool CheckObjectCollision1(Rectangle actorDetectionBox, Rectangle otherDetectionBox)
     {

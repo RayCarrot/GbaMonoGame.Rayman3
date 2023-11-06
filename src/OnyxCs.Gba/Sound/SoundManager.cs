@@ -9,4 +9,15 @@ public static class SoundManager
         // TODO: Implement
         Debug.WriteLine($"Play sound {id}");
     }
+
+    public static bool IsPlaying(int id)
+    {
+        // TODO: Implement
+        return false;
+    }
+
+    public static void FUN_080ac468(int id, float unknown)
+    {
+        // TODO: Implement. Sound speed?
+    }
 }

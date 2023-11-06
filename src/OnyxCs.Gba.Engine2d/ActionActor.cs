@@ -57,11 +57,6 @@ public class ActionActor : BaseActor
         ChangeAction();
     }
 
-    public void SetActionId(int actionId)
-    {
-        ActionId = actionId;
-    }
-
     public void ChangeAction()
     {
         if (!NewAction) 

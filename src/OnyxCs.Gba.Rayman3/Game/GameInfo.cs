@@ -1,5 +1,4 @@
 ﻿using BinarySerializer.Onyx.Gba.Rayman3;
-using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -11,6 +10,9 @@ public static class GameInfo
     public static int LoadedYellowLums { get; set; }
     public static int GreenLums { get; set; }
     public static int LastGreenLumAlive { get; set; }
+    public static Vector2 CheckpointPosition { get; set; }
+    public static byte field12_0xf { get; set; }
+    public static CheatFlags Cheats { get; set; }
 
     public static LevelInfo Level => Levels[(int)MapId];
 

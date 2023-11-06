@@ -31,7 +31,7 @@ public abstract class TgxPlayfield
 
     public byte GetPhysicalValue(Point mapPoint)
     {
-        if (mapPoint.X < 0 || mapPoint.Y < 0)
+        if (mapPoint.X < 0 || mapPoint.Y < 0 || mapPoint.X >= PhysicalLayer.Width || mapPoint.Y >= PhysicalLayer.Height)
             return 0xFF;
         else
             return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];

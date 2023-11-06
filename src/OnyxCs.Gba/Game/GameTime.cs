@@ -13,7 +13,7 @@ public static class GameTime
     /// <summary>
     /// The number of elapsed game frames since the game started.
     /// </summary>
-    public static long ElapsedFrames { get; private set; }
+    public static int ElapsedFrames { get; private set; }
 
     /// <summary>
     /// Updates the tracked game time by one frame if not paused.

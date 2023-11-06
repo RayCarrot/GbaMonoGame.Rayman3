@@ -10,6 +10,9 @@ public abstract class CameraActor
         return false;
     }
 
+    public void SendMessage(Message message) => ProcessMessage(message, null);
+    public void SendMessage(Message message, object param) => ProcessMessage(message, param);
+
     public abstract void SetFirstPosition();
     public abstract bool IsActorFramed(BaseActor actor);
 }

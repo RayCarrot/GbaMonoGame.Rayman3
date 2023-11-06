@@ -8,10 +8,10 @@ public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller()
     {
-        HorOffset = 40; // TODO: 95 in multiplayer
+        HorOffset = MultiplayerManager.IsInMultiplayer ? 95 : 40;
     }
 
-    public byte HorOffset { get; set; }
+    public int HorOffset { get; set; }
     public Vector2 PreviousLinkedObjectPosition { get; set; }
 
     protected override bool ProcessMessage(Message message, object param)

@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class WoodOfLight_M1 : FrameSideScroller
+public class WoodLight_M1 : FrameSideScroller
 {
-    public WoodOfLight_M1(MapId mapId) : base(mapId) { }
+    public WoodLight_M1(MapId mapId) : base(mapId) { }
 
     public override void Init()
     {

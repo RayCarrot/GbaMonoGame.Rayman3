@@ -16,5 +16,15 @@ public class FiniteStateMachine
         CurrentAction?.Invoke(FsmAction.Step);
     }
 
+    public bool EqualsAction(Fsm action)
+    {
+        return CurrentAction == action;
+    }
+
     public delegate void Fsm(FsmAction action);
+
+    public override string ToString()
+    {
+        return CurrentAction?.Method.Name ?? "None";
+    }
 }

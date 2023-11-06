@@ -130,7 +130,7 @@ public class Rayman3 : Game
         });
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {
-            { MapId.WoodsOfLight_M1, id => new WoodOfLight_M1(id) },
+            { MapId.WoodLight_M1, id => new WoodLight_M1(id) },
         });
 
         FrameManager.SetNextFrame(new Intro());
