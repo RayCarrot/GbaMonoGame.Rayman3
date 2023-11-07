@@ -118,7 +118,7 @@ public class GameObjects
     public BaseActor SpawnActor(int actorType)
     {
         BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
-        actor?.SendMessage(Message.ResurrectWakeUp);
+        actor?.ProcessMessage(Message.ResurrectWakeUp);
         return actor;
     }
 }

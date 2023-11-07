@@ -66,7 +66,7 @@ public class Scene2D
         foreach (GameObject obj in GameObjects.EnumerateAllGameObjects(isEnabled: false))
         {
             if (obj.ResurrectsImmediately)
-                obj.SendMessage(Message.Resurrect);
+                obj.ProcessMessage(Message.Resurrect);
         }
 
         if (newKnot && GameObjects.PreviousKnot != null)
@@ -75,7 +75,7 @@ public class Scene2D
             {
                 if (obj.ResurrectsLater && GameObjects.CurrentKnot.ActorIds.Concat(GameObjects.CurrentKnot.CaptorIds).All(x => x != obj.Id))
                 {
-                    obj.SendMessage(Message.Resurrect);
+                    obj.ProcessMessage(Message.Resurrect);
                 }
             }
         }

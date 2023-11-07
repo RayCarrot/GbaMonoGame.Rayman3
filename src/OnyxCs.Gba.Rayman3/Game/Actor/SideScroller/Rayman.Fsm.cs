@@ -145,31 +145,31 @@ public partial class Rayman : MovableActor
                         !Fsm.EqualsAction(FUN_08026cd4))
                     {
                         field18_0x93 = 70;
-                        cam.SendMessage((Message)1040, field18_0x93);
+                        cam.ProcessMessage((Message)1040, field18_0x93);
                     }
                     else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(FUN_0802ea74)))
                     {
                         field18_0x93 = 160;
-                        cam.SendMessage((Message)1040, field18_0x93);
+                        cam.ProcessMessage((Message)1040, field18_0x93);
                     }
                     else if (Fsm.EqualsAction(FUN_0802d44c) && field27_0x9c == 0)
                     {
-                        cam.SendMessage((Message)1039, field18_0x93);
+                        cam.ProcessMessage((Message)1039, field18_0x93);
                     }
                     else if (Fsm.EqualsAction(FUN_0803283c))
                     {
                         field18_0x93 = 65;
-                        cam.SendMessage((Message)1040, field18_0x93);
+                        cam.ProcessMessage((Message)1040, field18_0x93);
                     }
                     else if (Fsm.EqualsAction(FUN_08026cd4) || Fsm.EqualsAction(FUN_0802ddac))
                     {
                         field18_0x93 = 112;
-                        cam.SendMessage((Message)1040, field18_0x93);
+                        cam.ProcessMessage((Message)1040, field18_0x93);
                     }
                     else
                     {
                         field18_0x93 = 120;
-                        cam.SendMessage((Message)1040, field18_0x93);
+                        cam.ProcessMessage((Message)1040, field18_0x93);
                     }
                 }
 
@@ -432,7 +432,7 @@ public partial class Rayman : MovableActor
 
                 // TODO: Name message
                 if (IsLocalPlayer)
-                    cam.SendMessage((Message)1039, field18_0x93);
+                    cam.ProcessMessage((Message)1039, field18_0x93);
 
                 Timer = (uint)GameTime.ElapsedFrames;
                 PhysicalType = 32;

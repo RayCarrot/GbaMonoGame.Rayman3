@@ -39,7 +39,7 @@ public class ActionActor : BaseActor
 
     public bool NewAction { get; set; }
 
-    protected override bool ProcessMessage(Message message, object param)
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
         switch (message)
         {
@@ -49,7 +49,7 @@ public class ActionActor : BaseActor
                 break;
         }
 
-        return base.ProcessMessage(message, param);
+        return base.ProcessMessageImpl(message, param);
     }
 
     public override void Step()

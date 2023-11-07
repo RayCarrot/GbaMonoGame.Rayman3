@@ -34,7 +34,7 @@ public class Captor : GameObject
 
     public Rectangle CaptorBox { get; set; }
 
-    protected override bool ProcessMessage(Message message, object param)
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
         switch (message)
         {
@@ -44,7 +44,7 @@ public class Captor : GameObject
                 return true;
         }
 
-        return base.ProcessMessage(message, param);
+        return base.ProcessMessageImpl(message, param);
     }
 
     public void TriggerEvent()
@@ -65,11 +65,11 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].SendMessage(msg, evt.Param >> 8);
+                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
                     break;
                 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].SendMessage(msg, this);
+                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
                     break;
             }
 
@@ -80,7 +80,7 @@ public class Captor : GameObject
 
         if (EventsToTrigger == 0)
         {
-            SendMessage(Message.Destroy);
+            ProcessMessage(Message.Destroy);
             TriggeredCount = 0;
             EventsToTrigger = OriginalEventsToTrigger;
             IsTriggering = false;

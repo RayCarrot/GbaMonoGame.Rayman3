@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Engine2d;
 
-public class GameObject
+public abstract class GameObject : Object
 {
-    public GameObject(int id, GameObjectResource gameObjectResource)
+    protected GameObject(int id, GameObjectResource gameObjectResource)
     {
         Id = id;
         Position = gameObjectResource.Pos.ToVector2();
@@ -38,10 +38,7 @@ public class GameObject
         return box;
     }
 
-    public void SendMessage(Message message) => ProcessMessage(message, null);
-    public void SendMessage(Message message, object param) => ProcessMessage(message, param);
-
-    protected virtual bool ProcessMessage(Message message, object param)
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
         switch (message)
         {

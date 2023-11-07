@@ -18,7 +18,7 @@ public partial class Rayman : MovableActor
         {
             if (id >= MultiplayerManager.Data.Count)
             {
-                SendMessage(Message.Destroy);
+                ProcessMessage(Message.Destroy);
             }
             else
             {
@@ -329,9 +329,9 @@ public partial class Rayman : MovableActor
         throw new NotImplementedException();
     }
 
-    protected override bool ProcessMessage(Message message, object param)
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
-        if (base.ProcessMessage(message, param))
+        if (base.ProcessMessageImpl(message, param))
             return true;
 
         switch (message)

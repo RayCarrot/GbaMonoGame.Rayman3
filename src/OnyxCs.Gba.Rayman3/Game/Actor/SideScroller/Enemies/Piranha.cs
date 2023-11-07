@@ -107,7 +107,7 @@ public class Piranha : MovableActor
 
             case FsmAction.UnInit:
                 SpawnSplash();
-                SendMessage(Message.Destroy);
+                ProcessMessage(Message.Destroy);
                 break;
         }
     }

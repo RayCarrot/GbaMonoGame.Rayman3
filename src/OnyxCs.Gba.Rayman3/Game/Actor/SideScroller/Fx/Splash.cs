@@ -30,7 +30,7 @@ public class Splash : BaseActor
                 break;
 
             case FsmAction.UnInit:
-                SendMessage(Message.Destroy);
+                ProcessMessage(Message.Destroy);
                 break;
         }
     }
