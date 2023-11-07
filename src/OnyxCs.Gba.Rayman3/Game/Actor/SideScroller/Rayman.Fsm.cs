@@ -11,7 +11,8 @@ public partial class Rayman : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                ActionId = IsFacingLeft ? 73 : 72;
+                // This never actually has a chance to play due to the Init function being called afterwards and overriding this
+                ActionId = IsFacingLeft ? Action.Spawn_Left : Action.Spawn_Right;
                 ChangeAction();
 
                 Timer = 0;
@@ -19,46 +20,46 @@ public partial class Rayman : MovableActor
                 CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
                 if (GameInfo.MapId == MapId.TheCanopy_M2)
                 {
-                    cam.HorOffset = 120;
+                    cam.HorizontalOffset = 120;
                 }
                 else
                 {
                     if (!MultiplayerManager.IsInMultiplayer)
-                        cam.HorOffset = 40;
+                        cam.HorizontalOffset = 40;
                     else if (IsLocalPlayer)
-                        cam.HorOffset = 95;
+                        cam.HorizontalOffset = 95;
                 }
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                    cam.HorOffset = 120;
+                    cam.HorizontalOffset = 120;
                 break;
 
             case FsmAction.Step:
-                if ((RaymanFlags & 0x40) != 0)
+                // Check if we're spawning at a curtain
+                if (Flag1_6)
                 {
+                    // Hide while fading and then show spawn animation
                     if (TransitionsFX.FadeCoefficient == 0)
                     {
-                        if (ActionId is not (217 or 218))
-                            ActionId = IsFacingLeft ? 218 : 217;
+                        if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
+                            ActionId = IsFacingLeft ? Action.Spawn_Curtain_Left : Action.Spawn_Curtain_Right;
                     }
                     else
                     {
-                        ActionId = IsFacingLeft ? 188 : 187;
+                        ActionId = IsFacingLeft ? Action.Hidden_Left : Action.Hidden_Right;
                     }
                 }
 
                 Timer++;
 
-                if (IsActionFinished && FUN_0802c53c())
-                    NextActionId = IsFacingLeft ? 202 : 201;
+                if (IsActionFinished && IsBossFight())
+                    NextActionId = IsFacingLeft ? Action.Idle_Determined_Left : Action.Idle_Determined_Right;
 
                 if (!IsActionFinished)
                     return;
 
-                if (MultiplayerManager.IsInMultiplayer && Timer < 210)
-                    return;
-
-                Fsm.ChangeAction(Fsm_Default);
+                if (!MultiplayerManager.IsInMultiplayer || Timer >= 210)
+                    Fsm.ChangeAction(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:
@@ -75,60 +76,57 @@ public partial class Rayman : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                FUN_08029ec4();
+                UpdatePhysicalType();
 
-                if (field19_0x94 == 32 || MechSpeedX + 1.5f <= 3)
+                if (PhysicalType == 32 || Math.Abs(MechSpeedX) <= 1.5f)
                 {
                     if (scene.Camera.LinkedObject == this)
                         SoundManager.Play(208, -1);
 
-                    if (field19_0x94 == 32)
+                    if (PhysicalType == 32)
                         MechSpeedX = 0;
 
-                    if (!FUN_0802c53c())
+                    if (!IsBossFight())
                     {
-                        if (NextActionId == -1)
+                        if (NextActionId == null)
                         {
+                            // Randomly show Rayman being bored
                             if (Random.Shared.Next(11) < 6)
-                            {
-                                ActionId = IsFacingLeft ? 147 : 146;
-                            }
+                                ActionId = IsFacingLeft ? Action.Idle_Bored_Left : Action.Idle_Bored_Right;
                             else
-                            {
-                                ActionId = IsFacingLeft ? 1 : 0;
-                            }
+                                ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
                         }
                         else
                         {
-                            ActionId = NextActionId;
+                            ActionId = NextActionId.Value;
                         }
                     }
-                    else if (NextActionId is 201 or 202)
+                    else if (NextActionId is Action.Idle_Determined_Right or Action.Idle_Determined_Left)
                     {
-                        ActionId = NextActionId;
+                        ActionId = NextActionId.Value;
                     }
                     else
                     {
-                        ActionId = IsFacingLeft ? 200 : 199;
+                        ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
                     }
                 }
                 else
                 {
-                    FUN_0802a2dc();
+                    SlidingOnSlippery();
                 }
 
                 Timer = 0;
                 break;
 
             case FsmAction.Step:
-                if ((RaymanFlags & 0x2000) != 0)
+                if (Flag1_D)
                 {
                     field16_0x91++;
 
                     if (field16_0x91 > 60)
                     {
-                        cam.HorOffset = 40;
-                        RaymanFlags &= 0xdfff;
+                        cam.HorizontalOffset = 40;
+                        Flag1_D = false;
                     }
                 }
 
@@ -138,7 +136,7 @@ public partial class Rayman : MovableActor
                     !Fsm.EqualsAction(FUN_080284ac) &&
                     !Fsm.EqualsAction(FUN_08033b34) &&
                     !Fsm.EqualsAction(FUN_080287d8) &&
-                    (RaymanFlags & 0x40) == 0)
+                    !Flag1_6)
                 {
                     // TODO: Name camera messages
                     if (!Fsm.EqualsAction(FUN_0802ddac) &&
@@ -180,24 +178,24 @@ public partial class Rayman : MovableActor
 
                 if (!IsOnInstaKillType())
                 {
-                    FUN_08029ec4();
+                    UpdatePhysicalType();
                     HorizontalMovement();
 
                     if (CheckForDamage())
                     {
                         Fsm.ChangeAction(FUN_08031d24);
 
-                        if (ActionId is not (213 or 214) && field19_0x94 == 32)
-                            ActionId = IsFacingLeft ? 214 : 213;
+                        if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
+                            ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
                     }
                     else
                     {
-                        if (CheckSingleInput(GbaInput.A) && field19_0x94 != 32)
+                        if (CheckSingleInput(GbaInput.A) && PhysicalType != 32)
                         {
                             Fsm.ChangeAction(FUN_0802cb38);
 
-                            if (ActionId is not (213 or 214) && field19_0x94 == 32)
-                                ActionId = IsFacingLeft ? 214 : 213;
+                            if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
+                                ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
                         }
                         else
                         {
@@ -208,8 +206,8 @@ public partial class Rayman : MovableActor
 
                                 Fsm.ChangeAction(FUN_0802cb38);
 
-                                if (ActionId is not (213 or 214) && field19_0x94 == 32)
-                                    ActionId = IsFacingLeft ? 214 : 213;
+                                if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
+                                    ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
                             }
                             else
                             {
@@ -217,15 +215,15 @@ public partial class Rayman : MovableActor
 
                                 if (!CheckInput(GbaInput.Up))
                                 {
-                                    if (ActionId is 213 or 214)
+                                    if (ActionId is Action.LookUp_Right or Action.LookUp_Left)
                                     {
-                                        ActionId = IsFacingLeft ? 1 : 0;
+                                        ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
                                     }
                                 }
                                 else
                                 {
-                                    if (ActionId is not (213 or 214) && field19_0x94 == 32)
-                                        ActionId = IsFacingLeft ? 214 : 213;
+                                    if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
+                                        ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
                                 }
                             }
                         }
@@ -242,72 +240,81 @@ public partial class Rayman : MovableActor
                         Fsm.ChangeAction(FUN_08033228);
                     }
 
-                    if (ActionId is not (213 or 214) && field19_0x94 == 32)
-                        ActionId = IsFacingLeft ? 214 : 213;
+                    if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
+                        ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
                 }
 
                 if (IsActionFinished)
                 {
-                    if ((ActionId == NextActionId && ActionId is not (146 or 147 or 193 or 194)) &&
-                        (ActionId is not (173 or 174 or 177 or 178) || Timer > 180))
+                    if ((ActionId == NextActionId && ActionId is not (
+                            Action.Idle_Bored_Right or Action.Idle_Bored_Left or 
+                            Action.EnterCurtain_Right or Action.EnterCurtain_Left)) &&
+                        (ActionId is not (
+                            Action.Idle_BasketBall_Right or Action.Idle_BasketBall_Left or 
+                            Action.Idle_Grimace_Right or Action.Idle_Grimace_Left) || 
+                         Timer > 180))
                     {
-                        if (!FUN_0802c53c())
+                        if (!IsBossFight())
                         {
-                            ActionId = IsFacingLeft ? 1 : 0;
+                            ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
                         }
                         else
                         {
-                            ActionId = IsFacingLeft ? 200 : 199;
+                            ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
                         }
 
-                        NextActionId = -1;
+                        NextActionId = null;
 
                         if (cam.LinkedObject == this)
                             SoundManager.Play(340, -1);
                     }
                 }
 
-                if (field19_0x94 == 32 || MechSpeedX + 1.5f <= 3)
+                if (PhysicalType == 32 || Math.Abs(MechSpeedX) <= 1.5f)
                 {
                     if (cam.LinkedObject == this)
                         SoundManager.Play(208, -1);
 
-                    if (NextActionId != -1 && NextActionId != ActionId)
+                    if (NextActionId != null && NextActionId != ActionId)
                     {
-                        ActionId = NextActionId;
+                        ActionId = NextActionId.Value;
                     }
                     else
                     {
-                        if (ActionId is not (213 or 214 or 0 or 1 or 199 or 200) && ActionId != NextActionId)
+                        if (ActionId is not (
+                                Action.LookUp_Right or Action.LookUp_Left or 
+                                Action.Idle_Left or Action.Idle_Right or 
+                                Action.Idle_ReadyToFight_Right or Action.Idle_ReadyToFight_Left) && 
+                            ActionId != NextActionId)
                         {
-                            if (!FUN_0802c53c())
+                            if (!IsBossFight())
                             {
-                                ActionId = IsFacingLeft ? 1 : 0;
+                                ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
                             }
                             else
                             {
-                                ActionId = IsFacingLeft ? 200 : 199;
+                                ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
                             }
                         }
                     }
                 }
                 else
                 {
-                    FUN_0802a2dc();
+                    SlidingOnSlippery();
                 }
 
                 if (CheckInput(GbaInput.Left) && !IsFacingLeft)
                 {
-                    ActionId = 3;
+                    ActionId = Action.Walk_Left;
                     ChangeAction();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
                 {
-                    ActionId = 2;
+                    ActionId = Action.Walk_Right;
                     ChangeAction();
                 }
 
-                if (CheckSingleInput(GbaInput.A) && MultiplayerFlag_2)
+                if (CheckSingleInput(GbaInput.A) && Flag2_2)
                 {
                     if (cam.LinkedObject == this)
                         SoundManager.Play(340, -1);
@@ -316,7 +323,7 @@ public partial class Rayman : MovableActor
                 }
                 else if (CheckInput(GbaInput.Down))
                 {
-                    NextActionId = IsFacingLeft ? 131 : 130;
+                    NextActionId = IsFacingLeft ? Action.CrouchDown_Left : Action.CrouchDown_Right;
 
                     if (cam.LinkedObject == this)
                         SoundManager.Play(340, -1);
@@ -344,19 +351,26 @@ public partial class Rayman : MovableActor
 
                     Fsm.ChangeAction(FUN_0802f5d8);
                 }
-                else if (MechSpeedX == 0 || FUN_0802986c() == 0 || (RaymanFlags & 1) != 0)
+                else if (MechSpeedX == 0 || FUN_0802986c() == 0 || Flag1_1)
                 {
-                    if (MechSpeedX != 0 || FUN_0802986c() == 0 || (RaymanFlags & 1) != 0)
+                    if (MechSpeedX != 0 || FUN_0802986c() == 0 || Flag1_1)
                     {
-                        if ((IsActionFinished && ActionId is not (213 or 214 or 146 or 147 or 193 or 194) && 360 < Timer) ||
-                            (IsActionFinished && ActionId is 0x92 or 0x93 or 0xc1 or 0xc2 && 720 < Timer))
+                        if ((IsActionFinished && ActionId is not (
+                                Action.LookUp_Right or Action.LookUp_Left or 
+                                Action.Idle_Bored_Right or Action.Idle_Bored_Left or 
+                                Action.EnterCurtain_Right or Action.EnterCurtain_Left) && 
+                             360 < Timer) ||
+                            (IsActionFinished && ActionId is
+                                 Action.Idle_Bored_Right or Action.Idle_Bored_Left or
+                                 Action.EnterCurtain_Right or Action.EnterCurtain_Left && 
+                             720 < Timer))
                         {
                             FUN_0802a65c();
                             Fsm.ChangeAction(Fsm_Default);
                         }
                         else
                         {
-                            RaymanFlags &= 0xfffe;
+                            Flag1_1 = false;
                         }
                     }
                     else
@@ -379,14 +393,14 @@ public partial class Rayman : MovableActor
                 break;
 
             case FsmAction.UnInit:
-                if (ActionId is 142 or 143 && cam.LinkedObject == this)
+                if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left && cam.LinkedObject == this)
                     SoundManager.Play(240, -1);
 
-                if (ActionId == NextActionId || ActionId is 2 or 3 or 179 or 180)
-                    NextActionId = -1;
+                if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk2_Right or Action.Walk2_Left)
+                    NextActionId = null;
 
-                if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 && cam.HorOffset == 120)
-                    cam.HorOffset = 40;
+                if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 && cam.HorizontalOffset == 120)
+                    cam.HorizontalOffset = 40;
                 break;
         }
     }
@@ -405,15 +419,15 @@ public partial class Rayman : MovableActor
                 if (scene.Camera.LinkedObject == this)
                     SoundManager.Play(208, -1);
 
-                if (ActionId is not (109 or 110))
+                if (ActionId is not (Action.UnknownJump_Right or Action.UnknownJump_Left))
                 {
-                    ActionId = IsFacingLeft ? 11 : 10;
+                    ActionId = IsFacingLeft ? Action.Jump_Left : Action.Jump_Right;
 
                     if (scene.Camera.LinkedObject == this)
                         SoundManager.Play(108, -1);
                 }
 
-                NextActionId = -1;
+                NextActionId = null;
                 field18_0x93 = 70;
 
                 // TODO: Name message
@@ -421,7 +435,7 @@ public partial class Rayman : MovableActor
                     cam.SendMessage((Message)1039, field18_0x93);
 
                 Timer = (uint)GameTime.ElapsedFrames;
-                field19_0x94 = 32;
+                PhysicalType = 32;
                 LinkedMovementActor = null;
                 break;
 
@@ -431,7 +445,7 @@ public partial class Rayman : MovableActor
                 break;
 
             case FsmAction.UnInit:
-                MultiplayerFlag_0 = false;
+                Flag2_0 = false;
                 break;
         }
     }

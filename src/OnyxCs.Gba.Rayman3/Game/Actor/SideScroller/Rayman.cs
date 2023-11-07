@@ -6,7 +6,6 @@ using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
-// TODO: Create enum for actions?
 public partial class Rayman : MovableActor
 {
     public Rayman(int id, ActorResource actorResource) : base(id, actorResource)
@@ -41,25 +40,42 @@ public partial class Rayman : MovableActor
     }
 
     public ActorResource Resource { get; }
-    public int NextActionId { get; set; }
+    private Action? NextActionId { get; set; }
     public uint Timer { get; set; }
     public float MechSpeedX { get; set; }
-    public ushort RaymanFlags { get; set; }
+    public byte PhysicalType { get; set; } // 32 seems to be mean it's slippery?
 
-    // Multiplayer flags TODO: Probably not multiplayer flags after all
-    public bool MultiplayerFlag_0 { get; set; }
-    public bool MultiplayerFlag_1 { get; set; }
-    public bool MultiplayerFlag_2 { get; set; }
+    // Unknown flags 1
+    public bool Flag1_0 { get; set; }
+    public bool Flag1_1 { get; set; }
+    public bool Flag1_2 { get; set; }
+    public bool Flag1_3 { get; set; }
+    public bool Flag1_4 { get; set; }
+    public bool Flag1_5 { get; set; }
+    public bool Flag1_6 { get; set; }
+    public bool Flag1_7 { get; set; }
+    public bool Flag1_8 { get; set; }
+    public bool Flag1_9 { get; set; }
+    public bool Flag1_A { get; set; }
+    public bool Flag1_B { get; set; }
+    public bool Flag1_C { get; set; }
+    public bool Flag1_D { get; set; }
+    public bool Flag1_E { get; set; }
+    public bool Flag1_F { get; set; }
+
+    // Unknown flags 2
+    public bool Flag2_0 { get; set; }
+    public bool Flag2_1 { get; set; }
+    public bool Flag2_2 { get; set; }
     public bool IsLocalPlayer { get; set; }
-    public bool MultiplayerFlag_4 { get; set; }
-    public bool MultiplayerFlag_5 { get; set; }
-    public bool MultiplayerFlag_6 { get; set; }
-    public bool MultiplayerFlag_7 { get; set; }
+    public bool Flag2_4 { get; set; }
+    public bool Flag2_5 { get; set; }
+    public bool Flag2_6 { get; set; }
+    public bool Flag2_7 { get; set; }
 
-    // Unknown
+    // Unknown fields
     public byte field16_0x91 { get; set; }
     public byte field18_0x93 { get; set; }
-    public byte field19_0x94 { get; set; }
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; }
 
@@ -87,7 +103,7 @@ public partial class Rayman : MovableActor
         }
     }
 
-    private bool FUN_0802c53c()
+    private bool IsBossFight()
     {
         if (SoundManager.IsPlaying(194))
             return false;
@@ -95,32 +111,29 @@ public partial class Rayman : MovableActor
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
     }
 
-    private void FUN_08029ec4()
+    private void UpdatePhysicalType()
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
         byte type = scene.GetPhysicalType(Position);
 
-        if (type != 1 && type != 3)
-        {
-            if (type is not (22 or 23 or 24 or 25))
-            {
-                field19_0x94 = 32;
-
-                if (scene.Camera.LinkedObject == this)
-                    SoundManager.Play(208, -1);
-
-                return;
-            }
-        }
-        else
+        if (type is 1 or 3)
         {
             byte otherType = scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
 
             if (otherType < 4)
                 type = otherType;
         }
+        else if (type is not (22 or 23 or 24 or 25))
+        {
+            PhysicalType = 32;
 
-        if (field19_0x94 == 32)
+            if (scene.Camera.LinkedObject == this)
+                SoundManager.Play(208, -1);
+
+            return;
+        }
+
+        if (PhysicalType == 32)
         {
             float speedX = Speed.X;
 
@@ -130,13 +143,12 @@ public partial class Rayman : MovableActor
             MechSpeedX = speedX;
         }
 
-        field19_0x94 = type;
+        PhysicalType = type;
     }
 
-    // Maybe this is only for slippery movement?
     private void HorizontalMovement()
     {
-        if (field19_0x94 == 32)
+        if (PhysicalType == 32)
             return;
 
         Mechanic.Speed = new Vector2(MechSpeedX, 5.62501525879f);
@@ -168,14 +180,14 @@ public partial class Rayman : MovableActor
         }
 
         // Slippery
-        if (field19_0x94 is 22 or 23)
+        if (PhysicalType is 22 or 23)
         {
             MechSpeedX -= 0.12109375f;
 
             if (CheckInput(GbaInput.Right))
                 MechSpeedX -= 0.015625f;
         }
-        else if (field19_0x94 is 24 or 25)
+        else if (PhysicalType is 24 or 25)
         {
             MechSpeedX += 0.12109375f;
 
@@ -200,7 +212,7 @@ public partial class Rayman : MovableActor
         return false;
     }
 
-    private void FUN_0802a2dc()
+    private void SlidingOnSlippery()
     {
         if (!SoundManager.IsPlaying(181) && Frame.GetComponent<Scene2D>().Camera.LinkedObject == this)
             SoundManager.Play(181, -1);
@@ -213,26 +225,26 @@ public partial class Rayman : MovableActor
             {
                 if (CheckInput(GbaInput.Down))
                 {
-                    if (ActionId != 76)
-                        ActionId = 76;
+                    if (ActionId != Action.Sliding_Crouch_Right)
+                        ActionId = Action.Sliding_Crouch_Right;
                 }
                 else
                 {
-                    if (ActionId != 74)
-                        ActionId = 74;
+                    if (ActionId != Action.Sliding_Slow_Right)
+                        ActionId = Action.Sliding_Slow_Right;
                 }
             }
             else
             {
                 if (CheckInput(GbaInput.Down))
                 {
-                    if (ActionId != 77)
-                        ActionId = 77;
+                    if (ActionId != Action.Sliding_Crouch_Left)
+                        ActionId = Action.Sliding_Crouch_Left;
                 }
                 else
                 {
-                    if (ActionId != 67)
-                        ActionId = 67;
+                    if (ActionId != Action.Sliding_Fast_Left)
+                        ActionId = Action.Sliding_Fast_Left;
                 }
             }
         }
@@ -242,26 +254,26 @@ public partial class Rayman : MovableActor
             {
                 if (CheckInput(GbaInput.Down))
                 {
-                    if (ActionId != 76)
-                        ActionId = 76;
+                    if (ActionId != Action.Sliding_Crouch_Right)
+                        ActionId = Action.Sliding_Crouch_Right;
                 }
                 else
                 {
-                    if (ActionId != 66)
-                        ActionId = 66;
+                    if (ActionId != Action.Sliding_Fast_Right)
+                        ActionId = Action.Sliding_Fast_Right;
                 }
             }
             else
             {
                 if (CheckInput(GbaInput.Down))
                 {
-                    if (ActionId != 77)
-                        ActionId = 77;
+                    if (ActionId != Action.Sliding_Crouch_Left)
+                        ActionId = Action.Sliding_Crouch_Left;
                 }
                 else
                 {
-                    if (ActionId != 75)
-                        ActionId = 75;
+                    if (ActionId != Action.Sliding_Slow_Left)
+                        ActionId = Action.Sliding_Slow_Left;
                 }
             }
         }
@@ -337,16 +349,31 @@ public partial class Rayman : MovableActor
         Timer = 0;
         //field10_0x84 = 0;
         //field11_0x88 = 0;
-        NextActionId = -1;
+        NextActionId = null;
         //field3_0x68 = 0;
         //field4_0x6c = 0;
         //field5_0x70 = 0;
         //field6_0x74 = 0;
-        RaymanFlags = 0;
+        Flag1_0 = false;
+        Flag1_1 = false;
+        Flag1_2 = false;
+        Flag1_3 = false;
+        Flag1_4 = false;
+        Flag1_5 = false;
+        Flag1_6 = false;
+        Flag1_7 = false;
+        Flag1_8 = false;
+        Flag1_9 = false;
+        Flag1_A = false;
+        Flag1_B = false;
+        Flag1_C = false;
+        Flag1_D = false;
+        Flag1_E = false;
+        Flag1_F = false;
         //field17_0x92 = HitPoints;
         //field1_0x60 = 0;
         MechSpeedX = 0;
-        field19_0x94 = 32;
+        PhysicalType = 32;
         //field7_0x78 = 0;
         field18_0x93 = 0;
         //field13_0x8c = 0;
@@ -358,15 +385,15 @@ public partial class Rayman : MovableActor
         //field_0x96 = 0;
         //field_0x97 = 0;
 
-        MultiplayerFlag_0 = false;
+        Flag2_0 = false;
         field27_0x9c = 0;
-        MultiplayerFlag_1 = false;
-        MultiplayerFlag_2 = true;
+        Flag2_1 = false;
+        Flag2_2 = true;
 
         HasMapCollision = true;
         HasObjectCollision = true;
 
-        ActionId = Resource.FirstActionId;
+        ActionId = (Action)Resource.FirstActionId;
         ChangeAction();
 
         if (GameInfo.LastGreenLumAlive == 0)
@@ -388,7 +415,7 @@ public partial class Rayman : MovableActor
     {
         base.Step();
 
-        if (field19_0x94 != 0x20 && NewAction)
+        if (PhysicalType != 32 && NewAction)
             Mechanic.Init(1, null);
 
         // TODO: Implement
