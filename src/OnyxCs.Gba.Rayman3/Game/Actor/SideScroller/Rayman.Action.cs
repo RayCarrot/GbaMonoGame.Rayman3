@@ -64,8 +64,8 @@ public partial class Rayman : MovableActor
 
         Idle_Grimace_Right = 177,
         Idle_Grimace_Left = 178,
-        Walk2_Right = 179, // TODO: What's different from this walk?
-        Walk2_Left = 180,
+        Walk_Multiplayer_Right = 179,
+        Walk_Multiplayer_Left = 180,
 
         Hidden_Right = 187,
         Hidden_Left = 188,
@@ -74,7 +74,8 @@ public partial class Rayman : MovableActor
         EnterCurtain_Left = 194,
         Walk_LookAround_Right = 195,
         Walk_LookAround_Left = 196,
-
+        Idle_Shout_Right = 197,
+        Idle_Shout_Left = 198,
         Idle_ReadyToFight_Right = 199,
         Idle_ReadyToFight_Left = 200,
         Idle_Determined_Right = 201,

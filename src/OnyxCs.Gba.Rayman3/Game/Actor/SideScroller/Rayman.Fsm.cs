@@ -297,7 +297,7 @@ public partial class Rayman : MovableActor
                 if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left)
                     PlaySound(240);
 
-                if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk2_Right or Action.Walk2_Left)
+                if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
                     NextActionId = null;
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
@@ -401,10 +401,6 @@ public partial class Rayman : MovableActor
                         }
                     }
                 }
-                else
-                {
-                    ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
-                }
 
                 // Change walking direction
                 if (ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left)
@@ -471,10 +467,56 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    // TODO: Implement
+                    if (PhysicalType != 32 && 
+                        ActionId is
+                            Action.Walk_Right or Action.Walk_Left or
+                            Action.Walk_LookAround_Right or Action.Walk_LookAround_Left &&
+                        AnimatedObject.FrameIndex is 2 or 10 &&
+                        !AnimatedObject.HasExecutedFrame)
+                    {
+                        PlaySound(395);
+                    }
+
+                    PlaySound(208);
+
+                    if (!MultiplayerManager.IsInMultiplayer)
+                    {
+                        if (ActionId is not (
+                            Action.Walk_Right or Action.Walk_Left or
+                            Action.Walk_LookAround_Right or Action.Walk_LookAround_Left))
+                        {
+                            if (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0)
+                                ActionId = IsFacingRight ? Action.Walk_LookAround_Right : Action.Walk_LookAround_Left;
+                            else
+                                ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
 
-                // TODO: Implement
+                // Return if released the left or right inputs
+                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) &&
+                    ActionId is
+                        Action.Walk_Right or Action.Walk_Left or
+                        Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Return and shout for Globox if looking for him when released the left and right inputs
+                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) &&
+                    ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left)
+                {
+                    NextActionId = IsFacingRight ? Action.Idle_Shout_Right : Action.Idle_Shout_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // TODO: Implement the rest
 
                 break;
 

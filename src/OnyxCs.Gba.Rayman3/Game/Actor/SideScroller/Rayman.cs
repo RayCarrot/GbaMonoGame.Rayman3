@@ -108,6 +108,18 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private bool CheckReleasedInput(GbaInput input)
+    {
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            return !JoyPad.Check(input);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     private void PlaySound(int id)
     {
         if (Frame.GetComponent<Scene2D>().Camera.LinkedObject == this)
