@@ -30,6 +30,12 @@ public static class JoyPad
 
     public static bool Check(GbaInput gbaInput)
     {
+        // Cancel out if opposite directions are pressed
+        if (gbaInput is GbaInput.Left or GbaInput.Right && Check(GbaButtonMapping[GbaInput.Left]) && Check(GbaButtonMapping[GbaInput.Right]))
+            return false;
+        if (gbaInput is GbaInput.Up or GbaInput.Down && Check(GbaButtonMapping[GbaInput.Up]) && Check(GbaButtonMapping[GbaInput.Down]))
+            return false;
+
         return Check(GbaButtonMapping[gbaInput]);
     }
 
@@ -38,14 +44,20 @@ public static class JoyPad
         return KeyboardState.IsKeyDown(input);
     }
 
+    public static bool CheckSingle(GbaInput gbaInput)
+    {
+        // Cancel out if opposite directions are pressed
+        if (gbaInput is GbaInput.Left or GbaInput.Right && CheckSingle(GbaButtonMapping[GbaInput.Left]) && CheckSingle(GbaButtonMapping[GbaInput.Right]))
+            return false;
+        if (gbaInput is GbaInput.Up or GbaInput.Down && CheckSingle(GbaButtonMapping[GbaInput.Up]) && CheckSingle(GbaButtonMapping[GbaInput.Down]))
+            return false;
+
+        return CheckSingle(GbaButtonMapping[gbaInput]);
+    }
+
     public static bool CheckSingle(Keys input)
     {
         return KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
-    }
-
-    public static bool CheckSingle(GbaInput gbaInput)
-    {
-        return CheckSingle(GbaButtonMapping[gbaInput]);
     }
 
     public static Vector2 GetMousePosition()
