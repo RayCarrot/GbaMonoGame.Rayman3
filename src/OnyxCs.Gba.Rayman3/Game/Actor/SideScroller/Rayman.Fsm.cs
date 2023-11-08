@@ -111,9 +111,9 @@ public partial class Rayman : MovableActor
                         {
                             // Randomly show Rayman being bored
                             if (Random.Shared.Next(11) < 6)
-                                ActionId = IsFacingLeft ? Action.Idle_Bored_Left : Action.Idle_Bored_Right;
+                                ActionId = IsFacingRight ? Action.Idle_Bored_Right : Action.Idle_Bored_Left;
                             else
-                                ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
+                                ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                         }
                         else
                         {
@@ -126,7 +126,7 @@ public partial class Rayman : MovableActor
                     }
                     else
                     {
-                        ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
+                        ActionId = IsFacingRight ? Action.Idle_ReadyToFight_Right : Action.Idle_ReadyToFight_Left;
                     }
                 }
 
@@ -227,7 +227,7 @@ public partial class Rayman : MovableActor
                 // Crouch
                 if (CheckInput(GbaInput.Down))
                 {
-                    NextActionId = IsFacingLeft ? Action.CrouchDown_Left : Action.CrouchDown_Right;
+                    NextActionId = IsFacingRight ? Action.CrouchDown_Right : Action.CrouchDown_Left;
                     PlaySound(340);
                     Fsm.ChangeAction(FUN_080254d8);
                     return;
@@ -403,7 +403,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    ActionId = IsFacingLeft ? Action.Walk_Left : Action.Walk_Right;
+                    ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
                 }
 
                 // Change walking direction
@@ -497,7 +497,7 @@ public partial class Rayman : MovableActor
 
                 if (ActionId is not (Action.UnknownJump_Right or Action.UnknownJump_Left))
                 {
-                    ActionId = IsFacingLeft ? Action.Jump_Left : Action.Jump_Right;
+                    ActionId = IsFacingRight ? Action.Jump_Right : Action.Jump_Left;
 
                     if (scene.Camera.LinkedObject == this)
                         SoundManager.Play(108, -1);

@@ -238,7 +238,7 @@ public sealed partial class Rayman : MovableActor
 
         if (MechSpeedX < -1.5f)
         {
-            if (!IsFacingLeft)
+            if (IsFacingRight)
             {
                 if (CheckInput(GbaInput.Down))
                 {
@@ -267,7 +267,7 @@ public sealed partial class Rayman : MovableActor
         }
         else
         {
-            if (!IsFacingLeft)
+            if (IsFacingRight)
             {
                 if (CheckInput(GbaInput.Down))
                 {
