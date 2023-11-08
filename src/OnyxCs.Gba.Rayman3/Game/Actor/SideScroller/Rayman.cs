@@ -6,7 +6,7 @@ using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public partial class Rayman : MovableActor
+public sealed partial class Rayman : MovableActor
 {
     public Rayman(int id, ActorResource actorResource) : base(id, actorResource)
     {
@@ -76,6 +76,8 @@ public partial class Rayman : MovableActor
     // Unknown fields
     public byte field16_0x91 { get; set; }
     public byte field18_0x93 { get; set; }
+    public byte field21_0x96 { get; set; }
+    public byte field22_0x97 { get; set; }
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; }
 
@@ -101,6 +103,12 @@ public partial class Rayman : MovableActor
         {
             throw new NotImplementedException();
         }
+    }
+
+    private void PlaySound(int id)
+    {
+        if (Frame.GetComponent<Scene2D>().Camera.LinkedObject == this)
+            SoundManager.Play(id, -1);
     }
 
     private bool IsBossFight()
@@ -138,7 +146,7 @@ public partial class Rayman : MovableActor
             float speedX = Speed.X;
 
             if (speedX == 0)
-                speedX = IsFacingLeft ? -1 : 1;
+                speedX = IsFacingRight ? 1 : -1;
 
             MechSpeedX = speedX;
         }
@@ -295,6 +303,7 @@ public partial class Rayman : MovableActor
         //}
     }
 
+    // Checks if near edge?
     private int FUN_0802986c()
     {
         // TODO: Implement
@@ -327,6 +336,120 @@ public partial class Rayman : MovableActor
         }
 
         throw new NotImplementedException();
+    }
+
+    private bool Inlined_FUN_1004c544()
+    {
+        if (!Inlined_FUN_1004c1f4())
+            return false;
+
+        UpdatePhysicalType();
+        HorizontalMovement();
+
+        if (CheckForDamage())
+        {
+            Fsm.ChangeAction(FUN_08031d24);
+            return false;
+        }
+
+        if (CheckSingleInput(GbaInput.A) && PhysicalType != 32)
+        {
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+        else if (FUN_0802a0f8())
+        {
+            PlaySound(208);
+
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool Inlined_FUN_1004c1f4()
+    {
+        Scene2D scene = Frame.GetComponent<Scene2D>();
+        CameraSideScroller cam = (CameraSideScroller)scene.Camera;
+
+        if (Flag1_D)
+        {
+            field16_0x91++;
+
+            if (field16_0x91 > 60)
+            {
+                cam.HorizontalOffset = Gfx.Platform switch
+                {
+                    Platform.GBA => 40,
+                    Platform.NGage => 25,
+                    _ => throw new UnsupportedPlatformException()
+                };
+                Flag1_D = false;
+            }
+        }
+
+        if (IsLocalPlayer &&
+            !Fsm.EqualsAction(Fsm_Jump) &&
+            !Fsm.EqualsAction(FUN_0802ce54) &&
+            !Fsm.EqualsAction(FUN_080284ac) &&
+            !Fsm.EqualsAction(FUN_08033b34) &&
+            !Fsm.EqualsAction(FUN_080287d8) &&
+            !Flag1_6)
+        {
+            // TODO: Name camera messages
+            Message message;
+
+            if (!Fsm.EqualsAction(FUN_0802ddac) &&
+                CheckInput(GbaInput.Down) &&
+                (Speed.Y > 0 || Fsm.EqualsAction(FUN_080254d8)) &&
+                !Fsm.EqualsAction(FUN_08026cd4))
+            {
+                field18_0x93 = 70;
+                message = (Message)1040;
+            }
+            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(FUN_0802ea74)))
+            {
+                field18_0x93 = 160;
+                message = (Message)1040;
+            }
+            else if (Fsm.EqualsAction(FUN_0802d44c) && field27_0x9c == 0)
+            {
+                message = (Message)1039;
+            }
+            else if (Fsm.EqualsAction(FUN_0803283c))
+            {
+                field18_0x93 = 65;
+                message = (Message)1040;
+            }
+            else if (Fsm.EqualsAction(FUN_08026cd4) || Fsm.EqualsAction(FUN_0802ddac))
+            {
+                field18_0x93 = 112;
+                message = (Message)1040;
+            }
+            else
+            {
+                field18_0x93 = 120;
+                message = (Message)1040;
+            }
+
+            cam.ProcessMessage(message, field18_0x93);
+        }
+
+        if (field23_0x98 != 0)
+            field23_0x98--;
+
+        if (IsOnInstaKillType())
+        {
+            if (!MultiplayerManager.IsInMultiplayer)
+                Fsm.ChangeAction(FUN_08032650);
+            else
+                Fsm.ChangeAction(FUN_08033228);
+
+            return false;
+        }
+
+        return true;
     }
 
     protected override bool ProcessMessageImpl(Message message, object param)
@@ -382,8 +505,8 @@ public partial class Rayman : MovableActor
         field23_0x98 = 0;
         //field_0x90 = 0;
         //field_0x99 = 0;
-        //field_0x96 = 0;
-        //field_0x97 = 0;
+        field21_0x96 = 0;
+        field22_0x97 = 0;
 
         Flag2_0 = false;
         field27_0x9c = 0;

@@ -44,6 +44,8 @@ public static class Gfx
     /// </summary>
     public static GfxCamera GfxCamera { get; set; }
 
+    public static Platform Platform { get; set; }
+
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
 
     public static void Draw(GfxRenderer renderer)

@@ -2,7 +2,7 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class Cage : InteractableActor
+public sealed class Cage : InteractableActor
 {
     public Cage(int id, ActorResource actorResource) : base(id, actorResource)
     {

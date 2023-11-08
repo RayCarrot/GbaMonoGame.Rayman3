@@ -8,7 +8,19 @@ public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller()
     {
-        HorizontalOffset = MultiplayerManager.IsInMultiplayer ? 95 : 40;
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            HorizontalOffset = Gfx.Platform switch
+            {
+                Platform.GBA => 40,
+                Platform.NGage => 25,
+                _ => throw new UnsupportedPlatformException()
+            };
+        }
+        else
+        {
+            HorizontalOffset = 95;
+        }
     }
 
     public int HorizontalOffset { get; set; }
@@ -37,7 +49,12 @@ public class CameraSideScroller : CameraActor2D
         {
             if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
             {
-                HorizontalOffset = 120;
+                HorizontalOffset = Gfx.Platform switch
+                {
+                    Platform.GBA => 120,
+                    Platform.NGage => 88,
+                    _ => throw new UnsupportedPlatformException()
+                };
                 pos = new Vector2(LinkedObject.Position.X - HorizontalOffset, LinkedObject.Position.Y);
             }
             else

@@ -12,7 +12,7 @@ public partial class Rayman : MovableActor
         {
             case FsmAction.Init:
                 // This never actually has a chance to play due to the Init function being called afterwards and overriding this
-                ActionId = IsFacingLeft ? Action.Spawn_Left : Action.Spawn_Right;
+                ActionId = IsFacingRight ? Action.Spawn_Right : Action.Spawn_Left;
                 ChangeAction();
 
                 Timer = 0;
@@ -20,18 +20,37 @@ public partial class Rayman : MovableActor
                 CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
                 if (GameInfo.MapId == MapId.TheCanopy_M2)
                 {
-                    cam.HorizontalOffset = 120;
+                    cam.HorizontalOffset = Gfx.Platform switch
+                    {
+                        Platform.GBA => 120,
+                        Platform.NGage => 88,
+                        _ => throw new UnsupportedPlatformException()
+                    };
                 }
                 else
                 {
                     if (!MultiplayerManager.IsInMultiplayer)
-                        cam.HorizontalOffset = 40;
+                        cam.HorizontalOffset = Gfx.Platform switch
+                        {
+                            Platform.GBA => 40,
+                            Platform.NGage => 25,
+                            _ => throw new UnsupportedPlatformException()
+                        };
                     else if (IsLocalPlayer)
                         cam.HorizontalOffset = 95;
                 }
 
+                if (IsLocalPlayer)
+                    // TODO: Name message
+                    cam.ProcessMessage((Message)1027);
+
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                    cam.HorizontalOffset = 120;
+                    cam.HorizontalOffset = Gfx.Platform switch
+                    {
+                        Platform.GBA => 120,
+                        Platform.NGage => 88,
+                        _ => throw new UnsupportedPlatformException()
+                    };
                 break;
 
             case FsmAction.Step:
@@ -42,18 +61,18 @@ public partial class Rayman : MovableActor
                     if (TransitionsFX.FadeCoefficient == 0)
                     {
                         if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
-                            ActionId = IsFacingLeft ? Action.Spawn_Curtain_Left : Action.Spawn_Curtain_Right;
+                            ActionId = IsFacingRight ? Action.Spawn_Curtain_Right : Action.Spawn_Curtain_Left;
                     }
                     else
                     {
-                        ActionId = IsFacingLeft ? Action.Hidden_Left : Action.Hidden_Right;
+                        ActionId = IsFacingRight ? Action.Hidden_Right : Action.Hidden_Left;
                     }
                 }
 
                 Timer++;
 
                 if (IsActionFinished && IsBossFight())
-                    NextActionId = IsFacingLeft ? Action.Idle_Determined_Left : Action.Idle_Determined_Right;
+                    NextActionId = IsFacingRight ? Action.Idle_Determined_Right : Action.Idle_Determined_Left;
 
                 if (!IsActionFinished)
                     return;
@@ -70,18 +89,18 @@ public partial class Rayman : MovableActor
 
     private void Fsm_Default(FsmAction action)
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
-        CameraSideScroller cam = (CameraSideScroller)scene.Camera;
-
         switch (action)
         {
             case FsmAction.Init:
                 UpdatePhysicalType();
 
-                if (PhysicalType == 32 || Math.Abs(MechSpeedX) <= 1.5f)
+                if (PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f)
                 {
-                    if (scene.Camera.LinkedObject == this)
-                        SoundManager.Play(208, -1);
+                    SlidingOnSlippery();
+                }
+                else
+                {
+                    PlaySound(208);
 
                     if (PhysicalType == 32)
                         MechSpeedX = 0;
@@ -110,304 +129,204 @@ public partial class Rayman : MovableActor
                         ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
                     }
                 }
-                else
-                {
-                    SlidingOnSlippery();
-                }
 
                 Timer = 0;
                 break;
 
             case FsmAction.Step:
-                if (Flag1_D)
+                if (!Inlined_FUN_1004c544())
+                    return;
+
+                Timer++;
+
+                // Look up when pressing up
+                if (CheckInput(GbaInput.Up))
                 {
-                    field16_0x91++;
-
-                    if (field16_0x91 > 60)
+                    if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
                     {
-                        cam.HorizontalOffset = 40;
-                        Flag1_D = false;
-                    }
-                }
-
-                if (IsLocalPlayer &&
-                    !Fsm.EqualsAction(Fsm_Jump) &&
-                    !Fsm.EqualsAction(FUN_0802ce54) &&
-                    !Fsm.EqualsAction(FUN_080284ac) &&
-                    !Fsm.EqualsAction(FUN_08033b34) &&
-                    !Fsm.EqualsAction(FUN_080287d8) &&
-                    !Flag1_6)
-                {
-                    // TODO: Name camera messages
-                    if (!Fsm.EqualsAction(FUN_0802ddac) &&
-                        CheckInput(GbaInput.Down) &&
-                        (Speed.Y > 0 || Fsm.EqualsAction(FUN_080254d8)) &&
-                        !Fsm.EqualsAction(FUN_08026cd4))
-                    {
-                        field18_0x93 = 70;
-                        cam.ProcessMessage((Message)1040, field18_0x93);
-                    }
-                    else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(FUN_0802ea74)))
-                    {
-                        field18_0x93 = 160;
-                        cam.ProcessMessage((Message)1040, field18_0x93);
-                    }
-                    else if (Fsm.EqualsAction(FUN_0802d44c) && field27_0x9c == 0)
-                    {
-                        cam.ProcessMessage((Message)1039, field18_0x93);
-                    }
-                    else if (Fsm.EqualsAction(FUN_0803283c))
-                    {
-                        field18_0x93 = 65;
-                        cam.ProcessMessage((Message)1040, field18_0x93);
-                    }
-                    else if (Fsm.EqualsAction(FUN_08026cd4) || Fsm.EqualsAction(FUN_0802ddac))
-                    {
-                        field18_0x93 = 112;
-                        cam.ProcessMessage((Message)1040, field18_0x93);
-                    }
-                    else
-                    {
-                        field18_0x93 = 120;
-                        cam.ProcessMessage((Message)1040, field18_0x93);
-                    }
-                }
-
-                if (field23_0x98 != 0)
-                    field23_0x98--;
-
-                if (!IsOnInstaKillType())
-                {
-                    UpdatePhysicalType();
-                    HorizontalMovement();
-
-                    if (CheckForDamage())
-                    {
-                        Fsm.ChangeAction(FUN_08031d24);
-
-                        if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
-                            ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
-                    }
-                    else
-                    {
-                        if (CheckSingleInput(GbaInput.A) && PhysicalType != 32)
-                        {
-                            Fsm.ChangeAction(FUN_0802cb38);
-
-                            if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
-                                ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
-                        }
-                        else
-                        {
-                            if (FUN_0802a0f8())
-                            {
-                                if (cam.LinkedObject == this)
-                                    SoundManager.Play(208, -1);
-
-                                Fsm.ChangeAction(FUN_0802cb38);
-
-                                if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
-                                    ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
-                            }
-                            else
-                            {
-                                Timer++;
-
-                                if (!CheckInput(GbaInput.Up))
-                                {
-                                    if (ActionId is Action.LookUp_Right or Action.LookUp_Left)
-                                    {
-                                        ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
-                                    }
-                                }
-                                else
-                                {
-                                    if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
-                                        ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
-                                }
-                            }
-                        }
+                        ActionId = IsFacingRight ? Action.LookUp_Right : Action.LookUp_Left;
+                        NextActionId = null;
                     }
                 }
                 else
                 {
-                    if (!MultiplayerManager.IsInMultiplayer)
-                    {
-                        Fsm.ChangeAction(FUN_08032650);
-                    }
+                    if (ActionId is Action.LookUp_Right or Action.LookUp_Left)
+                        ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                }
+
+                // Play idle animation
+                if (IsActionFinished && 
+                    (ActionId == NextActionId && ActionId is not (
+                        Action.Idle_Bored_Right or Action.Idle_Bored_Left or
+                        Action.EnterCurtain_Right or Action.EnterCurtain_Left)) &&
+                    (ActionId is not (
+                         Action.Idle_BasketBall_Right or Action.Idle_BasketBall_Left or
+                         Action.Idle_Grimace_Right or Action.Idle_Grimace_Left) ||
+                     Timer > 180))
+                {
+                    if (!IsBossFight())
+                        ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                     else
-                    {
-                        Fsm.ChangeAction(FUN_08033228);
-                    }
+                        ActionId = IsFacingRight ? Action.Idle_ReadyToFight_Right : Action.Idle_ReadyToFight_Left;
 
-                    if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && PhysicalType == 32)
-                        ActionId = IsFacingLeft ? Action.LookUp_Left : Action.LookUp_Right;
+                    NextActionId = null;
+
+                    PlaySound(340);
                 }
 
-                if (IsActionFinished)
+                if (PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f)
                 {
-                    if ((ActionId == NextActionId && ActionId is not (
-                            Action.Idle_Bored_Right or Action.Idle_Bored_Left or 
-                            Action.EnterCurtain_Right or Action.EnterCurtain_Left)) &&
-                        (ActionId is not (
-                            Action.Idle_BasketBall_Right or Action.Idle_BasketBall_Left or 
-                            Action.Idle_Grimace_Right or Action.Idle_Grimace_Left) || 
-                         Timer > 180))
-                    {
-                        if (!IsBossFight())
-                        {
-                            ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
-                        }
-                        else
-                        {
-                            ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
-                        }
-
-                        NextActionId = null;
-
-                        if (cam.LinkedObject == this)
-                            SoundManager.Play(340, -1);
-                    }
+                    SlidingOnSlippery();
                 }
-
-                if (PhysicalType == 32 || Math.Abs(MechSpeedX) <= 1.5f)
+                else
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(208, -1);
+                    PlaySound(208);
 
                     if (NextActionId != null && NextActionId != ActionId)
                     {
                         ActionId = NextActionId.Value;
                     }
-                    else
+                    else if (ActionId is not (
+                                 Action.LookUp_Right or Action.LookUp_Left or
+                                 Action.Idle_Left or Action.Idle_Right or
+                                 Action.Idle_ReadyToFight_Right or Action.Idle_ReadyToFight_Left) &&
+                             ActionId != NextActionId)
                     {
-                        if (ActionId is not (
-                                Action.LookUp_Right or Action.LookUp_Left or 
-                                Action.Idle_Left or Action.Idle_Right or 
-                                Action.Idle_ReadyToFight_Right or Action.Idle_ReadyToFight_Left) && 
-                            ActionId != NextActionId)
-                        {
-                            if (!IsBossFight())
-                            {
-                                ActionId = IsFacingLeft ? Action.Idle_Left : Action.Idle_Right;
-                            }
-                            else
-                            {
-                                ActionId = IsFacingLeft ? Action.Idle_ReadyToFight_Left : Action.Idle_ReadyToFight_Right;
-                            }
-                        }
+                        if (!IsBossFight())
+                            ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                        else
+                            ActionId = IsFacingRight ? Action.Idle_ReadyToFight_Right : Action.Idle_ReadyToFight_Left;
                     }
                 }
-                else
-                {
-                    SlidingOnSlippery();
-                }
 
-                if (CheckInput(GbaInput.Left) && !IsFacingLeft)
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Walk_Left;
                     ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Walk_Right;
                     ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
                 }
 
+                // Jump
                 if (CheckSingleInput(GbaInput.A) && Flag2_2)
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
+                    PlaySound(340);
                     Fsm.ChangeAction(Fsm_Jump);
+                    return;
                 }
-                else if (CheckInput(GbaInput.Down))
+                
+                // Crouch
+                if (CheckInput(GbaInput.Down))
                 {
                     NextActionId = IsFacingLeft ? Action.CrouchDown_Left : Action.CrouchDown_Right;
-
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
+                    PlaySound(340);
                     Fsm.ChangeAction(FUN_080254d8);
+                    return;
                 }
-                else if (Speed.Y > 1)
+                
+                // Falling
+                if (Speed.Y > 1)
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
+                    PlaySound(340);
                     Fsm.ChangeAction(FUN_0802cfec);
+                    return;
                 }
-                else if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                
+                // Walk
+                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
-                    Fsm.ChangeAction(FUN_08024470);
+                    PlaySound(340);
+                    Fsm.ChangeAction(Fsm_Walk);
+                    return;
                 }
-                else if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && FUN_0802c414(2))
+                
+                // Punch
+                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && FUN_0802c414(2))
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
+                    PlaySound(340);
                     Fsm.ChangeAction(FUN_0802f5d8);
+                    return;
                 }
-                else if (MechSpeedX == 0 || FUN_0802986c() == 0 || Flag1_1)
-                {
-                    if (MechSpeedX != 0 || FUN_0802986c() == 0 || Flag1_1)
-                    {
-                        if ((IsActionFinished && ActionId is not (
-                                Action.LookUp_Right or Action.LookUp_Left or 
-                                Action.Idle_Bored_Right or Action.Idle_Bored_Left or 
-                                Action.EnterCurtain_Right or Action.EnterCurtain_Left) && 
-                             360 < Timer) ||
-                            (IsActionFinished && ActionId is
-                                 Action.Idle_Bored_Right or Action.Idle_Bored_Left or
-                                 Action.EnterCurtain_Right or Action.EnterCurtain_Left && 
-                             720 < Timer))
-                        {
-                            FUN_0802a65c();
-                            Fsm.ChangeAction(Fsm_Default);
-                        }
-                        else
-                        {
-                            Flag1_1 = false;
-                        }
-                    }
-                    else
-                    {
-                        if (cam.LinkedObject == this)
-                            SoundManager.Play(340, -1);
 
-                        Fsm.ChangeAction(Fsm_StandingNearEdge);
-                    }
-                }
-                else
+                if (MechSpeedX != 0 && FUN_0802986c() != 0 && !Flag1_1)
                 {
-                    if (cam.LinkedObject == this)
-                        SoundManager.Play(340, -1);
-
+                    PlaySound(340);
                     Position += new Vector2(MechSpeedX < 0 ? -16 : 16);
-
                     Fsm.ChangeAction(FUN_0802cfec);
+                    return;
                 }
+
+                // Standing near edge
+                if (MechSpeedX == 0 && FUN_0802986c() != 0 && !Flag1_1)
+                {
+                    PlaySound(340);
+                    Fsm.ChangeAction(Fsm_StandingNearEdge);
+                    return;
+                }
+
+                // Restart default state
+                if ((IsActionFinished && ActionId is not (
+                         Action.LookUp_Right or Action.LookUp_Left or
+                         Action.Idle_Bored_Right or Action.Idle_Bored_Left or
+                         Action.EnterCurtain_Right or Action.EnterCurtain_Left) &&
+                     360 < Timer) ||
+                    (IsActionFinished && ActionId is
+                         Action.Idle_Bored_Right or Action.Idle_Bored_Left or
+                         Action.EnterCurtain_Right or Action.EnterCurtain_Left &&
+                     720 < Timer))
+                {
+                    FUN_0802a65c();
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                Flag1_1 = false;
+
                 break;
 
             case FsmAction.UnInit:
-                if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left && cam.LinkedObject == this)
-                    SoundManager.Play(240, -1);
+                if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left)
+                    PlaySound(240);
 
                 if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk2_Right or Action.Walk2_Left)
                     NextActionId = null;
 
-                if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 && cam.HorizontalOffset == 120)
-                    cam.HorizontalOffset = 40;
+                if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+                {
+                    CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
+
+                    switch (Gfx.Platform)
+                    {
+                        case Platform.GBA:
+                            if (cam.HorizontalOffset == 120)
+                                cam.HorizontalOffset = 40;
+                            break;
+
+                        case Platform.NGage:
+                            if (cam.HorizontalOffset == 88)
+                                cam.HorizontalOffset = 25;
+                            break;
+
+                        default:
+                            throw new UnsupportedPlatformException();
+                    }
+                }
                 break;
         }
     }
 
     // TODO: Implement
     private void Fsm_StandingNearEdge(FsmAction action) { }
-
+    private void Fsm_Walk(FsmAction action) { }
     private void Fsm_Jump(FsmAction action)
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
@@ -466,9 +385,5 @@ public partial class Rayman : MovableActor
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void FUN_0802cfec(FsmAction action) { }
-    private void FUN_08024470(FsmAction action)
-    {
-
-    }
     private void FUN_0802f5d8(FsmAction action) { }
 }

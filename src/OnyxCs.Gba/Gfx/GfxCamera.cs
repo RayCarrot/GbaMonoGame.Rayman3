@@ -1,5 +1,4 @@
 ﻿using System;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
@@ -11,7 +10,12 @@ public class GfxCamera
 {
     public GfxCamera(Point screenSize)
     {
-        OriginalGameResolution = new Point(Constants.ScreenWidth, Constants.ScreenHeight);
+        OriginalGameResolution = Gfx.Platform switch
+        {
+            Platform.GBA => new Point(240, 160),
+            Platform.NGage => new Point(176, 208),
+            _ => throw new UnsupportedPlatformException(),
+        };
         GameResolution = OriginalGameResolution;
         ResizeScreen(screenSize);
     }

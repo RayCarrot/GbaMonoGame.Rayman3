@@ -19,9 +19,23 @@ public class CagesBar : Bar
         CollectedCagesDigit.SetCurrentAnimation(0);
         TotalCagesDigit.SetCurrentAnimation(0);
 
-        CageIcon.ScreenPos = new Vector2(196, 41);
-        CollectedCagesDigit.ScreenPos = new Vector2(212, 45);
-        TotalCagesDigit.ScreenPos = new Vector2(230, 45);
+        switch (Gfx.Platform)
+        {
+            case Platform.GBA:
+                CageIcon.ScreenPos = new Vector2(196, 41);
+                CollectedCagesDigit.ScreenPos = new Vector2(212, 45);
+                TotalCagesDigit.ScreenPos = new Vector2(230, 45);
+                break;
+            
+            case Platform.NGage:
+                CageIcon.ScreenPos = new Vector2(132, 41);
+                CollectedCagesDigit.ScreenPos = new Vector2(148, 45);
+                TotalCagesDigit.ScreenPos = new Vector2(166, 45);
+                break;
+
+            default:
+                throw new UnsupportedPlatformException();
+        }
     }
 
     public override void Load()

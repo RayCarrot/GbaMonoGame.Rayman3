@@ -1,5 +1,6 @@
 ﻿namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Add N-Gage support
 public class MenuData
 {
     public MenuData()

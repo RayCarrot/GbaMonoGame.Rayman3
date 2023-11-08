@@ -2,7 +2,7 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class Butterfly : BaseActor
+public sealed class Butterfly : BaseActor
 {
     public Butterfly(int id, ActorResource actorResource) : base(id, actorResource)
     {

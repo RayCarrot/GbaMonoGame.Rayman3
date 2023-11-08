@@ -80,4 +80,12 @@ public class ActionActor : BaseActor
 
         NewAction = false;
     }
+
+    public void ReceiveDamage(int damage)
+    {
+        if (damage < HitPoints)
+            HitPoints -= damage;
+        else
+            HitPoints = 0;
+    }
 }

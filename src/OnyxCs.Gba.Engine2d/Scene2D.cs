@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
+using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 
@@ -23,7 +24,7 @@ public class Scene2D
 
         GameObjects = new GameObjects(scene);
 
-        Camera.LinkedObject = GetMainActor();
+        Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();
     }
 
@@ -33,6 +34,29 @@ public class Scene2D
     public TgxPlayfield2D Playfield { get; }
     public int LayersCount { get; }
     public GameObjects GameObjects { get; }
+
+    // TODO: In multiplayer we get the actor from the machine id
+    public MovableActor MainActor => (MovableActor)GameObjects.Objects[0];
+
+    public void Init()
+    {
+        ResurrectActors();
+        RunCamera();
+        ProcessDialogs();
+        DrawActors();
+    }
+
+    public void Step()
+    {
+        RunActors();
+        ResurrectActors();
+        StepActors();
+        MoveActors();
+        RunCaptors();
+        RunCamera();
+        ProcessDialogs();
+        DrawActors();
+    }
 
     public void AddDialog(Dialog dialog)
     {
@@ -104,8 +128,7 @@ public class Scene2D
         {
             if (captor.TriggerOnMainActorDetection)
             {
-                MovableActor mainActor = GetMainActor();
-                captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(mainActor.GetAbsoluteBox(mainActor.DetectionBox));
+                captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(MainActor.GetAbsoluteBox(MainActor.DetectionBox));
             }
             else
             {
@@ -139,10 +162,12 @@ public class Scene2D
         Camera.Fsm.Step();
     }
 
-    public MovableActor GetMainActor()
+    public bool IsDetectedMainActor(ActionActor actor)
     {
-        // TODO: In multiplayer we get the actor from the machine id
-        return (MovableActor)GameObjects.Objects[0];
+        Rectangle actionBox = actor.GetAbsoluteBox(actor.ActionBox);
+        Rectangle mainActorDetectionBox = MainActor.GetAbsoluteBox(MainActor.DetectionBox);
+
+        return actionBox.Intersects(mainActorDetectionBox);
     }
 
     public bool IsHitMainActor(InteractableActor actor)
@@ -150,16 +175,6 @@ public class Scene2D
         // TODO: Implement
 
         return false;
-    }
-
-    public void DamageMainActor(int damage)
-    {
-        MovableActor mainActor = GetMainActor();
-
-        if (damage < mainActor.HitPoints)
-            mainActor.HitPoints -= damage;
-        else
-            mainActor.HitPoints = 0;
     }
 
     public byte GetPhysicalType(Vector2 position)

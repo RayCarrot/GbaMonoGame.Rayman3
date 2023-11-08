@@ -4,6 +4,7 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Add N-Gage support
 // TODO: Implement palette fading and alpha effects
 public class Intro : Frame
 {

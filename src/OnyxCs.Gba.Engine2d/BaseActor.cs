@@ -1,7 +1,6 @@
 ﻿using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
-using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -38,6 +37,7 @@ public class BaseActor : GameObject
     public virtual int ActionId { get; set; }
     public bool IsActionFinished => AnimatedObject.EndOfAnimation;
     public bool IsFacingLeft => AnimatedObject.FlipX;
+    public bool IsFacingRight => !IsFacingLeft;
     public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
 
     // Flags

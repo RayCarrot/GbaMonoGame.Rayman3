@@ -4,7 +4,7 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-// TODO: Add support for N-Gage menus as well as US version language selection?
+// TODO: Add support for N-Gage menus as well as US version language selection
 public class MenuAll : Frame
 {
     #region Constructor

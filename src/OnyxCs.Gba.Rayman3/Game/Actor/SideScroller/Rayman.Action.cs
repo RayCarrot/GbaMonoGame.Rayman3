@@ -2,7 +2,6 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-// Actions are usually just an int, but we use an enum here to give them a name in the code
 public partial class Rayman : MovableActor
 {
     private new Action ActionId
@@ -73,6 +72,8 @@ public partial class Rayman : MovableActor
 
         EnterCurtain_Right = 193,
         EnterCurtain_Left = 194,
+        Walk_LookAround_Right = 195,
+        Walk_LookAround_Left = 196,
 
         Idle_ReadyToFight_Right = 199,
         Idle_ReadyToFight_Left = 200,

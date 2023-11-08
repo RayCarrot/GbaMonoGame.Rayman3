@@ -25,11 +25,27 @@ public class LumsBar : Bar
         TotalLumsDigit1.SetCurrentAnimation(0);
         TotalLumsDigit2.SetCurrentAnimation(0);
 
-        LumsIcon.ScreenPos = new Vector2(163, 8);
-        CollectedLumsDigit1.ScreenPos = new Vector2(188, 24);
-        CollectedLumsDigit2.ScreenPos = new Vector2(200, 24);
-        TotalLumsDigit1.ScreenPos = new Vector2(218, 24);
-        TotalLumsDigit2.ScreenPos = new Vector2(230, 24);
+        switch (Gfx.Platform)
+        {
+            case Platform.GBA:
+                LumsIcon.ScreenPos = new Vector2(163, 8);
+                CollectedLumsDigit1.ScreenPos = new Vector2(188, 24);
+                CollectedLumsDigit2.ScreenPos = new Vector2(200, 24);
+                TotalLumsDigit1.ScreenPos = new Vector2(218, 24);
+                TotalLumsDigit2.ScreenPos = new Vector2(230, 24);
+                break;
+
+            case Platform.NGage:
+                LumsIcon.ScreenPos = new Vector2(99, 8);
+                CollectedLumsDigit1.ScreenPos = new Vector2(124, 24);
+                CollectedLumsDigit2.ScreenPos = new Vector2(136, 24);
+                TotalLumsDigit1.ScreenPos = new Vector2(154, 24);
+                TotalLumsDigit2.ScreenPos = new Vector2(166, 24);
+                break;
+
+            default:
+                throw new UnsupportedPlatformException();
+        }
     }
 
     public override void Load()

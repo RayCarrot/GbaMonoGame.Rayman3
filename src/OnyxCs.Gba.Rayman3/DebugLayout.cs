@@ -315,7 +315,10 @@ public class DebugLayout
                 SelectedGameObject.Position = new Vector2(pos.X, pos.Y);
 
             if (SelectedGameObject is BaseActor actor)
+            {
                 ImGui.Text($"State: {actor.Fsm}");
+                ImGui.Text($"Direction: {(actor.IsFacingLeft ? "Left" : "Right")}");
+            }
         }
         else
         {

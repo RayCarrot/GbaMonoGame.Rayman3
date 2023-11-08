@@ -34,10 +34,7 @@ public abstract class FrameSideScroller : Frame
         // TODO: More setup...
         Scene.AddDialog(new UserInfoSideScroller(GameInfo.Level.HasBlueLum));
         // TODO: More setup...
-        Scene.ResurrectActors();
-        Scene.RunCamera();
-        Scene.ProcessDialogs();
-        Scene.DrawActors();
+        Scene.Init();
         // TODO: More setup...
         CurrentStepAction = Step_Normal;
     }
@@ -58,32 +55,8 @@ public abstract class FrameSideScroller : Frame
 
     private void Step_Normal()
     {
-        Scene.RunActors();
-        Scene.ResurrectActors();
-        Scene.StepActors();
-        Scene.MoveActors();
-        Scene.RunCaptors();
-        Scene.RunCamera();
-        Scene.ProcessDialogs();
-        Scene.DrawActors();
-
+        Scene.Step();
         Scene.AnimationPlayer.Execute();
-
-        //foreach (BaseActor actor in Scene.Objects.Actors)
-        //{
-        //    Gfx.AddDebugBox(new DebugBox(nameof(actor.ViewBox), actor.ViewBox, actor.AnimatedObject.ScreenPos, Color.DarkOrange));
-
-        //    if (actor is ActionActor actionActor)
-        //    {
-        //        Gfx.AddDebugBox(new DebugBox(nameof(actionActor.ActionBox), actionActor.ActionBox, actor.AnimatedObject.ScreenPos, Color.BlueViolet));
-        //        Gfx.AddDebugBox(new DebugBox(nameof(actionActor.DetectionBox), actionActor.DetectionBox, actor.AnimatedObject.ScreenPos, Color.Pink));
-        //    }
-        //    if (actor is InteractableActor interactableActor)
-        //    {
-        //        Gfx.AddDebugBox(new DebugBox(nameof(interactableActor.AnimationBoxTable.AttackBox), interactableActor.AnimationBoxTable.AttackBox, actor.AnimatedObject.ScreenPos, Color.Red));
-        //        Gfx.AddDebugBox(new DebugBox(nameof(interactableActor.AnimationBoxTable.VulnerabilityBox), interactableActor.AnimationBoxTable.VulnerabilityBox, actor.AnimatedObject.ScreenPos, Color.Green));
-        //    }
-        //}
     }
 
     #endregion
