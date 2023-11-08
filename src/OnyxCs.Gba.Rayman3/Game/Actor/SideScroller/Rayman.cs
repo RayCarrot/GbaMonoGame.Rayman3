@@ -41,9 +41,12 @@ public sealed partial class Rayman : MovableActor
 
     public ActorResource Resource { get; }
     private Action? NextActionId { get; set; }
+    public BaseActor Fist1 { get; set; }
+    public BaseActor Fist2 { get; set; }
     public uint Timer { get; set; }
     public float MechSpeedX { get; set; }
-    public byte PhysicalType { get; set; } // 32 seems to be mean it's slippery?
+    public byte PhysicalType { get; set; }
+    public bool IsSliding => PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f;
 
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
@@ -117,6 +120,12 @@ public sealed partial class Rayman : MovableActor
             return false;
 
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
+    }
+
+    private bool CanPunch(int punchCount)
+    {
+        // TODO: Implement this correctly
+        return true;
     }
 
     private void UpdatePhysicalType()
@@ -473,8 +482,8 @@ public sealed partial class Rayman : MovableActor
         //field10_0x84 = 0;
         //field11_0x88 = 0;
         NextActionId = null;
-        //field3_0x68 = 0;
-        //field4_0x6c = 0;
+        Fist1 = null;
+        Fist2 = null;
         //field5_0x70 = 0;
         //field6_0x74 = 0;
         Flag1_0 = false;

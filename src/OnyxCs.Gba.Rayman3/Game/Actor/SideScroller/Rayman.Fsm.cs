@@ -94,7 +94,7 @@ public partial class Rayman : MovableActor
             case FsmAction.Init:
                 UpdatePhysicalType();
 
-                if (PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f)
+                if (IsSliding)
                 {
                     SlidingOnSlippery();
                 }
@@ -174,7 +174,7 @@ public partial class Rayman : MovableActor
                     PlaySound(340);
                 }
 
-                if (PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f)
+                if (IsSliding)
                 {
                     SlidingOnSlippery();
                 }
@@ -326,7 +326,164 @@ public partial class Rayman : MovableActor
 
     // TODO: Implement
     private void Fsm_StandingNearEdge(FsmAction action) { }
-    private void Fsm_Walk(FsmAction action) { }
+
+    private void Fsm_Walk(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (IsSliding)
+                {
+                    SlidingOnSlippery();
+                }
+                else
+                {
+                    PlaySound(208);
+
+                    if (PhysicalType == 32)
+                        MechSpeedX = 0;
+
+                    if (!MultiplayerManager.IsInMultiplayer)
+                    {
+                        // Randomly look around for Globox in the first level
+                        if (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0)
+                        {
+                            if (Random.Shared.Next(501) >= 401)
+                                ActionId = IsFacingRight ? Action.Walk_LookAround_Right : Action.Walk_LookAround_Left;
+                            else
+                                ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+
+                            field22_0x97 = 0;
+                        }
+                        else
+                        {
+                            ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                Timer = 0;
+                field21_0x96 = 0;
+                break;
+
+            case FsmAction.Step:
+                if (!Inlined_FUN_1004c544())
+                    return;
+
+                if (Speed.Y > 1 && MechSpeedX == 0)
+                {
+                    Timer++;
+                    Position -= new Vector2(0, Speed.Y);
+                }
+
+                // Randomly look around for Globox in the first level
+                if (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0)
+                {
+                    field22_0x97++;
+
+                    if (IsActionFinished)
+                    {
+                        if (ActionId is Action.Walk_Right or Action.Walk_Left &&
+                            field22_0x97 > Random.Shared.Next(121) + 120)
+                        {
+                            ActionId = IsFacingRight ? Action.Walk_LookAround_Right : Action.Walk_LookAround_Left;
+                            field22_0x97 = 0;
+                        }
+                        else if (ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left && 
+                                 field22_0x97 > Random.Shared.Next(121) + 60)
+                        {
+                            ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                            field22_0x97 = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    ActionId = IsFacingLeft ? Action.Walk_Left : Action.Walk_Right;
+                }
+
+                // Change walking direction
+                if (ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left)
+                {
+                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                    {
+                        ActionId = Action.Walk_LookAround_Left;
+                        ChangeAction();
+
+                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                            throw new NotImplementedException();
+                    }
+                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                    {
+                        ActionId = Action.Walk_LookAround_Right;
+                        ChangeAction();
+
+                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                            throw new NotImplementedException();
+                    }
+                }
+                else
+                {
+                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                    {
+                        ActionId = Action.Walk_Left;
+                        ChangeAction();
+
+                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                            throw new NotImplementedException();
+                    }
+                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                    {
+                        ActionId = Action.Walk_Right;
+                        ChangeAction();
+
+                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                            throw new NotImplementedException();
+                    }
+                }
+
+                if (CheckInput(GbaInput.B))
+                {
+                    field21_0x96++;
+                }
+                else if (CheckSingleInput(GbaInput.B) && field23_0x98 == 0)
+                {
+                    field21_0x96 = 0;
+
+                    // TODO: Implement punching code
+                    //if (CanPunch(1))
+                    //{
+
+                    //}
+                    //else if (CanPunch(2))
+                    //{
+
+                    //}
+                }
+
+                if (IsSliding)
+                {
+                    SlidingOnSlippery();
+                }
+                else
+                {
+                    // TODO: Implement
+                }
+
+                // TODO: Implement
+
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     private void Fsm_Jump(FsmAction action)
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
