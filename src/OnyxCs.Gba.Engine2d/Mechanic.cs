@@ -193,7 +193,7 @@ public class Mechanic
     private void SetSpeedXY(float[] mechParams, int offset)
     {
         SetSpeedX(mechParams, offset + 0);
-        SetSpeedX(mechParams, offset + 1);
+        SetSpeedY(mechParams, offset + 1);
     }
 
     private void SetSpeedX_ResetSpeedY(float[] mechParams, int offset)

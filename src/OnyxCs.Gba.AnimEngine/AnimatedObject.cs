@@ -219,9 +219,26 @@ public class AnimatedObject : AObject
                     if (channel.ObjectMode == OBJ_ATTR_ObjectMode.HIDE)
                         continue;
 
-                    // Get the position
-                    float xPos = channel.XPosition + ScreenPos.X;
-                    float yPos = channel.YPosition + ScreenPos.Y;
+                    // On GBA the size of a sprite is determined based on
+                    // the shape and size values. We use these to get the
+                    // actual width and height of the sprite.
+                    Constants.Size shape = Constants.GetSpriteShape(channel.SpriteShape, channel.SpriteSize);
+
+                    // Get x position
+                    float xPos = channel.XPosition;
+
+                    if (!FlipX)
+                        xPos += ScreenPos.X;
+                    else
+                        xPos = ScreenPos.X - xPos - shape.Width;
+
+                    // Get y position
+                    float yPos = channel.YPosition;
+
+                    if (!FlipY)
+                        yPos += ScreenPos.Y;
+                    else
+                        yPos = ScreenPos.Y - yPos - shape.Height;
 
                     AffineMatrix? affineMatrix = null;
 
@@ -253,8 +270,8 @@ public class AnimatedObject : AObject
                     Gfx.AddSprite(new Sprite(
                         texture: tex,
                         position: new Vector2(xPos, yPos),
-                        flipX: channel.FlipX,
-                        flipY: channel.FlipY,
+                        flipX: channel.FlipX ^ FlipX,
+                        flipY: channel.FlipY ^ FlipY,
                         priority: Priority,
                         affineMatrix: affineMatrix));
                     break;
