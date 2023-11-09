@@ -339,12 +339,12 @@ public sealed partial class Rayman : MovableActor
     private bool IsOnInstaKillType()
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
-        Rectangle detectionBox = GetAbsoluteBox(DetectionBox);
+        Box detectionBox = GetDetectionBox();
 
         byte type = 0xFF;
         for (int i = 0; i < 3; i++)
         {
-            type = scene.GetPhysicalType(new Vector2(detectionBox.Left + 16 * i, detectionBox.Bottom - 1));
+            type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 16 * i, detectionBox.MaxY - 1));
 
             if (type is 32 or 74 or 48 or 90)
                 break;

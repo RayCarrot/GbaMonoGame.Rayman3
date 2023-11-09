@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;
@@ -68,19 +67,19 @@ public class AnimatedObject : AObject
         if (HasExecutedFrame || BoxTable == null)
             return;
 
-        BoxTable.AttackBox = new Rectangle();
-        BoxTable.VulnerabilityBox = new Rectangle();
+        BoxTable.AttackBox = new Box();
+        BoxTable.VulnerabilityBox = new Box();
 
         foreach (AnimationChannel channel in EnumerateCurrentChannels())
         {
             switch (channel.ChannelType)
             {
                 case AnimationChannelType.AttackBox:
-                    BoxTable.AttackBox = channel.Box.ToRectangle();
+                    BoxTable.AttackBox = new Box(channel.Box);
                     break;
 
                 case AnimationChannelType.VulnerabilityBox:
-                    BoxTable.VulnerabilityBox = channel.Box.ToRectangle();
+                    BoxTable.VulnerabilityBox = new Box(channel.Box);
                     break;
             }
         }
@@ -197,8 +196,8 @@ public class AnimatedObject : AObject
 
         if (!HasExecutedFrame && BoxTable != null)
         {
-            BoxTable.AttackBox = new Rectangle();
-            BoxTable.VulnerabilityBox = new Rectangle();
+            BoxTable.AttackBox = new Box();
+            BoxTable.VulnerabilityBox = new Box();
         }
 
         EndOfAnimation = false;
@@ -291,12 +290,12 @@ public class AnimatedObject : AObject
 
                 case AnimationChannelType.AttackBox:
                     if (!HasExecutedFrame && BoxTable != null)
-                        BoxTable.AttackBox = channel.Box.ToRectangle();
+                        BoxTable.AttackBox = new Box(channel.Box);
                     break;
 
                 case AnimationChannelType.VulnerabilityBox:
                     if (!HasExecutedFrame && BoxTable != null)
-                        BoxTable.VulnerabilityBox = channel.Box.ToRectangle();
+                        BoxTable.VulnerabilityBox = new Box(channel.Box);
                     break;
             }
         }

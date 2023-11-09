@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace OnyxCs.Gba.Engine2d;
+﻿namespace OnyxCs.Gba.Engine2d;
 
 public abstract class GameObject : Object
 {
@@ -31,12 +29,6 @@ public abstract class GameObject : Object
     public bool ResurrectsLater { get; set; }
     public bool Flag_6 { get; set; }
     public bool Flag_7 { get; set; }
-
-    public Rectangle GetAbsoluteBox(Rectangle box)
-    {
-        box.Offset(Position); // TODO: This casts floats to int - a problem?
-        return box;
-    }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {

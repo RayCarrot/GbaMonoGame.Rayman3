@@ -40,19 +40,19 @@ public class DebugLayout
     };
     private GameObject SelectedGameObject { get; set; }
 
-    private void DrawBox(GfxRenderer renderer, GameObject gameObject, Rectangle box, Color color)
+    private void DrawBox(GfxRenderer renderer, Box box, Color color)
     {
-        if (box == Rectangle.Empty) 
+        if (box == Box.Empty) 
             return;
 
         TgxPlayfield2D playfield = Frame.GetComponent<TgxPlayfield2D>();
-        
-        box.Offset(gameObject.Position - playfield.Camera.Position);
+
+        box = box.Offset(-playfield.Camera.Position);
 
         if (_fillBoxes)
-            renderer.DrawFilledRectangle(box, new Color(color, 0.1f));
+            renderer.DrawFilledRectangle(box.ToRectangle(), new Color(color, 0.1f));
         else
-            renderer.DrawRectangle(box, color);
+            renderer.DrawRectangle(box.ToRectangle(), color);
     }
 
     private void DrawMenu()
@@ -415,24 +415,24 @@ public class DebugLayout
             foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
             {
                 if (_showViewBoxes)
-                    DrawBox(renderer, actor, actor.ViewBox, Color.Lime);
+                    DrawBox(renderer, actor.GetViewBox(), Color.Lime);
 
                 if (actor is ActionActor actionActor)
                 {
                     if (_showActionBoxes)
-                        DrawBox(renderer, actionActor, actionActor.ActionBox, Color.Blue);
+                        DrawBox(renderer, actionActor.GetActionBox(), Color.Blue);
 
                     if (_showDetectionBoxes)
-                        DrawBox(renderer, actionActor, actionActor.DetectionBox, Color.DeepPink);
+                        DrawBox(renderer, actionActor.GetDetectionBox(), Color.DeepPink);
                 }
 
                 if (actor is InteractableActor interactableActor)
                 {
                     if (_showAttackBoxes)
-                        DrawBox(renderer, interactableActor, interactableActor.AnimationBoxTable.AttackBox, Color.OrangeRed);
+                        DrawBox(renderer, interactableActor.GetAttackBox(), Color.OrangeRed);
 
                     if (_showVulnerabilityBoxes)
-                        DrawBox(renderer, interactableActor, interactableActor.AnimationBoxTable.VulnerabilityBox, Color.Green);
+                        DrawBox(renderer, interactableActor.GetVulnerabilityBox(), Color.Green);
                 }
             }
 
@@ -440,15 +440,15 @@ public class DebugLayout
             {
                 foreach (Captor captor in scene2D.GameObjects.EnumerateCaptors(isEnabled: true))
                 {
-                    DrawBox(renderer, captor, captor.CaptorBox, Color.DeepPink);
+                    DrawBox(renderer, captor.GetCaptorBox(), Color.DeepPink);
                 }
             }
         }
 
         if (SelectedGameObject is BaseActor selectedActor)
-            DrawBox(renderer, selectedActor, selectedActor.ViewBox, Color.Red);
+            DrawBox(renderer, selectedActor.GetViewBox(), Color.Red);
         else if (SelectedGameObject is Captor selectedCaptor)
-            DrawBox(renderer, selectedCaptor, selectedCaptor.CaptorBox, Color.Red);
+            DrawBox(renderer, selectedCaptor.GetCaptorBox(), Color.Red);
     }
 
     public void Draw(Microsoft.Xna.Framework.GameTime gameTime)

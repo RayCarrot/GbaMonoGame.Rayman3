@@ -1,5 +1,4 @@
 ﻿using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -15,12 +14,10 @@ public class Captor : GameObject
         OriginalEventsToTrigger = captorResource.EventsCount;
         EventsToTrigger = captorResource.EventsCount;
 
-        CaptorBox = new Rectangle(
-            x: captorResource.BoxMinX, 
-            y: captorResource.BoxMinY,
-            width: captorResource.BoxMaxX - captorResource.BoxMinX, 
-            height: captorResource.BoxMaxY - captorResource.BoxMinY);
+        _captorBox = new Box(captorResource.BoxMinX, captorResource.BoxMinY, captorResource.BoxMaxX, captorResource.BoxMaxY);
     }
+
+    private readonly Box _captorBox;
 
     // Flags
     public bool TriggerOnMainActorDetection { get; set; }
@@ -32,7 +29,7 @@ public class Captor : GameObject
     public int EventsToTrigger { get; set; }
     public int TriggeredCount { get; set; }
 
-    public Rectangle CaptorBox { get; set; }
+    public Box GetCaptorBox() => _captorBox.Offset(Position);
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {

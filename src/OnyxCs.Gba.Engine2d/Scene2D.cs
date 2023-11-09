@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
-using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 
@@ -128,7 +127,7 @@ public class Scene2D
         {
             if (captor.TriggerOnMainActorDetection)
             {
-                captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(MainActor.GetAbsoluteBox(MainActor.DetectionBox));
+                captor.IsTriggering = captor.GetCaptorBox().Intersects(MainActor.GetDetectionBox());
             }
             else
             {
@@ -138,7 +137,7 @@ public class Scene2D
                     {
                         if (actor.IsAgainstCaptor && actor is ActionActor actionActor)
                         {
-                            captor.IsTriggering = captor.GetAbsoluteBox(captor.CaptorBox).Intersects(actionActor.GetAbsoluteBox(actionActor.DetectionBox));
+                            captor.IsTriggering = captor.GetCaptorBox().Intersects(actionActor.GetDetectionBox());
                         }
                     }
                 }
@@ -164,8 +163,8 @@ public class Scene2D
 
     public bool IsDetectedMainActor(ActionActor actor)
     {
-        Rectangle actionBox = actor.GetAbsoluteBox(actor.ActionBox);
-        Rectangle mainActorDetectionBox = MainActor.GetAbsoluteBox(MainActor.DetectionBox);
+        Box actionBox = actor.GetActionBox();
+        Box mainActorDetectionBox = MainActor.GetDetectionBox();
 
         return actionBox.Intersects(mainActorDetectionBox);
     }

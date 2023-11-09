@@ -1,5 +1,4 @@
 ﻿using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
 
 namespace OnyxCs.Gba.Engine2d;
@@ -22,15 +21,16 @@ public class BaseActor : GameObject
         AnimatedObject.SetCurrentAnimation(0);
         AnimatedObject.Priority = ActorDrawPriority;
 
-        ViewBox = ActorModel.ViewBox.ToRectangle();
+        _viewBox = new Box(ActorModel.ViewBox);
     }
 
     public static int ActorDrawPriority { get; set; }
 
+    private readonly Box _viewBox;
+
     public ActorModel ActorModel { get; }
     public int Type { get; }
     public AnimatedObject AnimatedObject { get; }
-    public Rectangle ViewBox { get; }
 
     public FiniteStateMachine Fsm { get; } = new();
 
@@ -49,6 +49,8 @@ public class BaseActor : GameObject
     public bool IsTouchingMap { get; set; }
     public bool ActorFlag_C { get; set; }
     public bool ActorFlag_E { get; set; }
+
+    public Box GetViewBox() => _viewBox.Offset(Position);
 
     public void RewindAction()
     {

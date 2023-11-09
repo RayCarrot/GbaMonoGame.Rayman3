@@ -10,5 +10,8 @@ public class InteractableActor : ActionActor
         AnimatedObject.BoxTable = AnimationBoxTable;
     }
 
-    public BoxTable AnimationBoxTable { get; }
+    private BoxTable AnimationBoxTable { get; }
+
+    public Box GetAttackBox() => AnimationBoxTable.AttackBox.Offset(Position);
+    public Box GetVulnerabilityBox() => AnimationBoxTable.VulnerabilityBox.Offset(Position);
 }

@@ -1,6 +1,5 @@
 ﻿using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -24,7 +23,7 @@ public class MovableActor : InteractableActor
     public bool HasMapCollision { get; set; }
     public bool HasObjectCollision { get; set; }
 
-    private bool CheckObjectCollision1(Rectangle actorDetectionBox, Rectangle otherDetectionBox)
+    private bool CheckObjectCollision1(Box actorDetectionBox, Box otherDetectionBox)
     {
         if (!actorDetectionBox.Intersects(otherDetectionBox))
             return false;
@@ -34,7 +33,7 @@ public class MovableActor : InteractableActor
         return true;
     }
 
-    private bool CheckObjectCollision2(Rectangle actorDetectionBox, Rectangle otherDetectionBox)
+    private bool CheckObjectCollision2(Box actorDetectionBox, Box otherDetectionBox)
     {
         if (!actorDetectionBox.Intersects(otherDetectionBox))
             return false;
@@ -62,7 +61,7 @@ public class MovableActor : InteractableActor
     private void CheckMapCollisionExtendedY()
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
-        Rectangle detectionBox = GetAbsoluteBox(DetectionBox);
+        Box detectionBox = GetDetectionBox();
 
         float speedY = Speed.Y;
 
@@ -72,7 +71,7 @@ public class MovableActor : InteractableActor
         }
         else
         {
-            byte type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.Bottom - Constants.TileSize));
+            byte type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
 
             if (type is >= 16 and < 32)
             {
@@ -80,14 +79,14 @@ public class MovableActor : InteractableActor
             }
             else
             {
-                type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.Bottom));
+                type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
 
                 if (type < 32)
                 {
                     if (type < 16)
                     {
                         Speed = new Vector2(Speed.X, 0);
-                        Position = new Vector2(Position.X, Position.Y - (detectionBox.Bottom % Constants.TileSize));
+                        Position = new Vector2(Position.X, Position.Y - (detectionBox.MaxY % Constants.TileSize));
                     }
                     else
                     {
@@ -123,20 +122,20 @@ public class MovableActor : InteractableActor
             {
                 IsTouchingActor = false;
 
-                Rectangle detectionBox = GetAbsoluteBox(DetectionBox);
+                Box detectionBox = GetDetectionBox();
 
                 foreach (BaseActor actor in Frame.GetComponent<Scene2D>().GameObjects.EnumerateAllActors(isEnabled: true))
                 {
                     if (actor != this && actor.ActorFlag_6 && actor is ActionActor actionActor)
                     {
-                        Rectangle otherDetectionBox = actionActor.GetAbsoluteBox(actionActor.DetectionBox);
+                        Box otherDetectionBox = actionActor.GetDetectionBox();
 
                         if (!actionActor.ActorFlag_E)
                         {
                             if (CheckObjectCollision1(detectionBox, otherDetectionBox))
                             {
                                 IsTouchingActor = true;
-                                detectionBox = GetAbsoluteBox(DetectionBox);
+                                detectionBox = GetDetectionBox();
                             }
                         }
                         else
@@ -144,7 +143,7 @@ public class MovableActor : InteractableActor
                             if (CheckObjectCollision2(detectionBox, otherDetectionBox))
                             {
                                 IsTouchingActor = true;
-                                detectionBox = GetAbsoluteBox(DetectionBox);
+                                detectionBox = GetDetectionBox();
                             }
                         }
                     }

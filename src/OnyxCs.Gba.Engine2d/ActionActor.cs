@@ -1,5 +1,4 @@
 ﻿using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -14,18 +13,17 @@ public class ActionActor : BaseActor
         ActionId = actorResource.FirstActionId;
         ChangeAction();
 
-        DetectionBox = actorResource.Model.DetectionBox.ToRectangle();
+        _detectionBox = new Box(actorResource.Model.DetectionBox);
     }
 
     private int _actionId;
+    private readonly Box _detectionBox;
+    private Box _actionBox;
 
     public Action[] Actions { get; }
-    public Rectangle DetectionBox { get; }
 
     public int HitPoints { get; set; }
     public int AttackPoints { get; set; }
-
-    public Rectangle ActionBox { get; set; }
 
     public sealed override int ActionId
     {
@@ -38,6 +36,9 @@ public class ActionActor : BaseActor
     }
 
     public bool NewAction { get; set; }
+
+    public Box GetDetectionBox() => _detectionBox.Offset(Position);
+    public Box GetActionBox() => _actionBox.Offset(Position);
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -64,7 +65,7 @@ public class ActionActor : BaseActor
         
         Action action = Actions[ActionId];
 
-        ActionBox = action.Box.ToRectangle();
+        _actionBox = new Box(action.Box);
 
         AnimatedObject.SetCurrentAnimation(action.AnimationIndex);
         AnimatedObject.FlipX = (action.Flags & ActionFlags.FlipX) != 0;
