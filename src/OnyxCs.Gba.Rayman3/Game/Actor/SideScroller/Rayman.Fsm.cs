@@ -250,7 +250,7 @@ public partial class Rayman : MovableActor
                 }
                 
                 // Punch
-                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && FUN_0802c414(2))
+                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanPunch(2))
                 {
                     PlaySound(340);
                     Fsm.ChangeAction(FUN_0802f5d8);

@@ -1,7 +1,5 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Engine2d;
 
@@ -412,22 +410,6 @@ public sealed partial class Rayman : MovableActor
                 }
             }
         }
-    }
-
-    private bool FUN_0802c414(int unknown)
-    {
-        return false;
-
-        // TODO: Implement
-        //if ((!MultiplayerManager.IsInMultiplayer || FUN_0802aae4()) &&
-        //    (field3_0x68 == 0 || (field4_0x6c == 0 && unknown == 2 && (GameInfo.Powers & 1) != 0)))
-        //{
-        //    return true;
-        //}
-        //else
-        //{
-        //    return false;
-        //}
     }
 
     // Checks if near edge?
