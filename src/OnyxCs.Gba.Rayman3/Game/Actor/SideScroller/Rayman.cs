@@ -1,5 +1,6 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Engine2d;
@@ -44,9 +45,10 @@ public sealed partial class Rayman : MovableActor
     public BaseActor Fist1 { get; set; }
     public BaseActor Fist2 { get; set; }
     public uint Timer { get; set; }
-    public float MechSpeedX { get; set; }
+    public float MechSpeedX { get; set; } // TODO: SlidingSpeed?
     public byte PhysicalType { get; set; }
     public bool IsSliding => PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f;
+    public float PrevSpeedY { get; set; }
 
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
@@ -82,7 +84,7 @@ public sealed partial class Rayman : MovableActor
     public byte field21_0x96 { get; set; }
     public byte field22_0x97 { get; set; }
     public byte field23_0x98 { get; set; }
-    public byte field27_0x9c { get; set; }
+    public byte field27_0x9c { get; set; } // Bool?
 
     private bool CheckInput(GbaInput input)
     {
@@ -223,6 +225,110 @@ public sealed partial class Rayman : MovableActor
             if (CheckInput(GbaInput.Left))
                 MechSpeedX += 0.015625f;
         }
+    }
+
+    private void MoveInTheAir(float speedX)
+    {
+        if (CheckInput(GbaInput.Left))
+        {
+            if (IsFacingRight)
+                AnimatedObject.FlipX = true;
+
+            speedX -= 1.79998779297f;
+
+            if (speedX <= -3)
+                speedX = -3;
+        }
+        else if (CheckInput(GbaInput.Right))
+        {
+            if (IsFacingLeft)
+                AnimatedObject.FlipX = false;
+
+            speedX += 1.79998779297f;
+
+            if (speedX > 3)
+                speedX = 3;
+        }
+
+        Mechanic.Speed = new Vector2(speedX, Mechanic.Speed.Y);
+    }
+
+    private bool HasLanded()
+    {
+        if (Speed.Y != 0 || PrevSpeedY < 0)
+        {
+            PrevSpeedY = Speed.Y;
+            return false;
+        }
+
+        Scene2D scene = Frame.GetComponent<Scene2D>();
+
+        Box detectionBox = GetDetectionBox();
+        
+        // Check bottom right
+        byte type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+        if (type < 32)
+        {
+            PrevSpeedY = 0;
+            return true;
+        }
+
+        // Check if on another actor
+        if (LinkedMovementActor != null)
+        {
+            PrevSpeedY = 0;
+            return true;
+        }
+
+        // Check bottom left
+        type = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+        if (type < 32)
+        {
+            PrevSpeedY = 0;
+            return true;
+        }
+
+        // Check bottom middle
+        type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - detectionBox.Width / 2, detectionBox.MaxY));
+        if (type < 32)
+        {
+            PrevSpeedY = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    private void FUN_0802c3c8()
+    {
+        if ((Speed.X < 1 || MechSpeedX > -1) &&
+            (Speed.X > -1 || MechSpeedX < 1))
+        {
+            if (MechSpeedX < 1)
+            {
+                if (MechSpeedX > -1)
+                    return;
+
+                MechSpeedX += 0.03125f;
+
+                if (MechSpeedX < 1)
+                    return;
+            }
+            else
+            {
+                MechSpeedX -= 0.03125f;
+
+                if (MechSpeedX > -1)
+                    return;
+            }
+        }
+
+        MechSpeedX = 0;
+    }
+
+    private void AttackInTheAir()
+    {
+        // TODO: Implement
     }
 
     private bool CheckForDamage()
@@ -473,6 +579,25 @@ public sealed partial class Rayman : MovableActor
         return true;
     }
 
+    private bool DoInTheAir()
+    {
+        if (CheckForDamage() &&
+            (Fsm.EqualsAction(FUN_0802e770) ||
+             Fsm.EqualsAction(FUN_0802d44c) ||
+             Fsm.EqualsAction(Fsm_Jump) ||
+             Fsm.EqualsAction(FUN_0802cb38)) &&
+            ActionId is not (
+                Action.Damage_Knockback_Right or
+                Action.Damage_Knockback_Left or
+                Action.Damage_Shock_Right or
+                Action.Damage_Shock_Left))
+        {
+            ActionId = IsFacingRight ? Action.Damage_Knockback_Right : Action.Damage_Knockback_Left;
+        }
+
+        return Inlined_FUN_1004c1f4();
+    }
+
     protected override bool ProcessMessageImpl(Message message, object param)
     {
         if (base.ProcessMessageImpl(message, param))
@@ -515,7 +640,7 @@ public sealed partial class Rayman : MovableActor
         Flag1_E = false;
         Flag1_F = false;
         //field17_0x92 = HitPoints;
-        //field1_0x60 = 0;
+        PrevSpeedY = 0;
         MechSpeedX = 0;
         PhysicalType = 32;
         //field7_0x78 = 0;

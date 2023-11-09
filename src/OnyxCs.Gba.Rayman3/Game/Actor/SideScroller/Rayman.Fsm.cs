@@ -233,11 +233,11 @@ public partial class Rayman : MovableActor
                     return;
                 }
                 
-                // Falling
+                // Fall
                 if (Speed.Y > 1)
                 {
                     PlaySound(340);
-                    Fsm.ChangeAction(FUN_0802cfec);
+                    Fsm.ChangeAction(Fsm_Fall);
                     return;
                 }
                 
@@ -257,11 +257,12 @@ public partial class Rayman : MovableActor
                     return;
                 }
 
+                // Walking off edge
                 if (MechSpeedX != 0 && FUN_0802986c() != 0 && !Flag1_1)
                 {
                     PlaySound(340);
-                    Position += new Vector2(MechSpeedX < 0 ? -16 : 16);
-                    Fsm.ChangeAction(FUN_0802cfec);
+                    Position += new Vector2(MechSpeedX < 0 ? -16 : 16, 0);
+                    Fsm.ChangeAction(Fsm_Fall);
                     return;
                 }
 
@@ -516,7 +517,15 @@ public partial class Rayman : MovableActor
                     return;
                 }
 
-                // TODO: Implement the rest
+                // TODO: Implement
+
+                if (CheckSingleInput(GbaInput.A))
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // TODO: Implement
 
                 break;
 
@@ -534,15 +543,12 @@ public partial class Rayman : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                if (scene.Camera.LinkedObject == this)
-                    SoundManager.Play(208, -1);
+                PlaySound(208);
 
                 if (ActionId is not (Action.UnknownJump_Right or Action.UnknownJump_Left))
                 {
                     ActionId = IsFacingRight ? Action.Jump_Right : Action.Jump_Left;
-
-                    if (scene.Camera.LinkedObject == this)
-                        SoundManager.Play(108, -1);
+                    PlaySound(108);
                 }
 
                 NextActionId = null;
@@ -558,12 +564,123 @@ public partial class Rayman : MovableActor
                 break;
 
             case FsmAction.Step:
-                // TODO: Implement
+                if (!DoInTheAir())
+                    return;
 
+                if (IsLocalPlayer)
+                    cam.ProcessMessage((Message)1039, 130);
+
+                if (ActionId is Action.Jump_Right or Action.Jump_Left &&
+                    CheckReleasedInput(GbaInput.A) && 
+                    Mechanic.Speed.Y < -4 && 
+                    !Flag2_0)
+                {
+                    Mechanic.Speed = new Vector2(Mechanic.Speed.X, -4);
+                    Flag2_0 = true;
+                }
+
+                if (Speed.Y == 0 && Mechanic.Speed.Y < 0)
+                    Mechanic.Speed = new Vector2(Mechanic.Speed.X, 0);
+
+                MoveInTheAir(MechSpeedX);
+                FUN_0802c3c8();
+                AttackInTheAir();
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // TODO: Implement
                 break;
 
             case FsmAction.UnInit:
                 Flag2_0 = false;
+                break;
+        }
+    }
+
+    private void Fsm_Fall(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(208);
+                ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                NextActionId = null;
+                Timer = 0;
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+                
+                Timer++;
+
+                if (Flag2_4 && Timer > 15)
+                    Flag2_4 = false;
+
+                MoveInTheAir(MechSpeedX);
+                FUN_0802c3c8();
+                AttackInTheAir();
+
+                if (CheckSingleInput(GbaInput.A) && Flag2_4)
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+                
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                {
+                    Fsm.ChangeAction(FUN_0802d44c);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                {
+                    Fsm.ChangeAction(FUN_0802ddac);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (FUN_08029258())
+                //{
+                //    Fsm.ChangeAction(FUN_0802ea74);
+                //    return;
+                //}
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (FUN_080299d4())
+                //{
+                //    FUN_08029c84();
+                //    Fsm.ChangeAction(FUN_0802ee60);
+                //    return;
+                //}
+
+                //if (FUN_08029a78())
+                //{
+                //    Fsm.ChangeAction(FUN_08026cd4);
+                //    return;
+                //}
+
+                //if (CheckInput(GbaInput.L) && FUN_0802a420())
+                //{
+                //    FUN_0802a4c0();
+                //    Fsm.ChangeAction(FUN_08031554);
+                //}
+                break;
+
+            case FsmAction.UnInit:
+                Flag2_4 = false;
                 break;
         }
     }
@@ -583,6 +700,8 @@ public partial class Rayman : MovableActor
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void FUN_0802cfec(FsmAction action) { }
     private void FUN_0802f5d8(FsmAction action) { }
+    private void FUN_0802e770(FsmAction action) { }
+    private void FUN_0802ee60(FsmAction action) { }
+    private void FUN_08031554(FsmAction action) { }
 }

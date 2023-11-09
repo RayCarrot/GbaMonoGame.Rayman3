@@ -47,6 +47,9 @@ public partial class Rayman : MovableActor
         Sliding_Crouch_Right = 76,
         Sliding_Crouch_Left = 77,
 
+        Damage_Knockback_Right = 100,
+        Damage_Knockback_Left = 101,
+
         UnknownJump_Right = 109, // TODO: What is this?
         UnknownJump_Left = 110,
 
@@ -83,7 +86,8 @@ public partial class Rayman : MovableActor
 
         LookUp_Right = 213,
         LookUp_Left = 214,
-
+        Damage_Shock_Right = 215,
+        Damage_Shock_Left = 216,
         Spawn_Curtain_Right = 217,
         Spawn_Curtain_Left = 218,
     }
