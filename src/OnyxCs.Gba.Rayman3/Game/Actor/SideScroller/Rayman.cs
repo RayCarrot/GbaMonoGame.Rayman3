@@ -511,7 +511,7 @@ public sealed partial class Rayman : MovableActor
 
             if (!Fsm.EqualsAction(FUN_0802ddac) &&
                 CheckInput(GbaInput.Down) &&
-                (Speed.Y > 0 || Fsm.EqualsAction(FUN_080254d8)) &&
+                (Speed.Y > 0 || Fsm.EqualsAction(Fsm_Crouch)) &&
                 !Fsm.EqualsAction(FUN_08026cd4))
             {
                 field18_0x93 = 70;

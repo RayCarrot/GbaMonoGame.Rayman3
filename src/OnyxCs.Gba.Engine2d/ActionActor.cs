@@ -17,7 +17,7 @@ public class ActionActor : BaseActor
     }
 
     private int _actionId;
-    private readonly Box _detectionBox;
+    private Box _detectionBox;
     private Box _actionBox;
 
     public Action[] Actions { get; }
@@ -38,6 +38,7 @@ public class ActionActor : BaseActor
     public bool NewAction { get; set; }
 
     public Box GetDetectionBox() => _detectionBox.Offset(Position);
+    public Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
     public Box GetActionBox() => _actionBox.Offset(Position);
 
     protected override bool ProcessMessageImpl(Message message, object param)

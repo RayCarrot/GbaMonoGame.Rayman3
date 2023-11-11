@@ -229,7 +229,7 @@ public partial class Rayman : MovableActor
                 {
                     NextActionId = IsFacingRight ? Action.CrouchDown_Right : Action.CrouchDown_Left;
                     PlaySound(340);
-                    Fsm.ChangeAction(FUN_080254d8);
+                    Fsm.ChangeAction(Fsm_Crouch);
                     return;
                 }
                 
@@ -685,6 +685,124 @@ public partial class Rayman : MovableActor
         }
     }
 
+    private void Fsm_Crouch(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (IsSliding)
+                {
+                    ActionId = IsFacingRight ? Action.Sliding_Crouch_Right : Action.Sliding_Crouch_Left;
+                }
+                else
+                {
+                    PlaySound(208);
+                    
+                    if (PhysicalType == 32)
+                        MechSpeedX = 0;
+
+                    if (NextActionId == null)
+                        ActionId = IsFacingRight ? Action.Crouch_Right : Action.Crouch_Left;
+                    else
+                        ActionId = NextActionId.Value;
+                }
+
+                // Custom detection box for when crouching
+                SetDetectionBox(new Box(
+                    minX: ActorModel.DetectionBox.MinX,
+                    minY: ActorModel.DetectionBox.MaxY - 16,
+                    maxX: ActorModel.DetectionBox.MaxX,
+                    maxY: ActorModel.DetectionBox.MaxY));
+                break;
+
+            case FsmAction.Step:
+                if (!Inlined_FUN_1004c544())
+                    return;
+
+                if (IsActionFinished && ActionId is Action.CrouchDown_Right or Action.CrouchDown_Left)
+                {
+                    ActionId = IsFacingRight ? Action.Crouch_Right : Action.Crouch_Left;
+                    NextActionId = null;
+                }
+
+                if (IsSliding)
+                {
+                    SlidingOnSlippery();
+                }
+                else
+                {
+                    PlaySound(208);
+
+                    if (ActionId is not (Action.Crouch_Right or Action.Crouch_Left or Action.CrouchDown_Right or Action.CrouchDown_Left))
+                        ActionId = IsFacingRight ? Action.Crouch_Right : Action.Crouch_Left;
+                }
+
+                Scene2D scene = Frame.GetComponent<Scene2D>();
+                Box detectionBox = GetDetectionBox();
+
+                byte type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+
+                if (type >= 32)
+                    type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.Crawl_Left;
+                    ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.Crawl_Right;
+                    ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+
+                // Let go of down and stop crouching
+                if (CheckReleasedInput(GbaInput.Down) && type >= 32)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Crawl
+                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                {
+                    Fsm.ChangeAction(Fsm_Crawl);
+                    return;
+                }
+
+                // Fall
+                if (Speed.Y > 1)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Jump
+                if (CheckSingleInput(GbaInput.A) && type >= 32 && Flag2_2)
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                break;
+
+            case FsmAction.UnInit:
+                // Restore detection box
+                SetDetectionBox(new Box(ActorModel.DetectionBox));
+
+                if (NextActionId == ActionId || ActionId is Action.Crawl_Right or Action.Crawl_Left)
+                    NextActionId = null;
+                break;
+        }
+    }
+
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }
@@ -692,7 +810,6 @@ public partial class Rayman : MovableActor
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_08026cd4(FsmAction action) { }
-    private void FUN_080254d8(FsmAction action) { }
     private void FUN_0802ea74(FsmAction action) { }
     private void FUN_0802d44c(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
@@ -704,4 +821,5 @@ public partial class Rayman : MovableActor
     private void FUN_0802e770(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
+    private void Fsm_Crawl(FsmAction action) { }
 }
