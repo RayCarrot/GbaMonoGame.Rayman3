@@ -1,5 +1,6 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
+using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Engine2d;
 
@@ -47,6 +48,8 @@ public sealed partial class Rayman : MovableActor
     public byte PhysicalType { get; set; }
     public bool IsSliding => PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f;
     public float PrevSpeedY { get; set; }
+
+    public bool NoClip { get; set; } // Custom no-clip mode
 
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
@@ -580,6 +583,42 @@ public sealed partial class Rayman : MovableActor
         return Inlined_FUN_1004c1f4();
     }
 
+    private void ToggleNoClip()
+    {
+        if (JoyPad.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
+        {
+            NoClip = !NoClip;
+
+            if (NoClip)
+            {
+                ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                ChangeAction();
+                Mechanic.Speed = Vector2.Zero;
+            }
+            else
+            {
+                ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                Fsm.ChangeAction(Fsm_Fall);
+                ChangeAction();
+            }
+        }
+    }
+
+    private void DoNoClipBehavior()
+    {
+        const int speed = 4;
+
+        if (JoyPad.Check(GbaInput.Up))
+            Position -= new Vector2(0, speed);
+        else if (JoyPad.Check(GbaInput.Down))
+            Position += new Vector2(0, speed);
+
+        if (JoyPad.Check(GbaInput.Left))
+            Position -= new Vector2(speed, 0);
+        else if (JoyPad.Check(GbaInput.Right))
+            Position += new Vector2(speed, 0);
+    }
+
     protected override bool ProcessMessageImpl(Message message, object param)
     {
         if (base.ProcessMessageImpl(message, param))
@@ -662,9 +701,19 @@ public sealed partial class Rayman : MovableActor
         // TODO: Run cheats
     }
 
+    public override void DoBehavior()
+    {
+        if (NoClip)
+            DoNoClipBehavior();
+        else
+            base.DoBehavior();
+    }
+
     public override void Step()
     {
         base.Step();
+
+        ToggleNoClip();
 
         if (PhysicalType != 32 && NewAction)
             Mechanic.Init(1, null);
