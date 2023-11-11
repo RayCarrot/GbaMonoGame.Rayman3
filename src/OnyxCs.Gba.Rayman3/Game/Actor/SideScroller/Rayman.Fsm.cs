@@ -517,16 +517,41 @@ public partial class Rayman : MovableActor
                     return;
                 }
 
-                // TODO: Implement
+                // Crawl
+                if (CheckInput(GbaInput.Down))
+                {
+                    Fsm.ChangeAction(Fsm_Crawl);
+                    return;
+                }
 
+                // Jump
                 if (CheckSingleInput(GbaInput.A))
                 {
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
                 }
 
-                // TODO: Implement
+                // Fall
+                if (MechSpeedX != 0 && Speed.Y > 1)
+                {
+                    Position += new Vector2(IsFacingLeft ? -16 : 16, 0);
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
 
+                // Fall
+                if (Speed.Y > 1 && Timer >= 8)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Punch
+                if (field23_0x98 == 0 && field21_0x96 > 10 && CheckInput(GbaInput.B) && CanPunch(2))
+                {
+                    Fsm.ChangeAction(FUN_0802f5d8);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -790,7 +815,6 @@ public partial class Rayman : MovableActor
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
                 }
-
                 break;
 
             case FsmAction.UnInit:
@@ -799,6 +823,123 @@ public partial class Rayman : MovableActor
 
                 if (NextActionId == ActionId || ActionId is Action.Crawl_Right or Action.Crawl_Left)
                     NextActionId = null;
+                break;
+        }
+    }
+
+    private void Fsm_Crawl(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (IsSliding)
+                {
+                    ActionId = IsFacingRight ? Action.Sliding_Crouch_Right : Action.Sliding_Crouch_Left;
+                }
+                else
+                {
+                    PlaySound(208);
+
+                    if (PhysicalType == 32)
+                        MechSpeedX = 0;
+
+                    if (NextActionId == null)
+                        ActionId = IsFacingRight ? Action.Crawl_Right : Action.Crawl_Left;
+                    else
+                        ActionId = NextActionId.Value;
+                }
+
+                NextActionId = null;
+
+                // Custom detection box for when crouching
+                SetDetectionBox(new Box(
+                    minX: ActorModel.DetectionBox.MinX,
+                    minY: ActorModel.DetectionBox.MaxY - 16,
+                    maxX: ActorModel.DetectionBox.MaxX,
+                    maxY: ActorModel.DetectionBox.MaxY));
+                break;
+
+            case FsmAction.Step:
+                if (!Inlined_FUN_1004c544())
+                    return;
+
+                Scene2D scene = Frame.GetComponent<Scene2D>();
+                Box detectionBox = GetDetectionBox();
+
+                byte type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+
+                if (type >= 32)
+                    type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.Crawl_Left;
+                    ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.Crawl_Right;
+                    ChangeAction();
+
+                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+
+                if (IsSliding)
+                {
+                    SlidingOnSlippery();
+                }
+                else
+                {
+                    PlaySound(208);
+
+                    if (ActionId is not (Action.Crawl_Right or Action.Crawl_Left))
+                        ActionId = IsFacingRight ? Action.Crawl_Right : Action.Crawl_Left;
+                }
+
+                // Walk
+                if (CheckReleasedInput(GbaInput.Down) && (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right)) && type >= 32)
+                {
+                    Fsm.ChangeAction(Fsm_Walk);
+                    return;
+                }
+
+                // Stopped crouching/crawling
+                if (CheckReleasedInput(GbaInput.Down) && CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) && type >= 32)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Crouch
+                if (CheckReleasedInput(GbaInput.Right) && CheckReleasedInput(GbaInput.Left))
+                {
+                    Fsm.ChangeAction(Fsm_Crouch);
+                    return;
+                }
+
+                // Jump
+                if (CheckSingleInput(GbaInput.A) && type >= 32)
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Fall
+                if (Speed.Y > 1)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Restore detection box
+                SetDetectionBox(new Box(ActorModel.DetectionBox));
                 break;
         }
     }
@@ -821,5 +962,4 @@ public partial class Rayman : MovableActor
     private void FUN_0802e770(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
-    private void Fsm_Crawl(FsmAction action) { }
 }
