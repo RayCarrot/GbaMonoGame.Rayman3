@@ -146,16 +146,16 @@ public sealed partial class Rayman : MovableActor
     private void UpdatePhysicalType()
     {
         Scene2D scene = Frame.GetComponent<Scene2D>();
-        byte type = scene.GetPhysicalType(Position);
+        PhysicalType type = scene.GetPhysicalType(Position);
 
-        if (type is 1 or 3)
+        if (type.Value is PhysicalTypeValue.Slippery or PhysicalTypeValue.SlipperyLedge)
         {
-            byte otherType = scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
+            PhysicalType otherType = scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
 
-            if (otherType < 4)
+            if (otherType.Value is PhysicalTypeValue.Solid or PhysicalTypeValue.Slippery or PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
                 type = otherType;
         }
-        else if (type is not (22 or 23 or 24 or 25))
+        else if (type.Value is not (PhysicalTypeValue.SlipperyAngleLeft1 or PhysicalTypeValue.SlipperyAngleLeft2 or PhysicalTypeValue.SlipperyAngleRight2 or PhysicalTypeValue.SlipperyAngleRight1))
         {
             PhysicalType = 32;
 
@@ -267,8 +267,8 @@ public sealed partial class Rayman : MovableActor
         Box detectionBox = GetDetectionBox();
         
         // Check bottom right
-        byte type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
-        if (type < 32)
+        PhysicalType type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+        if (type.IsSolid)
         {
             PrevSpeedY = 0;
             return true;
@@ -283,7 +283,7 @@ public sealed partial class Rayman : MovableActor
 
         // Check bottom left
         type = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
-        if (type < 32)
+        if (type.IsSolid)
         {
             PrevSpeedY = 0;
             return true;
@@ -291,7 +291,7 @@ public sealed partial class Rayman : MovableActor
 
         // Check bottom middle
         type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - detectionBox.Width / 2, detectionBox.MaxY));
-        if (type < 32)
+        if (type.IsSolid)
         {
             PrevSpeedY = 0;
             return true;

@@ -71,9 +71,9 @@ public class MovableActor : InteractableActor
         }
         else
         {
-            byte type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
+            PhysicalType type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
 
-            if (type is >= 16 and < 32)
+            if (type.IsAngledSolid)
             {
                 // TODO: Implement
             }
@@ -81,17 +81,14 @@ public class MovableActor : InteractableActor
             {
                 type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
 
-                if (type < 32)
+                if (type.IsFullySolid)
                 {
-                    if (type < 16)
-                    {
-                        Speed = new Vector2(Speed.X, 0);
-                        Position = new Vector2(Position.X, Position.Y - (detectionBox.MaxY % Constants.TileSize));
-                    }
-                    else
-                    {
-                        // TODO: Implement
-                    }
+                    Speed = new Vector2(Speed.X, 0);
+                    Position = new Vector2(Position.X, Position.Y - (detectionBox.MaxY % Constants.TileSize));
+                }
+                else if (type.IsAngledSolid)
+                {
+                    // TODO: Implement
                 }
                 else
                 {

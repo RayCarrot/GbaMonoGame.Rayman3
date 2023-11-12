@@ -765,10 +765,10 @@ public partial class Rayman : MovableActor
                 Scene2D scene = Frame.GetComponent<Scene2D>();
                 Box detectionBox = GetDetectionBox();
 
-                byte type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
 
-                if (type >= 32)
-                    type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                if (!topType.IsSolid)
+                    topType = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
                 if (CheckInput(GbaInput.Left) && IsFacingRight)
@@ -789,7 +789,7 @@ public partial class Rayman : MovableActor
                 }
 
                 // Let go of down and stop crouching
-                if (CheckReleasedInput(GbaInput.Down) && type >= 32)
+                if (CheckReleasedInput(GbaInput.Down) && !topType.IsSolid)
                 {
                     Fsm.ChangeAction(Fsm_Default);
                     return;
@@ -810,7 +810,7 @@ public partial class Rayman : MovableActor
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A) && type >= 32 && Flag2_2)
+                if (CheckSingleInput(GbaInput.A) && !topType.IsSolid && Flag2_2)
                 {
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
@@ -866,10 +866,10 @@ public partial class Rayman : MovableActor
                 Scene2D scene = Frame.GetComponent<Scene2D>();
                 Box detectionBox = GetDetectionBox();
 
-                byte type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
 
-                if (type >= 32)
-                    type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                if (!topType.IsSolid)
+                    topType = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
                 if (CheckInput(GbaInput.Left) && IsFacingRight)
@@ -902,14 +902,14 @@ public partial class Rayman : MovableActor
                 }
 
                 // Walk
-                if (CheckReleasedInput(GbaInput.Down) && (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right)) && type >= 32)
+                if (CheckReleasedInput(GbaInput.Down) && (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right)) && !topType.IsSolid)
                 {
                     Fsm.ChangeAction(Fsm_Walk);
                     return;
                 }
 
                 // Stopped crouching/crawling
-                if (CheckReleasedInput(GbaInput.Down) && CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) && type >= 32)
+                if (CheckReleasedInput(GbaInput.Down) && CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) && !topType.IsSolid)
                 {
                     Fsm.ChangeAction(Fsm_Default);
                     return;
@@ -923,7 +923,7 @@ public partial class Rayman : MovableActor
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A) && type >= 32)
+                if (CheckSingleInput(GbaInput.A) && !topType.IsSolid)
                 {
                     Fsm.ChangeAction(Fsm_Jump);
                     return;

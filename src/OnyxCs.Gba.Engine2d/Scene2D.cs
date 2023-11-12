@@ -176,8 +176,8 @@ public class Scene2D
         return false;
     }
 
-    public byte GetPhysicalType(Vector2 position)
+    public PhysicalType GetPhysicalType(Vector2 position)
     {
-        return Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint());
+        return new PhysicalType(Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint()));
     }
 }
