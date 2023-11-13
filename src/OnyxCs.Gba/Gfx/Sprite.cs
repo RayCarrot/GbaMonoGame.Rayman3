@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba;
@@ -85,6 +84,6 @@ public class Sprite
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.Draw(Texture, Position + Origin, null, Rotation, Origin, Scale, Effects, Color.White);
+        renderer.Draw(Texture, Position + Origin, Rotation, Origin, Scale, Effects);
     }
 }

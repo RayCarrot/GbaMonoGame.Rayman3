@@ -15,6 +15,8 @@ public class GfxRenderer
 
         Pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
         Pixel.SetData(new[] { Color.White });
+
+        RasterizerState = new RasterizerState() { ScissorTestEnable = true };
     }
 
     #endregion
@@ -23,6 +25,7 @@ public class GfxRenderer
 
     private Texture2D Pixel { get; }
     private SpriteBatch SpriteBatch { get; }
+    private RasterizerState RasterizerState { get; }
 
     #endregion
 
@@ -36,7 +39,10 @@ public class GfxRenderer
 
     public void Begin()
     {
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TransformMatrix);
+        // TODO: Should maybe move this somewhere else so it's not set every frame?
+        SpriteBatch.GraphicsDevice.ScissorRectangle = Camera.ScreenRectangle;
+
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
     }
 
     public void End()
@@ -52,7 +58,7 @@ public class GfxRenderer
     public void BeginAlpha()
     {
         SpriteBatch.End();
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.Additive, transformMatrix: Camera.TransformMatrix);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.Additive, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
     }
 
     public void EndAlpha()
@@ -65,32 +71,40 @@ public class GfxRenderer
 
     #region Draw
 
+    // TODO: Maybe we don't need to check if texture is in camera bounds since game engine does most of it? Not all though, and right now
+    //       the AnimatedObject IsFramed and sprite visibility flags haven't been implemented as it didn't seem needed.
+
+    public void Draw(Texture2D texture, Vector2 position, Color? color = null)
+    {
+        if (Camera.IsVisible(position, texture.Bounds.Size))
+            SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White);
+    }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color? color = null)
     {
-        Rectangle destinationRectangle = new(position.ToPoint(), sourceRectangle.Size);
-
-        if (!Camera.IsVisible(destinationRectangle))
-            return;
-
-        var visibleRect = Camera.GetVisibleRectangle(sourceRectangle, destinationRectangle);
-
-        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White);
+        if (Camera.IsVisible(position, sourceRectangle.Size))
+            SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White);
     }
 
-    public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, SpriteEffects effects, Color? color = null)
+    public void Draw(Texture2D texture, Vector2 position, SpriteEffects effects, Color? color = null)
     {
-        if (!Camera.IsVisible(destinationRectangle))
-            return;
-
-        sourceRectangle ??= texture.Bounds;
-        var visibleRect = Camera.GetVisibleRectangle(sourceRectangle.Value, destinationRectangle);
-
-        SpriteBatch.Draw(texture, visibleRect.Destination, visibleRect.Source, color ?? Color.White, 0, Vector2.Zero, effects, 0);
+        if (Camera.IsVisible(position, texture.Bounds.Size))
+            SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
+    }
+    public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, SpriteEffects effects, Color? color = null)
+    {
+        if (Camera.IsVisible(position, sourceRectangle.Size))
+            SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
 
-    public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
+    public void Draw(Texture2D texture, Vector2 position, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
     {
-        // TODO: Check camera for clipping
+        // TODO: Check camera for visibility
+
+        SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, rotation, origin, scale, effects, 0);
+    }
+    public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
+    {
+        // TODO: Check camera for visibility
 
         SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, rotation, origin, scale, effects, 0);
     }

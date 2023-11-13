@@ -24,26 +24,14 @@ public class GfxCamera
     public Point OriginalGameResolution { get; }
     public Rectangle ScreenRectangle { get; private set; }
     public Point ScreenSize { get; private set; }
-    public Rectangle VisibleArea { get; private set; }
+    public Box VisibleArea { get; private set; }
     public Matrix TransformMatrix { get; private set; }
 
     public Vector2 ToGamePosition(Vector2 pos) => Vector2.Transform(pos, Matrix.Invert(TransformMatrix));
     public Vector2 ToScreenPosition(Vector2 pos) => Vector2.Transform(pos, TransformMatrix);
 
-    public bool IsVisible(Rectangle rect) => VisibleArea.Intersects(rect);
-
-    public (Rectangle Source, Rectangle Destination) GetVisibleRectangle(Rectangle source, Rectangle destination)
-    {
-        Rectangle visibleDestinationRectangle = Rectangle.Intersect(destination, VisibleArea);
-        Point ratio = destination.Size / source.Size;
-
-        visibleDestinationRectangle.Size *= ratio;
-
-        source.Offset(visibleDestinationRectangle.Location - destination.Location);
-        source.Size = visibleDestinationRectangle.Size;
-
-        return (source, visibleDestinationRectangle);
-    }
+    public bool IsVisible(Box rect) => VisibleArea.Intersects(rect);
+    public bool IsVisible(Vector2 position, Point size) => VisibleArea.Intersects(new Box(position.X, position.Y, position.X + size.X, position.Y + size.Y));
 
     public void ResizeGame(Point newGameSize)
     {
@@ -111,6 +99,6 @@ public class GfxCamera
         Vector2 max = new(
             MathHelper.Max(tl.X, MathHelper.Max(tr.X, MathHelper.Max(bl.X, br.X))),
             MathHelper.Max(tl.Y, MathHelper.Max(tr.Y, MathHelper.Max(bl.Y, br.Y))));
-        VisibleArea = new Rectangle(0, 0, (int)Math.Round(max.X - min.X), (int)Math.Round(max.Y - min.Y));
+        VisibleArea = new Box(0, 0, max.X - min.X, max.Y - min.Y);
     }
 }

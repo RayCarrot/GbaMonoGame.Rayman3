@@ -20,7 +20,7 @@ public class LevelCloudsRenderer : IScreenRenderer
         position += new Vector2(offsetX, offsetY);
         Rectangle rect = new(0, offsetY, 256, height);
 
-        renderer.Draw(Texture, position, rect, Color.White);
+        renderer.Draw(Texture, position, rect);
     }
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)

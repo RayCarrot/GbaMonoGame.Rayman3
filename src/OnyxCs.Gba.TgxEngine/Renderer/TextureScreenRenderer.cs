@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace OnyxCs.Gba;
+namespace OnyxCs.Gba.TgxEngine;
 
 public class TextureScreenRenderer : IScreenRenderer
 {
@@ -15,6 +15,6 @@ public class TextureScreenRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
     {
-        renderer.Draw(Texture, position, Texture.Bounds, Color.White);
+        renderer.Draw(Texture, position);
     }
 }

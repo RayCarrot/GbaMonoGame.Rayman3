@@ -4,7 +4,7 @@ using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace OnyxCs.Gba;
+namespace OnyxCs.Gba.TgxEngine;
 
 public class TileMapScreenRenderer : IScreenRenderer
 {
@@ -81,7 +81,7 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (tile.FlipY)
                         effects |= SpriteEffects.FlipVertically;
 
-                    renderer.Draw(tex, new Rectangle(new Vector2(absTileX, absTileY).ToPoint(), tex.Bounds.Size), null, effects, Color.White);
+                    renderer.Draw(tex, new Vector2(absTileX, absTileY), effects);
                 }
 
                 absTileX += Constants.TileSize;
