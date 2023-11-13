@@ -5,6 +5,11 @@ namespace OnyxCs.Gba.Engine2d;
 
 public readonly struct PhysicalType
 {
+    public PhysicalType(PhysicalTypeValue type)
+    {
+        ValueByte = (byte)type;
+        Value = type;
+    }
     public PhysicalType(byte value)
     {
         ValueByte = value;
@@ -20,7 +25,7 @@ public readonly struct PhysicalType
 
     public float GetAngleHeight(float xPos)
     {
-        float subTileX = xPos % Constants.TileSize;
+        float subTileX = MathHelpers.Mod(xPos, Constants.TileSize);
 
         // In the game this is done using pre-calculated arrays
         return Value switch
@@ -41,6 +46,7 @@ public readonly struct PhysicalType
 
     public static implicit operator byte(PhysicalType type) => type.ValueByte;
     public static implicit operator PhysicalTypeValue(PhysicalType type) => type.Value;
+    public static implicit operator PhysicalType(PhysicalTypeValue type) => new PhysicalType(type);
 
     public override string ToString() => Value.ToString();
 }
