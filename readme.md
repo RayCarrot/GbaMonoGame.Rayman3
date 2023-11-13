@@ -58,5 +58,32 @@ The engine is being recreated thanks to Ghidra allowing the original game's code
 - **Rayman 3 (N-Gage)** - this version has a lot fewer optimizations and no apparent inlining, making it much easier to follow along. It does however have some changes from the GBA version and should thus not be used by itself.
 - **Rayman 3 (GBA - Prototype)/Splinter Cell (GBA - Prototype)** - these two prototypes were compiled with assertions in the code, which contain debug strings for if the assertions fail. These are incredibly useful as they contain function names, variable names, source file paths and more.
 
+## Playing
+Currently the project isn't set up for general playing of the game, although parts of it can be run and played. In order to do so you currently need a .json file for configuration, something that will be made easier to manage in the future.
+
+*TODO: Add guide for setting up .json*
+
+### Button mapping
+The button mapping will be made customizable in the future, along with controller support. As of now this is the current mapping:
+
+| **Description**          | **Input**          |
+|--------------------------|--------------------|
+| GBA A-button             | Space              |
+| GBA B-button             | S                  |
+| GBA Select-button        | C                  |
+| GBA Start-button         | V                  |
+| GBA D-pad                | Arrow keys         |
+| GBA R-button             | W                  |
+| GBA L-button             | Q                  |
+| Toggle pause             | Ctrl+P             |
+| Run one frame            | Ctrl+F             |
+| Toggle debug mode        | Escape             |
+| Toggle showing collision | T                  |
+| Toggle no-clip           | Z                  |
+| Scroll camera            | Right mouse button |
+| Zoom camera              | Mouse scroll wheel |
+
+Besides these you can also hold down `left shift` while resizing the window to maintain the aspect ratio.
+
 ## Want to help?
 Do you want to help out? Feel free to contact me if so! This is currently a side project and might take a long time to finish, especially when being worked on by only myself.
