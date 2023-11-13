@@ -324,6 +324,11 @@ public class DebugLayout
                 ImGui.Text($"State: {actor.Fsm}");
                 ImGui.Text($"Direction: {(actor.IsFacingLeft ? "Left" : "Right")}");
             }
+
+            if (SelectedGameObject is MovableActor movableActor)
+            {
+                ImGui.Text($"Speed: {movableActor.Speed.X}x{movableActor.Speed.Y}");
+            }
         }
         else
         {

@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Nintendo.GBA;
+﻿using System;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 
 namespace OnyxCs.Gba.Engine2d;
@@ -53,6 +54,11 @@ public class MovableActor : InteractableActor
         // TODO: Implement
     }
 
+    private void CheckMapCollisionXY()
+    {
+        // TODO: Implement
+    }
+
     private void CheckMapCollisionExtendedX()
     {
         // TODO: Implement
@@ -60,12 +66,15 @@ public class MovableActor : InteractableActor
 
     private void CheckMapCollisionExtendedY()
     {
+        // TODO: Implement
+    }
+
+    private void CheckMapCollisionExtendedXY()
+    {
         Scene2D scene = Frame.GetComponent<Scene2D>();
         Box detectionBox = GetDetectionBox();
 
-        float speedY = Speed.Y;
-
-        if (speedY < 0)
+        if (Speed.Y < 0)
         {
             // TODO: Implement
         }
@@ -75,7 +84,15 @@ public class MovableActor : InteractableActor
 
             if (type.IsAngledSolid)
             {
-                // TODO: Implement
+                float tileHeight = type.GetAngleHeight(detectionBox.Center.X);
+
+                if (Speed.Y == 0 && tileHeight != 0)
+                    Position -= new Vector2(0, tileHeight);
+                else
+                    Position -= new Vector2(0, tileHeight + detectionBox.MaxY % Constants.TileSize);
+
+                Speed = new Vector2(Speed.X, 0);
+                IsTouchingMap = true;
             }
             else
             {
@@ -83,12 +100,26 @@ public class MovableActor : InteractableActor
 
                 if (type.IsFullySolid)
                 {
+                    Position -= new Vector2(0, detectionBox.MaxY % Constants.TileSize);
                     Speed = new Vector2(Speed.X, 0);
-                    Position = new Vector2(Position.X, Position.Y - (detectionBox.MaxY % Constants.TileSize));
+                    IsTouchingMap = true;
                 }
                 else if (type.IsAngledSolid)
                 {
-                    // TODO: Implement
+                    float tileHeight = Constants.TileSize - type.GetAngleHeight(detectionBox.Center.X);
+
+                    if (Speed.Y == 0)
+                    {
+                        Position += new Vector2(0, tileHeight - detectionBox.MaxY % Constants.TileSize);
+                        Speed = new Vector2(Speed.X, 0);
+                        IsTouchingMap = true;
+                    }
+                    else if (detectionBox.MaxY % Constants.TileSize > tileHeight)
+                    {
+                        Position -= new Vector2(0, detectionBox.MaxY % Constants.TileSize - tileHeight);
+                        Speed = new Vector2(Speed.X, 0);
+                        IsTouchingMap = true;
+                    }
                 }
                 else
                 {
@@ -162,8 +193,7 @@ public class MovableActor : InteractableActor
                         break;
 
                     case ActorMapCollisionType.CheckXY:
-                        CheckMapCollisionY();
-                        CheckMapCollisionX();
+                        CheckMapCollisionXY();
                         break;
 
                     case ActorMapCollisionType.CheckExtendedX:
@@ -175,8 +205,7 @@ public class MovableActor : InteractableActor
                         break;
 
                     case ActorMapCollisionType.CheckExtendedXY:
-                        CheckMapCollisionExtendedY();
-                        CheckMapCollisionExtendedX();
+                        CheckMapCollisionExtendedXY();
                         break;
                 }
             }

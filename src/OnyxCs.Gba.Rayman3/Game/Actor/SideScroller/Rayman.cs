@@ -155,7 +155,7 @@ public sealed partial class Rayman : MovableActor
             if (otherType.Value is PhysicalTypeValue.Solid or PhysicalTypeValue.Slippery or PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
                 type = otherType;
         }
-        else if (type.Value is not (PhysicalTypeValue.SlipperyAngleLeft1 or PhysicalTypeValue.SlipperyAngleLeft2 or PhysicalTypeValue.SlipperyAngleRight2 or PhysicalTypeValue.SlipperyAngleRight1))
+        else if (type.Value is not (PhysicalTypeValue.SlipperyAngle30Right1 or PhysicalTypeValue.SlipperyAngle30Right2 or PhysicalTypeValue.SlipperyAngle30Left2 or PhysicalTypeValue.SlipperyAngle30Left1))
         {
             PhysicalType = 32;
 
@@ -302,24 +302,24 @@ public sealed partial class Rayman : MovableActor
 
     private void FUN_0802c3c8()
     {
-        if ((Speed.X < 1 || MechSpeedX > -1) &&
-            (Speed.X > -1 || MechSpeedX < 1))
+        if ((Speed.X <= 0 || MechSpeedX >= 0) &&
+            (Speed.X >= 0 || MechSpeedX <= 0))
         {
-            if (MechSpeedX < 1)
+            if (MechSpeedX <= 0)
             {
-                if (MechSpeedX > -1)
+                if (MechSpeedX >= 0)
                     return;
 
                 MechSpeedX += 0.03125f;
 
-                if (MechSpeedX < 1)
+                if (MechSpeedX <= 0)
                     return;
             }
             else
             {
                 MechSpeedX -= 0.03125f;
 
-                if (MechSpeedX > -1)
+                if (MechSpeedX >= 0)
                     return;
             }
         }
