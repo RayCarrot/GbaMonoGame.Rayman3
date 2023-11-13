@@ -13,20 +13,21 @@ public class TgxTileLayer : TgxGameLayer
         LayerId = resource.LayerId;
         IsDynamic = resource.IsDynamic;
 
-        Screen = Gfx.Screens[LayerId];
-        Screen.IsEnabled = true;
-        Screen.Offset = Vector2.Zero;
-        Screen.Priority = 3 - LayerId;
-        Screen.Wrap = true;
-        Screen.Is8Bit = resource.Is8Bit;
-        Screen.IsEnabled = true;
+        Screen = new GfxScreen(LayerId)
+        {
+            IsEnabled = true,
+            Offset = Vector2.Zero,
+            Priority = 3 - LayerId,
+            Wrap = true,
+            Is8Bit = resource.Is8Bit
+        };
+
+        Gfx.AddScreen(Screen);
 
         if (resource.HasAlphaBlending)
         {
             // TODO: Set alpha blending
         }
-
-        // TODO: Add layer to camera
     }
 
     public GfxScreen Screen { get; }

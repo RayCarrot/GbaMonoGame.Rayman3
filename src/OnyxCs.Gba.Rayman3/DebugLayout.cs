@@ -168,7 +168,7 @@ public class DebugLayout
             ImGui.TableSetupColumn("Color mode");
             ImGui.TableHeadersRow();
 
-            foreach (GfxScreen screen in Gfx.Screens)
+            foreach (GfxScreen screen in Gfx.GetScreens().OrderBy(x => x.Id))
             {
                 ImGui.TableNextRow();
 

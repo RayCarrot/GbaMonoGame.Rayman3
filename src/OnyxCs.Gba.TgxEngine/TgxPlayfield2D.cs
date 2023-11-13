@@ -22,7 +22,6 @@ public class TgxPlayfield2D : TgxPlayfield
             {
                 TgxTileLayer layer = new(layerResource);
                 tileLayers.Add(layer);
-                //Screens[layer.LayerId] = layer.Screen;
 
                 layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
                 

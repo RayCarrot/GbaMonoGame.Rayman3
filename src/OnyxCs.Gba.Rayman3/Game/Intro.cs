@@ -193,7 +193,7 @@ public class Intro : Frame
         {
             ScrollY++;
             Playfield.Camera.Position += new Vector2(0, 1);
-            Gfx.Screens[3].Offset = new Vector2(0, ScrollY);
+            Gfx.GetScreen(3).Offset = new Vector2(0, ScrollY);
         }
 
         if (ScrollY > 0xAF)
@@ -272,8 +272,8 @@ public class Intro : Frame
             BlackLumAndLogoObj.ScreenPos = new Vector2(0x78, 0x46);
 
             // TODO: This should be changed to use the camera
-            Gfx.Screens[1].Offset = new Vector2(0, 880);
-            Gfx.Screens[3].Offset = new Vector2(0, 880);
+            Gfx.GetScreen(1).Offset = new Vector2(0, 880);
+            Gfx.GetScreen(3).Offset = new Vector2(0, 880);
             ScrollY = 879;
         }
         else if (SkippedTimer == 20)
