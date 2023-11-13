@@ -11,6 +11,7 @@ public class TgxTileLayer : TgxGameLayer
     {
         TileMap = resource.TileMap;
         LayerId = resource.LayerId;
+        Is8Bit = resource.Is8Bit;
         IsDynamic = resource.IsDynamic;
 
         Screen = new GfxScreen(LayerId)
@@ -33,7 +34,13 @@ public class TgxTileLayer : TgxGameLayer
     public GfxScreen Screen { get; }
     public MapTile[] TileMap { get; }
     public byte LayerId { get; }
+    public bool Is8Bit { get; }
     public bool IsDynamic { get; }
+
+    public override void SetOffset(Vector2 offset)
+    {
+        Screen.Offset = offset;
+    }
 
     public void LoadTileKit(TileKit tileKit, TileMappingTable tileMappingTable, int defaultPalette, int vramLength = 0x180)
     {
@@ -48,7 +55,7 @@ public class TgxTileLayer : TgxGameLayer
         // the tile graphics as they're being displayed on screen (as the camera scrolls). If it's static then it's all pre-loaded.
         if (IsDynamic)
         {
-            if (Screen.Is8Bit)
+            if (Is8Bit)
             {
                 tileSet = new byte[0x40 + tileKit.Tiles8bpp.Length];
                 Array.Copy(tileKit.Tiles8bpp, 0, tileSet, 0x40, tileKit.Tiles8bpp.Length);
@@ -66,7 +73,7 @@ public class TgxTileLayer : TgxGameLayer
         {
             // If the tile layer is static then we have to allocate the tileset in the same order the game does, or else
             // the tile indices won't match! The game has a rather complicated way of handling it.
-            if (Screen.Is8Bit)
+            if (Is8Bit)
             {
                 tileSet = new byte[1024 * 0x40];
                 for (int i = 0; i < tileMappingTable.Table8bpp.Length; i++)
@@ -90,7 +97,7 @@ public class TgxTileLayer : TgxGameLayer
             }
         }
 
-        TiledTexture2D tex = new(Width, Height, tileSet, TileMap, new Palette(tileKit.Palettes[defaultPalette].Palette), Screen.Is8Bit);
+        TiledTexture2D tex = new(Width, Height, tileSet, TileMap, new Palette(tileKit.Palettes[defaultPalette].Palette), Is8Bit);
         Screen.Renderer = new TextureScreenRenderer(tex);
     }
 }

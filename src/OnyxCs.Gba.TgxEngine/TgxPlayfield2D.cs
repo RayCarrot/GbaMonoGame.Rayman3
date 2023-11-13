@@ -31,6 +31,9 @@ public class TgxPlayfield2D : TgxPlayfield
             else if (layerResource.Type == GameLayerType.TilePhysicalLayer)
             {
                 PhysicalLayer = new TgxTilePhysicalLayer(layerResource);
+
+                // We want the debug collision map to scroll with the main cluster
+                Camera.AddLayer(0, PhysicalLayer);
             }
         }
 

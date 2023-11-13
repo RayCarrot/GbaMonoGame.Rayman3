@@ -28,7 +28,7 @@ public class GfxScreen
     /// <summary>
     /// Indicates the color mode for the screen, if it's 8-bit or 4-bit.
     /// </summary>
-    public bool Is8Bit { get; set; }
+    public bool? Is8Bit { get; set; }
 
     /// <summary>
     /// The scrolled screen offset.

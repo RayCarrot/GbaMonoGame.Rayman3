@@ -10,14 +10,14 @@ public class TgxCluster
     public TgxCluster(ClusterResource cluster)
     {
         ScrollFactor = new Vector2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
-        Layers = new List<TgxTileLayer>();
+        Layers = new List<TgxGameLayer>();
         Size = new Vector2(cluster.SizeX * Constants.TileSize, cluster.SizeY * Constants.TileSize);
         Stationary = cluster.Stationary;
     }
 
     private Vector2 _position;
 
-    private List<TgxTileLayer> Layers { get; }
+    private List<TgxGameLayer> Layers { get; }
 
     public Vector2 Size { get; }
 
@@ -39,8 +39,8 @@ public class TgxCluster
 
             _position = value;
 
-            foreach (TgxTileLayer layer in Layers)
-                layer.Screen.Offset = value;
+            foreach (TgxGameLayer layer in Layers)
+                layer.SetOffset(value);
         }
     }
     public Vector2 MaxPosition => new(
@@ -50,12 +50,12 @@ public class TgxCluster
     public Vector2 ScrollFactor { get; }
     public bool Stationary { get; }
 
-    public void AddLayer(TgxTileLayer layer)
+    public void AddLayer(TgxGameLayer layer)
     {
         Layers.Add(layer);
     }
 
-    public IReadOnlyList<TgxTileLayer> GetLayers()
+    public IReadOnlyList<TgxGameLayer> GetLayers()
     {
         return Layers;
     }

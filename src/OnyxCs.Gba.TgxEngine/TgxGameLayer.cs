@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Nintendo.GBA;
+using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;
 
@@ -15,4 +16,6 @@ public abstract class TgxGameLayer
 
     public int PixelWidth => Width * Constants.TileSize;
     public int PixelHeight => Height * Constants.TileSize;
+
+    public abstract void SetOffset(Vector2 offset);
 }

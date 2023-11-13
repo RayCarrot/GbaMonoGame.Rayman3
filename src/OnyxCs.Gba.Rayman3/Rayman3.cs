@@ -109,6 +109,7 @@ public class Rayman3 : Game
     private void LoadEngine()
     {
         Gfx.GraphicsDevice = GraphicsDevice;
+        Gfx.ContentManager = Content;
         Gfx.GfxCamera = new GfxCamera(Window.ClientBounds.Size);
     }
 
@@ -248,11 +249,20 @@ public class Rayman3 : Game
             _config.Paused = !_config.Paused;
         }
 
-        // Toggle pause
+        // Run one frame
         if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.F))
         {
             _config.Paused = false;
             _runOneFrame = true;
+        }
+
+        // Toggle showing debug collision screen
+        if (JoyPad.CheckSingle(Keys.T))
+        {
+            TgxPlayfield2D playfield = Frame.GetComponent<TgxPlayfield2D>();
+            
+            if (playfield != null)
+                playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
         }
 
         JoyPad.Scan();

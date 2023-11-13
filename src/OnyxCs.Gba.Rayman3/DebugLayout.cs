@@ -192,7 +192,12 @@ public class DebugLayout
                 ImGui.Text($"{screen.Offset.X:0.00} x {screen.Offset.Y:0.00}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{(screen.Is8Bit ? "8-bit" : "4-bit")}");
+                ImGui.Text(screen.Is8Bit switch
+                {
+                    null => String.Empty,
+                    true => "8-bit",
+                    false => "4-bit",
+                });
             }
             ImGui.EndTable();
         }
@@ -379,7 +384,7 @@ public class DebugLayout
                     ImGui.Text($"{(cluster.Stationary ? "Stationary" : "Scrollable")}");
 
                     ImGui.TableNextColumn();
-                    ImGui.Text($"{String.Join(", ", cluster.GetLayers().Select(x => x.LayerId))}");
+                    ImGui.Text($"{String.Join(", ", cluster.GetLayers().Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
 
                     i++;
                 }

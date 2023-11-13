@@ -54,7 +54,7 @@ public class TgxCamera2D : TgxCamera
             Clusters.Add(new TgxCluster(clusterResource));
     }
 
-    public void AddLayer(int clusterId, TgxTileLayer layer)
+    public void AddLayer(int clusterId, TgxGameLayer layer)
     {
         TgxCluster cluster = GetCluster(clusterId);
         cluster.AddLayer(layer);

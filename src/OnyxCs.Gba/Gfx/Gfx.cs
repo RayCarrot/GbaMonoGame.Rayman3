@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba;
@@ -26,6 +27,11 @@ public static class Gfx
     /// The graphics device to use for creating textures.
     /// </summary>
     public static GraphicsDevice GraphicsDevice { get; set; }
+
+    /// <summary>
+    /// The content manager to load contents
+    /// </summary>
+    public static ContentManager ContentManager { get; set; }
 
     /// <summary>
     /// The graphics camera to use when rendering the game.
