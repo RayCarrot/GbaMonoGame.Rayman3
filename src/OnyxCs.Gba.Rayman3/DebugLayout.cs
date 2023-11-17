@@ -158,13 +158,14 @@ public class DebugLayout
 
         ImGui.SeparatorText("Screens");
 
-        if (ImGui.BeginTable("_screens", 6))
+        if (ImGui.BeginTable("_screens", 7))
         {
-            ImGui.TableSetupColumn("Enabled");
-            ImGui.TableSetupColumn("Wrap");
-            ImGui.TableSetupColumn("Id");
-            ImGui.TableSetupColumn("Priority");
+            ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Wrap", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Id", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Priority", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Offset");
+            ImGui.TableSetupColumn("Size");
             ImGui.TableSetupColumn("Color mode");
             ImGui.TableHeadersRow();
 
@@ -190,6 +191,9 @@ public class DebugLayout
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{screen.Offset.X:0.00} x {screen.Offset.Y:0.00}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Renderer?.Size.X:0.00} x {screen.Renderer?.Size.Y:0.00}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(screen.Is8Bit switch
@@ -327,7 +331,7 @@ public class DebugLayout
 
             if (SelectedGameObject is MovableActor movableActor)
             {
-                ImGui.Text($"Speed: {movableActor.Speed.X}x{movableActor.Speed.Y}");
+                ImGui.Text($"Speed: {movableActor.Speed.X} x {movableActor.Speed.Y}");
             }
         }
         else
