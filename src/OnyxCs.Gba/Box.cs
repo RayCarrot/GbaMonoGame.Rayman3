@@ -13,6 +13,14 @@ public readonly struct Box
         MaxY = maxY;
     }
 
+    public Box(Vector2 position, Vector2 size)
+    {
+        MinX = position.X;
+        MinY = position.Y;
+        MaxX = position.X + size.X;
+        MaxY = position.Y + size.Y;
+    }
+
     public Box(EngineBox engineBox)
     {
         MinX = engineBox.MinX;
