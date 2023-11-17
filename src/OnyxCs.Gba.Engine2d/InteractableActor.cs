@@ -12,6 +12,29 @@ public class InteractableActor : ActionActor
 
     private BoxTable AnimationBoxTable { get; }
 
-    public Box GetAttackBox() => AnimationBoxTable.AttackBox.Offset(Position);
-    public Box GetVulnerabilityBox() => AnimationBoxTable.VulnerabilityBox.Offset(Position);
+    public Box GetAttackBox()
+    {
+        Box box = AnimationBoxTable.AttackBox;
+
+        if (AnimatedObject.FlipX)
+            box = box.FlipX();
+
+        if (AnimatedObject.FlipY)
+            box = box.FlipY();
+
+        return box.Offset(Position);
+    }
+
+    public Box GetVulnerabilityBox()
+    {
+        Box box = AnimationBoxTable.VulnerabilityBox;
+
+        if (AnimatedObject.FlipX)
+            box = box.FlipX();
+
+        if (AnimatedObject.FlipY)
+            box = box.FlipY();
+
+        return box.Offset(Position);
+    }
 }

@@ -42,6 +42,8 @@ public readonly struct Box
     public Vector2 Center => new(Width / 2 + MinX, Height / 2 + MinY);
 
     public Box Offset(Vector2 offset) => new(MinX + offset.X, MinY + offset.Y, MaxX + offset.X, MaxY + offset.Y);
+    public Box FlipX() => new(MaxX * -1, MinY, MinX * -1, MaxY);
+    public Box FlipY() => new(MinX, MaxY * -1, MaxX, MinX * -1);
     public bool Intersects(Box otherBox) => otherBox.MinX < MaxX && MinX < otherBox.MaxX && otherBox.MinY < MaxY && MinY < otherBox.MaxY;
 
     public Rectangle ToRectangle() => new((int)MinX, (int)MinY, (int)Width, (int)Height);
