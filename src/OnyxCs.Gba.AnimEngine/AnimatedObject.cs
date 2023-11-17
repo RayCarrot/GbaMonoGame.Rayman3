@@ -25,6 +25,12 @@ public class AnimatedObject : AObject
 
     #endregion
 
+    #region Private Fields
+
+    private Vector2 _screenPos;
+
+    #endregion
+
     #region Public Properties
 
     public AnimatedObjectResource Resource { get; set; }
@@ -36,7 +42,25 @@ public class AnimatedObject : AObject
     public bool HasExecutedFrame { get; set; }
     public bool IsPaused { get; set; }
 
-    public Vector2 ScreenPos { get; set; }
+    public Vector2 ScreenPos
+    {
+        get
+        {
+            float x = _screenPos.X;
+            float y = _screenPos.Y;
+
+            if ((Anchor & ScreenAnchor.Right) != 0)
+                x = Gfx.GfxCamera.GameResolution.X - x;
+            if ((Anchor & ScreenAnchor.Bottom) != 0)
+                y = Gfx.GfxCamera.GameResolution.Y - y;
+
+            return new Vector2(x, y);
+        }
+        set => _screenPos = value;
+    }
+
+    public ScreenAnchor Anchor { get; set; }
+
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
     public int Priority { get; set; } // TODO: Set this to 1 for actors

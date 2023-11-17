@@ -25,27 +25,20 @@ public class LumsBar : Bar
         TotalLumsDigit1.SetCurrentAnimation(0);
         TotalLumsDigit2.SetCurrentAnimation(0);
 
-        switch (Gfx.Platform)
-        {
-            case Platform.GBA:
-                LumsIcon.ScreenPos = new Vector2(163, 8);
-                CollectedLumsDigit1.ScreenPos = new Vector2(188, 24);
-                CollectedLumsDigit2.ScreenPos = new Vector2(200, 24);
-                TotalLumsDigit1.ScreenPos = new Vector2(218, 24);
-                TotalLumsDigit2.ScreenPos = new Vector2(230, 24);
-                break;
+        LumsIcon.ScreenPos = new Vector2(77, 8);
+        LumsIcon.Anchor |= ScreenAnchor.Right;
 
-            case Platform.NGage:
-                LumsIcon.ScreenPos = new Vector2(99, 8);
-                CollectedLumsDigit1.ScreenPos = new Vector2(124, 24);
-                CollectedLumsDigit2.ScreenPos = new Vector2(136, 24);
-                TotalLumsDigit1.ScreenPos = new Vector2(154, 24);
-                TotalLumsDigit2.ScreenPos = new Vector2(166, 24);
-                break;
+        CollectedLumsDigit1.ScreenPos = new Vector2(52, 24);
+        CollectedLumsDigit1.Anchor |= ScreenAnchor.Right;
 
-            default:
-                throw new UnsupportedPlatformException();
-        }
+        CollectedLumsDigit2.ScreenPos = new Vector2(40, 24);
+        CollectedLumsDigit2.Anchor |= ScreenAnchor.Right;
+
+        TotalLumsDigit1.ScreenPos = new Vector2(22, 24);
+        TotalLumsDigit1.Anchor |= ScreenAnchor.Right;
+
+        TotalLumsDigit2.ScreenPos = new Vector2(10, 24);
+        TotalLumsDigit2.Anchor |= ScreenAnchor.Right;
     }
 
     public override void Load()
