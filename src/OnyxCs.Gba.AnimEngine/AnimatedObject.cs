@@ -228,7 +228,7 @@ public class AnimatedObject : AObject
 
         // --- At this point the engine loads dynamic data which we don't need to ---
 
-        if (anim.Idx_PaletteInfo != 0 && !HasExecutedFrame)
+        if (anim.Idx_PaletteCycleAnimation != 0 && !HasExecutedFrame)
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
