@@ -23,12 +23,13 @@ public class MenuAll : Frame
 
     private MenuData Data { get; set; }
     private Action CurrentStepAction { get; set; }
+    private Action NextStepAction { get; set; }
 
     private int PrevSelectedOption { get; set; }
     private int SelectedOption { get; set; }
     private int StemMode { get; set; }
 
-    private int LanguageOutTransitionYOffset { get; set; }
+    private int ScreenOutTransitionYOffset { get; set; }
     private int GameLogoYOffset { get; set; }
     private int OtherGameLogoValue { get; set; }
     private int WheelRotation { get; set; }
@@ -140,6 +141,22 @@ public class MenuAll : Frame
         // The cursor is usually included in the stem animation, except for animation 1
         if (Data.Stem.AnimationIndex == 1)
             AnimationPlayer.AddSecondaryObject(Data.Cursor);
+    }
+
+    private void TransitionOutCursorAndStem()
+    {
+        if (StemMode is 2 or 3)
+        {
+            PrevSelectedOption = SelectedOption;
+            SelectedOption = 0;
+        }
+
+        StemMode = 0;
+
+        Data.Stem.SetCurrentAnimation(1);
+
+        if (Data.Cursor.ScreenPos.Y < 68 && Data.Cursor.AnimationIndex != 16)
+            Data.Cursor.SetCurrentAnimation(15);
     }
 
     private void SelectOption(int selectedOption, bool playSound)
@@ -277,7 +294,7 @@ public class MenuAll : Frame
             CurrentStepAction = Step_TransitionFromLanguage;
             Localization.Language = SelectedOption;
 
-            LanguageOutTransitionYOffset = 0;
+            ScreenOutTransitionYOffset = 0;
             SelectedOption = 0;
             PrevSelectedOption = 0;
             GameLogoYOffset = 56;
@@ -304,7 +321,7 @@ public class MenuAll : Frame
         TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
         mainCluster.Position += new Vector2(0, 3);
 
-        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, LanguageOutTransitionYOffset + 28);
+        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, ScreenOutTransitionYOffset + 28);
         AnimationPlayer.AddSecondaryObject(Data.LanguageList);
 
         MoveGameLogo();
@@ -312,14 +329,14 @@ public class MenuAll : Frame
         AnimationPlayer.AddSecondaryObject(Data.GameLogo);
         AnimationPlayer.AddSecondaryObject(Data.GameModeList);
 
-        if (LanguageOutTransitionYOffset < -207)
+        if (ScreenOutTransitionYOffset < -207)
         {
-            LanguageOutTransitionYOffset = 0;
+            ScreenOutTransitionYOffset = 0;
             CurrentStepAction = Step_SelectGameMode;
         }
         else
         {
-            LanguageOutTransitionYOffset -= 3;
+            ScreenOutTransitionYOffset -= 3;
         }
     }
 
@@ -343,8 +360,9 @@ public class MenuAll : Frame
 
             switch (SelectedOption)
             {
+                // Single player
                 case 0:
-                    // TODO: Single player
+                    NextStepAction = Step_InitializeTransitionToSinglePlayer;
                     break;
 
                 case 1:
@@ -355,13 +373,83 @@ public class MenuAll : Frame
                     // TODO: Options
                     break;
             }
-            // TODO: Implement
+
+            CurrentStepAction = Step_TransitionOutOfSelectGameMode;
+            SoundManager.Play(403, -1);
+            SelectOption(0, false);
+            ScreenOutTransitionYOffset = 0;
+            SoundManager.Play(309, -1);
+            TransitionOutCursorAndStem();
         }
 
         AnimationPlayer.AddSecondaryObject(Data.GameModeList);
         
         MoveGameLogo();
         AnimationPlayer.AddSecondaryObject(Data.GameLogo);
+    }
+
+    private void Step_TransitionOutOfSelectGameMode()
+    {
+        ScreenOutTransitionYOffset += 4;
+
+        if (ScreenOutTransitionYOffset <= 160)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position -= new Vector2(0, 4);
+            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - (ScreenOutTransitionYOffset >> 1));
+        }
+        else if (ScreenOutTransitionYOffset >= 220)
+        {
+            ScreenOutTransitionYOffset = 0;
+            CurrentStepAction = NextStepAction;
+        }
+
+        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+
+        MoveGameLogo();
+        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
+    }
+
+    private void Step_InitializeTransitionToSinglePlayer()
+    {
+        // TODO: Implement
+        CurrentStepAction = Step_TransitionToSinglePlayer;
+    }
+
+    private void Step_TransitionToSinglePlayer()
+    {
+        ScreenOutTransitionYOffset += 4;
+
+        if (ScreenOutTransitionYOffset <= 80)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position += new Vector2(0, 8);
+        }
+
+        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, (ScreenOutTransitionYOffset >> 1) - 50);
+        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, (ScreenOutTransitionYOffset >> 1) - 68);
+
+        if (ScreenOutTransitionYOffset >= 160)
+        {
+            ScreenOutTransitionYOffset = 0;
+            CurrentStepAction = Step_SinglePlayer;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            // TODO: Render slot objects
+        }
+
+        AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
+        AnimationPlayer.AddSecondaryObject(Data.StartEraseCursor);
+    }
+
+    private void Step_SinglePlayer()
+    {
+        // TODO: Implement
+
+        AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
+        AnimationPlayer.AddSecondaryObject(Data.StartEraseCursor);
     }
 
     #endregion
