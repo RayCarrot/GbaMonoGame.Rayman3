@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -40,7 +41,7 @@ public class Rayman3 : Game
     private GfxRenderer _gfxRenderer;
     private GameConfig _config;
     private Context _context;
-    private RomLoader _romLoader;
+    private Loader _loader;
     private GameRenderTarget _debugGameRenderTarget;
     private bool _runOneFrame;
 
@@ -94,6 +95,7 @@ public class Rayman3 : Game
     private void LoadRom()
     {
         string romFilePath = Path.GetFullPath(_config.RomFile);
+        string romFileName = Path.GetFileName(romFilePath);
         string romDir = Path.GetDirectoryName(romFilePath);
 
         ISerializerLogger serializerLogger = _config.SerializerLogFile != null
@@ -102,8 +104,18 @@ public class Rayman3 : Game
 
         // TODO: Add a logger
         _context = new Context(romDir!, serializerLogger: serializerLogger);
-        _romLoader = new RomLoader(_context, romFilePath);
-        _romLoader.Load();
+
+        // TODO: Allow version to be changed
+        _context.AddPreDefinedPointers(DefinedPointers.Rayman3_GBA_EU);
+        _context.AddSettings(new OnyxGbaSettings()
+        {
+            EngineVersion = EngineVersion.Rayman3
+        });
+
+        GbaLoader loader = new(_context);
+        loader.LoadFiles(romFileName, cache: true);
+        loader.LoadData(romFileName);
+        _loader = loader;
     }
 
     private void LoadEngine()
@@ -116,7 +128,7 @@ public class Rayman3 : Game
     private void LoadGame()
     {
         Storage.SetContext(_context);
-        GameInfo.Levels = _romLoader.LevelInfo;
+        GameInfo.Levels = _loader.Rayman3_LevelInfo;
 
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {

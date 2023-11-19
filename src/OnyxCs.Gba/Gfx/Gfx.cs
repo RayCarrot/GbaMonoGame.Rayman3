@@ -38,7 +38,7 @@ public static class Gfx
     /// </summary>
     public static GfxCamera GfxCamera { get; set; }
 
-    public static Platform Platform { get; set; }
+    public static Platform Platform { get; set; } // TODO: Move this somewhere else
 
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];

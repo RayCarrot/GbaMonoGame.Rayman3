@@ -25,6 +25,5 @@ public static class GameInfo
 
     }
 
-    // TODO: Read from ROM, separate array with types
     public static LevelInfo[] Levels { get; set; }
 }
