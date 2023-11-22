@@ -2,7 +2,7 @@
 
 public abstract class CameraActor : Object
 {
-    public BaseActor LinkedObject { get; set; }
+    public MovableActor LinkedObject { get; set; }
     public FiniteStateMachine Fsm { get; } = new();
 
     protected override bool ProcessMessageImpl(Message message, object param)
