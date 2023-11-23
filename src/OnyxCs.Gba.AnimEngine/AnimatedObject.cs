@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework.Graphics;
@@ -232,6 +233,7 @@ public class AnimatedObject : AObject
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
+        List<Sprite> sprites = new();
         foreach (AnimationChannel channel in EnumerateCurrentChannels())
         {
             // Play the channel based on the type
@@ -290,7 +292,7 @@ public class AnimatedObject : AObject
                         spriteSize: channel.SpriteSize,
                         tileIndex: channel.TileIndex,
                         paletteIndex: channel.PalIndex);
-                    Gfx.AddSprite(new Sprite(
+                    sprites.Add(new Sprite(
                         texture: tex,
                         position: new Vector2(xPos, yPos),
                         flipX: channel.FlipX ^ FlipX,
@@ -323,6 +325,10 @@ public class AnimatedObject : AObject
                     break;
             }
         }
+
+        // We have to draw the sprites in reverse order
+        foreach (Sprite sprite in ((IEnumerable<Sprite>)sprites).Reverse())
+            Gfx.AddSprite(sprite);
 
         PlayChannelBox();
         StepTimer();
