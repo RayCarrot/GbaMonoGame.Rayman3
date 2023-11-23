@@ -1,5 +1,6 @@
 ﻿namespace OnyxCs.Gba.Engine2d;
 
+// TODO: Since messages are implemented across different libraries maybe this should be constants instead of an enum?
 public enum Message
 {
     None = 0,
@@ -20,6 +21,11 @@ public enum Message
     
     // Rayman 3
     LevelEnd = 1019,
+
+    Cam_1027 = 1027,
+
+    Cam_1039 = 1039,
+    Cam_1040 = 1040,
     
     Murphy_NewMultiplayerLevel = 1049,
 }

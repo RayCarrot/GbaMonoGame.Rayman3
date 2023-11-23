@@ -41,8 +41,7 @@ public partial class Rayman : MovableActor
                 }
 
                 if (IsLocalPlayer)
-                    // TODO: Name message
-                    cam.ProcessMessage((Message)1027);
+                    cam.ProcessMessage(Message.Cam_1027);
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     cam.HorizontalOffset = Gfx.Platform switch
@@ -579,9 +578,8 @@ public partial class Rayman : MovableActor
                 NextActionId = null;
                 field18_0x93 = 70;
 
-                // TODO: Name message
                 if (IsLocalPlayer)
-                    cam.ProcessMessage((Message)1039, field18_0x93);
+                    cam.ProcessMessage(Message.Cam_1039, field18_0x93);
 
                 Timer = (uint)GameTime.ElapsedFrames;
                 PhysicalType = 32;
@@ -593,7 +591,7 @@ public partial class Rayman : MovableActor
                     return;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage((Message)1039, 130);
+                    cam.ProcessMessage(Message.Cam_1039, (byte)130);
 
                 if (ActionId is Action.Jump_Right or Action.Jump_Left &&
                     CheckReleasedInput(GbaInput.A) && 

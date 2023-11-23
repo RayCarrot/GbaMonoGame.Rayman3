@@ -304,6 +304,16 @@ public class DebugLayout
             ImGui.Checkbox("Show attack boxes", ref _showAttackBoxes);
             ImGui.Checkbox("Show vulnerability boxes", ref _showVulnerabilityBoxes);
             ImGui.Checkbox("Show captor boxes", ref _showCaptorBoxes);
+
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.SeparatorText("Camera");
+
+            if (scene2D.Camera is CameraSideScroller cam)
+            {
+                ImGui.Text($"Speed: {cam.Speed.X} x {cam.Speed.Y}");
+                ImGui.Text($"Target: {cam.TargetX} x {cam.TargetY}");
+            }
         }
 
         ImGui.End();

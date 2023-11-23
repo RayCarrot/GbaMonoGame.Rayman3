@@ -509,7 +509,6 @@ public sealed partial class Rayman : MovableActor
             !Fsm.EqualsAction(FUN_080287d8) &&
             !Flag1_6)
         {
-            // TODO: Name camera messages
             Message message;
 
             if (!Fsm.EqualsAction(FUN_0802ddac) &&
@@ -518,31 +517,31 @@ public sealed partial class Rayman : MovableActor
                 !Fsm.EqualsAction(FUN_08026cd4))
             {
                 field18_0x93 = 70;
-                message = (Message)1040;
+                message = Message.Cam_1040;
             }
             else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(FUN_0802ea74)))
             {
                 field18_0x93 = 160;
-                message = (Message)1040;
+                message = Message.Cam_1040;
             }
             else if (Fsm.EqualsAction(FUN_0802d44c) && field27_0x9c == 0)
             {
-                message = (Message)1039;
+                message = Message.Cam_1039;
             }
             else if (Fsm.EqualsAction(FUN_0803283c))
             {
                 field18_0x93 = 65;
-                message = (Message)1040;
+                message = Message.Cam_1040;
             }
             else if (Fsm.EqualsAction(FUN_08026cd4) || Fsm.EqualsAction(FUN_0802ddac))
             {
                 field18_0x93 = 112;
-                message = (Message)1040;
+                message = Message.Cam_1040;
             }
             else
             {
                 field18_0x93 = 120;
-                message = (Message)1040;
+                message = Message.Cam_1040;
             }
 
             cam.ProcessMessage(message, field18_0x93);

@@ -1,5 +1,4 @@
-﻿using System;
-using OnyxCs.Gba.Engine2d;
+﻿using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
