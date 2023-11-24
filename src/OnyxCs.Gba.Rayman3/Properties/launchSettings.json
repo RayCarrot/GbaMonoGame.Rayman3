@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Rayman 3 (GBA)": {
+      "commandName": "Project",
+      "commandLineArgs": "gba.json"
+    },
+    "Rayman 3 (N-Gage)": {
+      "commandName": "Project",
+      "commandLineArgs": "ngage.json"
+    }
+  }
+}
