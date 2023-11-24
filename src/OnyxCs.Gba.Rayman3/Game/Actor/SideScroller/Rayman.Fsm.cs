@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
 
@@ -20,7 +21,7 @@ public partial class Rayman : MovableActor
                 CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
                 if (GameInfo.MapId == MapId.TheCanopy_M2)
                 {
-                    cam.HorizontalOffset = Gfx.Platform switch
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
                     {
                         Platform.GBA => 120,
                         Platform.NGage => 88,
@@ -30,7 +31,7 @@ public partial class Rayman : MovableActor
                 else
                 {
                     if (!MultiplayerManager.IsInMultiplayer)
-                        cam.HorizontalOffset = Gfx.Platform switch
+                        cam.HorizontalOffset = Engine.Settings.Platform switch
                         {
                             Platform.GBA => 40,
                             Platform.NGage => 25,
@@ -44,7 +45,7 @@ public partial class Rayman : MovableActor
                     cam.ProcessMessage(Message.Cam_1027);
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                    cam.HorizontalOffset = Gfx.Platform switch
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
                     {
                         Platform.GBA => 120,
                         Platform.NGage => 88,
@@ -203,7 +204,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Walk_Left;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -211,7 +212,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Walk_Right;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
 
@@ -304,7 +305,7 @@ public partial class Rayman : MovableActor
                 {
                     CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
 
-                    switch (Gfx.Platform)
+                    switch (Engine.Settings.Platform)
                     {
                         case Platform.GBA:
                             if (cam.HorizontalOffset == 120)
@@ -410,7 +411,7 @@ public partial class Rayman : MovableActor
                         ActionId = Action.Walk_LookAround_Left;
                         ChangeAction();
 
-                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                             throw new NotImplementedException();
                     }
                     else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -418,7 +419,7 @@ public partial class Rayman : MovableActor
                         ActionId = Action.Walk_LookAround_Right;
                         ChangeAction();
 
-                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                             throw new NotImplementedException();
                     }
                 }
@@ -429,7 +430,7 @@ public partial class Rayman : MovableActor
                         ActionId = Action.Walk_Left;
                         ChangeAction();
 
-                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                             throw new NotImplementedException();
                     }
                     else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -437,7 +438,7 @@ public partial class Rayman : MovableActor
                         ActionId = Action.Walk_Right;
                         ChangeAction();
 
-                        if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                             throw new NotImplementedException();
                     }
                 }
@@ -774,7 +775,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -782,7 +783,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
 
@@ -875,7 +876,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -883,7 +884,7 @@ public partial class Rayman : MovableActor
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Gfx.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
                         throw new NotImplementedException();
                 }
 

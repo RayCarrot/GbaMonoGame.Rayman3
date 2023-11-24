@@ -51,9 +51,9 @@ public class AnimatedObject : AObject
             float y = _screenPos.Y;
 
             if ((Anchor & ScreenAnchor.Right) != 0)
-                x = Gfx.GfxCamera.GameResolution.X - x;
+                x = Engine.ScreenCamera.GameResolution.X - x;
             if ((Anchor & ScreenAnchor.Bottom) != 0)
-                y = Gfx.GfxCamera.GameResolution.Y - y;
+                y = Engine.ScreenCamera.GameResolution.Y - y;
 
             return new Vector2(x, y);
         }

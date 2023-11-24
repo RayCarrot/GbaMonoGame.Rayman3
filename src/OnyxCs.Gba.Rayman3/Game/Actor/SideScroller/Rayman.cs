@@ -1,5 +1,6 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Engine2d;
@@ -491,7 +492,7 @@ public sealed partial class Rayman : MovableActor
 
             if (field16_0x91 > 60)
             {
-                cam.HorizontalOffset = Gfx.Platform switch
+                cam.HorizontalOffset = Engine.Settings.Platform switch
                 {
                     Platform.GBA => 40,
                     Platform.NGage => 25,

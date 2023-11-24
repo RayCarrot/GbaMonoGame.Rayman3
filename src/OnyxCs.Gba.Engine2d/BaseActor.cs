@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Onyx.Gba;
+using ImGuiNET;
 using OnyxCs.Gba.AnimEngine;
 
 namespace OnyxCs.Gba.Engine2d;
@@ -78,5 +79,13 @@ public class BaseActor : GameObject
         {
             AnimatedObject.ExecuteUnframed();
         }
+    }
+
+    public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        base.DrawDebugLayout(debugLayout, textureManager);
+
+        ImGui.Text($"State: {Fsm}");
+        ImGui.Text($"Direction: {(IsFacingLeft ? "Left" : "Right")}");
     }
 }

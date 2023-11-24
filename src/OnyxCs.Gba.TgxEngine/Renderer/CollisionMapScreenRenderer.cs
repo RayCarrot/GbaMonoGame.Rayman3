@@ -17,7 +17,7 @@ public class CollisionMapScreenRenderer : IScreenRenderer
     private const int CollisionTileSize = 16;
     private const int CollisionTileSetWidth = 16;
 
-    private static readonly Texture2D _tex = Gfx.ContentManager.Load<Texture2D>("CollisionTileSet");
+    private static readonly Texture2D _tex = Engine.ContentManager.Load<Texture2D>("CollisionTileSet");
 
     public int Width { get; }
     public int Height { get; }
@@ -31,8 +31,8 @@ public class CollisionMapScreenRenderer : IScreenRenderer
 
         int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
         int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
-        int xEnd = (int)Math.Ceiling((Math.Min((double)Gfx.GfxCamera.GameResolution.X, rect.Right) - rect.X) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min((double)Gfx.GfxCamera.GameResolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.X, rect.Right) - rect.X) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }

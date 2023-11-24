@@ -14,7 +14,7 @@ public class AnimationSpriteManager
     private Texture2D CreateSpriteTexture(byte spriteShape, byte spriteSize, bool is8Bit, Palette palette, byte[] tileSet, int tileIndex)
     {
         Constants.Size shape = Constants.GetSpriteShape(spriteShape, spriteSize);
-        Texture2D tex = new(Gfx.GraphicsDevice, shape.Width, shape.Height);
+        Texture2D tex = new(Engine.GraphicsDevice, shape.Width, shape.Height);
         Color[] texColors = new Color[tex.Width * tex.Height];
         int tileSetIndex = tileIndex * 0x20;
 

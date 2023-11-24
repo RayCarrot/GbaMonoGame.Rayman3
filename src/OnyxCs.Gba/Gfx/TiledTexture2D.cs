@@ -10,7 +10,7 @@ public class TiledTexture2D : Texture2D
     #region Constructor
 
     public TiledTexture2D(byte[] tileSet, int tileIndex, int paletteIndex, Palette palette, bool is8Bit) : 
-        base(Gfx.GraphicsDevice, Constants.TileSize, Constants.TileSize)
+        base(Engine.GraphicsDevice, Constants.TileSize, Constants.TileSize)
     {
         Color[] texColors = new Color[Width * Height];
 
@@ -27,7 +27,7 @@ public class TiledTexture2D : Texture2D
     }
 
     public TiledTexture2D(int width, int height, byte[] tileSet, MapTile[] tileMap, Palette palette, bool is8Bit) : 
-        base(Gfx.GraphicsDevice, width * Constants.TileSize, height * Constants.TileSize)
+        base(Engine.GraphicsDevice, width * Constants.TileSize, height * Constants.TileSize)
     {
         Color[] texColors = new Color[Width * Height];
 

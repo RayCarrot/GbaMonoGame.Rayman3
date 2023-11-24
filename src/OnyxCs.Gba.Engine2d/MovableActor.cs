@@ -1,5 +1,6 @@
 ﻿using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
+using ImGuiNET;
 
 namespace OnyxCs.Gba.Engine2d;
 
@@ -334,5 +335,12 @@ public class MovableActor : InteractableActor
     {
         IsTouchingMap = false;
         base.Step();
+    }
+
+    public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        base.DrawDebugLayout(debugLayout, textureManager);
+
+        ImGui.Text($"Speed: {Speed.X} x {Speed.Y}");
     }
 }

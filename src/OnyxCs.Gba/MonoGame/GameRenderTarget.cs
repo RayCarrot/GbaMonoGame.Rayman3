@@ -2,20 +2,20 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace OnyxCs.Gba.Rayman3;
+namespace OnyxCs.Gba;
 
 public class GameRenderTarget
 {
-    public GameRenderTarget(GraphicsDevice graphicsDevice, GfxCamera gfxCamera)
+    public GameRenderTarget(GraphicsDevice graphicsDevice, ScreenCamera screenCamera)
     {
         GraphicsDevice = graphicsDevice;
-        GfxCamera = gfxCamera;
+        ScreenCamera = screenCamera;
     }
 
     private Point? PendingResize { get; set; }
 
     public GraphicsDevice GraphicsDevice { get; }
-    public GfxCamera GfxCamera { get; }
+    public ScreenCamera ScreenCamera { get; }
     public RenderTarget2D RenderTarget { get; private set; }
 
     public void ResizeGame(Point newSize)
@@ -28,7 +28,7 @@ public class GameRenderTarget
     {
         if (PendingResize != null)
         {
-            GfxCamera.ResizeScreen(PendingResize.Value);
+            ScreenCamera.ResizeScreen(PendingResize.Value);
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,

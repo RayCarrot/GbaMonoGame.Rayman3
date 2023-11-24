@@ -1,4 +1,6 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba;
+using ImGuiNET;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
 
@@ -15,7 +17,7 @@ public class CameraSideScroller : CameraActor2D
 
         if (!MultiplayerManager.IsInMultiplayer)
         {
-            HorizontalOffset = Gfx.Platform switch
+            HorizontalOffset = Engine.Settings.Platform switch
             {
                 Platform.GBA => 40,
                 Platform.NGage => 25,
@@ -59,7 +61,7 @@ public class CameraSideScroller : CameraActor2D
     private void UpdateTargetX()
     {
         if (LinkedObject.IsFacingLeft)
-            TargetX = Gfx.Platform switch
+            TargetX = Engine.Settings.Platform switch
             {
                 Platform.GBA => (byte)(-HorizontalOffset - 16),
                 Platform.NGage => (byte)(-80 - HorizontalOffset),
@@ -162,8 +164,8 @@ public class CameraSideScroller : CameraActor2D
                                 HorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
                                 HorizontalOffset <= LinkedObject.ScreenPosition.X) ||
                                 (LinkedObject.IsFacingLeft &&
-                                 Gfx.GfxCamera.GameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
-                                 Gfx.GfxCamera.GameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
+                                 Engine.ScreenCamera.GameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
+                                 Engine.ScreenCamera.GameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
                             {
                                 if (Timer > 2 && Math.Abs(Speed.X) > 1)
                                 {
@@ -270,7 +272,7 @@ public class CameraSideScroller : CameraActor2D
 
                 if (field16_0x2e == 4)
                 {
-                    HorizontalOffset = Gfx.Platform switch
+                    HorizontalOffset = Engine.Settings.Platform switch
                     {
                         Platform.GBA => 40,
                         Platform.NGage => 25,
@@ -323,7 +325,7 @@ public class CameraSideScroller : CameraActor2D
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
-        else if (LinkedObject.Position.X < (Gfx.GfxCamera.GameResolution.X - HorizontalOffset) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < (Engine.ScreenCamera.GameResolution.X - HorizontalOffset) && LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
@@ -331,7 +333,7 @@ public class CameraSideScroller : CameraActor2D
         {
             if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
             {
-                HorizontalOffset = Gfx.Platform switch
+                HorizontalOffset = Engine.Settings.Platform switch
                 {
                     Platform.GBA => 120,
                     Platform.NGage => 88,
@@ -347,7 +349,7 @@ public class CameraSideScroller : CameraActor2D
                 }
                 else
                 {
-                    pos = new Vector2(LinkedObject.Position.X + HorizontalOffset - Gfx.GfxCamera.GameResolution.X, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X + HorizontalOffset - Engine.ScreenCamera.GameResolution.X, LinkedObject.Position.Y);
                 }
             }
         }
@@ -356,5 +358,13 @@ public class CameraSideScroller : CameraActor2D
 
         tgxCamera.Position = pos;
         PreviousLinkedObjectPosition = LinkedObject.Position;
+    }
+
+    public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        base.DrawDebugLayout(debugLayout, textureManager);
+
+        ImGui.Text($"Speed: {Speed.X} x {Speed.Y}");
+        ImGui.Text($"Target: {TargetX} x {TargetY}");
     }
 }

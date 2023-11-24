@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ImGuiNET;
 
-namespace MonoGame.ImGuiNet;
+namespace OnyxCs.Gba;
 
 public class ImGuiRenderer
 {
@@ -114,7 +114,7 @@ public class ImGuiRenderer
     /// <summary>
     /// Sets up ImGui for a new frame, should be called at frame start
     /// </summary>
-    public virtual void BeforeLayout(GameTime gameTime)
+    public virtual void BeforeLayout(Microsoft.Xna.Framework.GameTime gameTime)
     {
         ImGui.GetIO().DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 

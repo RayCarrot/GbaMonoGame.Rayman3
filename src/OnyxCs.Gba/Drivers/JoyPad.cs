@@ -62,13 +62,13 @@ public static class JoyPad
 
     public static Vector2 GetMousePosition()
     {
-        return Gfx.GfxCamera.ToGamePosition(MouseState.Position.ToVector2());
+        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2());
     }
 
     public static Vector2 GetMousePositionDelta()
     {
-        return Gfx.GfxCamera.ToGamePosition(MouseState.Position.ToVector2()) - 
-               Gfx.GfxCamera.ToGamePosition(PreviousMouseState.Position.ToVector2());
+        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2()) -
+               Engine.ScreenCamera.ToGamePosition(PreviousMouseState.Position.ToVector2());
     }
 
     public static int GetMouseWheelDelta()

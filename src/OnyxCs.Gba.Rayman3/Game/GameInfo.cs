@@ -25,5 +25,5 @@ public static class GameInfo
 
     }
 
-    public static LevelInfo[] Levels { get; set; }
+    public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
 }

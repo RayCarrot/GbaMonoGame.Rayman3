@@ -23,23 +23,6 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> Sprites { get; } = new();
 
-    /// <summary>
-    /// The graphics device to use for creating textures.
-    /// </summary>
-    public static GraphicsDevice GraphicsDevice { get; set; }
-
-    /// <summary>
-    /// The content manager to load contents
-    /// </summary>
-    public static ContentManager ContentManager { get; set; }
-
-    /// <summary>
-    /// The graphics camera to use when rendering the game.
-    /// </summary>
-    public static GfxCamera GfxCamera { get; set; }
-
-    public static Platform Platform { get; set; } // TODO: Move this somewhere else
-
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];
     public static IEnumerable<GfxScreen> GetScreens() => Screens.Values;

@@ -8,7 +8,7 @@ public class GfxRenderer
 {
     #region Constructor
 
-    public GfxRenderer(SpriteBatch spriteBatch, GfxCamera camera)
+    public GfxRenderer(SpriteBatch spriteBatch, ScreenCamera camera)
     {
         SpriteBatch = spriteBatch;
         Camera = camera;
@@ -31,7 +31,7 @@ public class GfxRenderer
 
     #region Public Properties
 
-    public GfxCamera Camera { get; }
+    public ScreenCamera Camera { get; }
 
     #endregion
 

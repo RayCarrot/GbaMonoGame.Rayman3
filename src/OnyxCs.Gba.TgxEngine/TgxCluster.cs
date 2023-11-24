@@ -44,8 +44,8 @@ public class TgxCluster
         }
     }
     public Vector2 MaxPosition => new(
-        x: Math.Max(0, Size.X - Gfx.GfxCamera.GameResolution.X),
-        y: Math.Max(0, Size.Y - Gfx.GfxCamera.GameResolution.Y));
+        x: Math.Max(0, Size.X - Engine.ScreenCamera.GameResolution.X),
+        y: Math.Max(0, Size.Y - Engine.ScreenCamera.GameResolution.Y));
 
     public Vector2 ScrollFactor { get; }
     public bool Stationary { get; }

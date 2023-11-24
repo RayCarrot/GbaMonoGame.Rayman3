@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
@@ -6,11 +7,11 @@ namespace OnyxCs.Gba;
 /// <summary>
 /// Custom camera class for allow variable game and screen sizes.
 /// </summary>
-public class GfxCamera
+public class ScreenCamera
 {
-    public GfxCamera(Point screenSize)
+    public ScreenCamera(Point screenSize)
     {
-        OriginalGameResolution = Gfx.Platform switch
+        OriginalGameResolution = Engine.Settings.Platform switch
         {
             Platform.GBA => new Point(240, 160),
             Platform.NGage => new Point(176, 208),
