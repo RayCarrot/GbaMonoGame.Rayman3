@@ -69,7 +69,7 @@ public class Rayman3 : GbaGame
 
     #region Protected Methods
 
-    protected override Frame CreateInitialFrame() => new Intro();
+    protected override Frame CreateInitialFrame() => new Intro(); // TODO: N-Gage should start with language selection
 
     protected override void Initialize()
     {

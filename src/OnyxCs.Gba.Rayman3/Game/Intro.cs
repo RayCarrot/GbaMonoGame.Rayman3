@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BinarySerializer.Onyx.Gba;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
+using Action = System.Action;
 
 namespace OnyxCs.Gba.Rayman3;
 
-// TODO: Add N-Gage support
 // TODO: Implement palette fading and alpha effects
 public class Intro : Frame, IHasPlayfield
 {
@@ -23,6 +23,7 @@ public class Intro : Frame, IHasPlayfield
     private Action CurrentStepAction { get; set; }
     private MenuAll Menu { get; set; }
     private AnimatedObject PressStartObj { get; set; }
+    private AnimatedObject GameloftLogoObj { get; set; }
     private AnimatedObject BlackLumAndLogoObj { get; set; }
     private int Timer { get; set; }
     private int ScrollY { get; set; }
@@ -42,7 +43,12 @@ public class Intro : Frame, IHasPlayfield
 
     private void PreLoadMenu()
     {
-        Menu = new MenuAll(MenuAll.Page.SelectLanguage);
+        Menu = new MenuAll(Engine.Settings.Platform switch
+        {
+            Platform.GBA => MenuAll.Page.SelectLanguage,
+            Platform.NGage => MenuAll.Page.NGage,
+            _ => throw new UnsupportedPlatformException(),
+        });
         // TODO: Create GameInfo
         // TODO: Load GameInfo
         // TODO: Load data
@@ -50,21 +56,41 @@ public class Intro : Frame, IHasPlayfield
 
     private void LoadAnimations()
     {
-        AnimatedObjectResource introAnimResource = Storage.LoadResource<AnimatedObjectResource>(0x76);
+        AnimatedObjectResource introAnimResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.IntroAnimations);
 
         PressStartObj = new AnimatedObject(introAnimResource, false)
         {
             Priority = 0,
-            ScreenPos = new Vector2(0x78, 0x96)
+            ScreenPos = Engine.Settings.Platform switch
+            {
+                Platform.GBA => new Vector2(120, 150),
+                Platform.NGage => new Vector2(88, 150),
+                _ => throw new UnsupportedPlatformException(),
+            }
         };
 
-        PressStartObj.SetCurrentAnimation(9);
+        PressStartObj.SetCurrentAnimation(9 + Localization.LanguageUiIndex);
 
-        // TODO: Game uses a different type of AnimatedObject here which seems to have additional support for not showing off-screen channels?
+        if (Engine.Settings.Platform == Platform.NGage)
+        {
+            GameloftLogoObj = new AnimatedObject(introAnimResource, false)
+            {
+                Priority = 0,
+                ScreenPos = new Vector2(88, 208)
+            };
+
+            GameloftLogoObj.SetCurrentAnimation(23);
+        }
+
         BlackLumAndLogoObj = new AnimatedObject(introAnimResource, false)
         {
             Priority = 0,
-            ScreenPos = new Vector2(0x78, 0x80)
+            ScreenPos = Engine.Settings.Platform switch
+            {
+                Platform.GBA => new Vector2(120, 128),
+                Platform.NGage => new Vector2(88, 128),
+                _ => throw new UnsupportedPlatformException(),
+            }
         };
 
         BlackLumAndLogoObj.SetCurrentAnimation(0);
@@ -72,14 +98,30 @@ public class Intro : Frame, IHasPlayfield
 
     private void LoadPlayfield()
     {
-        PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(0x75);
+        PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(GameResource.IntroPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
 
-        Playfield.TileLayers[0].Screen.IsEnabled = false;
-        Playfield.TileLayers[1].Screen.IsEnabled = false;
-        Playfield.TileLayers[3].Screen.IsEnabled = false;
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            Playfield.TileLayers[0].Screen.IsEnabled = false;
+            Playfield.TileLayers[1].Screen.IsEnabled = false;
+            Playfield.TileLayers[3].Screen.IsEnabled = false;
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            Playfield.TileLayers[0].Screen.IsEnabled = true;
+            Playfield.TileLayers[1].Screen.IsEnabled = true;
+            Playfield.TileLayers[2].Screen.IsEnabled = false;
+            Playfield.TileLayers[3].Screen.IsEnabled = false;
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
+        }
 
-        Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer).Texture);
+        // TODO: Allow scrolling on N-Gage too?
+        if (Engine.Settings.Platform == Platform.GBA)
+            Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer).Texture);
     }
 
     //private void FadePalette(Palette pal)
@@ -136,6 +178,13 @@ public class Intro : Frame, IHasPlayfield
         ScrollY = 0;
         IsSkipping = false;
         FadeTime = MaxFadeTime;
+
+        SoundManager.Play(221, -1);
+    }
+
+    public override void UnInit()
+    {
+        SoundManager.Play(222, -1);
     }
 
     public override void Step()
@@ -152,40 +201,88 @@ public class Intro : Frame, IHasPlayfield
 
     private void Step_1()
     {
-        Timer++;
-
-        if (Timer > 0x3C)
+        if (Engine.Settings.Platform == Platform.GBA)
         {
-            Timer = 0;
-            CurrentStepAction = Step_2;
+            Timer++;
 
-            Playfield.TileLayers[0].Screen.IsEnabled = true;
-            Playfield.TileLayers[1].Screen.IsEnabled = true;
+            if (Timer > 60)
+            {
+                Timer = 0;
+                CurrentStepAction = Step_2;
+
+                Playfield.TileLayers[0].Screen.IsEnabled = true;
+                Playfield.TileLayers[1].Screen.IsEnabled = true;
+            }
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            CurrentStepAction = Step_2;
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
         }
     }
 
     private void Step_2()
     {
-        Timer++;
-
-        if (Timer > (0x10 * 4))
+        if (Engine.Settings.Platform == Platform.GBA)
         {
-            Timer = 0;
+            Timer++;
+
+            if (Timer > 64)
+            {
+                Timer = 0;
+                CurrentStepAction = Step_3;
+            }
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
             CurrentStepAction = Step_3;
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
         }
     }
 
     private void Step_3()
     {
-        Timer++;
-
-        if (Timer > (0x10 * 4))
+        if (Engine.Settings.Platform == Platform.GBA)
         {
-            Timer = 0;
-            CurrentStepAction = Step_4;
+            Timer++;
 
-            Playfield.TileLayers[2].Screen.IsEnabled = false;
-            Playfield.TileLayers[3].Screen.IsEnabled = true;
+            if (Timer == 64)
+            {
+                Timer = 0;
+                CurrentStepAction = Step_4;
+
+                Playfield.TileLayers[2].Screen.IsEnabled = false;
+                Playfield.TileLayers[3].Screen.IsEnabled = true;
+            }
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            Timer++;
+
+            if (Timer == 64)
+            {
+                Timer = 0;
+                CurrentStepAction = Step_4;
+
+                Playfield.TileLayers[2].Screen.IsEnabled = false;
+            }
+
+            // TODO: Check every button input
+            if (JoyPad.Check(GbaInput.Start))
+                IsSkipping = true;
+
+            if (IsSkipping)
+                Skip();
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
         }
     }
 
@@ -202,19 +299,29 @@ public class Intro : Frame, IHasPlayfield
             Gfx.GetScreen(3).Offset = new Vector2(0, ScrollY);
         }
 
-        if (ScrollY > 0xAF)
+        if (ScrollY > 175)
         {
             if (BlackLumAndLogoObj.EndOfAnimation)
             {
                 if (BlackLumAndLogoObj.AnimationIndex < 4)
                 {
                     BlackLumAndLogoObj.SetCurrentAnimation(BlackLumAndLogoObj.AnimationIndex + 1);
-                    BlackLumAndLogoObj.ScreenPos = new Vector2(0x78, 0x80);
+                    BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => new Vector2(120, 128),
+                        Platform.NGage => new Vector2(88, 128),
+                        _ => throw new UnsupportedPlatformException(),
+                    };
                 }
                 else
                 {
                     BlackLumAndLogoObj.SetCurrentAnimation(6);
-                    BlackLumAndLogoObj.ScreenPos = new Vector2(0x78, 0x46);
+                    BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => new Vector2(120, 70),
+                        Platform.NGage => new Vector2(88, 70),
+                        _ => throw new UnsupportedPlatformException(),
+                    };
                 }
             }
 
@@ -229,8 +336,21 @@ public class Intro : Frame, IHasPlayfield
             }
         }
 
-        if (JoyPad.Check(GbaInput.Start) && ScrollY <= 0x35f)
-            IsSkipping = true;
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            if (JoyPad.Check(GbaInput.Start) && ScrollY <= 863)
+                IsSkipping = true;
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            // TODO: Check every button input
+            if (JoyPad.Check(GbaInput.Start))
+                IsSkipping = true;
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
+        }
 
         if (IsSkipping)
             Skip();
@@ -245,6 +365,7 @@ public class Intro : Frame, IHasPlayfield
             if (BlackLumAndLogoObj.AnimationIndex == 7)
             {
                 BlackLumAndLogoObj.SetCurrentAnimation(8);
+                SoundManager.Play(385, -1);
                 CurrentStepAction = Step_6;
             }
             else
@@ -261,8 +382,12 @@ public class Intro : Frame, IHasPlayfield
         if ((GameTime.ElapsedFrames & 0x10) != 0)
             AnimationPlayer.AddPrimaryObject(PressStartObj);
 
+        if (Engine.Settings.Platform == Platform.NGage)
+            AnimationPlayer.AddPrimaryObject(GameloftLogoObj);
+
         AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
 
+        // TODO: Check every button input on N-Gage
         if (JoyPad.Check(GbaInput.Start))
             FrameManager.SetNextFrame(Menu);
     }
@@ -275,11 +400,14 @@ public class Intro : Frame, IHasPlayfield
         {
             BlackLumAndLogoObj.SetCurrentAnimation(8);
             BlackLumAndLogoObj.SetCurrentFrame(5);
-            BlackLumAndLogoObj.ScreenPos = new Vector2(0x78, 0x46);
+            BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
+            {
+                Platform.GBA => new Vector2(120, 70),
+                Platform.NGage => new Vector2(88, 70),
+                _ => throw new UnsupportedPlatformException(),
+            };
 
-            // TODO: This should be changed to use the camera
-            Gfx.GetScreen(1).Offset = new Vector2(0, 880);
-            Gfx.GetScreen(3).Offset = new Vector2(0, 880);
+            Playfield.Camera.Position = new Vector2(0, 880);
             ScrollY = 879;
         }
         else if (SkippedTimer == 20)
@@ -298,6 +426,9 @@ public class Intro : Frame, IHasPlayfield
                 //    FadePalette(pal);
             }
 
+            if (FadeTime == MaxFadeTime)
+                SoundManager.Play(385, -1);
+
             if (FadeTime == MaxFadeTime + 1)
                 CurrentStepAction = Step_6;
         }
@@ -311,6 +442,9 @@ public class Intro : Frame, IHasPlayfield
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)
             AnimationPlayer.AddPrimaryObject(PressStartObj);
+
+        if (Engine.Settings.Platform == Platform.NGage)
+            AnimationPlayer.AddPrimaryObject(GameloftLogoObj);
 
         AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
     }
