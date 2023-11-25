@@ -9,7 +9,7 @@ namespace OnyxCs.Gba;
 /// </summary>
 public class ScreenCamera
 {
-    public ScreenCamera(Point screenSize)
+    public ScreenCamera()
     {
         OriginalGameResolution = Engine.Settings.Platform switch
         {
@@ -18,7 +18,6 @@ public class ScreenCamera
             _ => throw new UnsupportedPlatformException(),
         };
         GameResolution = OriginalGameResolution;
-        ResizeScreen(screenSize);
     }
 
     public Point GameResolution { get; private set; }

@@ -10,7 +10,7 @@ public class CagesBar : Bar
 
     public override void Init()
     {
-        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(0x46);
+        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
         CageIcon = new AnimatedObject(resource, false);
         CollectedCagesDigit = new AnimatedObject(resource, false);
         TotalCagesDigit = new AnimatedObject(resource, false);

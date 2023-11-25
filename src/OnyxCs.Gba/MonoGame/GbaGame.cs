@@ -108,10 +108,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Engine.LoadConfig(Environment.GetCommandLineArgs().FirstOrDefault(x => x.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)));
         Engine.LoadRom(Engine.Config.RomFile, Engine.Config.SerializerLogFile, _game);
 
-        // TODO: Save window size in config, as well as if maximized etc.
-        Point windowSize = new(Constants.ScreenWidth * 4, Constants.ScreenHeight * 4);
+        Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera());
 
-        Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(windowSize));
+        // TODO: Save window size in config, as well as if maximized etc.
+        Point windowSize = new(Engine.ScreenCamera.OriginalGameResolution.X * 4, Engine.ScreenCamera.OriginalGameResolution.Y * 4);
+        Engine.ScreenCamera.ResizeScreen(windowSize);
         SetWindowSize(windowSize);
 
         FrameManager.SetNextFrame(CreateInitialFrame());

@@ -49,7 +49,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     private void LoadPlayfield()
     {
-        PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(0x5b);
+        PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;

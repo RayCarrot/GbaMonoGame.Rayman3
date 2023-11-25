@@ -10,7 +10,7 @@ public class LifeBar : Bar
 
     public override void Init()
     {
-        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(0x46);
+        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
         HitPoints = new AnimatedObject(resource, false);
         LifeDigit1 = new AnimatedObject(resource, false);
         LifeDigit2 = new AnimatedObject(resource, false);

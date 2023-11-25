@@ -5,21 +5,21 @@ public class MenuData
 {
     public MenuData()
     {
-        AnimatedObjectResource menuResource_5C = Storage.LoadResource<AnimatedObjectResource>(0x5C);
-        AnimatedObjectResource menuResource_5D = Storage.LoadResource<AnimatedObjectResource>(0x5D);
-        AnimatedObjectResource menuResource_60 = Storage.LoadResource<AnimatedObjectResource>(0x60);
-        AnimatedObjectResource menuResource_61 = Storage.LoadResource<AnimatedObjectResource>(0x61);
-        AnimatedObjectResource menuResource_62 = Storage.LoadResource<AnimatedObjectResource>(0x62);
-        AnimatedObjectResource menuResource_69 = Storage.LoadResource<AnimatedObjectResource>(0x69);
+        AnimatedObjectResource propsAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuPropAnimations);
+        AnimatedObjectResource startEraseAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuStartEraseAnimations);
+        AnimatedObjectResource gameLogoAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuGameLogoAnimations);
+        AnimatedObjectResource gameModeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuGameModeAnimations);
+        AnimatedObjectResource languageListAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuLanguageListAnimations);
+        AnimatedObjectResource steamAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSteamAnimations);
 
-        LanguageList = new AnimatedObject(menuResource_62, menuResource_62.IsDynamic)
+        LanguageList = new AnimatedObject(languageListAnimations, languageListAnimations.IsDynamic)
         {
             Priority = 0,
             ScreenPos = new Vector2(120, 28)
         };
         LanguageList.SetCurrentAnimation(0);
 
-        Wheel1 = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(7, 110)
@@ -27,7 +27,7 @@ public class MenuData
         Wheel1.SetCurrentAnimation(2);
         Wheel1.AffineMatrix = AffineMatrix.Identity;
 
-        Wheel2 = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Wheel2 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(136, 110)
@@ -35,7 +35,7 @@ public class MenuData
         Wheel2.SetCurrentAnimation(3);
         Wheel2.AffineMatrix = AffineMatrix.Identity;
 
-        Wheel3 = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Wheel3 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(172, 110)
@@ -43,7 +43,7 @@ public class MenuData
         Wheel3.SetCurrentAnimation(4);
         Wheel3.AffineMatrix = AffineMatrix.Identity;
 
-        Wheel4 = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Wheel4 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(66, 144)
@@ -51,49 +51,49 @@ public class MenuData
         Wheel4.SetCurrentAnimation(3);
         Wheel4.AffineMatrix = AffineMatrix.Identity;
 
-        Cursor = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Cursor = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(33, 67)
         };
         Cursor.SetCurrentAnimation(0);
 
-        Stem = new AnimatedObject(menuResource_5C, menuResource_5C.IsDynamic)
+        Stem = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(47, 160)
         };
         Stem.SetCurrentAnimation(14);
 
-        Steam = new AnimatedObject(menuResource_69, menuResource_69.IsDynamic)
+        Steam = new AnimatedObject(steamAnimations, steamAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(27, 20)
         };
         Steam.SetCurrentAnimation(0);
 
-        GameLogo = new AnimatedObject(menuResource_60, menuResource_60.IsDynamic)
+        GameLogo = new AnimatedObject(gameLogoAnimations, gameLogoAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(174, 16)
         };
         GameLogo.SetCurrentAnimation(0);
 
-        GameModeList = new AnimatedObject(menuResource_61, menuResource_61.IsDynamic)
+        GameModeList = new AnimatedObject(gameModeAnimations, gameModeAnimations.IsDynamic)
         {
             Priority = 3,
             ScreenPos = new Vector2(73, 52)
         };
         GameModeList.SetCurrentAnimation(0);
 
-        StartEraseSelection = new AnimatedObject(menuResource_5D, menuResource_5D.IsDynamic)
+        StartEraseSelection = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(80, 30)
         };
         StartEraseSelection.SetCurrentAnimation(1);
 
-        StartEraseCursor = new AnimatedObject(menuResource_5D, menuResource_5D.IsDynamic)
+        StartEraseCursor = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
         {
             Priority = 1,
             ScreenPos = new Vector2(106, 12)

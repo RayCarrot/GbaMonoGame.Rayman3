@@ -12,7 +12,7 @@ public class LumsBar : Bar
 
     public override void Init()
     {
-        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(0x46);
+        AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
         LumsIcon = new AnimatedObject(resource, false);
         CollectedLumsDigit1 = new AnimatedObject(resource, false);
         CollectedLumsDigit2 = new AnimatedObject(resource, false);
