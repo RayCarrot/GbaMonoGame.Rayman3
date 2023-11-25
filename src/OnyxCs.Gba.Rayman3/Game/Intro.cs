@@ -6,7 +6,7 @@ namespace OnyxCs.Gba.Rayman3;
 
 // TODO: Add N-Gage support
 // TODO: Implement palette fading and alpha effects
-public class Intro : Frame
+public class Intro : Frame, IHasPlayfield
 {
     #region Private Constant Fields
 
@@ -29,6 +29,12 @@ public class Intro : Frame
     private bool IsSkipping { get; set; }
     private int FadeTime { get; set; }
     private int SkippedTimer { get; set; }
+
+    #endregion
+
+    #region Interface Properties
+
+    TgxPlayfield IHasPlayfield.Playfield => Playfield;
 
     #endregion
 

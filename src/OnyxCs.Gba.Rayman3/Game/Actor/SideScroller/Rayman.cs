@@ -9,7 +9,7 @@ namespace OnyxCs.Gba.Rayman3;
 
 public sealed partial class Rayman : MovableActor
 {
-    public Rayman(int id, ActorResource actorResource) : base(id, actorResource)
+    public Rayman(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         Resource = actorResource;
 
@@ -126,7 +126,7 @@ public sealed partial class Rayman : MovableActor
 
     private void PlaySound(int id)
     {
-        if (Frame.GetComponent<Scene2D>().Camera.LinkedObject == this)
+        if (Scene.Camera.LinkedObject == this)
             SoundManager.Play(id, -1);
     }
 
@@ -146,12 +146,11 @@ public sealed partial class Rayman : MovableActor
 
     private void UpdatePhysicalType()
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
-        PhysicalType type = scene.GetPhysicalType(Position);
+        PhysicalType type = Scene.GetPhysicalType(Position);
 
         if (type.Value is PhysicalTypeValue.Slippery or PhysicalTypeValue.SlipperyLedge)
         {
-            PhysicalType otherType = scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
+            PhysicalType otherType = Scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
 
             if (otherType.Value is PhysicalTypeValue.Solid or PhysicalTypeValue.Slippery or PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
                 type = otherType;
@@ -160,7 +159,7 @@ public sealed partial class Rayman : MovableActor
         {
             PhysicalType = 32;
 
-            if (scene.Camera.LinkedObject == this)
+            if (Scene.Camera.LinkedObject == this)
                 SoundManager.Play(208, -1);
 
             return;
@@ -263,12 +262,10 @@ public sealed partial class Rayman : MovableActor
             return false;
         }
 
-        Scene2D scene = Frame.GetComponent<Scene2D>();
-
         Box detectionBox = GetDetectionBox();
         
         // Check bottom right
-        PhysicalType type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+        PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -283,7 +280,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         // Check bottom left
-        type = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+        type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -291,7 +288,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         // Check bottom middle
-        type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - detectionBox.Width / 2, detectionBox.MaxY));
+        type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - detectionBox.Width / 2, detectionBox.MaxY));
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -351,7 +348,7 @@ public sealed partial class Rayman : MovableActor
 
     private void SlidingOnSlippery()
     {
-        if (!SoundManager.IsPlaying(181) && Frame.GetComponent<Scene2D>().Camera.LinkedObject == this)
+        if (!SoundManager.IsPlaying(181) && Scene.Camera.LinkedObject == this)
             SoundManager.Play(181, -1);
 
         SoundManager.FUN_080ac468(181, Math.Abs(Speed.X));
@@ -430,13 +427,12 @@ public sealed partial class Rayman : MovableActor
 
     private bool IsOnInstaKillType()
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
         Box detectionBox = GetDetectionBox();
 
         byte type = 0xFF;
         for (int i = 0; i < 3; i++)
         {
-            type = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 16 * i, detectionBox.MaxY - 1));
+            type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 16 * i, detectionBox.MaxY - 1));
 
             if (type is 32 or 74 or 48 or 90)
                 break;
@@ -483,8 +479,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool Inlined_FUN_1004c1f4()
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
-        CameraSideScroller cam = (CameraSideScroller)scene.Camera;
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
         if (Flag1_D)
         {
@@ -723,7 +718,7 @@ public sealed partial class Rayman : MovableActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        CameraActor camera = Frame.GetComponent<Scene2D>().Camera;
+        CameraActor camera = Scene.Camera;
 
         bool draw = camera.IsActorFramed(this) || forceDraw;
 

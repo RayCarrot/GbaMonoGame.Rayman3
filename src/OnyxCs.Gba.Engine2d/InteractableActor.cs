@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class InteractableActor : ActionActor
 {
-    public InteractableActor(int id, ActorResource actorResource) : base(id, actorResource)
+    public InteractableActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         AnimationBoxTable = new BoxTable();
         AnimatedObject.BoxTable = AnimationBoxTable;

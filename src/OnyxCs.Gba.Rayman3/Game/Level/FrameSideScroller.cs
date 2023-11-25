@@ -1,9 +1,10 @@
 ﻿using System;
 using OnyxCs.Gba.Engine2d;
+using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public abstract class FrameSideScroller : Frame
+public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
 
@@ -21,6 +22,13 @@ public abstract class FrameSideScroller : Frame
 
     #endregion
 
+    #region Interface Properties
+
+    Scene2D IHasScene.Scene => Scene;
+    TgxPlayfield IHasPlayfield.Playfield => Scene.Playfield;
+
+    #endregion
+
     #region Pubic Override Methods
 
     public override void Init()
@@ -30,7 +38,7 @@ public abstract class FrameSideScroller : Frame
         GameInfo.MapId = GameInfo.NextMapId;
         // TODO: More setup...
         BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, new CameraSideScroller(), 4);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
         // TODO: More setup...
         Scene.AddDialog(new UserInfoSideScroller(GameInfo.Level.HasBlueLum));
         // TODO: More setup...

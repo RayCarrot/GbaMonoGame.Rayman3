@@ -11,7 +11,7 @@ public class PlayfieldDebugWindow : DebugWindow
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
-        if (Frame.GetComponent<TgxPlayfield>() is not TgxPlayfield2D playfield2D) 
+        if (Frame.Current is not IHasPlayfield { Playfield: TgxPlayfield2D playfield2D }) 
             return;
 
         Vector2 pos = playfield2D.Camera.Position;

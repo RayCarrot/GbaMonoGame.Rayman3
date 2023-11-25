@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
 using OnyxCs.Gba.AnimEngine;
@@ -8,12 +9,10 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class Scene2D
 {
-    public Scene2D(int id, CameraActor camera, int layersCount)
+    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
     {
-        Frame.RegisterComponent(this);
-
-        Camera = camera;
         LayersCount = layersCount;
+        Camera = createCameraFunc(this);
 
         AnimationPlayer = new AnimationPlayer(false);
         Dialogs = new List<Dialog>(layersCount);
@@ -21,7 +20,7 @@ public class Scene2D
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
-        GameObjects = new GameObjects(scene);
+        GameObjects = new GameObjects(this, scene);
 
         Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();

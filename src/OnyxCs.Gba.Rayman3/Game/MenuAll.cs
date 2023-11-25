@@ -5,7 +5,7 @@ using OnyxCs.Gba.TgxEngine;
 namespace OnyxCs.Gba.Rayman3;
 
 // TODO: Add support for N-Gage menus as well as US version language selection
-public class MenuAll : Frame
+public class MenuAll : Frame, IHasPlayfield
 {
     #region Constructor
 
@@ -36,6 +36,12 @@ public class MenuAll : Frame
     private int SteamTimer { get; set; }
 
     public Page InitialPage { get; set; }
+
+    #endregion
+
+    #region Interface Properties
+    
+    TgxPlayfield IHasPlayfield.Playfield => Playfield;
 
     #endregion
 

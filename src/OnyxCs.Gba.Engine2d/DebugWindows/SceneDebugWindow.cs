@@ -19,12 +19,10 @@ public class SceneDebugWindow : DebugWindow
     public override string Name => "Scene";
     public GameObject SelectedGameObject { get; set; }
 
-    private void DrawBox(GfxRenderer renderer, Box box, Color color)
+    private void DrawBox(GfxRenderer renderer, TgxPlayfield2D playfield, Box box, Color color)
     {
         if (box == Box.Empty)
             return;
-
-        TgxPlayfield2D playfield = Frame.GetComponent<TgxPlayfield2D>();
 
         box = box.Offset(-playfield.Camera.Position);
 
@@ -36,7 +34,7 @@ public class SceneDebugWindow : DebugWindow
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
-        if (Frame.GetComponent<Scene2D>() is not { } scene2D) 
+        if (Frame.Current is not IHasScene { Scene: { } scene2D }) 
             return;
         
         if (ImGui.Button("Deselect object"))
@@ -132,44 +130,44 @@ public class SceneDebugWindow : DebugWindow
 
     public override void DrawGame(GfxRenderer renderer)
     {
-        if (Frame.GetComponent<Scene2D>() is { } scene2D)
+        if (Frame.Current is not IHasScene { Scene: { } scene2D }) 
+            return;
+
+        foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
         {
-            foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
+            if (_showViewBoxes)
+                DrawBox(renderer, scene2D.Playfield, actor.GetViewBox(), Color.Lime);
+
+            if (actor is ActionActor actionActor)
             {
-                if (_showViewBoxes)
-                    DrawBox(renderer, actor.GetViewBox(), Color.Lime);
+                if (_showActionBoxes)
+                    DrawBox(renderer, scene2D.Playfield, actionActor.GetActionBox(), Color.Blue);
 
-                if (actor is ActionActor actionActor)
-                {
-                    if (_showActionBoxes)
-                        DrawBox(renderer, actionActor.GetActionBox(), Color.Blue);
-
-                    if (_showDetectionBoxes)
-                        DrawBox(renderer, actionActor.GetDetectionBox(), Color.DeepPink);
-                }
-
-                if (actor is InteractableActor interactableActor)
-                {
-                    if (_showAttackBoxes)
-                        DrawBox(renderer, interactableActor.GetAttackBox(), Color.OrangeRed);
-
-                    if (_showVulnerabilityBoxes)
-                        DrawBox(renderer, interactableActor.GetVulnerabilityBox(), Color.Green);
-                }
+                if (_showDetectionBoxes)
+                    DrawBox(renderer, scene2D.Playfield, actionActor.GetDetectionBox(), Color.DeepPink);
             }
 
-            if (_showCaptorBoxes)
+            if (actor is InteractableActor interactableActor)
             {
-                foreach (Captor captor in scene2D.GameObjects.EnumerateCaptors(isEnabled: true))
-                {
-                    DrawBox(renderer, captor.GetCaptorBox(), Color.DeepPink);
-                }
+                if (_showAttackBoxes)
+                    DrawBox(renderer, scene2D.Playfield, interactableActor.GetAttackBox(), Color.OrangeRed);
+
+                if (_showVulnerabilityBoxes)
+                    DrawBox(renderer, scene2D.Playfield, interactableActor.GetVulnerabilityBox(), Color.Green);
+            }
+        }
+
+        if (_showCaptorBoxes)
+        {
+            foreach (Captor captor in scene2D.GameObjects.EnumerateCaptors(isEnabled: true))
+            {
+                DrawBox(renderer, scene2D.Playfield, captor.GetCaptorBox(), Color.DeepPink);
             }
         }
 
         if (SelectedGameObject is BaseActor selectedActor)
-            DrawBox(renderer, selectedActor.GetViewBox(), Color.Red);
+            DrawBox(renderer, scene2D.Playfield, selectedActor.GetViewBox(), Color.Red);
         else if (SelectedGameObject is Captor selectedCaptor)
-            DrawBox(renderer, selectedCaptor.GetCaptorBox(), Color.Red);
+            DrawBox(renderer, scene2D.Playfield, selectedCaptor.GetCaptorBox(), Color.Red);
     }
 }

@@ -18,7 +18,7 @@ public partial class Piranha : MovableActor
             case FsmAction.Step:
                 Timer++;
                 
-                if (Frame.GetComponent<Scene2D>().IsDetectedMainActor(this) && Timer > 120)
+                if (Scene.IsDetectedMainActor(this) && Timer > 120)
                     Fsm.ChangeAction(Fsm_Move);
                 break;
 
@@ -45,9 +45,8 @@ public partial class Piranha : MovableActor
                 }
                 else
                 {
-                    Scene2D scene = Frame.GetComponent<Scene2D>();
-                    if (scene.IsHitMainActor(this))
-                        scene.MainActor.ReceiveDamage(AttackPoints);
+                    if (Scene.IsHitMainActor(this))
+                        Scene.MainActor.ReceiveDamage(AttackPoints);
                 }
 
                 if (HitPoints == 0)

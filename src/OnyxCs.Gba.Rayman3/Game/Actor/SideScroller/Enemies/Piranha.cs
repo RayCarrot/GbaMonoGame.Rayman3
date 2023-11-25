@@ -5,7 +5,7 @@ namespace OnyxCs.Gba.Rayman3;
 
 public sealed partial class Piranha : MovableActor
 {
-    public Piranha(int id, ActorResource actorResource) : base(id, actorResource)
+    public Piranha(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         InitPos = Position;
         Fsm.ChangeAction(Fsm_Wait);
@@ -17,7 +17,7 @@ public sealed partial class Piranha : MovableActor
 
     private void SpawnSplash()
     {
-        BaseActor splash = Frame.GetComponent<Scene2D>().GameObjects.SpawnActor(ActorType.Splash);
+        BaseActor splash = Scene.GameObjects.SpawnActor(ActorType.Splash);
         if (splash != null)
             splash.Position = Position;
     }

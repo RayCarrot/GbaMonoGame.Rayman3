@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class ActionActor : BaseActor
 {
-    public ActionActor(int id, ActorResource actorResource) : base(id, actorResource)
+    public ActionActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         HitPoints = actorResource.Model.HitPoints;
         AttackPoints = actorResource.Model.AttackPoints;

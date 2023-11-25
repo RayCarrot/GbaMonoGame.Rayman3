@@ -8,7 +8,7 @@ namespace OnyxCs.Gba.Rayman3;
 
 public class CameraSideScroller : CameraActor2D
 {
-    public CameraSideScroller()
+    public CameraSideScroller(Scene2D scene) : base(scene)
     {
         Fsm.ChangeAction(Fsm_Default);
 
@@ -257,10 +257,10 @@ public class CameraSideScroller : CameraActor2D
                 // Clamp speed
                 Speed = new Vector2(Math.Clamp(Speed.X, -7, 7), Math.Clamp(Speed.Y, -7, 7));
 
-                TgxCamera2D cam = Frame.GetComponent<TgxPlayfield2D>().Camera;
-                TgxCluster mainCluster = cam.GetMainCluster();
+                TgxCamera2D tgxCam = Scene.Playfield.Camera;
+                TgxCluster mainCluster = tgxCam.GetMainCluster();
 
-                cam.Position += Speed;
+                tgxCam.Position += Speed;
                 
                 PreviousLinkedObjectPosition = LinkedObject.Position;
 
@@ -317,8 +317,6 @@ public class CameraSideScroller : CameraActor2D
 
     public override void SetFirstPosition()
     {
-        TgxCamera2D tgxCamera = Frame.GetComponent<TgxCamera2D>();
-
         Vector2 pos;
 
         if (LinkedObject.Position.X < HorizontalOffset && !LinkedObject.IsFacingLeft)
@@ -356,7 +354,7 @@ public class CameraSideScroller : CameraActor2D
 
         pos.Y = Math.Max(pos.Y - 120, 0);
 
-        tgxCamera.Position = pos;
+        Scene.Playfield.Camera.Position = pos;
         PreviousLinkedObjectPosition = LinkedObject.Position;
     }
 

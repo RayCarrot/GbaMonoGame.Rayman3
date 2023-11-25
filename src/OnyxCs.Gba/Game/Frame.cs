@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OnyxCs.Gba;
+﻿namespace OnyxCs.Gba;
 
 /// <summary>
 /// A frame is the most important object in this engine, determining how the game loop is handled. Only one frame
@@ -11,37 +9,7 @@ public abstract class Frame
     /// <summary>
     /// Gets the currently active frame.
     /// </summary>
-    public static Frame CurrentFrame => FrameManager.CurrentFrame;
-
-    /// <summary>
-    /// Registers a component to the currently active frame. The original game uses global singletons, but
-    /// here we store singleton data as scoped components in the current frame.
-    /// </summary>
-    /// <param name="component"></param>
-    public static void RegisterComponent(object component) => CurrentFrame.Components.Add(component);
-
-    /// <summary>
-    /// Gets a registered component from the currently active frame. The original game uses global singletons,
-    /// but here we store singleton data as scoped components in the current frame.
-    /// </summary>
-    /// <typeparam name="T">The component type. This can be the instance type or any type it inherits from or implements.</typeparam>
-    /// <returns>The component, or null if not found</returns>
-    public static T GetComponent<T>()
-        where T : class
-    {
-        if (CurrentFrame == null)
-            return null;
-
-        foreach (object component in CurrentFrame.Components)
-        {
-            if (component is T c)
-                return c;
-        }
-
-        return null;
-    }
-
-    private HashSet<object> Components { get; } = new();
+    public static Frame Current => FrameManager.CurrentFrame;
 
     /// <summary>
     /// Indicates if the frame is scheduled to end.

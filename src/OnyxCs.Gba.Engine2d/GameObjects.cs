@@ -8,7 +8,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class GameObjects
 {
-    public GameObjects(Scene2DResource sceneResource)
+    public GameObjects(Scene2D scene, Scene2DResource sceneResource)
     {
         ObjectsCount = sceneResource.GameObjectCount;
         AlwaysActorsCount = sceneResource.AlwaysActorsCount;
@@ -20,14 +20,14 @@ public class GameObjects
 
         // Create always actors
         for (int i = 0; i < sceneResource.AlwaysActors.Length; i++)
-            Objects[i] = ObjectFactory.Create(i, sceneResource.AlwaysActors[i]);
+            Objects[i] = ObjectFactory.Create(i, scene, sceneResource.AlwaysActors[i]);
 
         // Create actors
         for (int i = 0; i < sceneResource.Actors.Length; i++)
-            Objects[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, sceneResource.Actors[i]);
+            Objects[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, scene, sceneResource.Actors[i]);
 
         for (int i = 0; i < sceneResource.Captors.Length; i++)
-            Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, sceneResource.Captors[i]);
+            Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, scene, sceneResource.Captors[i]);
 
         Knots = sceneResource.Knots;
 

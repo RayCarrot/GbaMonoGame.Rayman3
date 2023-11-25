@@ -2,9 +2,10 @@
 
 public abstract class GameObject : Object
 {
-    protected GameObject(int id, GameObjectResource gameObjectResource)
+    protected GameObject(int id, Scene2D scene, GameObjectResource gameObjectResource)
     {
         Id = id;
+        Scene = scene;
         Position = gameObjectResource.Pos.ToVector2();
 
         IsEnabled = gameObjectResource.IsEnabled;
@@ -18,6 +19,7 @@ public abstract class GameObject : Object
     }
 
     public int Id { get; }
+    public Scene2D Scene { get; }
     public Vector2 Position { get; set; }
 
     // Flags

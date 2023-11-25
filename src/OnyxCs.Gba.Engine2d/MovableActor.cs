@@ -6,7 +6,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class MovableActor : InteractableActor
 {
-    public MovableActor(int id, ActorResource actorResource) : base(id, actorResource)
+    public MovableActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         MapCollisionType = actorResource.Model.MapCollisionType;
         HasMapCollision = actorResource.Model.HasMapCollision;
@@ -71,7 +71,6 @@ public class MovableActor : InteractableActor
 
     private void CheckMapCollisionExtendedXY()
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
         Box detectionBox = GetDetectionBox();
 
         // The code below is very hard to read in the game's decompiled code, so there might be minor mistakes. Ideally this
@@ -86,7 +85,7 @@ public class MovableActor : InteractableActor
         else
         {
             // Get bottom-center type
-            PhysicalType type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
 
             if (type.IsAngledSolid)
             {
@@ -102,7 +101,7 @@ public class MovableActor : InteractableActor
             }
             else
             {
-                type = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
+                type = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
 
                 if (type.IsFullySolid)
                 {
@@ -129,22 +128,22 @@ public class MovableActor : InteractableActor
                 }
                 else
                 {
-                    type = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+                    type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
 
                     if (type.IsSolid)
                     {
-                        PhysicalType otherType = scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY - Constants.TileSize));
+                        PhysicalType otherType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY - Constants.TileSize));
 
                         if (otherType.IsSolid)
                             type = PhysicalTypeValue.None;
 
                         if (!type.IsSolid)
                         {
-                            type = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+                            type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
 
                             if (type.IsSolid)
                             {
-                                otherType = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY - Constants.TileSize));
+                                otherType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY - Constants.TileSize));
 
                                 if (otherType.IsSolid)
                                     type = PhysicalTypeValue.None;
@@ -153,11 +152,11 @@ public class MovableActor : InteractableActor
                     }
                     else
                     {
-                        type = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+                        type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
 
                         if (type.IsSolid)
                         {
-                            PhysicalType otherType = scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY - Constants.TileSize));
+                            PhysicalType otherType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY - Constants.TileSize));
 
                             if (otherType.IsSolid)
                                 type = PhysicalTypeValue.None;
@@ -181,29 +180,29 @@ public class MovableActor : InteractableActor
         float x = Speed.X > 0 ? detectionBox.MaxX : detectionBox.MinX;
 
         // Get bottom-center type
-        PhysicalType typeX = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
+        PhysicalType typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
 
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
 
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize));
 
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize * 2));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize * 2));
 
         if (typeX.IsAngledSolid)
             return;
 
         if (Speed.Y > 0)
         {
-            typeX = scene.GetPhysicalType(new Vector2(x, detectionBox.MaxY));
+            typeX = Scene.GetPhysicalType(new Vector2(x, detectionBox.MaxY));
             if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
             {
                 if (Speed.X > 0)
@@ -223,7 +222,7 @@ public class MovableActor : InteractableActor
 
         for (float i = detectionBox.MinY; i < detectionBox.MaxY; i += Constants.TileSize)
         {
-            typeX = scene.GetPhysicalType(new Vector2(x, i));
+            typeX = Scene.GetPhysicalType(new Vector2(x, i));
 
             if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
             {
@@ -264,7 +263,7 @@ public class MovableActor : InteractableActor
 
                 Box detectionBox = GetDetectionBox();
 
-                foreach (BaseActor actor in Frame.GetComponent<Scene2D>().GameObjects.EnumerateAllActors(isEnabled: true))
+                foreach (BaseActor actor in Scene.GameObjects.EnumerateAllActors(isEnabled: true))
                 {
                     if (actor != this && actor.ActorFlag_6 && actor is ActionActor actionActor)
                     {

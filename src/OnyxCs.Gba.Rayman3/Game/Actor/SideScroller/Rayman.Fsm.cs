@@ -18,7 +18,7 @@ public partial class Rayman : MovableActor
 
                 Timer = 0;
 
-                CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
+                CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
                 if (GameInfo.MapId == MapId.TheCanopy_M2)
                 {
                     cam.HorizontalOffset = Engine.Settings.Platform switch
@@ -303,7 +303,7 @@ public partial class Rayman : MovableActor
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                 {
-                    CameraSideScroller cam = (CameraSideScroller)Frame.GetComponent<Scene2D>().Camera;
+                    CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
                     switch (Engine.Settings.Platform)
                     {
@@ -562,8 +562,7 @@ public partial class Rayman : MovableActor
 
     private void Fsm_Jump(FsmAction action)
     {
-        Scene2D scene = Frame.GetComponent<Scene2D>();
-        CameraSideScroller cam = (CameraSideScroller)scene.Camera;
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
         switch (action)
         {
@@ -761,13 +760,12 @@ public partial class Rayman : MovableActor
                         ActionId = IsFacingRight ? Action.Crouch_Right : Action.Crouch_Left;
                 }
 
-                Scene2D scene = Frame.GetComponent<Scene2D>();
                 Box detectionBox = GetDetectionBox();
 
-                PhysicalType topType = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
 
                 if (!topType.IsSolid)
-                    topType = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                    topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
                 if (CheckInput(GbaInput.Left) && IsFacingRight)
@@ -862,13 +860,12 @@ public partial class Rayman : MovableActor
                 if (!Inlined_FUN_1004c544())
                     return;
 
-                Scene2D scene = Frame.GetComponent<Scene2D>();
                 Box detectionBox = GetDetectionBox();
 
-                PhysicalType topType = scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
 
                 if (!topType.IsSolid)
-                    topType = scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                    topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
                 if (CheckInput(GbaInput.Left) && IsFacingRight)

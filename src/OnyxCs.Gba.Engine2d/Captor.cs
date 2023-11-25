@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class Captor : GameObject
 {
-    public Captor(int id, CaptorResource captorResource) : base(id, captorResource)
+    public Captor(int id, Scene2D scene, CaptorResource captorResource) : base(id, scene, captorResource)
     {
         TriggerOnMainActorDetection = captorResource.TriggerOnMainActorDetection;
         IsTriggering = captorResource.IsTriggering;
@@ -62,11 +62,11 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
+                    Scene.GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
                     break;
                 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Frame.GetComponent<Scene2D>().GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
+                    Scene.GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
                     break;
             }
 

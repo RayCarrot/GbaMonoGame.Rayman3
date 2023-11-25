@@ -34,7 +34,7 @@ public class Rayman3 : GbaGame
         {
             SetGameZoom(1);
         }
-        else if (Frame.GetComponent<TgxPlayfield2D>() is { } playfield2D)
+        else if (Frame.Current is IHasPlayfield { Playfield: TgxPlayfield2D playfield2D })
         {
             int mouseWheelDelta = JoyPad.GetMouseWheelDelta();
 
@@ -61,7 +61,7 @@ public class Rayman3 : GbaGame
 
     private void UpdateGameScroll()
     {
-        if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed && Frame.GetComponent<TgxPlayfield2D>() is { } playfield2D)
+        if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed && Frame.Current is IHasPlayfield { Playfield: TgxPlayfield2D playfield2D })
             playfield2D.Camera.Position += JoyPad.GetMousePositionDelta() * -1;
     }
 
@@ -77,14 +77,14 @@ public class Rayman3 : GbaGame
 
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
-            { ActorType.Rayman, (id, resource) => new Rayman(id, resource) },
+            { ActorType.Rayman, (id, scene, resource) => new Rayman(id, scene, resource) },
 
-            { ActorType.Piranha, (id, resource) => new Piranha(id, resource) },
-            { ActorType.Splash, (id, resource) => new Splash(id, resource) },
+            { ActorType.Piranha, (id, scene, resource) => new Piranha(id, scene, resource) },
+            { ActorType.Splash, (id, scene, resource) => new Splash(id, scene, resource) },
 
-            { ActorType.Cage, (id, resource) => new Cage(id, resource) },
+            { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
 
-            { ActorType.Butterfly, (id, resource) => new Butterfly(id, resource) },
+            { ActorType.Butterfly, (id, scene, resource) => new Butterfly(id, scene, resource) },
         }, x => ((ActorType)x).ToString());
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {
@@ -107,9 +107,7 @@ public class Rayman3 : GbaGame
         // Toggle showing debug collision screen
         if (JoyPad.CheckSingle(Keys.T))
         {
-            TgxPlayfield2D playfield = Frame.GetComponent<TgxPlayfield2D>();
-
-            if (playfield != null)
+            if (Frame.Current is IHasPlayfield { Playfield: { } playfield })
                 playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
         }
 
