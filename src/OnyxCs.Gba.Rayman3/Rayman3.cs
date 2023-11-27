@@ -16,6 +16,16 @@ public class Rayman3 : GbaGame
 
     #endregion
 
+    #region Private Fields
+
+    private float _scaleLerp;
+    private bool _doScale;
+
+    private bool _doLayers;
+    private int _layersCounter;
+
+    #endregion
+
     #region Private Methods
 
     private void SetGameZoom(float zoom)
@@ -75,6 +85,8 @@ public class Rayman3 : GbaGame
     {
         base.Initialize();
 
+        Window.Title = "Rayman 3 (MonoGame)";
+
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, scene, resource) => new Rayman(id, scene, resource) },
@@ -109,6 +121,90 @@ public class Rayman3 : GbaGame
         {
             if (Frame.Current is IHasPlayfield { Playfield: { } playfield })
                 playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
+        }
+
+        if (JoyPad.CheckSingle(Keys.O))
+        {
+            _scaleLerp = 0;
+            _doScale = true;
+        }
+
+        if (_doScale)
+        {
+            float targetScale = GameInfo.MapId switch
+            {
+                MapId.WoodLight_M1 => 1.25f,
+                MapId.EchoingCaves_M1 => 2f,
+                _ => 1.2f,
+            };
+
+            Engine.ScreenCamera.ResizeGame(new Point(
+                x: (int)MathHelper.Lerp(Engine.ScreenCamera.OriginalGameResolution.X, Engine.ScreenCamera.OriginalGameResolution.X * targetScale, _scaleLerp),
+                y: (int)MathHelper.Lerp(Engine.ScreenCamera.OriginalGameResolution.Y, Engine.ScreenCamera.OriginalGameResolution.Y * targetScale, _scaleLerp)));
+
+            _scaleLerp += 1 / 100f;
+
+            if (_scaleLerp > 1)
+            {
+                _doScale = false;
+            }
+        }
+
+        if (JoyPad.CheckSingle(Keys.L))
+        {
+            _doLayers = true;
+            _layersCounter = 0;
+
+            if (Frame.Current is IHasScene { Scene: { } scene })
+            {
+                foreach (GfxScreen screen in Gfx.GetScreens())
+                    screen.IsEnabled = false;
+
+                scene.Dialogs.Clear();
+                foreach (GameObject obj in scene.GameObjects.Objects)
+                {
+                    obj.IsEnabled = false;
+                }
+            }
+        }
+
+        if (_doLayers)
+        {
+            _layersCounter++;
+
+            switch (_layersCounter)
+            {
+                case 40 * 1:
+                    Gfx.GetScreen(0).IsEnabled = true;
+                    break;
+                case 40 * 2:
+                    Gfx.GetScreen(1).IsEnabled = true;
+                    break;
+                case 40 * 3:
+                    Gfx.GetScreen(2).IsEnabled = true;
+                    break;
+                case 40 * 4:
+                    Gfx.GetScreen(3).IsEnabled = true;
+                    break;
+            }
+
+            if (_layersCounter >= 40 * 5)
+            {
+                if (Frame.Current is IHasScene { Scene: { } scene })
+                {
+                    int objId = (_layersCounter - 40 * 5);
+
+                    if (objId >= scene.GameObjects.Objects.Length)
+                    {
+                        scene.AddDialog(new UserInfoSideScroller(false));
+                        _doLayers = false;
+                    }
+                    else
+                    {
+                        scene.GameObjects.Objects[objId].IsEnabled = true;
+                    }
+                }
+            }
         }
 
         UpdateGameZoom(gameTime);

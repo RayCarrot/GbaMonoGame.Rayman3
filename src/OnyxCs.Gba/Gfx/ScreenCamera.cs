@@ -14,7 +14,7 @@ public class ScreenCamera
         OriginalGameResolution = Engine.Settings.Platform switch
         {
             Platform.GBA => new Point(240, 160),
-            Platform.NGage => new Point(176, 208),
+            Platform.NGage => new Point(240, 160),
             _ => throw new UnsupportedPlatformException(),
         };
         GameResolution = OriginalGameResolution;
@@ -22,6 +22,7 @@ public class ScreenCamera
 
     public Point GameResolution { get; private set; }
     public Point OriginalGameResolution { get; }
+    public Vector2 Scale => GameResolution.ToVector2() / OriginalGameResolution.ToVector2();
     public Rectangle ScreenRectangle { get; private set; }
     public Point ScreenSize { get; private set; }
     public Box VisibleArea { get; private set; }

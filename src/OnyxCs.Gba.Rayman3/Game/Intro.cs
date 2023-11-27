@@ -205,7 +205,7 @@ public class Intro : Frame, IHasPlayfield
         {
             Timer++;
 
-            if (Timer > 60)
+            if (Timer > 500)
             {
                 Timer = 0;
                 CurrentStepAction = Step_2;

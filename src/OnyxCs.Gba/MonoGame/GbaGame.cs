@@ -111,9 +111,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera());
 
         // TODO: Save window size in config, as well as if maximized etc.
-        Point windowSize = new(Engine.ScreenCamera.OriginalGameResolution.X * 4, Engine.ScreenCamera.OriginalGameResolution.Y * 4);
-        Engine.ScreenCamera.ResizeScreen(windowSize);
-        SetWindowSize(windowSize);
+        Point windowSize = new(1920, 1080);
+        Engine.ScreenCamera.ResizeScreen(windowSize, maintainScreenRatio: true, changeScreenSizeCallback: SetWindowSize);
 
         FrameManager.SetNextFrame(CreateInitialFrame());
 

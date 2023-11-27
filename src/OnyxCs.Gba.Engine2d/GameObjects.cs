@@ -54,8 +54,7 @@ public class GameObjects
 
     public IEnumerable<BaseActor> EnumerateActors(bool isEnabled, Knot knot = null)
     {
-        knot ??= CurrentKnot;
-        return knot.ActorIds.Select(x => Objects[x]).Where(x => x.IsEnabled == isEnabled).Cast<BaseActor>();
+        return Objects.Skip(AlwaysActorsCount).Take(ActorsCount).Where(x => x.IsEnabled == isEnabled).Cast<BaseActor>();
     }
 
     public IEnumerable<BaseActor> EnumerateAllActors(bool isEnabled, Knot knot = null)
