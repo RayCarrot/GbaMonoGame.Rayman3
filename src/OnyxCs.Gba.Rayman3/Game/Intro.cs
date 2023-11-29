@@ -178,12 +178,12 @@ public class Intro : Frame, IHasPlayfield
         IsSkipping = false;
         FadeTime = MaxFadeTime;
 
-        SoundManager.Play(Rayman3SoundEvent.Play__179_sadslide);
+        SoundManager.Play(Rayman3SoundEvent.Play__sadslide);
     }
 
     public override void UnInit()
     {
-        SoundManager.Play(Rayman3SoundEvent.Stop__179_sadslide);
+        SoundManager.Play(Rayman3SoundEvent.Stop__sadslide);
     }
 
     public override void Step()
@@ -364,7 +364,7 @@ public class Intro : Frame, IHasPlayfield
             if (BlackLumAndLogoObj.AnimationIndex == 7)
             {
                 BlackLumAndLogoObj.SetCurrentAnimation(8);
-                SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme__After__179_sadslide);
+                SoundManager.Play(Rayman3SoundEvent.Play__raytheme__After__sadslide);
                 CurrentStepAction = Step_6;
             }
             else
@@ -426,7 +426,7 @@ public class Intro : Frame, IHasPlayfield
             }
 
             if (FadeTime == MaxFadeTime)
-                SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme__After__179_sadslide);
+                SoundManager.Play(Rayman3SoundEvent.Play__raytheme__After__sadslide);
 
             if (FadeTime == MaxFadeTime + 1)
                 CurrentStepAction = Step_6;

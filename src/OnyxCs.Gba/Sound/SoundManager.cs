@@ -33,6 +33,7 @@ public static class SoundManager
             else
             {
                 snd = SoundEffect.FromFile($"{song.Value}.wav");
+                snd.Name = song.Value;
                 loadedSounds[song.Value] = snd;
                 _songs[song.Key] = snd;
             }

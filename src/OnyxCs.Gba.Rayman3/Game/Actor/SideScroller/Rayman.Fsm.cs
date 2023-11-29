@@ -101,7 +101,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (PhysicalType == 32)
                         MechSpeedX = 0;
@@ -172,7 +172,7 @@ public partial class Rayman : MovableActor
 
                     NextActionId = null;
 
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                 }
 
                 if (IsSliding)
@@ -181,7 +181,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (NextActionId != null && NextActionId != ActionId)
                     {
@@ -220,7 +220,7 @@ public partial class Rayman : MovableActor
                 // Jump
                 if (CheckSingleInput(GbaInput.A) && Flag2_2)
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
                 }
@@ -229,7 +229,7 @@ public partial class Rayman : MovableActor
                 if (CheckInput(GbaInput.Down))
                 {
                     NextActionId = IsFacingRight ? Action.CrouchDown_Right : Action.CrouchDown_Left;
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_Crouch);
                     return;
                 }
@@ -237,7 +237,7 @@ public partial class Rayman : MovableActor
                 // Fall
                 if (Speed.Y > 1)
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_Fall);
                     return;
                 }
@@ -245,7 +245,7 @@ public partial class Rayman : MovableActor
                 // Walk
                 if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_Walk);
                     return;
                 }
@@ -253,7 +253,7 @@ public partial class Rayman : MovableActor
                 // Punch
                 if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanPunch(2))
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(FUN_0802f5d8);
                     return;
                 }
@@ -261,7 +261,7 @@ public partial class Rayman : MovableActor
                 // Walking off edge
                 if (MechSpeedX != 0 && FUN_0802986c() != 0 && !Flag1_1)
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Position += new Vector2(MechSpeedX < 0 ? -16 : 16, 0);
                     Fsm.ChangeAction(Fsm_Fall);
                     return;
@@ -270,7 +270,7 @@ public partial class Rayman : MovableActor
                 // Standing near edge
                 if (MechSpeedX == 0 && FUN_0802986c() != 0 && !Flag1_1)
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__335_Grimace1_Mix04);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_StandingNearEdge);
                     return;
                 }
@@ -297,7 +297,7 @@ public partial class Rayman : MovableActor
 
             case FsmAction.UnInit:
                 if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left)
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__394_RaySpin_Mix06);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__RaySpin_Mix06);
 
                 if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
                     NextActionId = null;
@@ -340,7 +340,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (PhysicalType == 32)
                         MechSpeedX = 0;
@@ -476,10 +476,10 @@ public partial class Rayman : MovableActor
                         AnimatedObject.FrameIndex is 2 or 10 &&
                         !AnimatedObject.HasExecutedFrame)
                     {
-                        PlaySoundEvent(Rayman3SoundEvent.Play__439_PlumSnd2_Mix03);
+                        PlaySoundEvent(Rayman3SoundEvent.Play__PlumSnd2_Mix03);
                     }
 
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (!MultiplayerManager.IsInMultiplayer)
                     {
@@ -568,12 +568,12 @@ public partial class Rayman : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                 if (ActionId is not (Action.UnknownJump_Right or Action.UnknownJump_Left))
                 {
                     ActionId = IsFacingRight ? Action.Jump_Right : Action.Jump_Left;
-                    PlaySoundEvent(Rayman3SoundEvent.Play__009_OnoJump1__or__253_OnoJump3_Mix01__or__254_OnoJump4_Mix01__or__255_OnoJump5_Mix01__or__256_OnoJump6_Mix01);
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                 }
 
                 NextActionId = null;
@@ -631,7 +631,7 @@ public partial class Rayman : MovableActor
         switch (action)
         {
             case FsmAction.Init:
-                PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
                 ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
                 NextActionId = null;
                 Timer = 0;
@@ -720,7 +720,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
                     
                     if (PhysicalType == 32)
                         MechSpeedX = 0;
@@ -755,7 +755,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (ActionId is not (Action.Crouch_Right or Action.Crouch_Left or Action.CrouchDown_Right or Action.CrouchDown_Left))
                         ActionId = IsFacingRight ? Action.Crouch_Right : Action.Crouch_Left;
@@ -836,7 +836,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (PhysicalType == 32)
                         MechSpeedX = 0;
@@ -892,7 +892,7 @@ public partial class Rayman : MovableActor
                 }
                 else
                 {
-                    PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
+                    PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
 
                     if (ActionId is not (Action.Crawl_Right or Action.Crawl_Left))
                         ActionId = IsFacingRight ? Action.Crawl_Right : Action.Crawl_Left;

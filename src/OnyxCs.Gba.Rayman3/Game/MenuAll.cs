@@ -177,7 +177,7 @@ public class MenuAll : Frame, IHasPlayfield
             SelectedOption = selectedOption;
 
             if (playSound)
-                SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
+                SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
         }
     }
 
@@ -210,7 +210,7 @@ public class MenuAll : Frame, IHasPlayfield
         {
             case Page.SelectLanguage:
                 CurrentStepAction = Step_SelectLanguage;
-                SoundManager.Play(Rayman3SoundEvent.Play__171_Switch1_Mix03);
+                SoundManager.Play(Rayman3SoundEvent.Play__Switch1_Mix03);
                 break;
 
             case Page.SelectGameMode:
@@ -230,10 +230,10 @@ public class MenuAll : Frame, IHasPlayfield
                 break;
         }
 
-        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__152_raytheme) &&
-            !SoundManager.IsPlaying(Rayman3SoundEvent.Play__179_sadslide))
+        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__raytheme) &&
+            !SoundManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
         {
-            SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme);
+            SoundManager.Play(Rayman3SoundEvent.Play__raytheme);
         }
 
         // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
@@ -253,7 +253,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
-        SoundManager.Play(Rayman3SoundEvent.Stop__152_raytheme);
+        SoundManager.Play(Rayman3SoundEvent.Stop__raytheme);
     }
 
     public override void Step()
@@ -325,7 +325,7 @@ public class MenuAll : Frame, IHasPlayfield
             Data.LanguageList.SetCurrentAnimation(SelectedOption);
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
-            SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
+            SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.Down))
         {
@@ -337,14 +337,14 @@ public class MenuAll : Frame, IHasPlayfield
             Data.LanguageList.SetCurrentAnimation(SelectedOption);
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
-            SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
+            SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
             CurrentStepAction = Step_TransitionFromLanguage;
 
-            SoundManager.Play(Rayman3SoundEvent.Play__269_Valid01_Mix01);
-            SoundManager.Play(Rayman3SoundEvent.Play__171_Switch1_Mix03);
+            SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+            SoundManager.Play(Rayman3SoundEvent.Play__Switch1_Mix03);
 
             Localization.Language = SelectedOption;
 
@@ -429,10 +429,10 @@ public class MenuAll : Frame, IHasPlayfield
             }
 
             CurrentStepAction = Step_TransitionOutOfSelectGameMode;
-            SoundManager.Play(Rayman3SoundEvent.Play__458_Store01_Mix01);
+            SoundManager.Play(Rayman3SoundEvent.Play__Store01_Mix01);
             SelectOption(0, false);
             ScreenOutTransitionYOffset = 0;
-            SoundManager.Play(Rayman3SoundEvent.Play__269_Valid01_Mix01);
+            SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
             TransitionOutCursorAndStem();
         }
 
