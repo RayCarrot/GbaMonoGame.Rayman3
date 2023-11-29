@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 
@@ -381,10 +382,10 @@ public class MenuAll : Frame, IHasPlayfield
             }
 
             CurrentStepAction = Step_TransitionOutOfSelectGameMode;
-            SoundManager.Play(403, -1);
+            SoundManager.Play(Rayman3SoundEvent.Play__458_Store01_Mix01);
             SelectOption(0, false);
             ScreenOutTransitionYOffset = 0;
-            SoundManager.Play(309, -1);
+            SoundManager.Play(Rayman3SoundEvent.Play__269_Valid01_Mix01);
             TransitionOutCursorAndStem();
         }
 

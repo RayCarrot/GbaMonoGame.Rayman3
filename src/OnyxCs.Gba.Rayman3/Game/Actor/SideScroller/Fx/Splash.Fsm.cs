@@ -1,4 +1,5 @@
-﻿using OnyxCs.Gba.Engine2d;
+﻿using BinarySerializer.Onyx.Gba.Rayman3;
+using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -16,8 +17,8 @@ public partial class Splash : BaseActor
             case FsmAction.Step:
                 if (ActionId == 1)
                 {
-                    if (!SoundManager.IsPlaying(124))
-                        SoundManager.Play(124, -1);
+                    if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__484_SplshGen_Mix04))
+                        SoundManager.Play(Rayman3SoundEvent.Play__484_SplshGen_Mix04);
 
                     ActionId = 0;
                 }

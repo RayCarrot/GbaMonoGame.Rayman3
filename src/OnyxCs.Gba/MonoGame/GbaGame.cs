@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,9 +12,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 {
     #region Constructor
 
-    protected GbaGame(Game game)
+    protected GbaGame()
     {
-        _game = game;
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
 
@@ -24,7 +23,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
-        // Force frame-rate to 60
+        // Force frame-rate to 60. The GBA framerate is actually 59.727500569606, but we do 60.
         SetFramerate(60);
     }
 
@@ -32,13 +31,20 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     #region Private Fields
 
-    private readonly Game _game;
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
 
     private SpriteBatch _spriteBatch;
     private GfxRenderer _gfxRenderer;
     private GameRenderTarget _debugGameRenderTarget;
+
+    #endregion
+
+    #region Protected Properties
+
+    protected abstract Game Game { get; }
+    protected abstract int SoundBankResourceId { get; }
+    protected abstract Dictionary<int, string> SongTable { get; }
 
     #endregion
 
@@ -106,9 +112,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     protected override void Initialize()
     {
         Engine.LoadConfig(Environment.GetCommandLineArgs().FirstOrDefault(x => x.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)));
-        Engine.LoadRom(Engine.Config.RomFile, Engine.Config.SerializerLogFile, _game);
+        Engine.LoadRom(Engine.Config.RomFile, Engine.Config.SerializerLogFile, Game);
 
         Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera());
+
+        SoundManager.Init(SoundBankResourceId, SongTable);
 
         // TODO: Save window size in config, as well as if maximized etc.
         Point windowSize = new(Engine.ScreenCamera.OriginalGameResolution.X * 4, Engine.ScreenCamera.OriginalGameResolution.Y * 4);

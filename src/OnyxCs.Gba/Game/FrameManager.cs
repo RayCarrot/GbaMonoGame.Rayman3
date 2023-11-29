@@ -39,6 +39,9 @@ public static class FrameManager
         // For us this however makes more sense, so we always start each frame fresh.
         Gfx.ClearSprites();
 
+        // Step the sound manager
+        SoundManager.Step();
+
         // Step the currently active frame
         CurrentFrame?.Step();
         

@@ -215,7 +215,7 @@ public class AnimatedObject : AObject
         StepTimer();
     }
 
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<int> soundEventCallback)
+    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
     {
         Animation anim = GetAnimation();
 

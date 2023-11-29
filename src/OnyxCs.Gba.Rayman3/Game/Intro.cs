@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 using Action = System.Action;
@@ -179,12 +180,12 @@ public class Intro : Frame, IHasPlayfield
         IsSkipping = false;
         FadeTime = MaxFadeTime;
 
-        SoundManager.Play(221, -1);
+        SoundManager.Play(Rayman3SoundEvent.Play__179_sadslide);
     }
 
     public override void UnInit()
     {
-        SoundManager.Play(222, -1);
+        SoundManager.Play(Rayman3SoundEvent.Stop__179_sadslide);
     }
 
     public override void Step()
@@ -365,7 +366,7 @@ public class Intro : Frame, IHasPlayfield
             if (BlackLumAndLogoObj.AnimationIndex == 7)
             {
                 BlackLumAndLogoObj.SetCurrentAnimation(8);
-                SoundManager.Play(385, -1);
+                SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme__After__179_sadslide);
                 CurrentStepAction = Step_6;
             }
             else
@@ -427,7 +428,7 @@ public class Intro : Frame, IHasPlayfield
             }
 
             if (FadeTime == MaxFadeTime)
-                SoundManager.Play(385, -1);
+                SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme__After__179_sadslide);
 
             if (FadeTime == MaxFadeTime + 1)
                 CurrentStepAction = Step_6;

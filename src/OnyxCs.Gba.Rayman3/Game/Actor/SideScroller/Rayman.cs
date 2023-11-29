@@ -1,6 +1,7 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Onyx.Gba.Rayman3;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.Engine2d;
@@ -124,15 +125,16 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private void PlaySound(int id)
+    private void PlaySoundEvent(Rayman3SoundEvent soundEventId)
     {
         if (Scene.Camera.LinkedObject == this)
-            SoundManager.Play(id, -1);
+            SoundManager.Play(soundEventId);
     }
 
     private bool IsBossFight()
     {
-        if (SoundManager.IsPlaying(194))
+        // This condition is probably a leftover from earlier versions of the game
+        if (SoundManager.IsPlaying(Rayman3SoundEvent.Play__151_lyfree))
             return false;
 
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
@@ -158,10 +160,7 @@ public sealed partial class Rayman : MovableActor
         else if (type.Value is not (PhysicalTypeValue.SlipperyAngle30Right1 or PhysicalTypeValue.SlipperyAngle30Right2 or PhysicalTypeValue.SlipperyAngle30Left2 or PhysicalTypeValue.SlipperyAngle30Left1))
         {
             PhysicalType = 32;
-
-            if (Scene.Camera.LinkedObject == this)
-                SoundManager.Play(208, -1);
-
+            PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
             return;
         }
 
@@ -348,10 +347,10 @@ public sealed partial class Rayman : MovableActor
 
     private void SlidingOnSlippery()
     {
-        if (!SoundManager.IsPlaying(181) && Scene.Camera.LinkedObject == this)
-            SoundManager.Play(181, -1);
+        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__141_SkiLoop1) && Scene.Camera.LinkedObject == this)
+            SoundManager.Play(Rayman3SoundEvent.Play__141_SkiLoop1);
 
-        SoundManager.FUN_080ac468(181, Math.Abs(Speed.X));
+        SoundManager.FUN_080ac468(Rayman3SoundEvent.Play__141_SkiLoop1, Math.Abs(Speed.X));
 
         if (MechSpeedX < -1.5f)
         {
@@ -468,7 +467,7 @@ public sealed partial class Rayman : MovableActor
         }
         else if (FUN_0802a0f8())
         {
-            PlaySound(208);
+            PlaySoundEvent(Rayman3SoundEvent.Stop__141_SkiLoop1);
 
             Fsm.ChangeAction(FUN_0802cb38);
             return false;

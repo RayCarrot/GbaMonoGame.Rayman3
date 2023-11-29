@@ -20,9 +20,9 @@ public class AnimationPlayer
 
     public bool Is8Bit { get; }
 
-    private void SoundEventRequest(int soundId)
+    private void SoundEventRequest(ushort soundId)
     {
-        SoundManager.Play(soundId, -1);
+        SoundManager.Play(soundId);
     }
 
     public void AddPrimaryObject(AObject obj)

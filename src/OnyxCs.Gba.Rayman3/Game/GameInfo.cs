@@ -15,6 +15,7 @@ public static class GameInfo
     public static CheatFlags Cheats { get; set; }
 
     public static LevelInfo Level => Levels[(int)MapId];
+    public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
 
     public static void SetNextMapId(MapId mapId)
     {
@@ -25,5 +26,13 @@ public static class GameInfo
 
     }
 
-    public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
+    public static void PlayLevelMusic()
+    {
+        SoundManager.Play(Level.StartMusicSoundEvent);
+    }
+
+    public static void StopLevelMusic()
+    {
+        SoundManager.Play(Level.StopMusicSoundEvent);
+    }
 }

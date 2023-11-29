@@ -31,6 +31,14 @@
     <ProjectReference Include="..\OnyxCs.Gba.TgxEngine\OnyxCs.Gba.TgxEngine.csproj" />
     <ProjectReference Include="..\OnyxCs.Gba\OnyxCs.Gba.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Music\*.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sfx\*.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
     <Exec Command="dotnet tool restore" />

@@ -44,7 +44,13 @@ public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         // TODO: More setup...
         Scene.Init();
         // TODO: More setup...
+        GameInfo.PlayLevelMusic();
         CurrentStepAction = Step_Normal;
+    }
+    
+    public override void UnInit()
+    {
+        GameInfo.StopLevelMusic();
     }
 
     public override void Step()
