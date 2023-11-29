@@ -41,13 +41,16 @@ public static class SoundManager
 
     internal static void Step()
     {
-        foreach (PlayingSong playingSong in _playingSongs)
+        foreach (PlayingSong playingSong in _playingSongs.ToArray())
         {
-            if (playingSong.SoundInstance.State == SoundState.Stopped && playingSong.NextSoundEventId != null)
-                Play(playingSong.NextSoundEventId.Value, playingSong.Obj);
-        }
+            if (playingSong.SoundInstance.State == SoundState.Stopped)
+            {
+                _playingSongs.Remove(playingSong);
 
-        _playingSongs.RemoveAll(x => x.SoundInstance.State == SoundState.Stopped);
+                if (playingSong.NextSoundEventId != null)
+                    Play(playingSong.NextSoundEventId.Value, playingSong.Obj);
+            }
+        }
     }
 
     private static void Stop(ushort soundEventId, ushort? nextEventId, uint fadeOut, object obj)
