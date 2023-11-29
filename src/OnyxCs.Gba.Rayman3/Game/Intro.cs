@@ -50,9 +50,7 @@ public class Intro : Frame, IHasPlayfield
             Platform.NGage => MenuAll.Page.NGage,
             _ => throw new UnsupportedPlatformException(),
         });
-        // TODO: Create GameInfo
-        // TODO: Load GameInfo
-        // TODO: Load data
+        Menu.LoadGameInfo();
     }
 
     private void LoadAnimations()

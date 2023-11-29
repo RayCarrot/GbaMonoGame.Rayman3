@@ -35,7 +35,7 @@ public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     {
         GameInfo.LoadedYellowLums = 0;
         GameInfo.GreenLums = 0;
-        GameInfo.MapId = GameInfo.NextMapId;
+        GameInfo.MapId = GameInfo.NextMapId ?? throw new Exception("No map id set");
         // TODO: More setup...
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);

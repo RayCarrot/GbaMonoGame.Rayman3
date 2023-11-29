@@ -2,9 +2,10 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Set default values for this and PersistentInfo
 public static class GameInfo
 {
-    public static MapId NextMapId { get; set; }
+    public static MapId? NextMapId { get; set; }
     public static MapId MapId { get; set; }
     public static int World { get; set; }
     public static int LoadedYellowLums { get; set; }

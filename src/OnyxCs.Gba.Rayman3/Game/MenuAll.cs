@@ -35,8 +35,11 @@ public class MenuAll : Frame, IHasPlayfield
     private int OtherGameLogoValue { get; set; }
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
+    
+    private int InitGameTime { get; set; }
 
-    public Page InitialPage { get; set; }
+    private bool HasLoadedGameInfo { get; set; }
+    private Page InitialPage { get; set; }
 
     #endregion
 
@@ -174,18 +177,28 @@ public class MenuAll : Frame, IHasPlayfield
             SelectedOption = selectedOption;
 
             if (playSound)
-            {
-                // TODO: Play sound
-            }
+                SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
         }
     }
 
     #endregion
 
-    #region Public Override Methods
+    #region Public Methods
+
+    public void LoadGameInfo()
+    {
+        if (HasLoadedGameInfo)
+            return;
+
+        HasLoadedGameInfo = true;
+
+        // TODO: Load save slots
+    }
 
     public override void Init()
     {
+        LoadGameInfo();
+
         AnimationPlayer = new AnimationPlayer(false);
 
         Data = new MenuData();
@@ -197,6 +210,7 @@ public class MenuAll : Frame, IHasPlayfield
         {
             case Page.SelectLanguage:
                 CurrentStepAction = Step_SelectLanguage;
+                SoundManager.Play(Rayman3SoundEvent.Play__171_Switch1_Mix03);
                 break;
 
             case Page.SelectGameMode:
@@ -216,7 +230,30 @@ public class MenuAll : Frame, IHasPlayfield
                 break;
         }
 
+        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__152_raytheme) &&
+            !SoundManager.IsPlaying(Rayman3SoundEvent.Play__179_sadslide))
+        {
+            SoundManager.Play(Rayman3SoundEvent.Play__152_raytheme);
+        }
+
+        // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
+
+        InitGameTime = GameTime.ElapsedFrames;
+
+        // TODO: MultiplayerInfo::Ctor();
+        // TODO: MultiplayerManager::Ctor();
+
+        GameTime.IsPaused = false;
+
+        // TODO: TransitionsFX::Ctor();
+        // TODO: TransitionsFX::FadeInInit(1);
+
         SteamTimer = 0;
+    }
+
+    public override void UnInit()
+    {
+        SoundManager.Play(Rayman3SoundEvent.Stop__152_raytheme);
     }
 
     public override void Step()
@@ -286,6 +323,9 @@ public class MenuAll : Frame, IHasPlayfield
                 SelectedOption--;
 
             Data.LanguageList.SetCurrentAnimation(SelectedOption);
+
+            // TODO: Game passes in 0 as obj here, but that's probably a mistake
+            SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.Down))
         {
@@ -295,10 +335,17 @@ public class MenuAll : Frame, IHasPlayfield
                 SelectedOption++;
             
             Data.LanguageList.SetCurrentAnimation(SelectedOption);
+
+            // TODO: Game passes in 0 as obj here, but that's probably a mistake
+            SoundManager.Play(Rayman3SoundEvent.Play__061_MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
             CurrentStepAction = Step_TransitionFromLanguage;
+
+            SoundManager.Play(Rayman3SoundEvent.Play__269_Valid01_Mix01);
+            SoundManager.Play(Rayman3SoundEvent.Play__171_Switch1_Mix03);
+
             Localization.Language = SelectedOption;
 
             ScreenOutTransitionYOffset = 0;
