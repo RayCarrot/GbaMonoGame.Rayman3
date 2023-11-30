@@ -99,9 +99,26 @@ public static class FontManager
 
     internal static void Load(Font font8, Font font16, Font font32)
     {
-        Font8 = new LoadedFont(font8, CreateFontTexture(font8, Color.Black, Color.Transparent), GetFontCharacterRectangles(font8));
-        Font16 = new LoadedFont(font16, CreateFontTexture(font16, Color.Black, Color.Transparent), GetFontCharacterRectangles(font16));
-        Font32 = new LoadedFont(font32, CreateFontTexture(font32, Color.Black, Color.Transparent), GetFontCharacterRectangles(font32));
+        Font8 = new LoadedFont(font8, CreateFontTexture(font8, Color.White, Color.Transparent), GetFontCharacterRectangles(font8));
+        Font16 = new LoadedFont(font16, CreateFontTexture(font16, Color.White, Color.Transparent), GetFontCharacterRectangles(font16));
+        Font32 = new LoadedFont(font32, CreateFontTexture(font32, Color.White, Color.Transparent), GetFontCharacterRectangles(font32));
+    }
+
+    public static Sprite GetCharacterSprite(char c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color)
+    {
+        LoadedFont font = fontSize switch
+        {
+            FontSize.Font8 => Font8,
+            FontSize.Font16 => Font16,
+            FontSize.Font32 => Font32,
+            _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
+        };
+
+        Sprite sprite = new(font.Texture, font.CharacterRectangles[c], position, false, false, priority, affineMatrix, color);
+
+        position += new Vector2(font.Font.CharacterWidths[c], 0);
+
+        return sprite;
     }
 
     private record LoadedFont(Font Font, Texture2D Texture, Rectangle[] CharacterRectangles);

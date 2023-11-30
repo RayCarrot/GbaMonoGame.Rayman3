@@ -65,20 +65,18 @@ public class Intro : Frame, IHasPlayfield
                 Platform.GBA => new Vector2(120, 150),
                 Platform.NGage => new Vector2(88, 150),
                 _ => throw new UnsupportedPlatformException(),
-            }
+            },
+            CurrentAnimation = 9 + Localization.LanguageUiIndex
         };
-
-        PressStartObj.SetCurrentAnimation(9 + Localization.LanguageUiIndex);
 
         if (Engine.Settings.Platform == Platform.NGage)
         {
             GameloftLogoObj = new AnimatedObject(introAnimResource, false)
             {
                 Priority = 0,
-                ScreenPos = new Vector2(88, 208)
+                ScreenPos = new Vector2(88, 208),
+                CurrentAnimation = 23
             };
-
-            GameloftLogoObj.SetCurrentAnimation(23);
         }
 
         BlackLumAndLogoObj = new AnimatedObject(introAnimResource, false)
@@ -89,10 +87,9 @@ public class Intro : Frame, IHasPlayfield
                 Platform.GBA => new Vector2(120, 128),
                 Platform.NGage => new Vector2(88, 128),
                 _ => throw new UnsupportedPlatformException(),
-            }
+            },
+            CurrentAnimation = 0
         };
-
-        BlackLumAndLogoObj.SetCurrentAnimation(0);
     }
 
     private void LoadPlayfield()
@@ -302,9 +299,9 @@ public class Intro : Frame, IHasPlayfield
         {
             if (BlackLumAndLogoObj.EndOfAnimation)
             {
-                if (BlackLumAndLogoObj.AnimationIndex < 4)
+                if (BlackLumAndLogoObj.CurrentAnimation < 4)
                 {
-                    BlackLumAndLogoObj.SetCurrentAnimation(BlackLumAndLogoObj.AnimationIndex + 1);
+                    BlackLumAndLogoObj.CurrentAnimation++;
                     BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
                     {
                         Platform.GBA => new Vector2(120, 128),
@@ -314,7 +311,7 @@ public class Intro : Frame, IHasPlayfield
                 }
                 else
                 {
-                    BlackLumAndLogoObj.SetCurrentAnimation(6);
+                    BlackLumAndLogoObj.CurrentAnimation = 6;
                     BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
                     {
                         Platform.GBA => new Vector2(120, 70),
@@ -324,7 +321,7 @@ public class Intro : Frame, IHasPlayfield
                 }
             }
 
-            if (BlackLumAndLogoObj.AnimationIndex < 5)
+            if (BlackLumAndLogoObj.CurrentAnimation < 5)
             {
                 if ((Timer & 1) != 0)
                 {
@@ -361,15 +358,15 @@ public class Intro : Frame, IHasPlayfield
     {
         if (BlackLumAndLogoObj.EndOfAnimation)
         {
-            if (BlackLumAndLogoObj.AnimationIndex == 7)
+            if (BlackLumAndLogoObj.CurrentAnimation == 7)
             {
-                BlackLumAndLogoObj.SetCurrentAnimation(8);
+                BlackLumAndLogoObj.CurrentAnimation = 8;
                 SoundManager.Play(Rayman3SoundEvent.Play__raytheme__After__sadslide);
                 CurrentStepAction = Step_6;
             }
             else
             {
-                BlackLumAndLogoObj.SetCurrentAnimation(BlackLumAndLogoObj.AnimationIndex + 1);
+                BlackLumAndLogoObj.CurrentAnimation++;
             }
         }
 
@@ -397,7 +394,7 @@ public class Intro : Frame, IHasPlayfield
 
         if (SkippedTimer == 10)
         {
-            BlackLumAndLogoObj.SetCurrentAnimation(8);
+            BlackLumAndLogoObj.CurrentAnimation = 8;
             BlackLumAndLogoObj.SetCurrentFrame(5);
             BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
             {

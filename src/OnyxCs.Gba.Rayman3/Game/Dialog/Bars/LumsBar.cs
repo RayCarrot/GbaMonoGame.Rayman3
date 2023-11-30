@@ -20,11 +20,11 @@ public class LumsBar : Bar
         TotalLumsDigit1 = new AnimatedObject(resource, false);
         TotalLumsDigit2 = new AnimatedObject(resource, false);
 
-        LumsIcon.SetCurrentAnimation(24);
-        CollectedLumsDigit1.SetCurrentAnimation(0);
-        CollectedLumsDigit2.SetCurrentAnimation(0);
-        TotalLumsDigit1.SetCurrentAnimation(0);
-        TotalLumsDigit2.SetCurrentAnimation(0);
+        LumsIcon.CurrentAnimation = 24;
+            CollectedLumsDigit1.CurrentAnimation = 0;
+        CollectedLumsDigit2.CurrentAnimation = 0;
+        TotalLumsDigit1.CurrentAnimation = 0;
+        TotalLumsDigit2.CurrentAnimation = 0;
 
         LumsIcon.ScreenPos = new Vector2(77, 8);
         LumsIcon.Anchor |= ScreenAnchor.Right;
@@ -44,13 +44,13 @@ public class LumsBar : Bar
 
     public override void Load()
     {
-        TotalLumsDigit1.SetCurrentAnimation(GameInfo.Level.LumsCount / 10);
-        TotalLumsDigit2.SetCurrentAnimation(GameInfo.Level.LumsCount % 10);
+        TotalLumsDigit1.CurrentAnimation = GameInfo.Level.LumsCount / 10;
+        TotalLumsDigit2.CurrentAnimation = GameInfo.Level.LumsCount % 10;
 
-        CollectedLumsDigit1.SetCurrentAnimation(0);
-        CollectedLumsDigit2.SetCurrentAnimation(0);
+        CollectedLumsDigit1.CurrentAnimation = 0;
+        CollectedLumsDigit2.CurrentAnimation = 0;
 
-        LumsIcon.SetCurrentAnimation(24);
+        LumsIcon.CurrentAnimation = 24;
     }
 
     public override void Draw(AnimationPlayer animationPlayer)

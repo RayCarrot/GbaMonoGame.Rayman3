@@ -16,9 +16,9 @@ public class CagesBar : Bar
         CollectedCagesDigit = new AnimatedObject(resource, false);
         TotalCagesDigit = new AnimatedObject(resource, false);
 
-        CageIcon.SetCurrentAnimation(22);
-        CollectedCagesDigit.SetCurrentAnimation(0);
-        TotalCagesDigit.SetCurrentAnimation(0);
+        CageIcon.CurrentAnimation = 22;
+        CollectedCagesDigit.CurrentAnimation = 0;
+        TotalCagesDigit.CurrentAnimation = 0;
 
         CageIcon.ScreenPos = new Vector2(44, 41);
         CageIcon.Anchor |= ScreenAnchor.Right;
@@ -32,8 +32,8 @@ public class CagesBar : Bar
 
     public override void Load()
     {
-        TotalCagesDigit.SetCurrentAnimation(GameInfo.Level.CagesCount);
-        CollectedCagesDigit.SetCurrentAnimation(0);
+        TotalCagesDigit.CurrentAnimation = GameInfo.Level.CagesCount;
+        CollectedCagesDigit.CurrentAnimation = 0;
     }
 
     public override void Draw(AnimationPlayer animationPlayer)

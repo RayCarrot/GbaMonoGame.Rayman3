@@ -7,9 +7,12 @@ namespace OnyxCs.Gba;
 public class Sprite
 {
     public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix) { }
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, null) { }
 
-    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix)
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, Color? color) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, color) { }
+
+    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, Color? color)
     {
         Texture = texture;
         TextureRectangle = textureRectangle;
@@ -74,6 +77,7 @@ public class Sprite
 
         Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
         Origin = new Vector2(Texture.Width / 2f, Texture.Height / 2f);
+        Color = color ?? Color.White;
     }
 
     public Texture2D Texture { get; }
@@ -87,9 +91,10 @@ public class Sprite
     public Vector2 Origin { get; }
     public Vector2 Scale { get; }
     public SpriteEffects Effects { get; }
+    public Color Color { get; }
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects);
+        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, Color);
     }
 }

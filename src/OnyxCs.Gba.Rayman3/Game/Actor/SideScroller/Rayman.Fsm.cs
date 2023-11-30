@@ -473,7 +473,7 @@ public partial class Rayman : MovableActor
                         ActionId is
                             Action.Walk_Right or Action.Walk_Left or
                             Action.Walk_LookAround_Right or Action.Walk_LookAround_Left &&
-                        AnimatedObject.FrameIndex is 2 or 10 &&
+                        AnimatedObject.CurrentFrame is 2 or 10 &&
                         !AnimatedObject.HasExecutedFrame)
                     {
                         PlaySoundEvent(Rayman3SoundEvent.Play__PlumSnd2_Mix03);

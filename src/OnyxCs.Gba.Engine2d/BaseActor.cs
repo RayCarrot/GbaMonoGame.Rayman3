@@ -18,9 +18,11 @@ public class BaseActor : GameObject
         Type = actorResource.Type;
         ActorFlag_C = true;
 
-        AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic);
-        AnimatedObject.SetCurrentAnimation(0);
-        AnimatedObject.Priority = ActorDrawPriority;
+        AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)
+        {
+            CurrentAnimation = 0,
+            Priority = ActorDrawPriority
+        };
 
         _viewBox = new Box(ActorModel.ViewBox);
     }

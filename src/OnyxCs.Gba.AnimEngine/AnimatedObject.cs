@@ -29,6 +29,7 @@ public class AnimatedObject : AObject
     #region Private Fields
 
     private Vector2 _screenPos;
+    private int _currentAnimation;
 
     #endregion
 
@@ -64,10 +65,23 @@ public class AnimatedObject : AObject
 
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
-    public int Priority { get; set; } // TODO: Set this to 1 for actors
+    public int Priority { get; set; }
 
-    public int AnimationIndex { get; private set; }
-    public int FrameIndex { get; private set; }
+    public int CurrentAnimation
+    {
+        get => _currentAnimation;
+        set
+        {
+            _currentAnimation = value;
+            CurrentFrame = 0;
+            ChannelIndex = 0;
+            Timer = GetAnimation().Speed;
+            EndOfAnimation = false;
+            HasExecutedFrame = false;
+        }
+    }
+    public int CurrentFrame { get; private set; }
+
     public int ChannelIndex { get; set; }
     public int Timer { get; set; }
 
@@ -83,7 +97,7 @@ public class AnimatedObject : AObject
     {
         Animation anim = GetAnimation();
 
-        for (int i = 0; i < anim.ChannelsPerFrame[FrameIndex]; i++)
+        for (int i = 0; i < anim.ChannelsPerFrame[CurrentFrame]; i++)
             yield return anim.Channels[i + ChannelIndex];
     }
 
@@ -121,7 +135,7 @@ public class AnimatedObject : AObject
             if (Timer != 0)
                 HasExecutedFrame = true;
 
-            if (FrameIndex >= anim.FramesCount)
+            if (CurrentFrame >= anim.FramesCount)
                 EndOfAnimation = true;
 
             return;
@@ -129,23 +143,23 @@ public class AnimatedObject : AObject
 
         if (Timer == 0)
         {
-            ChannelIndex += anim.ChannelsPerFrame[FrameIndex];
-            FrameIndex++;
+            ChannelIndex += anim.ChannelsPerFrame[CurrentFrame];
+            CurrentFrame++;
             Timer = anim.Speed;
             HasExecutedFrame = false;
 
-            if (FrameIndex < anim.FramesCount)
+            if (CurrentFrame < anim.FramesCount)
                 return;
 
             if (anim.DoNotRepeat)
             {
-                FrameIndex--;
-                ChannelIndex -= anim.ChannelsPerFrame[FrameIndex];
+                CurrentFrame--;
+                ChannelIndex -= anim.ChannelsPerFrame[CurrentFrame];
                 HasExecutedFrame = true;
             }
             else
             {
-                FrameIndex = 0;
+                CurrentFrame = 0;
                 ChannelIndex = 0;
                 HasExecutedFrame = false;
             }
@@ -163,44 +177,34 @@ public class AnimatedObject : AObject
 
     #region Public Methods
 
-    public Animation GetAnimation() => Resource.Animations[AnimationIndex];
-
-    public void SetCurrentAnimation(int animation)
-    {
-        AnimationIndex = animation;
-        FrameIndex = 0;
-        ChannelIndex = 0;
-        Timer = GetAnimation().Speed;
-        EndOfAnimation = false;
-        HasExecutedFrame = false;
-    }
+    public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
 
     public void SetCurrentFrame(int frame)
     {
         Animation anim = GetAnimation();
 
-        if (frame != FrameIndex)
+        if (frame != CurrentFrame)
         {
             if (frame == 0)
             {
                 ChannelIndex = 0;
             }
-            else if (frame > FrameIndex)
+            else if (frame > CurrentFrame)
             {
-                int framesDiff = frame - FrameIndex;
+                int framesDiff = frame - CurrentFrame;
 
                 for (int i = 0; i < framesDiff; i++)
-                    ChannelIndex += anim.ChannelsPerFrame[FrameIndex + i];
+                    ChannelIndex += anim.ChannelsPerFrame[CurrentFrame + i];
             }
             else
             {
-                int framesDiff = FrameIndex - frame;
+                int framesDiff = CurrentFrame - frame;
 
                 for (int i = 0; i < framesDiff; i++)
-                    ChannelIndex += anim.ChannelsPerFrame[FrameIndex - i - 1];
+                    ChannelIndex += anim.ChannelsPerFrame[CurrentFrame - i - 1];
             }
 
-            FrameIndex = frame;
+            CurrentFrame = frame;
         }
 
         Timer = anim.Speed;

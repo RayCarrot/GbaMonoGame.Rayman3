@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer;
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.AnimEngine;
@@ -42,6 +43,8 @@ public class MenuAll : Frame, IHasPlayfield
 
     private bool HasLoadedGameInfo { get; set; }
     private Page InitialPage { get; set; }
+
+    private bool[] SlotsCreated { get; } = new bool[3];
 
     #endregion
 
@@ -90,7 +93,7 @@ public class MenuAll : Frame, IHasPlayfield
     private void ResetStem()
     {
         StemMode = 1;
-        Data.Stem.SetCurrentAnimation(12);
+        Data.Stem.CurrentAnimation = 12;
     }
 
     private void ManageCursorAndStem()
@@ -101,13 +104,13 @@ public class MenuAll : Frame, IHasPlayfield
         }
         else if (StemMode == 1)
         {
-            if (Data.Stem.AnimationIndex == 12 && Data.Stem.EndOfAnimation)
+            if (Data.Stem.CurrentAnimation == 12 && Data.Stem.EndOfAnimation)
             {
-                Data.Stem.SetCurrentAnimation(17);
+                Data.Stem.CurrentAnimation = 17;
             }
-            else if (Data.Stem.AnimationIndex == 17 && Data.Stem.EndOfAnimation)
+            else if (Data.Stem.CurrentAnimation == 17 && Data.Stem.EndOfAnimation)
             {
-                Data.Stem.SetCurrentAnimation(1);
+                Data.Stem.CurrentAnimation = 1;
                 StemMode = 2;
             }
         }
@@ -151,7 +154,7 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.AddSecondaryObject(Data.Stem);
 
         // The cursor is usually included in the stem animation, except for animation 1
-        if (Data.Stem.AnimationIndex == 1)
+        if (Data.Stem.CurrentAnimation == 1)
             AnimationPlayer.AddSecondaryObject(Data.Cursor);
     }
 
@@ -165,10 +168,10 @@ public class MenuAll : Frame, IHasPlayfield
 
         StemMode = 0;
 
-        Data.Stem.SetCurrentAnimation(1);
+        Data.Stem.CurrentAnimation = 1;
 
-        if (Data.Cursor.ScreenPos.Y < 68 && Data.Cursor.AnimationIndex != 16)
-            Data.Cursor.SetCurrentAnimation(15);
+        if (Data.Cursor.ScreenPos.Y < 68 && Data.Cursor.CurrentAnimation != 16)
+            Data.Cursor.CurrentAnimation = 15;
     }
 
     private void SelectOption(int selectedOption, bool playSound)
@@ -302,7 +305,7 @@ public class MenuAll : Frame, IHasPlayfield
             else
             {
                 SteamTimer = Random.Shared.Next(60, 240);
-                Data.Steam.SetCurrentAnimation(Random.Shared.Next(200) < 100 ? 0 : 1);
+                Data.Steam.CurrentAnimation = Random.Shared.Next(200) < 100 ? 0 : 1;
             }
         }
         else
@@ -324,7 +327,7 @@ public class MenuAll : Frame, IHasPlayfield
             else
                 SelectedOption--;
 
-            Data.LanguageList.SetCurrentAnimation(SelectedOption);
+            Data.LanguageList.CurrentAnimation = SelectedOption;
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
             SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
@@ -336,7 +339,7 @@ public class MenuAll : Frame, IHasPlayfield
             else
                 SelectedOption++;
             
-            Data.LanguageList.SetCurrentAnimation(SelectedOption);
+            Data.LanguageList.CurrentAnimation = SelectedOption;
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
             SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
@@ -356,7 +359,7 @@ public class MenuAll : Frame, IHasPlayfield
             GameLogoYOffset = 56;
             OtherGameLogoValue = 12;
 
-            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
 
             // Center sprites if English
             if (Localization.Language == 0)
@@ -402,17 +405,17 @@ public class MenuAll : Frame, IHasPlayfield
         {
             SelectOption(SelectedOption == 0 ? 2 : SelectedOption - 1, true);
 
-            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
         }
         else if (JoyPad.CheckSingle(GbaInput.Down))
         {
             SelectOption(SelectedOption == 2 ? 0 : SelectedOption + 1, true);
 
-            Data.GameModeList.SetCurrentAnimation(Localization.Language * 3 + SelectedOption);
+            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
-            Data.Cursor.SetCurrentAnimation(16);
+            Data.Cursor.CurrentAnimation = 16;
 
             switch (SelectedOption)
             {
@@ -468,8 +471,34 @@ public class MenuAll : Frame, IHasPlayfield
 
     private void Step_InitializeTransitionToSinglePlayer()
     {
-        // TODO: Implement
+        foreach (SpriteTextObject slotLumText in Data.SlotLumTexts)
+            slotLumText.Text = "1000";
+
+        foreach (SpriteTextObject slotCageText in Data.SlotCageTexts)
+            slotCageText.Text = "50";
+
+        foreach (AnimatedObject slotEmptyText in Data.SlotEmptyTexts)
+            slotEmptyText.CurrentAnimation = Localization.LanguageUiIndex;
+
+        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
+        Data.StartEraseCursor.CurrentAnimation = 40;
+
+        SpriteTextObject.Color = new RGB555Color(0x2fd).ToColor();
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (SlotsCreated[i])
+            {
+                // TODO: Initially based on loaded slot
+            }
+        }
+
         CurrentStepAction = Step_TransitionToSinglePlayer;
+        SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
+        ResetStem();
+        // TODO: Set palette to mode 1 for the background
+        Data.StartEraseSelection.ScreenPos = new Vector2(80, 30);
+        Data.StartEraseCursor.ScreenPos = new Vector2(106, 12);
     }
 
     private void Step_TransitionToSinglePlayer()
@@ -493,7 +522,19 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            // TODO: Render slot objects
+            AnimationPlayer.AddSecondaryObject(Data.SlotIcons[i]);
+
+            if (SlotsCreated[i])
+            {
+                AnimationPlayer.AddSecondaryObject(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.AddSecondaryObject(Data.SlotLumTexts[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotCageTexts[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotLumIcons[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotCageIcons[i]);
+            }
         }
 
         AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
@@ -504,8 +545,27 @@ public class MenuAll : Frame, IHasPlayfield
     {
         // TODO: Implement
 
+        for (int i = 0; i < 3; i++)
+        {
+            AnimationPlayer.AddSecondaryObject(Data.SlotIcons[i]);
+
+            if (SlotsCreated[i])
+            {
+                AnimationPlayer.AddSecondaryObject(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.AddSecondaryObject(Data.SlotLumTexts[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotCageTexts[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotLumIcons[i]);
+                AnimationPlayer.AddSecondaryObject(Data.SlotCageIcons[i]);
+            }
+        }
+
         AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
         AnimationPlayer.AddSecondaryObject(Data.StartEraseCursor);
+
+        // TODO: Implement
     }
 
     #endregion

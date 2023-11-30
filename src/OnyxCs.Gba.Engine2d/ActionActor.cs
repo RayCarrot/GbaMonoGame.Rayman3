@@ -68,7 +68,7 @@ public class ActionActor : BaseActor
 
         _actionBox = new Box(action.Box);
 
-        AnimatedObject.SetCurrentAnimation(action.AnimationIndex);
+        AnimatedObject.CurrentAnimation = action.AnimationIndex;
         AnimatedObject.FlipX = (action.Flags & ActionFlags.FlipX) != 0;
         AnimatedObject.FlipY = (action.Flags & ActionFlags.FlipY) != 0;
 
