@@ -14,7 +14,7 @@ public static class SoundManager
 
     private static readonly List<PlayingSong> _playingSongs = new();
 
-    internal static void Init(int soundBankResourceId, Dictionary<int, string> songTable)
+    internal static void Load(int soundBankResourceId, Dictionary<int, string> songTable)
     {
         if (Engine.Settings.Platform == Platform.GBA)
             _soundBank = Storage.LoadResource<SoundBank>(soundBankResourceId);
@@ -136,7 +136,7 @@ public static class SoundManager
 
                         SoundEffectInstance snd = _songs[res.SongTableIndex].CreateInstance();
                         _playingSongs.Add(new PlayingSong(soundEventId, obj, snd));
-                        snd.Volume = evt.Volume / 100f;
+                        //snd.Volume = evt.Volume / 100f; // TODO: Might be wrong
                         snd.IsLooped = res.Flag0; // TODO: Not 100% sure about this
                         snd.Play();
                         break;

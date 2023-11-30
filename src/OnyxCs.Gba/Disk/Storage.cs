@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using BinarySerializer;
+﻿using BinarySerializer;
 using BinarySerializer.Onyx.Gba;
 
 namespace OnyxCs.Gba;
@@ -21,22 +19,13 @@ public static class Storage
         where T : Resource, new()
     {
         using Context context = Engine.Context;
-        OffsetTable rootTable = Engine.Settings.RootTable;
-        return FileFactory.Read<T>(context, rootTable.GetPointer(context, index));
+        return Engine.Settings.RootTable.ReadResource<T>(Engine.Context, index, name: $"Resource_{index}");
     }
 
-    public static T LoadResource<T>(Enum value)
+    public static T LoadResource<T>(GameResource gameResource)
         where T : Resource, new()
     {
-        GameResourceDefineAttribute define = value.
-            GetAttributes<GameResourceDefineAttribute>().
-            FirstOrDefault(x => x.Game == Engine.Settings.Game && x.Platform == Engine.Settings.Platform);
-
-        if (define == null)
-            throw new ArgumentException("Enum value has no game resource define for the current game settings", nameof(value));
-
         using Context context = Engine.Context;
-        OffsetTable rootTable = Engine.Settings.RootTable;
-        return FileFactory.Read<T>(context, rootTable.GetPointer(context, define.ResourceId));
+        return Engine.Settings.RootTable.ReadResource<T>(Engine.Context, gameResource, name: gameResource.ToString());
     }
 }

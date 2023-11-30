@@ -1,4 +1,5 @@
-﻿using OnyxCs.Gba.AnimEngine;
+﻿using BinarySerializer.Onyx.Gba;
+using OnyxCs.Gba.AnimEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 

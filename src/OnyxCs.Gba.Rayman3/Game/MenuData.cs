@@ -1,4 +1,6 @@
-﻿namespace OnyxCs.Gba.Rayman3;
+﻿using BinarySerializer.Onyx.Gba;
+
+namespace OnyxCs.Gba.Rayman3;
 
 // TODO: Add N-Gage support
 public class MenuData

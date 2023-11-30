@@ -1,13 +1,18 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix)
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix) { }
+
+    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix)
     {
         Texture = texture;
+        TextureRectangle = textureRectangle;
         Position = position;
         FlipX = flipX;
         FlipY = flipY;
@@ -72,6 +77,7 @@ public class Sprite
     }
 
     public Texture2D Texture { get; }
+    public Rectangle TextureRectangle { get; }
     public Vector2 Position { get; }
     public bool FlipX { get; }
     public bool FlipY { get; }
@@ -84,6 +90,6 @@ public class Sprite
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.Draw(Texture, Position + Origin, Rotation, Origin, Scale, Effects);
+        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
+using Action = System.Action;
 
 namespace OnyxCs.Gba.Rayman3;
 

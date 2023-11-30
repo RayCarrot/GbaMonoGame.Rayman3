@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -116,7 +117,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera());
 
-        SoundManager.Init(SoundBankResourceId, SongTable);
+        SoundManager.Load(SoundBankResourceId, SongTable);
+        FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // TODO: Save window size in config, as well as if maximized etc.
         Point windowSize = new(Engine.ScreenCamera.OriginalGameResolution.X * 4, Engine.ScreenCamera.OriginalGameResolution.Y * 4);
