@@ -44,7 +44,7 @@ public class MenuAll : Frame, IHasPlayfield
     private bool HasLoadedGameInfo { get; set; }
     private Page InitialPage { get; set; }
 
-    private bool[] SlotsCreated { get; } = new bool[3];
+    private Slot[] Slots { get; } = new Slot[3];
 
     #endregion
 
@@ -197,7 +197,15 @@ public class MenuAll : Frame, IHasPlayfield
 
         HasLoadedGameInfo = true;
 
-        // TODO: Load save slots
+        for (int i = 0; i < 3; i++)
+        {
+            bool loaded = GameInfo.Load(i);
+
+            if (GameInfo.PersistentInfo.Lives != 0 && loaded)
+                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedYellowCages(), GameInfo.PersistentInfo.Lives);
+            else
+                Slots[i] = null;
+        }
     }
 
     public override void Init()
@@ -487,9 +495,10 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            if (SlotsCreated[i])
+            if (Slots[i] != null)
             {
-                // TODO: Initially based on loaded slot
+                Data.SlotLumTexts[i].Text = Slots[i].LumsCount.ToString();
+                Data.SlotCageTexts[i].Text = Slots[i].CagesCount.ToString();
             }
         }
 
@@ -524,7 +533,7 @@ public class MenuAll : Frame, IHasPlayfield
         {
             AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
 
-            if (SlotsCreated[i])
+            if (Slots[i] == null)
             {
                 AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
             }
@@ -549,7 +558,7 @@ public class MenuAll : Frame, IHasPlayfield
         {
             AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
 
-            if (SlotsCreated[i])
+            if (Slots[i] == null)
             {
                 AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
             }
@@ -581,6 +590,8 @@ public class MenuAll : Frame, IHasPlayfield
         SinglePak,
         NGage, // TODO: What is this? N-Gage loads this first
     }
+
+    private record Slot(int LumsCount, int CagesCount, int LivesCount);
 
     #endregion
 }

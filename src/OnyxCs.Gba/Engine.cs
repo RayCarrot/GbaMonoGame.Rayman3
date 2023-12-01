@@ -58,10 +58,6 @@ public static class Engine
 
     internal static void LoadRom(string romFilePath, string serializerLogFilePath, Game game)
     {
-        romFilePath = Path.GetFullPath(romFilePath);
-        string romDir = Path.GetDirectoryName(romFilePath);
-        string romFileName = Path.GetFileName(romFilePath);
-
         Platform platform;
 
         if (romFilePath.EndsWith(".gba", StringComparison.InvariantCultureIgnoreCase))
@@ -76,15 +72,15 @@ public static class Engine
             : null;
 
         // TODO: Add a logger
-        Context = new Context(romDir!, serializerLogger: serializerLogger);
+        Context = new Context(String.Empty, serializerLogger: serializerLogger);
         Settings = new OnyxGbaSettings { Game = game, Platform = platform };
         Context.AddSettings(Settings);
 
         if (platform == Platform.GBA)
         {
             GbaLoader loader = new(Context);
-            loader.LoadFiles(romFileName, cache: true);
-            loader.LoadRomHeader(romFileName);
+            loader.LoadFiles(romFilePath, cache: true);
+            loader.LoadRomHeader(romFilePath);
 
             string gameCode = loader.RomHeader.GameCode;
 
@@ -95,15 +91,15 @@ public static class Engine
                 _ => throw new Exception($"Unsupported game {Settings.Game} and/or code {gameCode}")
             });
 
-            loader.LoadData(romFileName);
+            loader.LoadData(romFilePath);
             Loader = loader;
         }
         else if (platform == Platform.NGage)
         {
-            string dataFileName = Path.ChangeExtension(romFileName, ".dat");
+            string dataFileName = Path.ChangeExtension(romFilePath, ".dat");
 
             NGageLoader loader = new(Context);
-            loader.LoadFiles(romFileName, dataFileName, cache: true);
+            loader.LoadFiles(romFilePath, dataFileName, cache: true);
 
             Context.AddPreDefinedPointers(Settings.Game switch
             {
@@ -111,7 +107,7 @@ public static class Engine
                 _ => throw new Exception($"Unsupported game {Settings.Game}")
             });
 
-            loader.LoadData(romFileName, dataFileName);
+            loader.LoadData(romFilePath, dataFileName);
             Loader = loader;
         }
     }
