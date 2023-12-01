@@ -9,14 +9,14 @@ public class AnimationPlayer
         Is8Bit = is8Bit;
 
         AnimationSpriteManager = new AnimationSpriteManager();
-        PrimaryAnimationStack = new Stack<AObject>();
-        SecondaryAnimationStack = new Stack<AObject>();
+        UnsortedObjects = new List<AObject>();
+        SortedObjects = new List<AObject>();
     }
 
     private AnimationSpriteManager AnimationSpriteManager { get; }
 
-    private Stack<AObject> PrimaryAnimationStack { get; }
-    private Stack<AObject> SecondaryAnimationStack { get; }
+    private List<AObject> UnsortedObjects { get; }
+    private List<AObject> SortedObjects { get; }
 
     public bool Is8Bit { get; }
 
@@ -25,25 +25,34 @@ public class AnimationPlayer
         SoundManager.Play(soundId);
     }
 
-    public void AddPrimaryObject(AObject obj)
+    public void AddObject(AObject obj)
     {
-        PrimaryAnimationStack.Push(obj);
+        UnsortedObjects.Add(obj);
     }
 
-    public void AddSecondaryObject(AObject obj)
+    public void AddSortedObject(AObject obj)
     {
-        SecondaryAnimationStack.Push(obj);
+        for (int i = 0; i < SortedObjects.Count; i++)
+        {
+            if (SortedObjects[i].Priority >= obj.Priority)
+            {
+                SortedObjects.Insert(i, obj);
+                return;
+            }
+        }
+
+        SortedObjects.Add(obj);
     }
 
     public void Execute()
     {
-        foreach (AObject obj in PrimaryAnimationStack)
+        foreach (AObject obj in UnsortedObjects)
             obj.Execute(AnimationSpriteManager, SoundEventRequest);
 
-        foreach (AObject obj in SecondaryAnimationStack)
+        foreach (AObject obj in SortedObjects)
             obj.Execute(AnimationSpriteManager, SoundEventRequest);
 
-        PrimaryAnimationStack.Clear();
-        SecondaryAnimationStack.Clear();
+        UnsortedObjects.Clear();
+        SortedObjects.Clear();
     }
 }

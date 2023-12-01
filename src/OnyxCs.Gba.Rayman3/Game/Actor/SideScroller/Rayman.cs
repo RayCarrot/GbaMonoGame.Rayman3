@@ -629,7 +629,8 @@ public sealed partial class Rayman : MovableActor
 
     public override void Init()
     {
-        // TODO: Implement
+        AnimatedObject.YPriority = IsLocalPlayer ? 16 : 17;
+
         Timer = 0;
         //field10_0x84 = 0;
         //field11_0x88 = 0;
@@ -736,7 +737,7 @@ public sealed partial class Rayman : MovableActor
 
         if (draw)
         {
-            animationPlayer.AddSecondaryObject(AnimatedObject);
+            animationPlayer.AddSortedObject(AnimatedObject);
         }
         else
         {

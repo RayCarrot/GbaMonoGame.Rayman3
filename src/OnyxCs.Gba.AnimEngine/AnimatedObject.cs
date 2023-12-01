@@ -65,7 +65,6 @@ public class AnimatedObject : AObject
 
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
-    public int Priority { get; set; }
 
     public int CurrentAnimation
     {
@@ -237,7 +236,6 @@ public class AnimatedObject : AObject
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
-        List<Sprite> sprites = new();
         foreach (AnimationChannel channel in EnumerateCurrentChannels())
         {
             // Play the channel based on the type
@@ -296,12 +294,12 @@ public class AnimatedObject : AObject
                         spriteSize: channel.SpriteSize,
                         tileIndex: channel.TileIndex,
                         paletteIndex: channel.PalIndex);
-                    sprites.Add(new Sprite(
+                    Gfx.AddSprite(new Sprite(
                         texture: tex,
                         position: new Vector2(xPos, yPos),
                         flipX: channel.FlipX ^ FlipX,
                         flipY: channel.FlipY ^ FlipY,
-                        priority: Priority,
+                        priority: SpritePriority,
                         affineMatrix: affineMatrix));
                     break;
 
@@ -329,10 +327,6 @@ public class AnimatedObject : AObject
                     break;
             }
         }
-
-        // We have to draw the sprites in reverse order
-        foreach (Sprite sprite in ((IEnumerable<Sprite>)sprites).Reverse())
-            Gfx.AddSprite(sprite);
 
         PlayChannelBox();
         StepTimer();

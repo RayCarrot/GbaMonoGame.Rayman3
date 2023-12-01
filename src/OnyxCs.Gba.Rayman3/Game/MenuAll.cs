@@ -151,11 +151,11 @@ public class MenuAll : Frame, IHasPlayfield
             }
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.Stem);
+        AnimationPlayer.AddSortedObject(Data.Stem);
 
         // The cursor is usually included in the stem animation, except for animation 1
         if (Data.Stem.CurrentAnimation == 1)
-            AnimationPlayer.AddSecondaryObject(Data.Cursor);
+            AnimationPlayer.AddSortedObject(Data.Cursor);
     }
 
     private void TransitionOutCursorAndStem()
@@ -291,16 +291,16 @@ public class MenuAll : Frame, IHasPlayfield
         float cos4 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
         Data.Wheel4.AffineMatrix = new AffineMatrix(cos4, sin4, -sin4, cos4);
 
-        AnimationPlayer.AddSecondaryObject(Data.Wheel1);
-        AnimationPlayer.AddSecondaryObject(Data.Wheel2);
-        AnimationPlayer.AddSecondaryObject(Data.Wheel3);
-        AnimationPlayer.AddSecondaryObject(Data.Wheel4);
+        AnimationPlayer.AddSortedObject(Data.Wheel1);
+        AnimationPlayer.AddSortedObject(Data.Wheel2);
+        AnimationPlayer.AddSortedObject(Data.Wheel3);
+        AnimationPlayer.AddSortedObject(Data.Wheel4);
 
         if (SteamTimer == 0)
         {
             if (!Data.Steam.EndOfAnimation)
             {
-                AnimationPlayer.AddSecondaryObject(Data.Steam);
+                AnimationPlayer.AddSortedObject(Data.Steam);
             }
             else
             {
@@ -372,7 +372,7 @@ public class MenuAll : Frame, IHasPlayfield
             ResetStem();
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.LanguageList);
+        AnimationPlayer.AddSortedObject(Data.LanguageList);
     }
 
     private void Step_TransitionFromLanguage()
@@ -381,12 +381,12 @@ public class MenuAll : Frame, IHasPlayfield
         mainCluster.Position += new Vector2(0, 3);
 
         Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, ScreenOutTransitionYOffset + 28);
-        AnimationPlayer.AddSecondaryObject(Data.LanguageList);
+        AnimationPlayer.AddSortedObject(Data.LanguageList);
 
         MoveGameLogo();
 
-        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
-        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+        AnimationPlayer.AddSortedObject(Data.GameLogo);
+        AnimationPlayer.AddSortedObject(Data.GameModeList);
 
         if (ScreenOutTransitionYOffset < -207)
         {
@@ -441,10 +441,10 @@ public class MenuAll : Frame, IHasPlayfield
             TransitionOutCursorAndStem();
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+        AnimationPlayer.AddSortedObject(Data.GameModeList);
         
         MoveGameLogo();
-        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
+        AnimationPlayer.AddSortedObject(Data.GameLogo);
     }
 
     private void Step_TransitionOutOfSelectGameMode()
@@ -463,10 +463,10 @@ public class MenuAll : Frame, IHasPlayfield
             CurrentStepAction = NextStepAction;
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.GameModeList);
+        AnimationPlayer.AddSortedObject(Data.GameModeList);
 
         MoveGameLogo();
-        AnimationPlayer.AddSecondaryObject(Data.GameLogo);
+        AnimationPlayer.AddSortedObject(Data.GameLogo);
     }
 
     private void Step_InitializeTransitionToSinglePlayer()
@@ -522,23 +522,23 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            AnimationPlayer.AddSecondaryObject(Data.SlotIcons[i]);
+            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
 
             if (SlotsCreated[i])
             {
-                AnimationPlayer.AddSecondaryObject(Data.SlotEmptyTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
             }
             else
             {
-                AnimationPlayer.AddSecondaryObject(Data.SlotLumTexts[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotCageTexts[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotLumIcons[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotCageIcons[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
             }
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
-        AnimationPlayer.AddSecondaryObject(Data.StartEraseCursor);
+        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
+        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
     }
 
     private void Step_SinglePlayer()
@@ -547,23 +547,23 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            AnimationPlayer.AddSecondaryObject(Data.SlotIcons[i]);
+            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
 
             if (SlotsCreated[i])
             {
-                AnimationPlayer.AddSecondaryObject(Data.SlotEmptyTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
             }
             else
             {
-                AnimationPlayer.AddSecondaryObject(Data.SlotLumTexts[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotCageTexts[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotLumIcons[i]);
-                AnimationPlayer.AddSecondaryObject(Data.SlotCageIcons[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
             }
         }
 
-        AnimationPlayer.AddSecondaryObject(Data.StartEraseSelection);
-        AnimationPlayer.AddSecondaryObject(Data.StartEraseCursor);
+        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
+        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
 
         // TODO: Implement
     }

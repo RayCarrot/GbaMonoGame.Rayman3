@@ -14,15 +14,13 @@ public class SpriteTextObject : AObject
     public Vector2 ScreenPos { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
 
-    public int Priority { get; set; }
-
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
     {
         Vector2 pos = ScreenPos;
 
         foreach (char c in Text)
         {
-            Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, Priority, AffineMatrix, Color));
+            Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, SpritePriority, AffineMatrix, Color));
         }
     }
 }

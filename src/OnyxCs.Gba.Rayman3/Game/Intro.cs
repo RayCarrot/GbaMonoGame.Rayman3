@@ -59,7 +59,8 @@ public class Intro : Frame, IHasPlayfield
 
         PressStartObj = new AnimatedObject(introAnimResource, false)
         {
-            Priority = 0,
+            SpritePriority = 0,
+            YPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 150),
@@ -73,7 +74,8 @@ public class Intro : Frame, IHasPlayfield
         {
             GameloftLogoObj = new AnimatedObject(introAnimResource, false)
             {
-                Priority = 0,
+                SpritePriority = 0,
+                YPriority = 0,
                 ScreenPos = new Vector2(88, 208),
                 CurrentAnimation = 23
             };
@@ -81,7 +83,8 @@ public class Intro : Frame, IHasPlayfield
 
         BlackLumAndLogoObj = new AnimatedObject(introAnimResource, false)
         {
-            Priority = 0,
+            SpritePriority = 0,
+            YPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 128),
@@ -328,7 +331,7 @@ public class Intro : Frame, IHasPlayfield
                     BlackLumAndLogoObj.ScreenPos += new Vector2(0, -2);
                 }
                 Timer++;
-                AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
+                AnimationPlayer.AddObject(BlackLumAndLogoObj);
             }
         }
 
@@ -370,18 +373,18 @@ public class Intro : Frame, IHasPlayfield
             }
         }
 
-        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
+        AnimationPlayer.AddObject(BlackLumAndLogoObj);
     }
 
     private void Step_6()
     {
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddPrimaryObject(PressStartObj);
+            AnimationPlayer.AddObject(PressStartObj);
 
         if (Engine.Settings.Platform == Platform.NGage)
-            AnimationPlayer.AddPrimaryObject(GameloftLogoObj);
+            AnimationPlayer.AddObject(GameloftLogoObj);
 
-        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
+        AnimationPlayer.AddObject(BlackLumAndLogoObj);
 
         // TODO: Check every button input on N-Gage
         if (JoyPad.Check(GbaInput.Start))
@@ -437,12 +440,12 @@ public class Intro : Frame, IHasPlayfield
         }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddPrimaryObject(PressStartObj);
+            AnimationPlayer.AddObject(PressStartObj);
 
         if (Engine.Settings.Platform == Platform.NGage)
-            AnimationPlayer.AddPrimaryObject(GameloftLogoObj);
+            AnimationPlayer.AddObject(GameloftLogoObj);
 
-        AnimationPlayer.AddPrimaryObject(BlackLumAndLogoObj);
+        AnimationPlayer.AddObject(BlackLumAndLogoObj);
     }
 
     #endregion

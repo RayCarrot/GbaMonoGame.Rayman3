@@ -41,7 +41,7 @@ public static class Gfx
                 screen.Draw(renderer);
 
             // Draw sprites
-            foreach (Sprite sprite in Sprites.Where(x => x.Priority == i))
+            foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
         }
     }

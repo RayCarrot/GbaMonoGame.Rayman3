@@ -21,7 +21,8 @@ public class BaseActor : GameObject
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)
         {
             CurrentAnimation = 0,
-            Priority = ActorDrawPriority
+            SpritePriority = ActorDrawPriority,
+            YPriority = 32
         };
 
         _viewBox = new Box(ActorModel.ViewBox);
@@ -73,7 +74,7 @@ public class BaseActor : GameObject
     {
         if (Scene.Camera.IsActorFramed(this) || forceDraw)
         {
-            animationPlayer.AddSecondaryObject(AnimatedObject);
+            animationPlayer.AddSortedObject(AnimatedObject);
         }
         else
         {
@@ -87,5 +88,6 @@ public class BaseActor : GameObject
 
         ImGui.Text($"State: {Fsm}");
         ImGui.Text($"Direction: {(IsFacingLeft ? "Left" : "Right")}");
+        ImGui.Text($"Y-prio: {AnimatedObject.YPriority}");
     }
 }

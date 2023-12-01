@@ -55,9 +55,9 @@ public class LumsBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        animationPlayer.AddPrimaryObject(LumsIcon);
-        animationPlayer.AddPrimaryObject(CollectedLumsDigit2);
-        animationPlayer.AddPrimaryObject(TotalLumsDigit1);
-        animationPlayer.AddPrimaryObject(TotalLumsDigit2);
+        animationPlayer.AddObject(LumsIcon);
+        animationPlayer.AddObject(CollectedLumsDigit2);
+        animationPlayer.AddObject(TotalLumsDigit1);
+        animationPlayer.AddObject(TotalLumsDigit2);
     }
 }
