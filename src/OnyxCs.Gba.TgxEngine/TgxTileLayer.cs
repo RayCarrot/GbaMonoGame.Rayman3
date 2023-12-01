@@ -97,7 +97,8 @@ public class TgxTileLayer : TgxGameLayer
             }
         }
 
-        TiledTexture2D tex = new(Width, Height, tileSet, TileMap, new Palette(tileKit.Palettes[defaultPalette].Palette), Is8Bit);
-        Screen.Renderer = new TextureScreenRenderer(tex);
+        Palette pal = new(tileKit.Palettes[defaultPalette].Palette);
+        TiledTexture2D tex = new(Width, Height, tileSet, TileMap, pal, Is8Bit);
+        Screen.Renderer = new TextureScreenRenderer(tex, tileSet, TileMap, pal);
     }
 }

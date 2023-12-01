@@ -2,6 +2,7 @@
 using BinarySerializer;
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
+using Microsoft.Xna.Framework.Graphics;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;
 using Action = System.Action;
@@ -56,10 +57,64 @@ public class MenuAll : Frame, IHasPlayfield
 
     #region Private Methods
 
+    private Palette GetBackgroundPalette(int index)
+    {
+        RGB555Color[] colors = index switch
+        {
+            0 => new RGB555Color[]
+            {
+                new(0x25ee), new(0x8ba), new(0x1dae), new(0x1dae), new(0x2632), new(0x2211), new(0x21cf),
+                new(0x196b), new(0x154a), new(0x3695), new(0x2e54), new(0x198c), new(0x10e7), new(0x1509),
+                new(0x21f0), new(0x196c), new(0x1d8d), new(0x3f21),
+            },
+            1 => new RGB555Color[]
+            {
+                new(0x2653), new(0x249d), new(0x1db2), new(0x1d91), new(0x2216), new(0x21f5), new(0x1dd3),
+                new(0x196f), new(0x154d), new(0x369a), new(0x2e58), new(0x1970), new(0x10e9), new(0x150b),
+                new(0x21f4), new(0x196f), new(0x1990), new(0x23a2),
+            },
+            2 => new RGB555Color[]
+            {
+                new(0x3f28), new(0x6568), new(0x3d4d), new(0x394c), new(0x4990), new(0x498f), new(0x416e),
+                new(0x310b), new(0x2d0a), new(0x5a34), new(0x55d2), new(0x352b), new(0x20a7), new(0x28e8),
+                new(0x456f), new(0x352b), new(0x392c), new(0x1d97),
+            },
+            3 => new RGB555Color[]
+            {
+                new(0x29b2), new(0x645f), new(0x2111), new(0x2110), new(0x2955), new(0x2534), new(0x2532),
+                new(0x1cee), new(0x18cc), new(0x3df8), new(0x3197), new(0x1cef), new(0x14a9), new(0x18cb),
+                new(0x2533), new(0x1cee), new(0x1cef), new(0x7ca),
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
+        };
+
+        RGB555Color[] allColors = new RGB555Color[49];
+        Array.Fill(allColors, new RGB555Color(), 0, 31);
+        Array.Copy(colors, 0, allColors, 31, colors.Length);
+        return new Palette(allColors);
+    }
+
+    private void SetBackgroundPalette(int index)
+    {
+        ((MultiTextureScreenRenderer)Playfield.TileLayers[0].Screen.Renderer).CurrentTextureIndex = index;
+    }
+
     private void LoadPlayfield()
     {
         PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
+
+        // The background layer can have multiple palettes, so we need to create a texture for each
+        TgxTileLayer bgLayer = Playfield.TileLayers[0];
+        TextureScreenRenderer renderer = (TextureScreenRenderer)bgLayer.Screen.Renderer;
+        bgLayer.Screen.Renderer = new MultiTextureScreenRenderer(new Texture2D[]
+        { 
+            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(0), bgLayer.Is8Bit),
+            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(1), bgLayer.Is8Bit),
+            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(2), bgLayer.Is8Bit),
+            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(3), bgLayer.Is8Bit),
+        });
+        SetBackgroundPalette(3);
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
         Playfield.Camera.GetCluster(1).Position = new Vector2(0, 160);
@@ -505,7 +560,7 @@ public class MenuAll : Frame, IHasPlayfield
         CurrentStepAction = Step_TransitionToSinglePlayer;
         SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
         ResetStem();
-        // TODO: Set palette to mode 1 for the background
+        SetBackgroundPalette(1);
         Data.StartEraseSelection.ScreenPos = new Vector2(80, 30);
         Data.StartEraseCursor.ScreenPos = new Vector2(106, 12);
     }
