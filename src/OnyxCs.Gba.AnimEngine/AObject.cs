@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.AnimEngine;
 
 public abstract class AObject
 {
-    public byte Priority { get; set; }
+    public byte Priority { get; private set; }
 
     public int SpritePriority
     {

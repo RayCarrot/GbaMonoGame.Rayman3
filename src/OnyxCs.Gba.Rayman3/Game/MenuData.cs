@@ -135,7 +135,7 @@ public class MenuData
             };
             SlotLumTexts[i] = new SpriteTextObject()
             {
-                Priority = 3,
+                SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(129, 55 + i * 18),
                 Text = "1000",
@@ -143,7 +143,7 @@ public class MenuData
             };
             SlotCageTexts[i] = new SpriteTextObject()
             {
-                Priority = 3,
+                SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(190, 55 + i * 18),
                 Text = "50",
