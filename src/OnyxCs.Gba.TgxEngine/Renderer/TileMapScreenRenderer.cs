@@ -50,7 +50,7 @@ public class TileMapScreenRenderer : IScreenRenderer
         return new TiledTexture2D(TileSet, tile.TileIndex - 1, tile.PaletteIndex, Palette, Is8Bit);
     }
 
-    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
+    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(position);
 
@@ -81,7 +81,7 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (tile.FlipY)
                         effects |= SpriteEffects.FlipVertically;
 
-                    renderer.Draw(tex, new Vector2(absTileX, absTileY), effects);
+                    renderer.Draw(tex, new Vector2(absTileX, absTileY), effects, color);
                 }
 
                 absTileX += Constants.TileSize;

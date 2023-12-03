@@ -1,4 +1,6 @@
-﻿namespace OnyxCs.Gba;
+﻿using Microsoft.Xna.Framework;
+
+namespace OnyxCs.Gba;
 
 /// <summary>
 /// A graphics screen. This is the equivalent of a GBA background.
@@ -35,6 +37,14 @@ public class GfxScreen
     /// </summary>
     public Vector2 Offset { get; set; }
 
+    public bool IsAlphaBlendEnabled { get; set; }
+    public float Alpha { get; set; }
+    public float GbaAlpha
+    {
+        get => Alpha * 16;
+        set => Alpha = value / 16;
+    }
+
     /// <summary>
     /// Indicates if the screen is enabled and should be drawn.
     /// </summary>
@@ -51,6 +61,19 @@ public class GfxScreen
         if (Renderer == null)
             return;
 
+        bool alpha = IsAlphaBlendEnabled;
+        Color color;
+
+        if (alpha)
+        {
+            renderer.BeginAlpha();
+            color = new Color(Color.White, Alpha);
+        }
+        else
+        {
+            color = Color.White;
+        }
+
         if (Wrap)
         {
             Vector2 size = Renderer.Size;
@@ -63,13 +86,16 @@ public class GfxScreen
             {
                 for (float x = startX; x < Engine.ScreenCamera.GameResolution.X; x += size.X)
                 {
-                    Renderer?.Draw(renderer, this, new Vector2(x, y));
+                    Renderer?.Draw(renderer, this, new Vector2(x, y), color);
                 }
             }
         }
         else
         {
-            Renderer?.Draw(renderer, this, -Offset);
+            Renderer?.Draw(renderer, this, -Offset, color);
         }
+
+        if (alpha)
+            renderer.EndAlpha();
     }
 }

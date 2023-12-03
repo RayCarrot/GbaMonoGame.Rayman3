@@ -20,8 +20,8 @@ public class TextureScreenRenderer : IScreenRenderer
     public Texture2D Texture { get; }
     public Vector2 Size => new(Texture.Width, Texture.Height);
 
-    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
+    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        renderer.Draw(Texture, position);
+        renderer.Draw(Texture, position, color);
     }
 }

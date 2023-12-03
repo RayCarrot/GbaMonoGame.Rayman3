@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -14,8 +15,8 @@ public class MultiTextureScreenRenderer : IScreenRenderer
     public Vector2 Size => new(Textures[CurrentTextureIndex].Width, Textures[CurrentTextureIndex].Height);
 
 
-    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
+    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        renderer.Draw(Textures[CurrentTextureIndex], position);
+        renderer.Draw(Textures[CurrentTextureIndex], position, color);
     }
 }

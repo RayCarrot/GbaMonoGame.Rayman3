@@ -6,7 +6,6 @@ using Action = System.Action;
 
 namespace OnyxCs.Gba.Rayman3;
 
-// TODO: Implement palette fading and alpha effects
 public class Intro : Frame, IHasPlayfield
 {
     #region Private Constant Fields
@@ -27,6 +26,7 @@ public class Intro : Frame, IHasPlayfield
     private AnimatedObject GameloftLogoObj { get; set; }
     private AnimatedObject BlackLumAndLogoObj { get; set; }
     private int Timer { get; set; }
+    private int AlphaTimer { get; set; }
     private int ScrollY { get; set; }
     private bool IsSkipping { get; set; }
     private int FadeTime { get; set; }
@@ -123,25 +123,17 @@ public class Intro : Frame, IHasPlayfield
             Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer).Texture);
     }
 
-    //private void FadePalette(Palette pal)
-    //{
-    //    for (int i = 0; i < pal.Colors.Length; i++)
-    //    {
-    //        pal.Colors[i] = new Color(
-    //            pal.PaletteResource.Colors[i].Red * (FadeTime / (float)MaxFadeTime),
-    //            pal.PaletteResource.Colors[i].Green * (FadeTime / (float)MaxFadeTime),
-    //            pal.PaletteResource.Colors[i].Blue * (FadeTime / (float)MaxFadeTime));
-    //    }
-
-    //    pal.IsDirty = true;
-    //}
+    private void FadePalette()
+    {
+        Gfx.Brightness = FadeTime / (float)MaxFadeTime;
+    }
 
     private void Skip()
     {
         if ((GameTime.ElapsedFrames & 1) == 0)
         {
-            //foreach (Palette pal in Engine.Vram.GetSpritePalettes())
-            //    FadePalette(pal);
+            // NOTE: Game only fades sprite palettes here
+            FadePalette();
 
             if (FadeTime == MinFadeTime)
             {
@@ -153,8 +145,8 @@ public class Intro : Frame, IHasPlayfield
         {
             FadeTime--;
 
-            //foreach (Palette pal in Engine.Vram.GetBackgroundPalettes())
-            //    FadePalette(pal);
+            // NOTE: Game only fades background palettes here
+            FadePalette();
         }
     }
 
@@ -173,6 +165,7 @@ public class Intro : Frame, IHasPlayfield
 
         CurrentStepAction = Step_1;
 
+        AlphaTimer = 0;
         Timer = 0;
         ScrollY = 0;
         IsSkipping = false;
@@ -209,6 +202,9 @@ public class Intro : Frame, IHasPlayfield
                 Timer = 0;
                 CurrentStepAction = Step_2;
 
+                Playfield.TileLayers[0].Screen.IsAlphaBlendEnabled = true;
+                Playfield.TileLayers[0].Screen.GbaAlpha = 0;
+
                 Playfield.TileLayers[0].Screen.IsEnabled = true;
                 Playfield.TileLayers[1].Screen.IsEnabled = true;
             }
@@ -229,10 +225,18 @@ public class Intro : Frame, IHasPlayfield
         {
             Timer++;
 
-            if (Timer > 64)
+            if (Timer >= 68)
             {
                 Timer = 0;
                 CurrentStepAction = Step_3;
+
+                Playfield.TileLayers[0].Screen.IsAlphaBlendEnabled = false;
+                Playfield.TileLayers[2].Screen.IsAlphaBlendEnabled = true;
+                Playfield.TileLayers[2].Screen.GbaAlpha = 16;
+            }
+            else
+            {
+                Playfield.TileLayers[0].Screen.GbaAlpha = Timer / 4f;
             }
         }
         else if (Engine.Settings.Platform == Platform.NGage)
@@ -247,41 +251,38 @@ public class Intro : Frame, IHasPlayfield
 
     private void Step_3()
     {
-        if (Engine.Settings.Platform == Platform.GBA)
+        Timer++;
+
+        if (Timer >= 68)
         {
-            Timer++;
+            Timer = 0;
+            AlphaTimer = 0;
+            CurrentStepAction = Step_4;
 
-            if (Timer == 64)
-            {
-                Timer = 0;
-                CurrentStepAction = Step_4;
+            Playfield.TileLayers[2].Screen.IsAlphaBlendEnabled = false;
+            Playfield.TileLayers[3].Screen.IsAlphaBlendEnabled = true;
+            Playfield.TileLayers[3].Screen.GbaAlpha = 0;
 
-                Playfield.TileLayers[2].Screen.IsEnabled = false;
+            Playfield.TileLayers[2].Screen.IsEnabled = false;
+
+            // Only show clouds on GBA
+            if (Engine.Settings.Platform == Platform.GBA)
                 Playfield.TileLayers[3].Screen.IsEnabled = true;
-            }
         }
-        else if (Engine.Settings.Platform == Platform.NGage)
+        else
         {
-            Timer++;
+            Playfield.TileLayers[2].Screen.GbaAlpha = 16 - (Timer / 4f);
+        }
 
-            if (Timer == 64)
-            {
-                Timer = 0;
-                CurrentStepAction = Step_4;
-
-                Playfield.TileLayers[2].Screen.IsEnabled = false;
-            }
-
+        // N-Gage allows the intro to be skipped from here
+        if (Engine.Settings.Platform == Platform.NGage)
+        {
             // TODO: Check every button input
             if (JoyPad.Check(GbaInput.Start))
                 IsSkipping = true;
 
             if (IsSkipping)
                 Skip();
-        }
-        else
-        {
-            throw new UnsupportedPlatformException();
         }
     }
 
@@ -296,6 +297,15 @@ public class Intro : Frame, IHasPlayfield
             ScrollY++;
             Playfield.Camera.Position += new Vector2(0, 1);
             Gfx.GetScreen(3).Offset = new Vector2(0, ScrollY);
+        }
+
+        if (ScrollY > 600)
+        {
+            if (AlphaTimer <= 0x80)
+            {
+                Playfield.TileLayers[3].Screen.GbaAlpha = AlphaTimer / 32f;
+                AlphaTimer++;
+            }
         }
 
         if (ScrollY > 175)
@@ -397,6 +407,7 @@ public class Intro : Frame, IHasPlayfield
 
         if (SkippedTimer == 10)
         {
+            AlphaTimer = 0x80;
             BlackLumAndLogoObj.CurrentAnimation = 8;
             BlackLumAndLogoObj.SetCurrentFrame(5);
             BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
@@ -421,8 +432,8 @@ public class Intro : Frame, IHasPlayfield
         {
             if (FadeTime < MaxFadeTime + 1)
             {
-                //foreach (Palette pal in Engine.Vram.GetBackgroundPalettes())
-                //    FadePalette(pal);
+                // NOTE: Game only fades background palettes here
+                FadePalette();
             }
 
             if (FadeTime == MaxFadeTime)
@@ -435,8 +446,8 @@ public class Intro : Frame, IHasPlayfield
         {
             FadeTime++;
 
-            //foreach (Palette pal in Engine.Vram.GetSpritePalettes())
-            //    FadePalette(pal);
+            // NOTE: Game only fades sprite palettes here
+            FadePalette();
         }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)

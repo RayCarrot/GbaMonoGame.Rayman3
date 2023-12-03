@@ -58,7 +58,7 @@ public class GfxRenderer
     public void BeginAlpha()
     {
         SpriteBatch.End();
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.Additive, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.NonPremultiplied, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
     }
 
     public void EndAlpha()

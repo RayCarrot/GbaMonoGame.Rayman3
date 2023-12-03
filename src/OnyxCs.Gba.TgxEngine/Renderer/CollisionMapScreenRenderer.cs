@@ -37,7 +37,7 @@ public class CollisionMapScreenRenderer : IScreenRenderer
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
 
-    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position)
+    public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(position);
 
@@ -60,7 +60,8 @@ public class CollisionMapScreenRenderer : IScreenRenderer
                         rotation: 0,
                         origin: Vector2.Zero, 
                         scale: new Vector2(Constants.TileSize / (float)CollisionTileSize),
-                        effects: SpriteEffects.None);
+                        effects: SpriteEffects.None,
+                        color: color);
                 }
 
                 absTileX += Constants.TileSize;

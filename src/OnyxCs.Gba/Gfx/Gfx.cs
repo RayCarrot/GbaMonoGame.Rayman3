@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
 
@@ -31,6 +30,8 @@ public static class Gfx
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void ClearSprites() => Sprites.Clear();
 
+    public static float Brightness { get; set; } = 1;
+
     public static void Draw(GfxRenderer renderer)
     {
         // Draw each game layer
@@ -44,5 +45,8 @@ public static class Gfx
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
         }
+
+        if (Brightness is >= 0 and < 1)
+            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.GameResolution.ToVector2(), Color.Black * (1 - Brightness));
     }
 }

@@ -20,15 +20,12 @@ public class TgxTileLayer : TgxGameLayer
             Offset = Vector2.Zero,
             Priority = 3 - LayerId,
             Wrap = true,
-            Is8Bit = resource.Is8Bit
+            Is8Bit = resource.Is8Bit,
+            IsAlphaBlendEnabled = resource.HasAlphaBlending,
+            GbaAlpha = resource.AlphaCoeff,
         };
 
         Gfx.AddScreen(Screen);
-
-        if (resource.HasAlphaBlending)
-        {
-            // TODO: Set alpha blending
-        }
     }
 
     public GfxScreen Screen { get; }
