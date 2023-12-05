@@ -1,4 +1,10 @@
 ﻿global using PlayfieldResource = BinarySerializer.Onyx.Gba.Playfield;
+global using Playfield2DResource = BinarySerializer.Onyx.Gba.Playfield2D;
+global using PlayfieldMode7Resource = BinarySerializer.Onyx.Gba.PlayfieldMode7;
 global using GameLayerResource = BinarySerializer.Onyx.Gba.GameLayer;
+global using TileLayerResource = BinarySerializer.Onyx.Gba.TileLayer;
+global using PhysicalLayerResource = BinarySerializer.Onyx.Gba.PhysicalLayer;
+global using RotscaleLayerMode7Resource = BinarySerializer.Onyx.Gba.RotscaleLayerMode7;
+global using TextLayerMode7Resource = BinarySerializer.Onyx.Gba.TextLayerMode7;
 global using ClusterResource = BinarySerializer.Onyx.Gba.Cluster;
 global using PaletteResource = BinarySerializer.Nintendo.GBA.Palette;

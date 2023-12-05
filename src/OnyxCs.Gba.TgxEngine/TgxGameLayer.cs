@@ -5,10 +5,10 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxGameLayer
 {
-    protected TgxGameLayer(GameLayerResource resource)
+    protected TgxGameLayer(GameLayerResource gameLayerResource)
     {
-        Width = resource.Width;
-        Height = resource.Height;
+        Width = gameLayerResource.Width;
+        Height = gameLayerResource.Height;
     }
 
     public int Width { get; }

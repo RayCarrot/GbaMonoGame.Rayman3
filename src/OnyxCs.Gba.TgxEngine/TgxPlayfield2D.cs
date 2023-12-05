@@ -5,7 +5,7 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxPlayfield2D : TgxPlayfield
 {
-    public TgxPlayfield2D(PlayfieldResource playfieldResource)
+    public TgxPlayfield2D(Playfield2DResource playfieldResource)
     {
         List<TgxTileLayer> tileLayers = new();
 
@@ -16,21 +16,21 @@ public class TgxPlayfield2D : TgxPlayfield
             Camera.AddCluster(clusterResource);
 
         // Load the layers
-        foreach (GameLayerResource layerResource in playfieldResource.Layers)
+        foreach (GameLayerResource gameLayerResource in playfieldResource.Layers)
         {
-            if (layerResource.Type == GameLayerType.TileLayer)
+            if (gameLayerResource.Type == GameLayerType.TileLayer)
             {
-                TgxTileLayer layer = new(layerResource);
+                TgxTileLayer layer = new(gameLayerResource);
                 tileLayers.Add(layer);
 
                 layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
                 
                 // The game does this in the layer constructor, but it's easier here since we have access to the camera
-                Camera.AddLayer(layerResource.ClusterIndex, layer);
+                Camera.AddLayer(gameLayerResource.TileLayer.ClusterIndex, layer);
             }
-            else if (layerResource.Type == GameLayerType.TilePhysicalLayer)
+            else if (gameLayerResource.Type == GameLayerType.PhysicalLayer)
             {
-                PhysicalLayer = new TgxTilePhysicalLayer(layerResource);
+                PhysicalLayer = new TgxTilePhysicalLayer(gameLayerResource);
 
                 // We want the debug collision map to scroll with the main cluster
                 Camera.AddLayer(0, PhysicalLayer);

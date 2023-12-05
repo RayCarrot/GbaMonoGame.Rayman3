@@ -4,9 +4,9 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxTilePhysicalLayer : TgxGameLayer
 {
-    public TgxTilePhysicalLayer(GameLayerResource resource) : base(resource)
+    public TgxTilePhysicalLayer(GameLayerResource gameLayerResource) : base(gameLayerResource)
     {
-        CollisionMap = resource.CollisionMap;
+        CollisionMap = gameLayerResource.PhysicalLayer.CollisionMap;
 
         // TODO: Don't do this unless some debug mode is enabled or it'll impact performance
         // Collision map screen for debugging

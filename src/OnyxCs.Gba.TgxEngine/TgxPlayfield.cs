@@ -15,7 +15,7 @@ public abstract class TgxPlayfield
     {
         TgxPlayfield playfield = playfieldResource.Type switch
         {
-            PlayfieldType.Playfield2d => new TgxPlayfield2D(playfieldResource),
+            PlayfieldType.Playfield2D => new TgxPlayfield2D(playfieldResource.Playfield2D),
             PlayfieldType.PlayfieldMode7 => throw new NotImplementedException("Not implemented loading PlayfieldMode7"),
             PlayfieldType.PlayfieldScope => throw new NotImplementedException("Not implemented loading PlayfieldScope"),
             _ => throw new NotImplementedException($"Unsupported playfield type {playfieldResource.Type}")

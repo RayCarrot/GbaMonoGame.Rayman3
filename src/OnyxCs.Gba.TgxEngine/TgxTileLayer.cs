@@ -7,12 +7,14 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxTileLayer : TgxGameLayer
 {
-    public TgxTileLayer(GameLayerResource resource) : base(resource)
+    public TgxTileLayer(GameLayerResource gameLayerResource) : base(gameLayerResource)
     {
-        TileMap = resource.TileMap;
-        LayerId = resource.LayerId;
-        Is8Bit = resource.Is8Bit;
-        IsDynamic = resource.IsDynamic;
+        TileLayerResource tileLayerResource = gameLayerResource.TileLayer;
+
+        TileMap = tileLayerResource.TileMap;
+        LayerId = tileLayerResource.LayerId;
+        Is8Bit = tileLayerResource.Is8Bit;
+        IsDynamic = tileLayerResource.IsDynamic;
 
         Screen = new GfxScreen(LayerId)
         {
@@ -20,9 +22,9 @@ public class TgxTileLayer : TgxGameLayer
             Offset = Vector2.Zero,
             Priority = 3 - LayerId,
             Wrap = true,
-            Is8Bit = resource.Is8Bit,
-            IsAlphaBlendEnabled = resource.HasAlphaBlending,
-            GbaAlpha = resource.AlphaCoeff,
+            Is8Bit = tileLayerResource.Is8Bit,
+            IsAlphaBlendEnabled = tileLayerResource.HasAlphaBlending,
+            GbaAlpha = tileLayerResource.AlphaCoeff,
         };
 
         Gfx.AddScreen(Screen);
