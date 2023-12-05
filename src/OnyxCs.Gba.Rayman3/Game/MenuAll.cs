@@ -106,7 +106,7 @@ public class MenuAll : Frame, IHasPlayfield
 
         // The background layer can have multiple palettes, so we need to create a texture for each
         TgxTileLayer bgLayer = Playfield.TileLayers[0];
-        TextureScreenRenderer renderer = (TextureScreenRenderer)bgLayer.Screen.Renderer;
+        TiledTextureScreenRenderer renderer = (TiledTextureScreenRenderer)bgLayer.Screen.Renderer;
         bgLayer.Screen.Renderer = new MultiTextureScreenRenderer(new Texture2D[]
         { 
             new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(0), bgLayer.Is8Bit),

@@ -9,6 +9,7 @@ public class FramesDebugMenu : DebugMenu
     {
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
+        new("Act #1", () => new Act1()),
     };
 
     public override string Name => "Frames";
