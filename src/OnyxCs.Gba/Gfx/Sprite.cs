@@ -25,7 +25,7 @@ public class Sprite
         {
             // The following affine sprite rendering code has been re-implemented from Ray1Map. Credits to Droolie for writing it!
 
-            Rotation = MathF.Atan2(affineMatrix.Value.Pb / 256f, affineMatrix.Value.Pa / 256f);
+            Rotation = MathF.Atan2(affineMatrix.Value.Pb, affineMatrix.Value.Pa);
 
             float a = affineMatrix.Value.Pa;
             float b = affineMatrix.Value.Pb;
@@ -76,7 +76,7 @@ public class Sprite
             Effects |= SpriteEffects.FlipVertically;
 
         Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
-        Origin = new Vector2(Texture.Width / 2f, Texture.Height / 2f);
+        Origin = new Vector2(TextureRectangle.Width / 2f, TextureRectangle.Height / 2f);
         Color = color ?? Color.White;
     }
 
