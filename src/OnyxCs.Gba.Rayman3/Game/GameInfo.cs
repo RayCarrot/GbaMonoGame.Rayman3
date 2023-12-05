@@ -122,6 +122,27 @@ public static class GameInfo
         return count;
     }
 
+    public static MapId GetNextLevelId()
+    {
+        return (MapId)Level.NextLevelId;
+    }
+
+    public static void LoadLevel(MapId mapId)
+    {
+        if (mapId == MapId.MarshAwakening1 && PersistentInfo.LastCompletedLevel < (int)MapId.MarshAwakening1)
+        {
+            FrameManager.SetNextFrame(new Act2());
+        }
+        else if (mapId == MapId.PirateShip_M1 && PersistentInfo.LastCompletedLevel < (int)MapId.PirateShip_M1)
+        {
+            FrameManager.SetNextFrame(new Act5());
+        }
+        else
+        {
+            FrameManager.SetNextFrame(LevelFactory.Create(mapId));
+        }
+    }
+
     public static void SetNextMapId(MapId mapId)
     {
         LastGreenLumAlive = 0;

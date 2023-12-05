@@ -58,7 +58,7 @@ public partial class Rayman : MovableActor
                 if (Flag1_6)
                 {
                     // Hide while fading and then show spawn animation
-                    if (((FrameSideScroller)Frame.Current).TransitionsFX.FadeCoefficient == 0)
+                    if (!((FrameSideScroller)Frame.Current).TransitionsFX.IsFading)
                     {
                         if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
                             ActionId = IsFacingRight ? Action.Spawn_Curtain_Right : Action.Spawn_Curtain_Left;

@@ -4,11 +4,11 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
+public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
 
-    protected FrameSideScroller(MapId mapId)
+    public FrameSideScroller(MapId mapId)
     {
         GameInfo.SetNextMapId(mapId);
     }

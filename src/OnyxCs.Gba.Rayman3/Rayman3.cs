@@ -359,6 +359,9 @@ public class Rayman3 : GbaGame
         {
             { MapId.WoodLight_M1, id => new WoodLight_M1(id) },
         });
+
+        // Set default language
+        Localization.SetLanguage(0);
     }
 
     protected override void AddDebugWindowsAndMenus(DebugLayout debugLayout)

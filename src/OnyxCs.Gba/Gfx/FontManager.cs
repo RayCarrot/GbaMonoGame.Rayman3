@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -104,9 +105,14 @@ public static class FontManager
         Font32 = new LoadedFont(font32, CreateFontTexture(font32, Color.White, Color.Transparent), GetFontCharacterRectangles(font32));
     }
 
-    public static Sprite GetCharacterSprite(char c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color)
+    public static byte[] GetTextBytes(string text)
     {
-        LoadedFont font = fontSize switch
+        return Encoding.GetEncoding(1252).GetBytes(text);
+    }
+
+    public static int GetStringWidth(FontSize fontSize, string text)
+    {
+        LoadedFont loadedFont = fontSize switch
         {
             FontSize.Font8 => Font8,
             FontSize.Font16 => Font16,
@@ -114,9 +120,27 @@ public static class FontManager
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
-        Sprite sprite = new(font.Texture, font.CharacterRectangles[c], position, false, false, priority, affineMatrix, color);
+        int width = 0;
 
-        position += new Vector2(font.Font.CharacterWidths[c], 0);
+        foreach (byte c in GetTextBytes(text))
+            width += loadedFont.Font.CharacterWidths[c];
+
+        return width;
+    }
+
+    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color)
+    {
+        LoadedFont loadedFont = fontSize switch
+        {
+            FontSize.Font8 => Font8,
+            FontSize.Font16 => Font16,
+            FontSize.Font32 => Font32,
+            _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
+        };
+
+        Sprite sprite = new(loadedFont.Texture, loadedFont.CharacterRectangles[c], position, false, false, priority, affineMatrix, color);
+
+        position += new Vector2(loadedFont.Font.CharacterWidths[c], 0);
 
         return sprite;
     }

@@ -327,7 +327,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void Step()
     {
-        TransitionsFX.Step();
+        TransitionsFX.StepAll();
         AnimationPlayer.Execute();
 
         CurrentStepAction();
@@ -416,7 +416,7 @@ public class MenuAll : Frame, IHasPlayfield
             SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
             SoundManager.Play(Rayman3SoundEvent.Play__Switch1_Mix03);
 
-            Localization.Language = SelectedOption;
+            Localization.SetLanguage(SelectedOption);
 
             ScreenOutTransitionYOffset = 0;
             SelectedOption = 0;
@@ -424,7 +424,7 @@ public class MenuAll : Frame, IHasPlayfield
             GameLogoYOffset = 56;
             OtherGameLogoValue = 12;
 
-            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
+            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + Localization.LanguageUiIndex;
 
             // Center sprites if English
             if (Localization.Language == 0)

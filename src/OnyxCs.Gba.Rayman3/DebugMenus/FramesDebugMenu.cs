@@ -10,6 +10,11 @@ public class FramesDebugMenu : DebugMenu
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
         new("Act #1", () => new Act1()),
+        new("Act #2", () => new Act2()),
+        new("Act #3", () => new Act3()),
+        new("Act #4", () => new Act4()),
+        new("Act #5", () => new Act5()),
+        new("Act #6", () => new Act6()),
     };
 
     public override string Name => "Frames";

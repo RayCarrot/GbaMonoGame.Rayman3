@@ -1,10 +1,10 @@
 ﻿namespace OnyxCs.Gba.Rayman3;
 
-public class Act1 : Act
+public class Act5 : Act
 {
     public override void Init()
     {
-        Init(Engine.Loader.Act1);
+        Init(Engine.Loader.Act5);
     }
 
     public override void Step()
@@ -12,6 +12,6 @@ public class Act1 : Act
         base.Step();
 
         if (IsFinished)
-            GameInfo.LoadLevel(MapId.WoodLight_M1);
+            FrameManager.SetNextFrame(new FrameSideScroller(MapId.PirateShip_M1));
     }
 }
