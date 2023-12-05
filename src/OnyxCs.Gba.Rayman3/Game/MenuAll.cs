@@ -25,6 +25,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     private AnimationPlayer AnimationPlayer { get; set; }
     private TgxPlayfield2D Playfield { get; set; }
+    private TransitionsFX TransitionsFX { get; set; }
 
     private MenuData Data { get; set; }
     private Action CurrentStepAction { get; set; }
@@ -313,8 +314,8 @@ public class MenuAll : Frame, IHasPlayfield
 
         GameTime.IsPaused = false;
 
-        // TODO: TransitionsFX::Ctor();
-        // TODO: TransitionsFX::FadeInInit(1);
+        TransitionsFX = new TransitionsFX();
+        TransitionsFX.FadeInInit(1 / 16f);
 
         SteamTimer = 0;
     }
@@ -326,6 +327,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void Step()
     {
+        TransitionsFX.Step();
         AnimationPlayer.Execute();
 
         CurrentStepAction();

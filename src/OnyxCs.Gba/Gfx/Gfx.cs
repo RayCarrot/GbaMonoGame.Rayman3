@@ -30,7 +30,7 @@ public static class Gfx
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void ClearSprites() => Sprites.Clear();
 
-    public static float Brightness { get; set; } = 1;
+    public static float Fade { get; set; } = 0;
 
     public static void Draw(GfxRenderer renderer)
     {
@@ -46,7 +46,7 @@ public static class Gfx
                 sprite.Draw(renderer);
         }
 
-        if (Brightness is >= 0 and < 1)
-            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.GameResolution.ToVector2(), Color.Black * (1 - Brightness));
+        if (Fade is > 0 and <= 1)
+            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.GameResolution.ToVector2(), Color.Black * Fade);
     }
 }

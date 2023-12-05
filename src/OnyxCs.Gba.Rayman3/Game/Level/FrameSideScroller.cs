@@ -22,6 +22,12 @@ public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
+    #region Public Properties
+
+    public TransitionsFX TransitionsFX { get; set; }
+
+    #endregion
+
     #region Interface Properties
 
     Scene2D IHasScene.Scene => Scene;
@@ -37,6 +43,7 @@ public abstract class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         GameInfo.GreenLums = 0;
         GameInfo.MapId = GameInfo.NextMapId ?? throw new Exception("No map id set");
         // TODO: More setup...
+        TransitionsFX = new TransitionsFX();
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
         // TODO: More setup...

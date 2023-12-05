@@ -125,7 +125,7 @@ public class Intro : Frame, IHasPlayfield
 
     private void FadePalette()
     {
-        Gfx.Brightness = FadeTime / (float)MaxFadeTime;
+        Gfx.Fade = 1 - FadeTime / (float)MaxFadeTime;
     }
 
     private void Skip()

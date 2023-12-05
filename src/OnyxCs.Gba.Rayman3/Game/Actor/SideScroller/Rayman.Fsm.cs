@@ -2,7 +2,6 @@
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.Engine2d;
-using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -59,7 +58,7 @@ public partial class Rayman : MovableActor
                 if (Flag1_6)
                 {
                     // Hide while fading and then show spawn animation
-                    if (TransitionsFX.FadeCoefficient == 0)
+                    if (((FrameSideScroller)Frame.Current).TransitionsFX.FadeCoefficient == 0)
                     {
                         if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
                             ActionId = IsFacingRight ? Action.Spawn_Curtain_Right : Action.Spawn_Curtain_Left;
