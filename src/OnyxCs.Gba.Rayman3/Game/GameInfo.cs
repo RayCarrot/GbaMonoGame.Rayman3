@@ -11,7 +11,7 @@ public static class GameInfo
     {
         field7_0x7 = true;
         PersistentInfo = new SaveGameSlot();
-        Reset();
+        ResetPersistentInfo();
     }
 
     public static MapId? NextMapId { get; set; }
@@ -25,12 +25,13 @@ public static class GameInfo
     public static byte field12_0xf { get; set; }
     public static CheatFlags Cheats { get; set; }
 
+    public static int CurrentSlot { get; set; }
     public static SaveGameSlot PersistentInfo { get; set; }
 
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
 
-    public static void Reset()
+    public static void ResetPersistentInfo()
     {
         PersistentInfo.Lums ??= new byte[125];
         Array.Fill(PersistentInfo.Lums, (byte)0xFF);
@@ -81,7 +82,7 @@ public static class GameInfo
         }
         else
         {
-            Reset();
+            ResetPersistentInfo();
             return false;
         }
     }
@@ -140,6 +141,86 @@ public static class GameInfo
         else
         {
             FrameManager.SetNextFrame(LevelFactory.Create(mapId));
+        }
+    }
+
+    public static void LoadLastWorld()
+    {
+        switch ((MapId)PersistentInfo.LastPlayedLevel)
+        {
+            case MapId.WoodLight_M1:
+            case MapId.WoodLight_M2:
+            case MapId.FairyGlade_M1:
+            case MapId.FairyGlade_M2:
+            case MapId.MarshAwakening1:
+            case MapId.BossMachine:
+            case MapId.SanctuaryOfBigTree_M1:
+            case MapId.SanctuaryOfBigTree_M2:
+            case MapId.Bonus1:
+                LoadLevel(MapId.World1);
+                break;
+            
+            case MapId.MissileSurPattes1:
+            case MapId.EchoingCaves_M1:
+            case MapId.EchoingCaves_M2:
+            case MapId.CavesOfBadDreams_M1:
+            case MapId.CavesOfBadDreams_M2:
+            case MapId.BossBadDreams:
+            case MapId.MenhirHills_M1:
+            case MapId.MenhirHills_M2:
+            case MapId.MarshAwakening2:
+            case MapId.Bonus2:
+            case MapId.ChallengeLy1:
+                LoadLevel(MapId.World2);
+                break;
+            
+            case MapId.SanctuaryOfStoneAndFire_M1:
+            case MapId.SanctuaryOfStoneAndFire_M2:
+            case MapId.SanctuaryOfStoneAndFire_M3:
+            case MapId.BeneathTheSanctuary_M1:
+            case MapId.BeneathTheSanctuary_M2:
+            case MapId.ThePrecipice_M1:
+            case MapId.ThePrecipice_M2:
+            case MapId.BossRockAndLava:
+            case MapId.TheCanopy_M1:
+            case MapId.TheCanopy_M2:
+            case MapId.SanctuaryOfRockAndLava_M1:
+            case MapId.SanctuaryOfRockAndLava_M2:
+            case MapId.SanctuaryOfRockAndLava_M3:
+            case MapId.Bonus3:
+                LoadLevel(MapId.World3);
+                break;
+
+            case MapId.TombOfTheAncients_M1:
+            case MapId.TombOfTheAncients_M2:
+            case MapId.BossScaleMan:
+            case MapId.IronMountains_M1:
+            case MapId.IronMountains_M2:
+            case MapId.MissileSurPattes2:
+            case MapId.PirateShip_M1:
+            case MapId.PirateShip_M2:
+            case MapId.BossFinal_M1:
+            case MapId.BossFinal_M2:
+            case MapId.Bonus4:
+            case MapId._1000Lums:
+            case MapId.ChallengeLy2:
+            case MapId.ChallengeLyGCN:
+                LoadLevel(MapId.World4);
+                break;
+
+            case MapId.Power1:
+            case MapId.Power2:
+            case MapId.Power3:
+            case MapId.Power4:
+            case MapId.Power5:
+            case MapId.Power6:
+            case MapId.World1:
+            case MapId.World2:
+            case MapId.World3:
+            case MapId.World4:
+            case MapId.WorldMap:
+            default:
+                throw new Exception("Invalid level to load world from");
         }
     }
 

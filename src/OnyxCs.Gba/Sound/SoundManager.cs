@@ -173,6 +173,12 @@ public static class SoundManager
         // TODO: Implement. Sound speed or pitch?
     }
 
+    public static void FUN_080abe44(Enum soundEventId, float unknown) => FUN_080abe44((ushort)(object)soundEventId, unknown);
+    public static void FUN_080abe44(ushort soundEventId, float unknown)
+    {
+        // TODO: Implement
+    }
+
     public static void StopAll()
     {
         foreach (PlayingSong playingSong in _playingSongs)

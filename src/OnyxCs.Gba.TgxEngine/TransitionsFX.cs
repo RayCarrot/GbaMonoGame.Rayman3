@@ -17,7 +17,12 @@ public class TransitionsFX
 
         if (BrightnessCoefficient < 1)
         {
-            // TODO: Implement
+            BrightnessCoefficient += stepSize;
+
+            if (FadeCoefficient > 1)
+                FadeCoefficient = 1;
+
+            Gfx.Fade = BrightnessCoefficient;
         }
         else if (FadeCoefficient == 0)
         {
@@ -27,7 +32,7 @@ public class TransitionsFX
         {
             FadeCoefficient -= stepSize;
 
-            if (FadeCoefficient <= 0)
+            if (FadeCoefficient < 0)
                 FadeCoefficient = 0;
 
             Gfx.Fade = FadeCoefficient;

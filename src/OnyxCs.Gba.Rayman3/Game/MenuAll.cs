@@ -35,7 +35,7 @@ public class MenuAll : Frame, IHasPlayfield
     private int SelectedOption { get; set; }
     private int StemMode { get; set; }
 
-    private int ScreenOutTransitionYOffset { get; set; }
+    private int TransitionValue { get; set; }
     private int GameLogoYOffset { get; set; }
     private int OtherGameLogoValue { get; set; }
     private int WheelRotation { get; set; }
@@ -47,11 +47,17 @@ public class MenuAll : Frame, IHasPlayfield
     private Page InitialPage { get; set; }
 
     private Slot[] Slots { get; } = new Slot[3];
+    private bool IsLoadingSlot { get; set; }
+
+    // Unknown
+    private byte StartEraseCursorTargetIndex { get; set; }
+    private byte StartEraseCursorCurrentIndex { get; set; }
+    private byte EraseSaveStage { get; set; }
 
     #endregion
 
     #region Interface Properties
-    
+
     TgxPlayfield IHasPlayfield.Playfield => Playfield;
 
     #endregion
@@ -156,7 +162,33 @@ public class MenuAll : Frame, IHasPlayfield
     {
         if (StemMode == 0)
         {
-            // TODO: Implement
+            if (Data.Cursor.CurrentAnimation == 16)
+            {
+                if (Data.Cursor.EndOfAnimation)
+                {
+                    Data.Cursor.CurrentAnimation = 0;
+
+                    if (Data.Cursor.ScreenPos.Y < 68)
+                    {
+                        Data.Stem.CurrentAnimation = 15;
+                    }
+                }
+            }
+            else if (Data.Cursor.ScreenPos.Y >= 68)
+            {
+                Data.Cursor.ScreenPos -= new Vector2(0, 4);
+
+                if (Data.Cursor.ScreenPos.Y < 68)
+                {
+                    Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, 67);
+                    Data.Stem.CurrentAnimation = 15;
+                }
+            }
+            else if (Data.Stem.CurrentAnimation == 15 && Data.Stem.EndOfAnimation)
+            {
+                Data.Stem.CurrentAnimation = 14;
+                StemMode = 3;
+            }
         }
         else if (StemMode == 1)
         {
@@ -172,13 +204,30 @@ public class MenuAll : Frame, IHasPlayfield
         }
         else if (StemMode == 2)
         {
-            // TODO: Check for step actions we haven't implemented yet
+            int baseY;
+            int lineHeight;
+
+            if (CurrentStepAction == Step_SinglePlayer)
+            {
+                baseY = 67;
+                lineHeight = 18;
+            }
+            // TODO: Implement
+            //else if (CurrentStepAction == FUN_08009450)
+            //{
+
+            //}
+            else
+            {
+                baseY = 67;
+                lineHeight = 16;
+            }
 
             if (SelectedOption != PrevSelectedOption)
             {
                 if (SelectedOption < PrevSelectedOption)
                 {
-                    int yPos = SelectedOption * 16 + 67;
+                    int yPos = SelectedOption * lineHeight + baseY;
 
                     if (yPos < Data.Cursor.ScreenPos.Y)
                     {
@@ -192,7 +241,7 @@ public class MenuAll : Frame, IHasPlayfield
                 }
                 else
                 {
-                    int yPos = SelectedOption * 16 + 67;
+                    int yPos = SelectedOption * lineHeight + baseY;
 
                     if (yPos > Data.Cursor.ScreenPos.Y)
                     {
@@ -227,7 +276,7 @@ public class MenuAll : Frame, IHasPlayfield
         Data.Stem.CurrentAnimation = 1;
 
         if (Data.Cursor.ScreenPos.Y < 68 && Data.Cursor.CurrentAnimation != 16)
-            Data.Cursor.CurrentAnimation = 15;
+            Data.Stem.CurrentAnimation = 15;
     }
 
     private void SelectOption(int selectedOption, bool playSound)
@@ -239,6 +288,45 @@ public class MenuAll : Frame, IHasPlayfield
 
             if (playSound)
                 SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+        }
+    }
+
+    private void SetEraseCursorTargetIndex(byte targetIndex)
+    {
+        StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+        StartEraseCursorTargetIndex = targetIndex;
+    }
+
+    private void MoveStartEraseCursor()
+    {
+        if (StartEraseCursorTargetIndex != StartEraseCursorCurrentIndex)
+        {
+            int targetXPos = StartEraseCursorTargetIndex * 72 + 106;
+
+            if (StartEraseCursorTargetIndex < StartEraseCursorCurrentIndex)
+            {
+                if (Data.StartEraseCursor.ScreenPos.X > targetXPos)
+                {
+                    Data.StartEraseCursor.ScreenPos -= new Vector2(4, 0);
+                }
+                else
+                {
+                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+                }
+            }
+            else
+            {
+                if (Data.StartEraseCursor.ScreenPos.X < targetXPos)
+                {
+                    Data.StartEraseCursor.ScreenPos += new Vector2(4, 0);
+                }
+                else
+                {
+                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+                }
+            }
         }
     }
 
@@ -283,7 +371,8 @@ public class MenuAll : Frame, IHasPlayfield
                 break;
 
             case Page.SelectGameMode:
-                throw new NotImplementedException();
+                Playfield.TileLayers[3].Screen.IsEnabled = false;
+                CurrentStepAction = Step_InitializeTransitionToSelectGameMode;
                 break;
 
             case Page.Options:
@@ -418,13 +507,13 @@ public class MenuAll : Frame, IHasPlayfield
 
             Localization.SetLanguage(SelectedOption);
 
-            ScreenOutTransitionYOffset = 0;
+            TransitionValue = 0;
             SelectedOption = 0;
             PrevSelectedOption = 0;
             GameLogoYOffset = 56;
             OtherGameLogoValue = 12;
 
-            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + Localization.LanguageUiIndex;
+            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
 
             // Center sprites if English
             if (Localization.Language == 0)
@@ -445,7 +534,7 @@ public class MenuAll : Frame, IHasPlayfield
         TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
         mainCluster.Position += new Vector2(0, 3);
 
-        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, ScreenOutTransitionYOffset + 28);
+        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, TransitionValue + 28);
         AnimationPlayer.AddSortedObject(Data.LanguageList);
 
         MoveGameLogo();
@@ -453,14 +542,14 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.AddSortedObject(Data.GameLogo);
         AnimationPlayer.AddSortedObject(Data.GameModeList);
 
-        if (ScreenOutTransitionYOffset < -207)
+        if (TransitionValue < -207)
         {
-            ScreenOutTransitionYOffset = 0;
+            TransitionValue = 0;
             CurrentStepAction = Step_SelectGameMode;
         }
         else
         {
-            ScreenOutTransitionYOffset -= 3;
+            TransitionValue -= 3;
         }
     }
 
@@ -470,13 +559,13 @@ public class MenuAll : Frame, IHasPlayfield
         {
             SelectOption(SelectedOption == 0 ? 2 : SelectedOption - 1, true);
 
-            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
+            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
         }
         else if (JoyPad.CheckSingle(GbaInput.Down))
         {
             SelectOption(SelectedOption == 2 ? 0 : SelectedOption + 1, true);
 
-            Data.GameModeList.CurrentAnimation = Localization.Language * 3 + SelectedOption;
+            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
@@ -501,7 +590,7 @@ public class MenuAll : Frame, IHasPlayfield
             CurrentStepAction = Step_TransitionOutOfSelectGameMode;
             SoundManager.Play(Rayman3SoundEvent.Play__Store01_Mix01);
             SelectOption(0, false);
-            ScreenOutTransitionYOffset = 0;
+            TransitionValue = 0;
             SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
             TransitionOutCursorAndStem();
         }
@@ -514,17 +603,17 @@ public class MenuAll : Frame, IHasPlayfield
 
     private void Step_TransitionOutOfSelectGameMode()
     {
-        ScreenOutTransitionYOffset += 4;
+        TransitionValue += 4;
 
-        if (ScreenOutTransitionYOffset <= 160)
+        if (TransitionValue <= 160)
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position -= new Vector2(0, 4);
-            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - (ScreenOutTransitionYOffset >> 1));
+            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - (TransitionValue >> 1));
         }
-        else if (ScreenOutTransitionYOffset >= 220)
+        else if (TransitionValue >= 220)
         {
-            ScreenOutTransitionYOffset = 0;
+            TransitionValue = 0;
             CurrentStepAction = NextStepAction;
         }
 
@@ -532,6 +621,44 @@ public class MenuAll : Frame, IHasPlayfield
 
         MoveGameLogo();
         AnimationPlayer.AddSortedObject(Data.GameLogo);
+    }
+
+    private void Step_TransitionOutOfSinglePlayer()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 160)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position -= new Vector2(0, 4);
+            Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue / 2f);
+            Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue / 2f);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = NextStepAction;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
+
+            if (Slots[i] == null)
+            {
+                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
+                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
+            }
+        }
+
+        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
+        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
     }
 
     private void Step_InitializeTransitionToSinglePlayer()
@@ -563,26 +690,29 @@ public class MenuAll : Frame, IHasPlayfield
         SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
         ResetStem();
         SetBackgroundPalette(1);
+        StartEraseCursorCurrentIndex = 0;
+        StartEraseCursorTargetIndex = 0;
+        EraseSaveStage = 0;
         Data.StartEraseSelection.ScreenPos = new Vector2(80, 30);
         Data.StartEraseCursor.ScreenPos = new Vector2(106, 12);
     }
 
     private void Step_TransitionToSinglePlayer()
     {
-        ScreenOutTransitionYOffset += 4;
+        TransitionValue += 4;
 
-        if (ScreenOutTransitionYOffset <= 80)
+        if (TransitionValue <= 80)
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position += new Vector2(0, 8);
         }
 
-        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, (ScreenOutTransitionYOffset >> 1) - 50);
-        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, (ScreenOutTransitionYOffset >> 1) - 68);
+        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, (TransitionValue >> 1) - 50);
+        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, (TransitionValue >> 1) - 68);
 
-        if (ScreenOutTransitionYOffset >= 160)
+        if (TransitionValue >= 160)
         {
-            ScreenOutTransitionYOffset = 0;
+            TransitionValue = 0;
             CurrentStepAction = Step_SinglePlayer;
         }
 
@@ -607,9 +737,216 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
     }
 
+    private void Step_InitializeTransitionToSelectGameMode()
+    {
+        Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
+
+        // Center sprites if English
+        if (Localization.Language == 0)
+        {
+            Data.GameModeList.ScreenPos = new Vector2(86, Data.GameModeList.ScreenPos.Y);
+            Data.Cursor.ScreenPos = new Vector2(46, Data.Cursor.ScreenPos.Y);
+            Data.Stem.ScreenPos = new Vector2(60, Data.Stem.ScreenPos.Y);
+        }
+
+        // The game does a bit of a hack to skip the transition if we start at the game mode selection
+        if (InitialPage == Page.SelectGameMode)
+        {
+            CurrentStepAction = Step_SelectGameMode;
+            InitialPage = Page.SelectLanguage;
+        }
+        else
+        {
+            CurrentStepAction = Step_TransitionToSelectGameMode;
+            SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
+        }
+
+        Data.GameLogo.ScreenPos = new Vector2(174, Data.GameLogo.ScreenPos.Y);
+        OtherGameLogoValue = 0x14;
+        GameLogoYOffset = 0;
+
+        ResetStem();
+        SetBackgroundPalette(3);
+
+        SelectedOption = 0;
+    }
+
+    private void Step_TransitionToSelectGameMode()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 80)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position += new Vector2(0, 8);
+        }
+
+        if (TransitionValue >= 160)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = Step_SelectGameMode;
+        }
+
+        MoveGameLogo();
+
+        AnimationPlayer.AddSortedObject(Data.GameLogo);
+        AnimationPlayer.AddSortedObject(Data.GameModeList);
+    }
+
     private void Step_SinglePlayer()
     {
-        // TODO: Implement
+        switch (EraseSaveStage)
+        {
+            case 0:
+                if (IsLoadingSlot)
+                {
+                    if (!TransitionsFX.IsChangingBrightness)
+                    {
+                        SoundManager.StopAll();
+
+                        if (Slots[SelectedOption] == null)
+                        {
+                            // Create a new game
+                            FrameManager.SetNextFrame(new Act1());
+                            GameInfo.ResetPersistentInfo();
+                        }
+                        else
+                        {
+                            // Load an existing game
+                            GameInfo.Load(SelectedOption);
+                            GameInfo.LoadLastWorld();
+                        }
+
+                        GameInfo.CurrentSlot = SelectedOption;
+                        IsLoadingSlot = false;
+                    }
+                }
+                // Move start/erase to start
+                else if ((JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L)) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (StartEraseCursorTargetIndex != 0)
+                    {
+                        SetEraseCursorTargetIndex(0);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
+                        SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move start/erase to erase
+                else if ((JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R)) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SetEraseCursorTargetIndex(1);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
+                        SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move up
+                else if (JoyPad.CheckSingle(GbaInput.Up) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (SelectedOption == 0)
+                        SelectOption(2, true);
+                    else
+                        SelectOption(SelectedOption - 1, true);
+                }
+                // Move down
+                else if (JoyPad.CheckSingle(GbaInput.Down) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (SelectedOption == 2)
+                        SelectOption(0, true);
+                    else
+                        SelectOption(SelectedOption + 1, true);
+                }
+                // Select slot
+                else if (JoyPad.CheckSingle(GbaInput.A) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    Data.Cursor.CurrentAnimation = 16;
+
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    }
+                    else if (Slots[SelectedOption] != null)
+                    {
+                        EraseSaveStage = 1;
+                        TransitionValue = 0;
+                        SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    }
+                    else
+                    {
+                        SoundManager.Play(Rayman3SoundEvent.Play__Back01_Mix01);
+                    }
+                }
+                break;
+
+            case 1:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue);
+
+                if (TransitionValue >= 64)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 2;
+                    Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 21;
+                    Data.StartEraseSelection.ScreenPos = new Vector2(144, -80);
+                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -38);
+                }
+                break;
+
+            case 2:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 80);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 38);
+
+                if (TransitionValue >= 80)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 3;
+                }
+                break;
+
+            case 3:
+                // TODO: Implement
+                break;
+
+            case 4:
+                // TODO: Implement
+                break;
+
+            case 5:
+                // TODO: Implement
+                break;
+        }
+
+        if (JoyPad.CheckSingle(GbaInput.B) && !TransitionsFX.IsChangingBrightness && !IsLoadingSlot)
+        {
+            if (EraseSaveStage == 0)
+            {
+                NextStepAction = Step_InitializeTransitionToSelectGameMode;
+                CurrentStepAction = Step_TransitionOutOfSinglePlayer;
+                SoundManager.Play(Rayman3SoundEvent.Play__Store01_Mix01);
+                TransitionValue = 0;
+                SelectOption(0, false);
+                TransitionOutCursorAndStem();
+            }
+            else if (EraseSaveStage == 1)
+            {
+                EraseSaveStage = 5;
+            }
+            else if (EraseSaveStage == 2)
+            {
+                EraseSaveStage = 4;
+                TransitionValue = 80 - TransitionValue;
+            }
+            else if (EraseSaveStage == 3)
+            {
+                EraseSaveStage = 4;
+                TransitionValue = 0;
+            }
+        }
+
+        MoveStartEraseCursor();
 
         for (int i = 0; i < 3; i++)
         {
@@ -631,7 +968,17 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
         AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
 
-        // TODO: Implement
+        if (!IsLoadingSlot && Data.Cursor.CurrentAnimation == 16 && Data.Cursor.EndOfAnimation)
+        {
+            Data.Cursor.CurrentAnimation = 0;
+
+            if (StartEraseCursorTargetIndex == 0)
+            {
+                SoundManager.FUN_080abe44(Rayman3SoundEvent.None, 1);
+                IsLoadingSlot = true;
+                TransitionsFX.FadeOutInit(2 / 16f);
+            }
+        }
     }
 
     #endregion

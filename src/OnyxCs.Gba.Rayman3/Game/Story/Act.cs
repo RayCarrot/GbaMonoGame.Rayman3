@@ -259,7 +259,7 @@ public abstract class Act : Frame
                 if (ActResource.Frames.Value[CurrentFrameIndex].TextId == -1 ||
                     CurrentTextLine >= CurrentText.LinesCount)
                 {
-                    TransitionsFX.FadeOutInit(1);
+                    TransitionsFX.FadeOutInit(1 / 16f);
                     IsFadingOut = true;
                     SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
                 }
