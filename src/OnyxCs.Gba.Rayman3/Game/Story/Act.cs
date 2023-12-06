@@ -238,7 +238,7 @@ public abstract class Act : Frame
         else if (!IsFadingOut)
         {
             // Skip cutscene
-            if (JoyPad.Check(GbaInput.Start))
+            if (JoyPad.CheckSingle(GbaInput.Start))
             {
                 CurrentFrameIndex = ActResource.FramesCount;
                 TransitionsFX.FadeOutInit(1 / 16f);
@@ -254,7 +254,7 @@ public abstract class Act : Frame
             {
                 TransitionTextIn();
             }
-            else if (JoyPad.Check(GbaInput.A))
+            else if (JoyPad.CheckSingle(GbaInput.A))
             {
                 if (ActResource.Frames.Value[CurrentFrameIndex].TextId == -1 ||
                     CurrentTextLine >= CurrentText.LinesCount)
