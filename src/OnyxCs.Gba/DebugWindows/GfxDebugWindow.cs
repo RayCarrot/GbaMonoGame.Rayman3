@@ -10,6 +10,12 @@ public class GfxDebugWindow : DebugWindow
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
+        ImGui.SeparatorText("General");
+
+        float fade = Gfx.Fade;
+        ImGui.SliderFloat("Fade", ref fade, 0, 1);
+        Gfx.Fade = fade;
+
         ImGui.SeparatorText("Screens");
 
         if (ImGui.BeginTable("_screens", 7))
