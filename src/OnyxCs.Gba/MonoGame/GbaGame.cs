@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -139,6 +138,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
         _debugLayout.AddWindow(new LoggerDebugWindow());
         _debugLayout.AddWindow(new GfxDebugWindow());
+        _debugLayout.AddWindow(new SoundDebugWindow());
         _debugLayout.AddMenu(new WindowsDebugMenu());
         AddDebugWindowsAndMenus(_debugLayout);
 
@@ -175,6 +175,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
         {
             IsPaused = !IsPaused;
+
+            if (IsPaused)
+                SoundManager.Pause();
+            else
+                SoundManager.Resume();
         }
 
         // Run one frame

@@ -12,7 +12,7 @@ public static class SoundManager
     private static readonly Dictionary<int, SoundEffect> _songs = new();
     private static SoundBank _soundBank;
 
-    private static readonly List<PlayingSong> _playingSongs = new();
+    internal static readonly List<PlayingSong> _playingSongs = new();
 
     internal static void Load(int soundBankResourceId, Dictionary<int, string> songTable)
     {
@@ -134,8 +134,9 @@ public static class SoundManager
                         if (res == null)
                             return;
 
-                        SoundEffectInstance snd = _songs[res.SongTableIndex].CreateInstance();
-                        _playingSongs.Add(new PlayingSong(soundEventId, obj, snd));
+                        SoundEffect song = _songs[res.SongTableIndex];
+                        SoundEffectInstance snd = song.CreateInstance();
+                        _playingSongs.Add(new PlayingSong(soundEventId, obj, snd, song));
                         //snd.Volume = evt.Volume / 100f; // TODO: Might be wrong
                         snd.IsLooped = res.Flag0; // TODO: Not 100% sure about this
                         snd.Play();
@@ -190,7 +191,23 @@ public static class SoundManager
         _playingSongs.Clear();
     }
 
-    private record PlayingSong(ushort EventId, object Obj, SoundEffectInstance SoundInstance)
+    public static void Pause()
+    {
+        foreach (PlayingSong playingSong in _playingSongs)
+        {
+            playingSong.SoundInstance.Pause();
+        }
+    }
+
+    public static void Resume()
+    {
+        foreach (PlayingSong playingSong in _playingSongs)
+        {
+            playingSong.SoundInstance.Resume();
+        }
+    }
+
+    internal record PlayingSong(ushort EventId, object Obj, SoundEffectInstance SoundInstance, SoundEffect SoundEffect)
     {
         public ushort? NextSoundEventId { get; set; }
     }
