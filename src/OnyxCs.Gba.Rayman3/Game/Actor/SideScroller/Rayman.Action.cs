@@ -1,8 +1,6 @@
-﻿using OnyxCs.Gba.Engine2d;
+﻿namespace OnyxCs.Gba.Rayman3;
 
-namespace OnyxCs.Gba.Rayman3;
-
-public partial class Rayman : MovableActor
+public partial class Rayman
 {
     private new Action ActionId
     {

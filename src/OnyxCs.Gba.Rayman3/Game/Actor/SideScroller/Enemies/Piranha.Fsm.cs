@@ -2,7 +2,7 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public partial class Piranha : MovableActor
+public partial class Piranha
 {
     private void Fsm_Wait(FsmAction action)
     {

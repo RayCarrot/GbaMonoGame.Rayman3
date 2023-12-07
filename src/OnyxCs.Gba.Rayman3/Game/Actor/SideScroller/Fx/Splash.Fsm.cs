@@ -3,7 +3,7 @@ using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public partial class Splash : BaseActor
+public partial class Splash
 {
     private void Fsm_Default(FsmAction action)
     {
