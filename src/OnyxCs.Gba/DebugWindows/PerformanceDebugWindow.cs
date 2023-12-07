@@ -72,7 +72,7 @@ public class PerformanceDebugWindow : DebugWindow
         ImGui.Text($"Minor fps drops: {MinorFrameRateDrops}");
 
         ImGui.PlotLines(
-            label: "Memory (gb)", 
+            label: "Memory (mb)", 
             values: ref MemoryUsage[0], 
             values_count: MemoryUsageIndex, 
             values_offset: 0, 
