@@ -1,45 +1,55 @@
 ﻿using System;
+using System.Linq;
 using ImGuiNET;
 
 namespace OnyxCs.Gba.Rayman3;
 
 public class FramesDebugMenu : DebugMenu
 {
-    private FrameFactory[] FrameFactories { get; } =
+    private FrameMenuItem[] Menu { get; } =
     {
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
-        new("Act #1", () => new Act1()),
-        new("Act #2", () => new Act2()),
-        new("Act #3", () => new Act3()),
-        new("Act #4", () => new Act4()),
-        new("Act #5", () => new Act5()),
-        new("Act #6", () => new Act6()),
+        new("Story", null, new FrameMenuItem[]
+        {
+            new("Act #1", () => new Act1()),
+            new("Act #2", () => new Act2()),
+            new("Act #3", () => new Act3()),
+            new("Act #4", () => new Act4()),
+            new("Act #5", () => new Act5()),
+            new("Act #6", () => new Act6()),
+        }),
+        new("Levels", null, 
+            GameInfo.Levels.
+            Select((_, i) => new FrameMenuItem(((MapId)i).ToString(), () => LevelFactory.Create((MapId)i))).
+            ToArray()),
     };
 
     public override string Name => "Frames";
 
-    public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    private void DrawMenu(FrameMenuItem[] items)
     {
-        foreach (FrameFactory frameFactory in FrameFactories)
+        foreach (FrameMenuItem menuItem in items)
         {
-            if (ImGui.MenuItem(frameFactory.Name))
+            if (menuItem.SubMenu != null)
             {
-                FrameManager.SetNextFrame(frameFactory.CreateFrame());
+                if (ImGui.BeginMenu(menuItem.Name))
+                {
+                    DrawMenu(menuItem.SubMenu);
+                    ImGui.EndMenu();
+                }
             }
-        }
-
-        if (ImGui.BeginMenu("Levels"))
-        {
-            for (int i = 0; i < GameInfo.Levels.Length; i++)
+            else if (ImGui.MenuItem(menuItem.Name))
             {
-                if (ImGui.MenuItem(((MapId)i).ToString()))
-                    FrameManager.SetNextFrame(LevelFactory.Create((MapId)i));
+                FrameManager.SetNextFrame(menuItem.CreateFrame());
             }
-
-            ImGui.EndMenu();
         }
     }
 
-    private record FrameFactory(string Name, Func<Frame> CreateFrame);
+    public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        DrawMenu(Menu);
+    }
+
+    private record FrameMenuItem(string Name, Func<Frame> CreateFrame, FrameMenuItem[] SubMenu = null);
 }
