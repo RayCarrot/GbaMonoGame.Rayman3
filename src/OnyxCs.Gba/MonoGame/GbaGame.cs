@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     {
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
+        _frameStopWatch = new Stopwatch();
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -33,6 +35,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
+    private readonly Stopwatch _frameStopWatch;
 
     private SpriteBatch _spriteBatch;
     private GfxRenderer _gfxRenderer;
@@ -136,6 +139,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.ScreenCamera);
 
         _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
+        _debugLayout.AddWindow(new PerformanceDebugWindow());
         _debugLayout.AddWindow(new LoggerDebugWindow());
         _debugLayout.AddWindow(new GfxDebugWindow());
         _debugLayout.AddWindow(new SoundDebugWindow());
@@ -150,6 +154,17 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
         base.Update(gameTime);
+
+        if (DebugMode)
+        {
+            PerformanceDebugWindow performanceWindow = _debugLayout.GetWindow<PerformanceDebugWindow>();
+            if (!IsPaused && _frameStopWatch.IsRunning)
+                performanceWindow.AddFps(1 / (float)_frameStopWatch.Elapsed.TotalSeconds);
+            _frameStopWatch.Restart();
+
+            using Process p = Process.GetCurrentProcess();
+            performanceWindow.AddMemoryUsage(p.PrivateMemorySize64);
+        }
 
         JoyPad.Scan();
 
@@ -166,9 +181,14 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
             // Refresh sizes
             if (DebugMode)
+            {
                 _debugLayout.GetWindow<GameDebugWindow>()?.RefreshSize();
+            }
             else
+            {
                 SizeGameToWindow();
+                _frameStopWatch.Stop();
+            }
         }
 
         // Toggle pause
