@@ -68,9 +68,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction();
 
         if (EndOfFrame)
-        {
-            // TODO: Load next level
-        }
+            GameInfo.LoadLevel(GameInfo.GetNextLevelId());
     }
 
     #endregion
