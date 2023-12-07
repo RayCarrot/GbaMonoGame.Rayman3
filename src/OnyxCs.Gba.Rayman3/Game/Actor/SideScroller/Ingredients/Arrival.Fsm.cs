@@ -2,7 +2,7 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public partial class Arrival
+public partial class Arrive
 {
     private void Fsm_Idle(FsmAction action)
     {

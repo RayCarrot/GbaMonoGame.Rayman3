@@ -11,5 +11,5 @@ public enum ActorType
     
     Butterfly = 37,
 
-    Arrival = 101,
+    Arrive = 101,
 }

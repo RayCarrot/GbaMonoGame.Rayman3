@@ -1,6 +1,6 @@
 ﻿namespace OnyxCs.Gba.Rayman3;
 
-public partial class Arrival
+public partial class Arrive
 {
     private new Action ActionId
     {

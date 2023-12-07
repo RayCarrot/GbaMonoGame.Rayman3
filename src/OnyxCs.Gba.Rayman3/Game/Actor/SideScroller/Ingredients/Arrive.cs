@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Rayman3;
 
-public sealed partial class Arrival : ActionActor
+public sealed partial class Arrive : ActionActor
 {
-    public Arrival(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Arrive(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         LinkedActor = -1;
 
