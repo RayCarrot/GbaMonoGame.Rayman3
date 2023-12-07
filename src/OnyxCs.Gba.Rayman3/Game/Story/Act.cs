@@ -48,7 +48,7 @@ public abstract class Act : Frame
         if (!freezeFrame)
             CurrentFrameIndex++;
 
-        if (CurrentFrameIndex > ActResource.FramesCount)
+        if (CurrentFrameIndex > ActResource.LastFrameIndex)
         {
             IsFinished = true;
             return;
@@ -240,7 +240,7 @@ public abstract class Act : Frame
             // Skip cutscene
             if (JoyPad.CheckSingle(GbaInput.Start))
             {
-                CurrentFrameIndex = ActResource.FramesCount;
+                CurrentFrameIndex = ActResource.LastFrameIndex;
                 TransitionsFX.FadeOutInit(1 / 16f);
                 IsFadingOut = true;
                 SoundManager.StopAll();
@@ -276,7 +276,7 @@ public abstract class Act : Frame
             NextFrame(false);
         }
 
-        if (CurrentFrameIndex != ActResource.FramesCount || CurrentTextLine < CurrentText.LinesCount)
+        if (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.LinesCount)
         {
             if ((GameTime.ElapsedFrames & 0x10) != 0)
                 AnimationPlayer.AddObject(NextTextSymbol);
