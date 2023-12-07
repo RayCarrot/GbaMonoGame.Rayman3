@@ -68,7 +68,7 @@ public sealed partial class Rayman : MovableActor
     public bool Flag1_B { get; set; }
     public bool Flag1_C { get; set; }
     public bool Flag1_D { get; set; }
-    public bool Flag1_E { get; set; }
+    public bool FinishedMap { get; set; }
     public bool Flag1_F { get; set; }
 
     // Unknown flags 2
@@ -577,6 +577,43 @@ public sealed partial class Rayman : MovableActor
         return Inlined_FUN_1004c1f4();
     }
 
+    private void UpdateLastCompletedLevel()
+    {
+        if (GameInfo.MapId < MapId.Bonus1 && GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
+            GameInfo.PersistentInfo.LastCompletedLevel = (byte)GameInfo.MapId;
+    }
+
+    private void AutoSave()
+    {
+        switch (GameInfo.MapId)
+        {
+            case MapId.WoodLight_M1:
+            case MapId.FairyGlade_M1:
+            case MapId.SanctuaryOfBigTree_M1:
+            case MapId.EchoingCaves_M1:
+            case MapId.CavesOfBadDreams_M1:
+            case MapId.MenhirHills_M1:
+            case MapId.SanctuaryOfStoneAndFire_M1:
+            case MapId.SanctuaryOfStoneAndFire_M2:
+            case MapId.BeneathTheSanctuary_M1:
+            case MapId.ThePrecipice_M1:
+            case MapId.TheCanopy_M1:
+            case MapId.SanctuaryOfRockAndLava_M1:
+            case MapId.SanctuaryOfRockAndLava_M2:
+            case MapId.TombOfTheAncients_M1:
+            case MapId.IronMountains_M1:
+            case MapId.PirateShip_M1:
+            case MapId.BossFinal_M1:
+                return;
+        }
+
+        if (GameInfo.MapId is not (MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 or MapId.WorldMap))
+        {
+            GameInfo.PersistentInfo.LastPlayedLevel = (byte)GameInfo.MapId;
+            GameInfo.Save(GameInfo.CurrentSlot);
+        }
+    }
+
     private void ToggleNoClip()
     {
         if (JoyPad.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
@@ -622,6 +659,11 @@ public sealed partial class Rayman : MovableActor
         {
             // TODO: Implement
 
+            case Message.LevelEnd:
+                FinishedMap = true;
+                Fsm.ChangeAction(Fsm_EndMap);
+                return true;
+
             default:
                 return false;
         }
@@ -653,7 +695,7 @@ public sealed partial class Rayman : MovableActor
         Flag1_B = false;
         Flag1_C = false;
         Flag1_D = false;
-        Flag1_E = false;
+        FinishedMap = false;
         Flag1_F = false;
         //field17_0x92 = HitPoints;
         PrevSpeedY = 0;

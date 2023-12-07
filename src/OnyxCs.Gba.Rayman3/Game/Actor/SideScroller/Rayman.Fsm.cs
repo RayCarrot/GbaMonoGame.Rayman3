@@ -940,6 +940,248 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_EndMap(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ((FrameSideScroller)Frame.Current).CanPause = false;
+                Flag2_1 = false;
+                NextActionId = null;
+                MechSpeedX = 0;
+                if (HasLanded())
+                {
+                    if (FinishedMap)
+                    {
+                        Timer = 0;
+                        ActionId = IsFacingRight ? Action.Victory_Right : Action.Victory_Left;
+                        PlaySoundEvent(Rayman3SoundEvent.Play__OnoWin_Mix02__or__OnoWinRM_Mix02);
+
+                        if (GameInfo.MapId != MapId.BossBadDreams &&
+                            GameInfo.MapId != MapId.BossScaleMan &&
+                            GameInfo.MapId != MapId.BossFinal_M1 &&
+                            GameInfo.MapId != MapId.BossFinal_M2 &&
+                            GameInfo.MapId != MapId.BossMachine &&
+                            GameInfo.MapId != MapId.BossRockAndLava)
+                        {
+                            SoundManager.FUN_080abe44(Rayman3SoundEvent.Play__win3, 0);
+                        }
+                        else
+                        {
+                            // TODO: This call is a bit different on N-Gage - why?
+                            PlaySoundEvent(Rayman3SoundEvent.Play__Win_BOSS);
+                        }
+                    }
+                    else
+                    {
+                        ActionId = IsFacingRight ? Action.ReturnFromLevel_Right : Action.ReturnFromLevel_Left;
+                        Timer = 0;
+                    }
+
+                    ((FrameSideScroller)Frame.Current).IsTimed = false;
+                }
+                else
+                {
+                    ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                }
+                break;
+
+            case FsmAction.Step:
+                if (SoundManager.IsPlaying(Rayman3SoundEvent.Play__win3))
+                    SoundManager.Play(Rayman3SoundEvent.Stop__canopy);
+
+                // Don't allow horizontal movement while falling
+                if (ActionId is Action.Fall_Right or Action.Fall_Left)
+                    Mechanic.Speed = new Vector2(0, Mechanic.Speed.Y);
+
+                Timer++;
+
+                if (HasLanded() && ActionId is Action.Fall_Right or Action.Fall_Left)
+                {
+                    ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    return;
+                }
+
+                if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
+                {
+                    if (FinishedMap)
+                    {
+                        Timer = 0;
+                        ActionId = IsFacingRight ? Action.Victory_Right : Action.Victory_Left;
+                        PlaySoundEvent(Rayman3SoundEvent.Play__OnoWin_Mix02__or__OnoWinRM_Mix02);
+
+                        if (GameInfo.MapId != MapId.BossBadDreams &&
+                            GameInfo.MapId != MapId.BossScaleMan &&
+                            GameInfo.MapId != MapId.BossFinal_M1 &&
+                            GameInfo.MapId != MapId.BossFinal_M2 &&
+                            GameInfo.MapId != MapId.BossMachine &&
+                            GameInfo.MapId != MapId.BossRockAndLava)
+                        {
+                            SoundManager.FUN_080abe44(Rayman3SoundEvent.Play__win3, 0);
+                        }
+                        else
+                        {
+                            // TODO: This call is a bit different on N-Gage - why?
+                            PlaySoundEvent(Rayman3SoundEvent.Play__Win_BOSS);
+                        }
+                    }
+                    else
+                    {
+                        ActionId = IsFacingRight ? Action.ReturnFromLevel_Right : Action.ReturnFromLevel_Left;
+                        Timer = 0;
+                    }
+
+                    ((FrameSideScroller)Frame.Current).IsTimed = false;
+                    return;
+                }
+
+                if (ActionId is Action.Idle_Right or Action.Idle_Left or Action.ReturnFromLevel_Right or Action.ReturnFromLevel_Left &&
+                    ((!FinishedMap && Timer == 150) || (FinishedMap && Timer == 100)))
+                {
+                    if (SoundManager.IsPlaying(Rayman3SoundEvent.Play__Win_BOSS))
+                    {
+                        Timer -= 2;
+                        return;
+                    }
+
+                    // TODO: N-Gage already returns here - why? Check for other N-Gage changes in places before this...
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+                            SoundManager.StopAll();
+
+                        if (FinishedMap)
+                            SoundManager.StopAll();
+                    }
+
+                    return;
+                }
+
+                if (ActionId is not (Action.Idle_Right or Action.Idle_Left or Action.ReturnFromLevel_Right or Action.ReturnFromLevel_Left) ||
+                    ((FinishedMap || Timer <= 150) && (!FinishedMap || Timer <= 100)))
+                {
+                    if (!IsActionFinished)
+                        return;
+
+                    if (ActionId is (Action.Victory_Right or Action.Victory_Left))
+                    {
+                        ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                        Timer = 0;
+                    }
+
+                    if (Flag2_1)
+                        return;
+
+                    Flag2_1 = true;
+
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        // TODO: Call function FUN_0808a9f4 if a GCN level
+                    }
+
+                    switch (GameInfo.MapId)
+                    {
+                        case MapId.CavesOfBadDreams_M1:
+                        case MapId.CavesOfBadDreams_M2:
+                            // TODO: Implement
+                            break;
+
+                        case MapId.SanctuaryOfRockAndLava_M1:
+                        case MapId.SanctuaryOfRockAndLava_M2:
+                        case MapId.SanctuaryOfRockAndLava_M3:
+                            // TODO: Implement
+                            break;
+
+                        case MapId.Power6:
+                        case MapId.World1:
+                        case MapId.World2:
+                        case MapId.World3:
+                        case MapId.World4:
+                            // TODO: Implement
+                            break;
+
+                        case MapId.WorldMap:
+                            // TODO: Implement
+                            break;
+
+                        default:
+                            // TODO: Init circle transition out
+                            break;
+                    }
+                }
+
+                if (FinishedMap)
+                {
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        // TODO: Load GCN menu if a GCN level
+                    }
+
+                    if (GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
+                    {
+                        switch (GameInfo.MapId)
+                        {
+                            case MapId.WoodLight_M2:
+                                GameInfo.LoadLevel(MapId.Power1);
+                                break;
+
+                            case MapId.BossMachine:
+                                GameInfo.LoadLevel(MapId.Power2);
+                                break;
+
+                            case MapId.EchoingCaves_M2:
+                                GameInfo.LoadLevel(MapId.Power3);
+                                break;
+
+                            case MapId.SanctuaryOfStoneAndFire_M3:
+                                GameInfo.LoadLevel(MapId.Power5);
+                                break;
+
+                            case MapId.BossRockAndLava:
+                                GameInfo.LoadLevel(MapId.Power4);
+                                break;
+
+                            case MapId.BossScaleMan:
+                                GameInfo.LoadLevel(MapId.Power6);
+                                break;
+
+                            default:
+                                Frame.Current.EndOfFrame = true;
+                                UpdateLastCompletedLevel();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Frame.Current.EndOfFrame = true;
+                    }
+                }
+                else
+                {
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        // TODO: Load GCN menu if a GCN level
+                    }
+
+                    if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+                    {
+                        // TODO: Load worldmap
+                    }
+                    else
+                    {
+                        GameInfo.LoadLevel(GameInfo.World + MapId.World1);
+                    }
+                }
+
+                AutoSave();
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }

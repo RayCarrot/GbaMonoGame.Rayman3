@@ -354,6 +354,8 @@ public class Rayman3 : GbaGame
             { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
 
             { ActorType.Butterfly, (id, scene, resource) => new Butterfly(id, scene, resource) },
+
+            { ActorType.Arrival, (id, scene, resource) => new Arrival(id, scene, resource) },
         }, x => ((ActorType)x).ToString());
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {

@@ -26,6 +26,9 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     public TransitionsFX TransitionsFX { get; set; }
 
+    public bool CanPause { get; set; }
+    public bool IsTimed { get; set; }
+
     #endregion
 
     #region Interface Properties

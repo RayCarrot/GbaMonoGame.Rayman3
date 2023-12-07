@@ -174,10 +174,10 @@ public static class SoundManager
         // TODO: Implement. Sound speed or pitch?
     }
 
-    public static void FUN_080abe44(Enum soundEventId, float unknown) => FUN_080abe44((ushort)(object)soundEventId, unknown);
-    public static void FUN_080abe44(ushort soundEventId, float unknown)
+    public static void FUN_080abe44(Enum soundEventId, float fadeOut) => FUN_080abe44((ushort)(object)soundEventId, fadeOut);
+    public static void FUN_080abe44(ushort soundEventId, float fadeOut)
     {
-        // TODO: Implement
+        // TODO: Implement. Implement flags in Ghidra to understand this.
     }
 
     public static void StopAll()

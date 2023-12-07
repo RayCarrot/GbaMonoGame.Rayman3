@@ -10,4 +10,6 @@ public enum ActorType
     Cage = 13,
     
     Butterfly = 37,
+
+    Arrival = 101,
 }

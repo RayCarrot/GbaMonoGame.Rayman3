@@ -32,6 +32,9 @@ public partial class Rayman
         Land_Right = 18,
         Land_Left = 19,
 
+        Victory_Right = 50,
+        Victory_Left = 51,
+
         Sliding_Fast_Right = 66,
         Sliding_Fast_Left = 67,
         Sliding_Jump_Right = 68,
@@ -88,5 +91,7 @@ public partial class Rayman
         Damage_Shock_Left = 216,
         Spawn_Curtain_Right = 217,
         Spawn_Curtain_Left = 218,
+        ReturnFromLevel_Right = 219,
+        ReturnFromLevel_Left = 220,
     }
 }
