@@ -664,6 +664,10 @@ public sealed partial class Rayman : MovableActor
                 Fsm.ChangeAction(Fsm_EndMap);
                 return true;
 
+            case Message.LevelExit:
+                Fsm.ChangeAction(Fsm_EndMap);
+                return true;
+
             default:
                 return false;
         }

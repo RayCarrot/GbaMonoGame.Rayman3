@@ -8,7 +8,9 @@ public enum ActorType
     Splash = 4,
 
     Cage = 13,
-    
+
+    Depart = 30,
+
     Butterfly = 37,
 
     Arrive = 101,

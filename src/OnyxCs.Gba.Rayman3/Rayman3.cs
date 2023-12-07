@@ -353,6 +353,8 @@ public class Rayman3 : GbaGame
 
             { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
 
+            { ActorType.Depart, (id, scene, resource) => new Depart(id, scene, resource) },
+
             { ActorType.Butterfly, (id, scene, resource) => new Butterfly(id, scene, resource) },
 
             { ActorType.Arrive, (id, scene, resource) => new Arrive(id, scene, resource) },

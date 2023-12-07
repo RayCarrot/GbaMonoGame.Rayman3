@@ -24,6 +24,8 @@ public enum Message
 
     Cam_1027 = 1027,
 
+    LevelExit = 1031,
+
     Cam_1039 = 1039,
     Cam_1040 = 1040,
     

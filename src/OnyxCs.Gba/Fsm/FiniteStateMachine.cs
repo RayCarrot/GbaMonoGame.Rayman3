@@ -8,7 +8,7 @@ public class FiniteStateMachine
     {
         CurrentAction?.Invoke(FsmAction.UnInit);
         CurrentAction = newAction;
-        CurrentAction(FsmAction.Init);
+        CurrentAction?.Invoke(FsmAction.Init);
     }
 
     public void Step()
