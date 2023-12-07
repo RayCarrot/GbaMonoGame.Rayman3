@@ -80,6 +80,7 @@ The button mapping will be made customizable in the future, along with controlle
 | Toggle debug mode        | Escape             |
 | Toggle showing collision | T                  |
 | Toggle no-clip           | Z                  |
+| Increase no-clip speed   | Space              |
 | Scroll camera            | Right mouse button |
 | Zoom camera              | Mouse scroll wheel |
 

@@ -637,7 +637,7 @@ public sealed partial class Rayman : MovableActor
 
     private void DoNoClipBehavior()
     {
-        const int speed = 4;
+        int speed = JoyPad.Check(GbaInput.A) ? 7 : 4;
 
         if (JoyPad.Check(GbaInput.Up))
             Position -= new Vector2(0, speed);
