@@ -13,41 +13,64 @@ public class TileMapScreenRenderer : IScreenRenderer
         Width = width;
         Height = height;
         TileMap = tileMap;
-        TileSet = tileSet;
-        Palette = palette;
-        Is8Bit = is8Bit;
 
-        TileTextures = new Dictionary<int, Texture2D>();
+        TileSetRectangles = new Dictionary<int, Rectangle>();
+        List<Color> texColors = new();
+        const int texWidth = 32 * Constants.TileSize;
+        int texX = 0;
+        int texY = -Constants.TileSize;
+        Color[] emptyTileRow = new Color[Constants.TileSize * texWidth];
+
+        foreach (MapTile mapTile in tileMap)
+        {
+            if (mapTile.TileIndex == 0) 
+                continue;
+            
+            int key = mapTile.TileIndex * 16 + mapTile.PaletteIndex;
+
+            if (TileSetRectangles.ContainsKey(key)) 
+                continue;
+            
+            if (texX % texWidth == 0)
+            {
+                texColors.AddRange(emptyTileRow);
+                texX = 0;
+                texY += Constants.TileSize;
+            }
+
+            if (is8Bit)
+                TileHelpers.DrawTile_8bpp(texColors, texX, texY, texWidth, tileSet, (mapTile.TileIndex - 1) * 0x40, palette);
+            else
+                TileHelpers.DrawTile_4bpp(texColors, texX, texY, texWidth, tileSet, (mapTile.TileIndex - 1) * 0x20, palette, 16 * mapTile.PaletteIndex);
+
+            TileSetRectangles.Add(key, new Rectangle(texX, texY, Constants.TileSize, Constants.TileSize));
+
+            texX += Constants.TileSize;
+        }
+
+        TileSetTexture = new Texture2D(Engine.GraphicsDevice, texWidth, texY + Constants.TileSize);
+        TileSetTexture.SetData(texColors.ToArray());
     }
 
     public int Width { get; }
     public int Height { get; }
     public MapTile[] TileMap { get; }
-    public byte[] TileSet { get; }
-    public Palette Palette { get; }
-    public bool Is8Bit { get; }
-    public Dictionary<int, Texture2D> TileTextures { get; }
+
+    public Texture2D TileSetTexture { get; }
+    public Dictionary<int, Rectangle> TileSetRectangles { get; }
 
     public Vector2 Size => new(Width * Constants.TileSize, Height * Constants.TileSize);
 
     private Rectangle GetVisibleTilesArea(Vector2 position)
     {
-        Rectangle rect = new(position.ToPoint(), Size.ToPoint());
+        Box renderBox = new(position, Size);
 
-        int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
-        int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
-        int xEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.X, rect.Right) - rect.X) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
+        int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Constants.TileSize);
+        int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
-    }
-
-    private Texture2D CreateTileTexture(MapTile tile)
-    {
-        if (tile.TileIndex == 0)
-            return null;
-
-        return new TiledTexture2D(TileSet, tile.TileIndex - 1, tile.PaletteIndex, Palette, Is8Bit);
     }
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
@@ -64,15 +87,7 @@ public class TileMapScreenRenderer : IScreenRenderer
             {
                 MapTile tile = TileMap[tileY * Width + tileX];
 
-                int texKey = tile.TileIndex * 16 + tile.TileIndex;
-
-                if (!TileTextures.TryGetValue(texKey, out Texture2D tex))
-                {
-                    tex = CreateTileTexture(tile);
-                    TileTextures.Add(texKey, tex);
-                }
-
-                if (tex != null)
+                if (tile.TileIndex != 0)
                 {
                     SpriteEffects effects = SpriteEffects.None;
 
@@ -81,7 +96,7 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (tile.FlipY)
                         effects |= SpriteEffects.FlipVertically;
 
-                    renderer.Draw(tex, new Vector2(absTileX, absTileY), effects, color);
+                    renderer.Draw(TileSetTexture, new Vector2(absTileX, absTileY), TileSetRectangles[tile.TileIndex * 16 + tile.PaletteIndex], effects, color);
                 }
 
                 absTileX += Constants.TileSize;
