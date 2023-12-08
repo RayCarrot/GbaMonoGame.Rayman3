@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
@@ -338,7 +339,12 @@ public class Rayman3 : GbaGame
 
     #region Protected Methods
 
-    protected override Frame CreateInitialFrame() => new Intro(); // TODO: N-Gage should start with language selection
+    protected override Frame CreateInitialFrame() => Engine.Settings.Platform switch
+    {
+        Platform.GBA => new Intro(),
+        Platform.NGage => new NGageSplashScreensAct(),
+        _ => throw new UnsupportedPlatformException()
+    };
 
     protected override void Initialize()
     {

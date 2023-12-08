@@ -4,7 +4,7 @@ public class Act3 : Act
 {
     public override void Init()
     {
-        Init(Engine.Loader.Act3);
+        Init(Engine.Loader.Rayman3_Act3);
     }
 
     public override void Step()

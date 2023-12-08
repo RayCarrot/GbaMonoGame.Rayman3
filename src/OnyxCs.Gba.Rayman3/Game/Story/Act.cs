@@ -35,6 +35,12 @@ public abstract class Act : Frame
 
     #endregion
 
+    #region Protected Properties
+
+    protected bool IsAutomatic { get; set; } // N-Gage exclusive
+
+    #endregion
+
     #region Public Properties
 
     public bool IsFinished { get; private set; }
@@ -59,14 +65,14 @@ public abstract class Act : Frame
         if (frame.MusicSongEvent != Rayman3SoundEvent.None)
             SoundManager.Play(frame.MusicSongEvent);
 
-        if (!CachedTextureRenderers.TryGetValue(frame.Bitmap.Value!, out IScreenRenderer renderer))
+        if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
         {
             renderer = new TextureScreenRenderer(new BitmapTexture2D(
                 width: Engine.ScreenCamera.OriginalGameResolution.X,
                 height: Engine.ScreenCamera.OriginalGameResolution.Y, 
-                bitmap: frame.Bitmap.Value.ImgData, 
+                bitmap: frame.Bitmap.ImgData, 
                 palette: new Palette(frame.Palette)));
-            CachedTextureRenderers[frame.Bitmap.Value] = renderer;
+            CachedTextureRenderers[frame.Bitmap] = renderer;
         }
 
         BitmapScreen.Renderer = renderer;
@@ -276,7 +282,7 @@ public abstract class Act : Frame
             NextFrame(false);
         }
 
-        if (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.LinesCount)
+        if (!IsAutomatic && (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.LinesCount))
         {
             if ((GameTime.ElapsedFrames & 0x10) != 0)
                 AnimationPlayer.AddObject(NextTextSymbol);

@@ -12,6 +12,7 @@ public class FramesDebugMenu : DebugMenu
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
         new("Story", null, new FrameMenuItem[]
         {
+            new("NGage Splash Screens", () => new NGageSplashScreensAct()),
             new("Act #1", () => new Act1()),
             new("Act #2", () => new Act2()),
             new("Act #3", () => new Act3()),
