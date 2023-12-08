@@ -6,11 +6,8 @@ namespace OnyxCs.Gba;
 
 public class PerformanceDebugWindow : DebugWindow
 {
-    private float[] FrameRates { get; } = new float[200];
-    private int FrameRateIndex { get; set; }
-    
-    private float[] MemoryUsage { get; } = new float[200];
-    private int MemoryUsageIndex { get; set; }
+    private Graph FrameRateGraph { get; } = new(200);
+    private Graph MemoryUsageGraph { get; } = new(200);
     
     private int MinorFrameRateDrops { get; set; }
     private int MediumFrameRateDrops { get; set; }
@@ -20,16 +17,7 @@ public class PerformanceDebugWindow : DebugWindow
 
     public void AddFps(float fps)
     {
-        if (FrameRateIndex == FrameRates.Length)
-        {
-            Array.Copy(FrameRates, 1, FrameRates, 0, FrameRates.Length - 1);
-            FrameRates[^1] = fps;
-        }
-        else
-        {
-            FrameRates[FrameRateIndex] = fps;
-            FrameRateIndex++;
-        }
+        FrameRateGraph.Add((float)Math.Round(fps));
 
         if (fps < 50)
             MajorFrameRateDrops++;
@@ -44,41 +32,54 @@ public class PerformanceDebugWindow : DebugWindow
         // Get mb from bytes
         mem /= 0x100000;
 
-        if (MemoryUsageIndex == MemoryUsage.Length)
-        {
-            Array.Copy(MemoryUsage, 1, MemoryUsage, 0, MemoryUsage.Length - 1);
-            MemoryUsage[^1] = mem;
-        }
-        else
-        {
-            MemoryUsage[MemoryUsageIndex] = mem;
-            MemoryUsageIndex++;
-        }
+        MemoryUsageGraph.Add(mem);
     }
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
-        ImGui.PlotLines(
-            label: "Fps", 
-            values: ref FrameRates[0], 
-            values_count: FrameRateIndex, 
-            values_offset: 0, 
-            overlay_text: $"{FrameRates.ElementAtOrDefault(FrameRateIndex - 1):F}", 
-            scale_min: 0, 
-            scale_max: 60, 
-            graph_size: new System.Numerics.Vector2(800, 80));
+        FrameRateGraph.Draw("Fps", 0, 60, new System.Numerics.Vector2(800, 80));
         ImGui.Text($"Major fps drops: {MajorFrameRateDrops}");
         ImGui.Text($"Medium fps drops: {MediumFrameRateDrops}");
         ImGui.Text($"Minor fps drops: {MinorFrameRateDrops}");
 
-        ImGui.PlotLines(
-            label: "Memory (mb)", 
-            values: ref MemoryUsage[0], 
-            values_count: MemoryUsageIndex, 
-            values_offset: 0, 
-            overlay_text: $"{MemoryUsage.ElementAtOrDefault(MemoryUsageIndex - 1):F}", 
-            scale_min: 0, 
-            scale_max: 0x400, 
-            graph_size: new System.Numerics.Vector2(800, 200));
+        MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
+    }
+
+    private class Graph
+    {
+        public Graph(int length)
+        {
+            Values = new float[length];
+        }
+
+        private float[] Values { get; }
+        private int Index { get; set; }
+
+        public void Add(float value)
+        {
+            if (Index == Values.Length)
+            {
+                Array.Copy(Values, 1, Values, 0, Values.Length - 1);
+                Values[^1] = value;
+            }
+            else
+            {
+                Values[Index] = value;
+                Index++;
+            }
+        }
+
+        public void Draw(string label, float min, float max, System.Numerics.Vector2 size)
+        {
+            ImGui.PlotLines(
+                label: label,
+                values: ref Values[0],
+                values_count: Index,
+                values_offset: 0,
+                overlay_text: $"{Values.ElementAtOrDefault(Index - 1):F}",
+                scale_min: min,
+                scale_max: max,
+                graph_size: size);
+        }
     }
 }
