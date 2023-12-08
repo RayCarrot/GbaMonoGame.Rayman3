@@ -8,6 +8,7 @@ public class PerformanceDebugWindow : DebugWindow
 {
     private Graph FrameRateGraph { get; } = new(200);
     private Graph MemoryUsageGraph { get; } = new(200);
+    private Graph UpdateTimeGraph { get; } = new(200);
     
     private int MinorFrameRateDrops { get; set; }
     private int MediumFrameRateDrops { get; set; }
@@ -35,6 +36,11 @@ public class PerformanceDebugWindow : DebugWindow
         MemoryUsageGraph.Add(mem);
     }
 
+    public void AddUpdateTime(float time)
+    {
+        UpdateTimeGraph.Add(time);
+    }
+
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
         FrameRateGraph.Draw("Fps", 0, 60, new System.Numerics.Vector2(800, 80));
@@ -42,6 +48,7 @@ public class PerformanceDebugWindow : DebugWindow
         ImGui.Text($"Medium fps drops: {MediumFrameRateDrops}");
         ImGui.Text($"Minor fps drops: {MinorFrameRateDrops}");
 
+        UpdateTimeGraph.Draw("Update time", 0, 1000 / 60f, new System.Numerics.Vector2(800, 80));
         MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
     }
 

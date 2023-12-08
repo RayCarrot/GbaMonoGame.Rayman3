@@ -18,6 +18,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
         _frameStopWatch = new Stopwatch();
+        _updateTimeStopWatch = new Stopwatch();
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -36,10 +37,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
     private readonly Stopwatch _frameStopWatch;
+    private readonly Stopwatch _updateTimeStopWatch;
 
     private SpriteBatch _spriteBatch;
     private GfxRenderer _gfxRenderer;
     private GameRenderTarget _debugGameRenderTarget;
+    private PerformanceDebugWindow _performanceWindow;
 
     #endregion
 
@@ -96,7 +99,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         try
         {
+            if (DebugMode)
+                _updateTimeStopWatch.Restart();
+
             FrameManager.Step();
+
+            if (DebugMode)
+                _updateTimeStopWatch.Stop();
         }
         catch
         {
@@ -139,7 +148,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.ScreenCamera);
 
         _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
-        _debugLayout.AddWindow(new PerformanceDebugWindow());
+        _debugLayout.AddWindow(_performanceWindow = new PerformanceDebugWindow());
         _debugLayout.AddWindow(new LoggerDebugWindow());
         _debugLayout.AddWindow(new GfxDebugWindow());
         _debugLayout.AddWindow(new SoundDebugWindow());
@@ -157,13 +166,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         if (DebugMode)
         {
-            PerformanceDebugWindow performanceWindow = _debugLayout.GetWindow<PerformanceDebugWindow>();
             if (!IsPaused && _frameStopWatch.IsRunning)
-                performanceWindow.AddFps(1 / (float)_frameStopWatch.Elapsed.TotalSeconds);
+                _performanceWindow.AddFps(1 / (float)_frameStopWatch.Elapsed.TotalSeconds);
             _frameStopWatch.Restart();
 
             using Process p = Process.GetCurrentProcess();
-            performanceWindow.AddMemoryUsage(p.PrivateMemorySize64);
+            _performanceWindow.AddMemoryUsage(p.PrivateMemorySize64);
         }
 
         JoyPad.Scan();
@@ -210,6 +218,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         StepEngine();
+
+        if (DebugMode && !IsPaused)
+            _performanceWindow.AddUpdateTime(_updateTimeStopWatch.ElapsedMilliseconds);
     }
 
     protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
