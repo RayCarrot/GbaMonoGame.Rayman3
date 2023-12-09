@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
@@ -46,7 +47,8 @@ public static class Gfx
                 sprite.Draw(renderer);
         }
 
-        if (Fade is > 0 and <= 1)
+        // TODO: Add config option to use GBA fading on N-Gage
+        if (Engine.Settings.Platform == Platform.GBA && Fade is > 0 and <= 1)
             renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.GameResolution.ToVector2(), Color.Black * Fade);
     }
 }
