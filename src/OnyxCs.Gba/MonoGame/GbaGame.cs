@@ -43,6 +43,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private GfxRenderer _gfxRenderer;
     private GameRenderTarget _debugGameRenderTarget;
     private PerformanceDebugWindow _performanceWindow;
+    private int _skippedDraws = -1;
 
     #endregion
 
@@ -164,11 +165,15 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     {
         base.Update(gameTime);
 
+        _skippedDraws++;
+
         if (DebugMode)
         {
             if (!IsPaused && _frameStopWatch.IsRunning)
                 _performanceWindow.AddFps(1 / (float)_frameStopWatch.Elapsed.TotalSeconds);
             _frameStopWatch.Restart();
+
+            _performanceWindow.AddSkippedDraws(_skippedDraws);
 
             using Process p = Process.GetCurrentProcess();
             _performanceWindow.AddMemoryUsage(p.PrivateMemorySize64);
@@ -225,6 +230,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
     {
+        _skippedDraws = -1;
+
         if (DebugMode)
             _debugGameRenderTarget.BeginRender();
 

@@ -7,6 +7,7 @@ namespace OnyxCs.Gba;
 public class PerformanceDebugWindow : DebugWindow
 {
     private Graph FrameRateGraph { get; } = new(200);
+    private Graph SkippedDrawsGraph { get; } = new(200);
     private Graph MemoryUsageGraph { get; } = new(200);
     private Graph UpdateTimeGraph { get; } = new(200);
     
@@ -26,6 +27,11 @@ public class PerformanceDebugWindow : DebugWindow
             MediumFrameRateDrops++;
         else if (fps < 59)
             MinorFrameRateDrops++;
+    }
+
+    public void AddSkippedDraws(float skippedDraws)
+    {
+        SkippedDrawsGraph.Add(skippedDraws);
     }
 
     public void AddMemoryUsage(float mem)
@@ -48,7 +54,12 @@ public class PerformanceDebugWindow : DebugWindow
         ImGui.Text($"Medium fps drops: {MediumFrameRateDrops}");
         ImGui.Text($"Minor fps drops: {MinorFrameRateDrops}");
 
+        ImGui.Spacing();
+
+        SkippedDrawsGraph.Draw("Skipped draws", 0, 20, new System.Numerics.Vector2(800, 80));
+        ImGui.Spacing();
         UpdateTimeGraph.Draw("Update time", 0, 1000 / 60f, new System.Numerics.Vector2(800, 80));
+        ImGui.Spacing();
         MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
     }
 
