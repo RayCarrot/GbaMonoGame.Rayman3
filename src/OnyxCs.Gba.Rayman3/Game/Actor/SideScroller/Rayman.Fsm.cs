@@ -1044,7 +1044,7 @@ public partial class Rayman
                         return;
                     }
 
-                    // TODO: N-Gage already returns here - why? Check for other N-Gage changes in places before this...
+                    // TODO: N-Gage already returns here - why?
                     if (Engine.Settings.Platform == Platform.GBA)
                     {
                         if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
@@ -1108,6 +1108,7 @@ public partial class Rayman
                             // TODO: Init circle transition out
                             break;
                     }
+                    return;
                 }
 
                 if (FinishedMap)
