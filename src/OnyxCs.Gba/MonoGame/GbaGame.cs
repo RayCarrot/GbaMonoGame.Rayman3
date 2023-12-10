@@ -17,7 +17,6 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     {
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
-        _frameStopWatch = new Stopwatch();
         _updateTimeStopWatch = new Stopwatch();
 
         Content.RootDirectory = "Content";
@@ -36,7 +35,6 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
-    private readonly Stopwatch _frameStopWatch;
     private readonly Stopwatch _updateTimeStopWatch;
 
     private SpriteBatch _spriteBatch;
@@ -44,6 +42,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private GameRenderTarget _debugGameRenderTarget;
     private PerformanceDebugWindow _performanceWindow;
     private int _skippedDraws = -1;
+    private float _fps = 60;
 
     #endregion
 
@@ -169,11 +168,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         if (DebugMode)
         {
-            if (!IsPaused && _frameStopWatch.IsRunning)
-                _performanceWindow.AddFps(1 / (float)_frameStopWatch.Elapsed.TotalSeconds);
-            _frameStopWatch.Restart();
-
-            _performanceWindow.AddSkippedDraws(_skippedDraws);
+            if (!IsPaused)
+            {
+                _performanceWindow.AddFps(_fps);
+                _performanceWindow.AddSkippedDraws(_skippedDraws);
+            }
 
             using Process p = Process.GetCurrentProcess();
             _performanceWindow.AddMemoryUsage(p.PrivateMemorySize64);
@@ -194,14 +193,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
             // Refresh sizes
             if (DebugMode)
-            {
                 _debugLayout.GetWindow<GameDebugWindow>()?.RefreshSize();
-            }
             else
-            {
                 SizeGameToWindow();
-                _frameStopWatch.Stop();
-            }
         }
 
         // Toggle pause
@@ -230,6 +224,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     protected override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
     {
+        _fps = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         _skippedDraws = -1;
 
         if (DebugMode)
