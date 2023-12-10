@@ -166,6 +166,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         _skippedDraws++;
 
+        if (_skippedDraws > 0)
+            _fps = 0;
+
         if (DebugMode)
         {
             if (!IsPaused)
