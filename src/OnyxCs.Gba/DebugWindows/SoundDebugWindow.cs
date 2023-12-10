@@ -10,6 +10,9 @@ public class SoundDebugWindow : DebugWindow
     { 
         ImGui.SeparatorText("Songs");
 
+        if (ImGui.Button("Stop all"))
+            SoundManager.StopAll();
+
         if (ImGui.BeginTable("_songs", 5))
         {
             ImGui.TableSetupColumn("Event", ImGuiTableColumnFlags.WidthFixed);
