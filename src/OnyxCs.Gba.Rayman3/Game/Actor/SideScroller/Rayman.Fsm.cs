@@ -1105,7 +1105,7 @@ public partial class Rayman
                             break;
 
                         default:
-                            // TODO: Init circle transition out
+                            ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
                             break;
                     }
                     return;

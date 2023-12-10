@@ -18,7 +18,7 @@ public class GfxScreen
     public int Id { get; }
 
     /// <summary>
-    /// The screen drawing priority, a value between 0 and 3.
+    /// The screen drawing priority, a value between 0 and 3, or -1 for always on top
     /// </summary>
     public int Priority { get; set; }
 
