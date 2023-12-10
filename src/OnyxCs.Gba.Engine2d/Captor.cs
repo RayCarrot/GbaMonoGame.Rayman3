@@ -29,7 +29,7 @@ public class Captor : GameObject
     public int EventsToTrigger { get; set; }
     public int TriggeredCount { get; set; }
 
-    public Box GetCaptorBox() => _captorBox.Offset(Position);
+    public Box GetCaptorBox() => _captorBox;
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
