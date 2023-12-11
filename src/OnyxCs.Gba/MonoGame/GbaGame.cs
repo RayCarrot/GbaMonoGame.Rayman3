@@ -104,6 +104,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
             FrameManager.Step();
 
+            // If this frame did a load, and thus might have taken longer than 1/60th of a second, then
+            // we disable fixed time step to avoid MonoGame repeatedly calling Update() to make up for
+            // the lost time, and thus drop frames
+            if (Engine.IsLoading)
+                IsFixedTimeStep = false;
+
             if (DebugMode)
                 _updateTimeStopWatch.Stop();
         }
@@ -163,6 +169,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
         base.Update(gameTime);
+
+        // If the previous frame was loading, then we disable it now
+        if (Engine.IsLoading)
+        {
+            Engine.IsLoading = false;
+            IsFixedTimeStep = true;
+        }
 
         _skippedDraws++;
 

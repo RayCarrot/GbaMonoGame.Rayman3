@@ -26,6 +26,8 @@ public static class Engine
 
     #region MonoGame
 
+    internal static bool IsLoading { get; set; }
+
     /// <summary>
     /// The graphics device to use for creating textures.
     /// </summary>
@@ -122,6 +124,15 @@ public static class Engine
     internal static void Unload()
     {
         Context?.Dispose();
+    }
+
+    #endregion
+
+    #region Public Static Methods
+
+    public static void BeginLoad()
+    {
+        IsLoading = true;
     }
 
     #endregion

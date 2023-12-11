@@ -133,6 +133,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         InitNewCircleFXTransition(true);
 
+        Scene.AnimationPlayer.Execute();
+
         GameInfo.PlayLevelMusic();
         CurrentStepAction = Step_Normal;
     }
