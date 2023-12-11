@@ -1,7 +1,9 @@
 ﻿using System;
+using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
+using Action = System.Action;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -129,7 +131,10 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             IsEnabled = false,
             Renderer = CircleFXRenderer,
         };
-        Gfx.AddScreen(CircleFXScreen);
+
+        // TODO: N-Gage seems to only have a transition when enter the hub, and it's a slight fade
+        if (Engine.Settings.Platform == Platform.GBA)
+            Gfx.AddScreen(CircleFXScreen);
 
         InitNewCircleFXTransition(true);
 
