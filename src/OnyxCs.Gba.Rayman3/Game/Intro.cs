@@ -409,7 +409,7 @@ public class Intro : Frame, IHasPlayfield
         {
             AlphaTimer = 0x80;
             BlackLumAndLogoObj.CurrentAnimation = 8;
-            BlackLumAndLogoObj.SetCurrentFrame(5);
+            BlackLumAndLogoObj.CurrentFrame = 5;
             BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 70),

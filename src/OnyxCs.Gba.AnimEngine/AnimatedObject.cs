@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,6 +29,7 @@ public class AnimatedObject : AObject
 
     private Vector2 _screenPos;
     private int _currentAnimation;
+    private int _currentFrame;
 
     #endregion
 
@@ -72,14 +72,50 @@ public class AnimatedObject : AObject
         set
         {
             _currentAnimation = value;
-            CurrentFrame = 0;
+            _currentFrame = 0;
             ChannelIndex = 0;
             Timer = GetAnimation().Speed;
             EndOfAnimation = false;
             HasExecutedFrame = false;
         }
     }
-    public int CurrentFrame { get; private set; }
+
+    public int CurrentFrame
+    {
+        get => _currentFrame;
+        set
+        {
+            Animation anim = GetAnimation();
+
+            if (value != _currentFrame)
+            {
+                if (value == 0)
+                {
+                    ChannelIndex = 0;
+                }
+                else if (value > _currentFrame)
+                {
+                    int framesDiff = value - _currentFrame;
+
+                    for (int i = 0; i < framesDiff; i++)
+                        ChannelIndex += anim.ChannelsPerFrame[_currentFrame + i];
+                }
+                else
+                {
+                    int framesDiff = _currentFrame - value;
+
+                    for (int i = 0; i < framesDiff; i++)
+                        ChannelIndex += anim.ChannelsPerFrame[_currentFrame - i - 1];
+                }
+
+                _currentFrame = value;
+            }
+
+            Timer = anim.Speed;
+            HasExecutedFrame = false;
+            EndOfAnimation = false;
+        }
+    }
 
     public int ChannelIndex { get; set; }
     public int Timer { get; set; }
@@ -91,6 +127,8 @@ public class AnimatedObject : AObject
     #endregion
 
     #region Private Methods
+
+    private Animation GetAnimation() => Resource.Animations[CurrentAnimation];
 
     private IEnumerable<AnimationChannel> EnumerateCurrentChannels()
     {
@@ -143,7 +181,7 @@ public class AnimatedObject : AObject
         if (Timer == 0)
         {
             ChannelIndex += anim.ChannelsPerFrame[CurrentFrame];
-            CurrentFrame++;
+            _currentFrame++;
             Timer = anim.Speed;
             HasExecutedFrame = false;
 
@@ -152,13 +190,13 @@ public class AnimatedObject : AObject
 
             if (anim.DoNotRepeat)
             {
-                CurrentFrame--;
+                _currentFrame--;
                 ChannelIndex -= anim.ChannelsPerFrame[CurrentFrame];
                 HasExecutedFrame = true;
             }
             else
             {
-                CurrentFrame = 0;
+                _currentFrame = 0;
                 ChannelIndex = 0;
                 HasExecutedFrame = false;
             }
@@ -175,41 +213,6 @@ public class AnimatedObject : AObject
     #endregion
 
     #region Public Methods
-
-    public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
-
-    public void SetCurrentFrame(int frame)
-    {
-        Animation anim = GetAnimation();
-
-        if (frame != CurrentFrame)
-        {
-            if (frame == 0)
-            {
-                ChannelIndex = 0;
-            }
-            else if (frame > CurrentFrame)
-            {
-                int framesDiff = frame - CurrentFrame;
-
-                for (int i = 0; i < framesDiff; i++)
-                    ChannelIndex += anim.ChannelsPerFrame[CurrentFrame + i];
-            }
-            else
-            {
-                int framesDiff = CurrentFrame - frame;
-
-                for (int i = 0; i < framesDiff; i++)
-                    ChannelIndex += anim.ChannelsPerFrame[CurrentFrame - i - 1];
-            }
-
-            CurrentFrame = frame;
-        }
-
-        Timer = anim.Speed;
-        HasExecutedFrame = false;
-        EndOfAnimation = false;
-    }
 
     public void ExecuteUnframed()
     {

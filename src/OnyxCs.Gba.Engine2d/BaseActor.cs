@@ -58,7 +58,7 @@ public class BaseActor : GameObject
 
     public void RewindAction()
     {
-        AnimatedObject.SetCurrentFrame(0);
+        AnimatedObject.CurrentFrame = 0;
     }
 
     public virtual void Init() { }
