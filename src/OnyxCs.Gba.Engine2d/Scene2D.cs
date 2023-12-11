@@ -20,7 +20,8 @@ public class Scene2D
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
-        GameObjects = new GameObjects(this, scene);
+        GameObjects = new GameObjects(scene);
+        GameObjects.Load(this, scene);
 
         Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();

@@ -8,32 +8,15 @@ namespace OnyxCs.Gba.Engine2d;
 
 public class GameObjects
 {
-    public GameObjects(Scene2D scene, Scene2DResource sceneResource)
+    public GameObjects(Scene2DResource sceneResource)
     {
         ObjectsCount = sceneResource.GameObjectCount;
         AlwaysActorsCount = sceneResource.AlwaysActorsCount;
         ActorsCount = sceneResource.ActorsCount;
         CaptorsCount = sceneResource.CaptorsCount;
         KnotsWidth = sceneResource.KnotsWidth;
-        
         Objects = new GameObject[ObjectsCount];
-
-        // Create always actors
-        for (int i = 0; i < sceneResource.AlwaysActors.Length; i++)
-            Objects[i] = ObjectFactory.Create(i, scene, sceneResource.AlwaysActors[i]);
-
-        // Create actors
-        for (int i = 0; i < sceneResource.Actors.Length; i++)
-            Objects[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, scene, sceneResource.Actors[i]);
-
-        for (int i = 0; i < sceneResource.Captors.Length; i++)
-            Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, scene, sceneResource.Captors[i]);
-
         Knots = sceneResource.Knots;
-
-        // Initialize actors
-        foreach (BaseActor actor in Objects.Take(AlwaysActorsCount + ActorsCount).Cast<BaseActor>())
-            actor.Init();
     }
 
     public int ObjectsCount { get; }
@@ -46,6 +29,26 @@ public class GameObjects
     public byte KnotsWidth { get; }
     public Knot CurrentKnot { get; set; }
     public Knot PreviousKnot { get; set; }
+
+    // The game does this in the constructor, but we need the object instance to be created before doing this in case an
+    // object has to access the main actor of the scene
+    internal void Load(Scene2D scene, Scene2DResource sceneResource)
+    {
+        // Create always actors
+        for (int i = 0; i < sceneResource.AlwaysActors.Length; i++)
+            Objects[i] = ObjectFactory.Create(i, scene, sceneResource.AlwaysActors[i]);
+
+        // Create actors
+        for (int i = 0; i < sceneResource.Actors.Length; i++)
+            Objects[AlwaysActorsCount + i] = ObjectFactory.Create(AlwaysActorsCount + i, scene, sceneResource.Actors[i]);
+
+        for (int i = 0; i < sceneResource.Captors.Length; i++)
+            Objects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, scene, sceneResource.Captors[i]);
+
+        // Initialize actors
+        foreach (BaseActor actor in Objects.Take(AlwaysActorsCount + ActorsCount).Cast<BaseActor>())
+            actor.Init();
+    }
 
     public IEnumerable<BaseActor> EnumerateAlwaysActors(bool isEnabled)
     {

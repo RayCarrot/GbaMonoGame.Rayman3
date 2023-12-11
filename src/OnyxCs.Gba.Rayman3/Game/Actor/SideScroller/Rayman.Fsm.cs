@@ -453,12 +453,12 @@ public partial class Rayman
 
                     if (CanPunch(1))
                     {
-                        Attack(0, 0, 16, -16, 0);
+                        Attack(0, 0, new Vector2(16, -16), 0);
                         field23_0x98 = 0;
                     }
                     else if (CanPunch(2))
                     {
-                        Attack(0, 1, 16, -16, 0);
+                        Attack(0, 1, new Vector2(16, -16), 0);
 
                         if ((GameInfo.Powers & Power.DoubleFist) == 0)
                             field23_0x98 = 0;

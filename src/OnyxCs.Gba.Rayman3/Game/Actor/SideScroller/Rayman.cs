@@ -167,14 +167,91 @@ public sealed partial class Rayman : MovableActor
         return true;
     }
 
-    private void Attack(uint param1, byte type, float x, float y, byte param5)
+    private void Attack(int charge, byte type, Vector2 offset, byte param5)
     {
-        BaseActor actor = Scene.GameObjects.SpawnActor(ActorType.RaymanBody);
+        RaymanBody bodyPart = (RaymanBody)Scene.GameObjects.SpawnActor(ActorType.RaymanBody);
 
-        if (actor == null) 
+        if (bodyPart == null)
             return;
 
-        // TODO: Implement
+        if (MultiplayerManager.IsInMultiplayer)
+        {
+            // TODO: Implement
+        }
+
+        bodyPart.Rayman = this;
+        bodyPart.field4_0x66 = 0;
+
+        switch (type)
+        {
+            case 0:
+                // TODO: Hide sprites 3 and 2
+                break;
+
+            case 1:
+                // TODO: Hide sprites 16 and 15
+                break;
+
+            case 2:
+                // TODO: Hide sprites 5 and 4
+                bodyPart.field4_0x66 = 6;
+                break;
+
+            case 3:
+                // TODO: Hide sprites 12 and 11
+                bodyPart.field4_0x66 = 12;
+                break;
+
+            case 5:
+                // TODO: Hide sprites 3 and 2
+                bodyPart.field4_0x66 = 18;
+                break;
+
+            case 6:
+                // TODO: Hide sprites 16 and 15
+                bodyPart.field4_0x66 = 18;
+                break;
+        }
+
+        bodyPart.BodyPartType = type;
+
+        if (type == 5)
+        {
+            BodyParts[0] = bodyPart;
+            PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
+        }
+        else if (type == 6)
+        {
+            BodyParts[1] = bodyPart;
+            PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
+        }
+        else
+        {
+            BodyParts[type] = bodyPart;
+
+            if (type != 3)
+            {
+                if (ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left or Action.ChargeFistVariant_Right or Action.ChargeFistVariant_Left)
+                    PlaySoundEvent(Rayman3SoundEvent.Play__RayFist_Mix02);
+                else
+                    PlaySoundEvent(Rayman3SoundEvent.Play__RayFist2_Mix01);
+            }
+        }
+
+        bodyPart.Charge = charge;
+        bodyPart.field2_0x64 = param5; // TODO: A boolean?
+
+        if (IsFacingLeft)
+            offset *= new Vector2(-1, 1); // Flip x
+
+        bodyPart.Position = Position + offset;
+
+        bodyPart.ActionId = bodyPart.field4_0x66 + (IsFacingRight ? 1 : 2);
+
+        if (MultiplayerManager.IsInMultiplayer && Engine.Settings.Platform == Platform.NGage)
+        {
+            // TODO: Implement
+        }
     }
 
     private void UpdatePhysicalType()

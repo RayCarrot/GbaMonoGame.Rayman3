@@ -353,6 +353,7 @@ public class Rayman3 : GbaGame
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, scene, resource) => new Rayman(id, scene, resource) },
+            { ActorType.RaymanBody, (id, scene, resource) => new RaymanBody(id, scene, resource) },
 
             { ActorType.Piranha, (id, scene, resource) => new Piranha(id, scene, resource) },
             { ActorType.Splash, (id, scene, resource) => new Splash(id, scene, resource) },

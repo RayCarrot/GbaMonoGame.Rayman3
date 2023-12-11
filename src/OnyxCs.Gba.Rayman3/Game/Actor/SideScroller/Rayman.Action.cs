@@ -32,6 +32,9 @@ public partial class Rayman
         Land_Right = 18,
         Land_Left = 19,
 
+        ChargeFistVariant_Right = 36,
+        ChargeFistVariant_Left = 37,
+
         Victory_Right = 50,
         Victory_Left = 51,
 
