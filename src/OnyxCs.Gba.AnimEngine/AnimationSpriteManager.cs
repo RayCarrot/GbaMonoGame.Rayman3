@@ -8,6 +8,7 @@ namespace OnyxCs.Gba.AnimEngine;
 
 public class AnimationSpriteManager
 {
+    // TODO: Maybe it'd be worth having these be static?
     private Dictionary<AnimatedObjectResource, Palette[]> Palettes { get; } = new();
     private Dictionary<AnimatedObjectResource, Dictionary<int, Texture2D>> SpriteTextures { get; } = new();
 

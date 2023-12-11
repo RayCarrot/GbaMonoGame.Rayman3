@@ -3,6 +3,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace OnyxCs.Gba;
 
+// TODO: Rename Check methods to these? This matches how Unity does it and might be less confusing.
+// GetInputDown
+// GetInputUp
+// GetInput
+
 // TODO: Restructure this? In the game JoyPad is an abstract class with different implementations. For example the multiplayer
 //       mode has its own JoyPad. We probably don't need that, although supporting multiple input methods such as controllers
 //       and keyboard would be good. It also seems a bit weird having mouse support in a class named "JoyPad".
@@ -58,6 +63,22 @@ public static class JoyPad
     public static bool CheckSingle(Keys input)
     {
         return KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
+    }
+
+    public static bool CheckSingleReleased(GbaInput gbaInput)
+    {
+        // Cancel out if opposite directions are pressed
+        if (gbaInput is GbaInput.Left or GbaInput.Right && CheckSingleReleased(GbaButtonMapping[GbaInput.Left]) && CheckSingleReleased(GbaButtonMapping[GbaInput.Right]))
+            return false;
+        if (gbaInput is GbaInput.Up or GbaInput.Down && CheckSingleReleased(GbaButtonMapping[GbaInput.Up]) && CheckSingleReleased(GbaButtonMapping[GbaInput.Down]))
+            return false;
+
+        return CheckSingleReleased(GbaButtonMapping[gbaInput]);
+    }
+
+    public static bool CheckSingleReleased(Keys input)
+    {
+        return KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
     }
 
     public static Vector2 GetMousePosition()

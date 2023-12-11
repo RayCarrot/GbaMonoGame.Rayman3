@@ -43,8 +43,8 @@ public sealed partial class Rayman : MovableActor
 
     public ActorResource Resource { get; }
     private Action? NextActionId { get; set; }
-    public BaseActor Fist1 { get; set; }
-    public BaseActor Fist2 { get; set; }
+    public BaseActor[] BodyParts { get; } = new BaseActor[4];
+    public byte Charge { get; set; }
     public uint Timer { get; set; }
     public float MechSpeedX { get; set; } // TODO: SlidingSpeed?
     public byte PhysicalType { get; set; }
@@ -84,7 +84,6 @@ public sealed partial class Rayman : MovableActor
     // Unknown fields
     public byte field16_0x91 { get; set; }
     public byte field18_0x93 { get; set; }
-    public byte field21_0x96 { get; set; }
     public byte field22_0x97 { get; set; }
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; } // Bool?
@@ -106,6 +105,18 @@ public sealed partial class Rayman : MovableActor
         if (!MultiplayerManager.IsInMultiplayer)
         {
             return JoyPad.CheckSingle(input);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private bool CheckSingleReleasedInput(GbaInput input)
+    {
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            return JoyPad.CheckSingleReleased(input);
         }
         else
         {
@@ -142,8 +153,28 @@ public sealed partial class Rayman : MovableActor
 
     private bool CanPunch(int punchCount)
     {
-        // TODO: Implement this correctly
+        if (MultiplayerManager.IsInMultiplayer)
+        {
+            // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
+        }
+
+        if (BodyParts[0] == null)
+            return true;
+
+        if (BodyParts[1] == null && punchCount == 2 && (GameInfo.Powers & Power.DoubleFist) != 0)
+            return true;
+
         return true;
+    }
+
+    private void Attack(uint param1, byte type, float x, float y, byte param5)
+    {
+        BaseActor actor = Scene.GameObjects.SpawnActor(ActorType.RaymanBody);
+
+        if (actor == null) 
+            return;
+
+        // TODO: Implement
     }
 
     private void UpdatePhysicalType()
@@ -681,10 +712,7 @@ public sealed partial class Rayman : MovableActor
         //field10_0x84 = 0;
         //field11_0x88 = 0;
         NextActionId = null;
-        Fist1 = null;
-        Fist2 = null;
-        //field5_0x70 = 0;
-        //field6_0x74 = 0;
+        Array.Clear(BodyParts);
         Flag1_0 = false;
         Flag1_1 = false;
         Flag1_2 = false;
@@ -713,7 +741,7 @@ public sealed partial class Rayman : MovableActor
         field23_0x98 = 0;
         //field_0x90 = 0;
         //field_0x99 = 0;
-        field21_0x96 = 0;
+        Charge = 0;
         field22_0x97 = 0;
 
         Flag2_0 = false;

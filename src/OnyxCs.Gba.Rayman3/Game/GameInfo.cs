@@ -23,6 +23,7 @@ public static class GameInfo
     public static Vector2 CheckpointPosition { get; set; }
     public static bool field7_0x7 { get; set; }
     public static byte field12_0xf { get; set; }
+    public static Power Powers { get; set; }
     public static CheatFlags Cheats { get; set; }
 
     public static int CurrentSlot { get; set; }
@@ -126,6 +127,27 @@ public static class GameInfo
         }
 
         return count;
+    }
+
+    public static void SetPowerBasedOnMap(MapId mapId)
+    {
+        if (mapId >= MapId.WoodLight_M2)
+            Powers |= Power.DoubleFist;
+
+        if (mapId >= MapId.BossMachine)
+            Powers |= Power.Grab;
+
+        if (mapId >= MapId.EchoingCaves_M2)
+            Powers |= Power.Climb;
+
+        if (mapId >= MapId.SanctuaryOfStoneAndFire_M3)
+            Powers |= Power.SuperHelico;
+
+        if (mapId >= MapId.BossRockAndLava)
+            Powers |= Power.BodyShot;
+
+        if (mapId >= MapId.BossScaleMan)
+            Powers |= Power.ChargeShot;
     }
 
     public static MapId GetNextLevelId()
@@ -234,8 +256,91 @@ public static class GameInfo
         LastGreenLumAlive = 0;
         NextMapId = mapId;
         GreenLums = 0;
-        // TODO: More setup...
+        // TODO: Implement
+        SetPowerBasedOnMap((MapId)PersistentInfo.LastCompletedLevel);
 
+        switch (mapId)
+        {
+            case MapId.WoodLight_M1:
+            case MapId.WoodLight_M2:
+            case MapId.FairyGlade_M1:
+            case MapId.FairyGlade_M2:
+            case MapId.MarshAwakening1:
+            case MapId.BossMachine:
+            case MapId.SanctuaryOfBigTree_M1:
+            case MapId.SanctuaryOfBigTree_M2:
+            case MapId.Bonus1:
+            case MapId.World1:
+                World = 0;
+                break;
+
+            case MapId.MissileSurPattes1:
+            case MapId.EchoingCaves_M1:
+            case MapId.EchoingCaves_M2:
+            case MapId.CavesOfBadDreams_M1:
+            case MapId.CavesOfBadDreams_M2:
+            case MapId.BossBadDreams:
+            case MapId.MenhirHills_M1:
+            case MapId.MenhirHills_M2:
+            case MapId.MarshAwakening2:
+            case MapId.Bonus2:
+            case MapId.ChallengeLy1:
+            case MapId.World2:
+                World = 1;
+                break;
+
+            case MapId.SanctuaryOfStoneAndFire_M1:
+            case MapId.SanctuaryOfStoneAndFire_M2:
+            case MapId.SanctuaryOfStoneAndFire_M3:
+            case MapId.BeneathTheSanctuary_M1:
+            case MapId.BeneathTheSanctuary_M2:
+            case MapId.ThePrecipice_M1:
+            case MapId.ThePrecipice_M2:
+            case MapId.BossRockAndLava:
+            case MapId.TheCanopy_M1:
+            case MapId.TheCanopy_M2:
+            case MapId.SanctuaryOfRockAndLava_M1:
+            case MapId.SanctuaryOfRockAndLava_M2:
+            case MapId.SanctuaryOfRockAndLava_M3:
+            case MapId.Bonus3:
+            case MapId.World3:
+                World = 2;
+                break;
+
+            case MapId.TombOfTheAncients_M1:
+            case MapId.TombOfTheAncients_M2:
+            case MapId.BossScaleMan:
+            case MapId.IronMountains_M1:
+            case MapId.IronMountains_M2:
+            case MapId.MissileSurPattes2:
+            case MapId.PirateShip_M1:
+            case MapId.PirateShip_M2:
+            case MapId.BossFinal_M1:
+            case MapId.BossFinal_M2:
+            case MapId.Bonus4:
+            case MapId._1000Lums:
+            case MapId.ChallengeLy2:
+            case MapId.ChallengeLyGCN:
+            case MapId.World4:
+                World = 3;
+                break;
+
+            case MapId.Power1:
+            case MapId.Power2:
+            case MapId.Power3:
+            case MapId.Power4:
+            case MapId.Power5:
+            case MapId.Power6:
+                World = 4;
+                break;
+
+            // TODO: Multiplayer maps are world 5
+
+            case MapId.WorldMap:
+                // Do nothing
+                break;
+        }
+        // TODO: Implement
     }
 
     public static void PlayLevelMusic()

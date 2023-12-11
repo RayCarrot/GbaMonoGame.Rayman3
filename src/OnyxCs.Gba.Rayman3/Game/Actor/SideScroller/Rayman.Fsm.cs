@@ -253,7 +253,7 @@ public partial class Rayman
                 if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanPunch(2))
                 {
                     PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
-                    Fsm.ChangeAction(FUN_0802f5d8);
+                    Fsm.ChangeAction(Fsm_ChargeFist);
                     return;
                 }
 
@@ -368,7 +368,7 @@ public partial class Rayman
                 }
 
                 Timer = 0;
-                field21_0x96 = 0;
+                Charge = 0;
                 break;
 
             case FsmAction.Step:
@@ -445,21 +445,24 @@ public partial class Rayman
 
                 if (CheckInput(GbaInput.B))
                 {
-                    field21_0x96++;
+                    Charge++;
                 }
-                else if (CheckSingleInput(GbaInput.B) && field23_0x98 == 0)
+                else if (CheckSingleReleasedInput(GbaInput.B) && field23_0x98 == 0)
                 {
-                    field21_0x96 = 0;
+                    Charge = 0;
 
-                    // TODO: Implement punching code
-                    //if (CanPunch(1))
-                    //{
+                    if (CanPunch(1))
+                    {
+                        Attack(0, 0, 16, -16, 0);
+                        field23_0x98 = 0;
+                    }
+                    else if (CanPunch(2))
+                    {
+                        Attack(0, 1, 16, -16, 0);
 
-                    //}
-                    //else if (CanPunch(2))
-                    //{
-
-                    //}
+                        if ((GameInfo.Powers & Power.DoubleFist) == 0)
+                            field23_0x98 = 0;
+                    }
                 }
 
                 if (IsSliding)
@@ -546,10 +549,10 @@ public partial class Rayman
                     return;
                 }
 
-                // Punch
-                if (field23_0x98 == 0 && field21_0x96 > 10 && CheckInput(GbaInput.B) && CanPunch(2))
+                // Charge punch
+                if (field23_0x98 == 0 && Charge > 10 && CheckInput(GbaInput.B) && CanPunch(2))
                 {
-                    Fsm.ChangeAction(FUN_0802f5d8);
+                    Fsm.ChangeAction(Fsm_ChargeFist);
                     return;
                 }
                 break;
@@ -1197,7 +1200,7 @@ public partial class Rayman
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void FUN_0802f5d8(FsmAction action) { }
+    private void Fsm_ChargeFist(FsmAction action) { }
     private void FUN_0802e770(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
