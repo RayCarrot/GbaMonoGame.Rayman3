@@ -298,6 +298,9 @@ public class Rayman3 : GbaGame
 
     private void UpdateGameZoom(Microsoft.Xna.Framework.GameTime gameTime)
     {
+        if (!JoyPad.IsMouseOnScreen())
+            return;
+
         MouseState mouse = JoyPad.GetMouseState();
 
         if (mouse.MiddleButton == ButtonState.Pressed)
