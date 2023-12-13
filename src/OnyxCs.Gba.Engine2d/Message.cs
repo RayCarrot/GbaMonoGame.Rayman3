@@ -20,6 +20,15 @@ public enum Message
     Captor_Trigger_SendMessageWithCaptorParam = 204,
     
     // Rayman 3
+    CollectedYellowLum = 1009,
+    CollectedRedLum = 1010,
+    CollectedGreenLum = 1011,
+    CollectedBlueLum = 1012,
+    CollectedWhiteLum = 1013,
+    CollectedUnusedLum = 1014, // Doesn't exist
+    CollectedBigYellowLum = 1015,
+    CollectedBigBlueLum = 1016,
+
     LevelEnd = 1019,
 
     Cam_1027 = 1027,

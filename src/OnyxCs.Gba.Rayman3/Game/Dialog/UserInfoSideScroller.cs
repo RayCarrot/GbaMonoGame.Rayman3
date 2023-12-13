@@ -21,9 +21,21 @@ public class UserInfoSideScroller : Dialog
         CagesBar = new CagesBar();
     }
 
-    public LifeBar LifeBar { get; }
-    public LumsBar LumsBar { get; }
-    public CagesBar CagesBar { get; }
+    private LifeBar LifeBar { get; }
+    private LumsBar LumsBar { get; }
+    private CagesBar CagesBar { get; }
+
+    public void AddLums(int count)
+    {
+        if (LumsBar != null)
+        {
+            LumsBar.AddLums(count);
+        }
+        else
+        {
+            // TODO: 1000 lums bar
+        }
+    }
 
     public override void ProcessMessage()
     {

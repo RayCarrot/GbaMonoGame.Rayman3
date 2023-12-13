@@ -76,10 +76,8 @@ public partial class Lums
                     if (BossDespawnTimer == 1)
                         return;
 
-                    SoundManager.Play(Rayman3SoundEvent.Play__LumBleu_Mix02);
-                    Scene.MainActor.ProcessMessage((Message)(0x3f1 + ActionId)); // TODO: Name messages and handle in Rayman
-                    AnimatedObject.CurrentAnimation = 9;
                     BossDespawnTimer = 0;
+                    SoundManager.Play(Rayman3SoundEvent.Play__LumBleu_Mix02);
                 }
                 else
                 {
@@ -116,10 +114,21 @@ public partial class Lums
                             // TODO: Implement
                             break;
                     }
-
-                    Scene.MainActor.ProcessMessage((Message)(0x3f1 + ActionId)); // TODO: Name messages and handle in Rayman
-                    AnimatedObject.CurrentAnimation = 9;
                 }
+
+                Scene.MainActor.ProcessMessage(ActionId switch
+                {
+                    Action.YellowLum => Message.CollectedYellowLum,
+                    Action.RedLum => Message.CollectedRedLum,
+                    Action.GreenLum => Message.CollectedGreenLum,
+                    Action.BlueLum => Message.CollectedBlueLum,
+                    Action.WhiteLum => Message.CollectedWhiteLum,
+                    Action.UnusedLum => Message.CollectedUnusedLum,
+                    Action.BigYellowLum => Message.CollectedBigYellowLum,
+                    Action.BigBlueLum => Message.CollectedBigBlueLum,
+                    _ => throw new ArgumentOutOfRangeException(nameof(ActionId), ActionId, null)
+                });
+                AnimatedObject.CurrentAnimation = 9;
                 break;
 
             case FsmAction.Step:

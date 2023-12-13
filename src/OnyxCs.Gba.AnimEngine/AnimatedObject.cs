@@ -27,7 +27,6 @@ public class AnimatedObject : AObject
 
     #region Private Fields
 
-    private Vector2 _screenPos;
     private int _currentAnimation;
     private int _currentFrame;
 
@@ -44,24 +43,7 @@ public class AnimatedObject : AObject
     public bool HasExecutedFrame { get; set; }
     public bool IsPaused { get; set; }
 
-    public Vector2 ScreenPos
-    {
-        get
-        {
-            float x = _screenPos.X;
-            float y = _screenPos.Y;
-
-            if ((Anchor & ScreenAnchor.Right) != 0)
-                x = Engine.ScreenCamera.GameResolution.X - x;
-            if ((Anchor & ScreenAnchor.Bottom) != 0)
-                y = Engine.ScreenCamera.GameResolution.Y - y;
-
-            return new Vector2(x, y);
-        }
-        set => _screenPos = value;
-    }
-
-    public ScreenAnchor Anchor { get; set; }
+    public Vector2 ScreenPos { get; set; }
 
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }

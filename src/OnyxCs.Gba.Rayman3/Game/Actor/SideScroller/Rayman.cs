@@ -767,6 +767,30 @@ public sealed partial class Rayman : MovableActor
         {
             // TODO: Implement
 
+            case Message.CollectedYellowLum:
+                ((FrameSideScroller)Frame.Current).UserInfo.AddLums(1);
+                return true;
+
+            case Message.CollectedRedLum:
+                // TODO: Implement
+                return true;
+
+            case Message.CollectedBlueLum:
+                // TODO: Implement
+                return true;
+
+            case Message.CollectedWhiteLum:
+                // TODO: Implement
+                return true;
+
+            case Message.CollectedBigYellowLum:
+                ((FrameSideScroller)Frame.Current).UserInfo.AddLums(10);
+                return true;
+
+            case Message.CollectedBigBlueLum:
+                // TODO: Implement
+                return true;
+
             case Message.LevelEnd:
                 FinishedMap = true;
                 Fsm.ChangeAction(Fsm_EndMap);

@@ -37,6 +37,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     #region Public Properties
 
     public TransitionsFX TransitionsFX { get; set; }
+    public UserInfoSideScroller UserInfo { get; set; }
 
     public bool CanPause { get; set; }
     public bool IsTimed { get; set; }
@@ -123,7 +124,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
         // TODO: More setup...
-        Scene.AddDialog(new UserInfoSideScroller(GameInfo.Level.HasBlueLum));
+        UserInfo = new UserInfoSideScroller(GameInfo.Level.HasBlueLum);
+        Scene.AddDialog(UserInfo);
         // TODO: More setup...
         Scene.Init();
 

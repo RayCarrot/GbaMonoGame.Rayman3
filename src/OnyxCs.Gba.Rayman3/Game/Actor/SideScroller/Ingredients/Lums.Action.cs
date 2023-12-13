@@ -15,7 +15,7 @@ public partial class Lums
         GreenLum = 2,
         BlueLum = 3,
         WhiteLum = 4,
-        // 5 doesn't exist
+        UnusedLum = 5, // Doesn't exist
         BigYellowLum = 6, // Unused
         BigBlueLum = 7,
     }
