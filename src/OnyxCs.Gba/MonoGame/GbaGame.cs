@@ -207,11 +207,18 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         {
             DebugMode = !DebugMode;
 
-            // Refresh sizes
             if (DebugMode)
-                _debugLayout.GetWindow<GameDebugWindow>()?.RefreshSize();
+            {
+                foreach (DebugWindow window in _debugLayout.GetWindows())
+                    window.OnWindowOpened();
+            }
             else
+            {
+                foreach (DebugWindow window in _debugLayout.GetWindows())
+                    window.OnWindowClosed();
+                
                 SizeGameToWindow();
+            }
         }
 
         // Toggle pause

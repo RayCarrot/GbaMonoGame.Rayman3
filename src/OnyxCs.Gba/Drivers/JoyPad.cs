@@ -33,6 +33,8 @@ public static class JoyPad
     private static MouseState PreviousMouseState { get; set; }
     private static MouseState MouseState { get; set; }
 
+    public static Vector2 MouseOffset { get; set; }
+
     public static bool Check(GbaInput gbaInput)
     {
         // Cancel out if opposite directions are pressed
@@ -81,9 +83,11 @@ public static class JoyPad
         return KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
     }
 
+    public static bool IsMouseOnScreen() => Engine.ScreenCamera.VisibleArea.Contains(GetMousePosition());
+
     public static Vector2 GetMousePosition()
     {
-        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2());
+        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2() + MouseOffset);
     }
 
     public static Vector2 GetMousePositionDelta()

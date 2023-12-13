@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Engine2d;
@@ -17,6 +19,7 @@ public class SceneDebugWindow : DebugWindow
     private bool _fillBoxes;
 
     public override string Name => "Scene";
+    public GameObject HighlightedGameObject { get; set; }
     public GameObject SelectedGameObject { get; set; }
 
     private void DrawBox(GfxRenderer renderer, TgxPlayfield2D playfield, Box box, Color color)
@@ -32,11 +35,49 @@ public class SceneDebugWindow : DebugWindow
             renderer.DrawRectangle(box.ToRectangle(), color);
     }
 
+    private Box GetObjBox(GameObject obj)
+    {
+        if (obj is BaseActor actor)
+            return actor.GetViewBox();
+        else if (obj is Captor captor)
+            return captor.GetCaptorBox();
+        else
+            throw new Exception("Unsupported object type");
+    }
+
+    private void UpdateMouseDetection(Scene2D scene)
+    {
+        Vector2 mousePos = JoyPad.GetMousePosition();
+
+        if (!JoyPad.IsMouseOnScreen())
+            return;
+        
+        HighlightedGameObject = null;
+
+        foreach (GameObject obj in scene.GameObjects.EnumerateAllGameObjects(true))
+        {
+            Box box = GetObjBox(obj).Offset(-scene.Playfield.Camera.Position);
+
+            if (box.Contains(mousePos))
+            {
+                HighlightedGameObject = obj;
+                break;
+            }
+        }
+
+        if (JoyPad.GetMouseState().LeftButton == ButtonState.Pressed)
+        {
+            SelectedGameObject = HighlightedGameObject;
+        }
+    }
+
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
         if (Frame.Current is not IHasScene { Scene: { } scene2D }) 
             return;
-        
+
+        UpdateMouseDetection(scene2D);
+
         if (ImGui.Button("Deselect object"))
             SelectedGameObject = null;
 
@@ -165,9 +206,10 @@ public class SceneDebugWindow : DebugWindow
             }
         }
 
-        if (SelectedGameObject is BaseActor selectedActor)
-            DrawBox(renderer, scene2D.Playfield, selectedActor.GetViewBox(), Color.Red);
-        else if (SelectedGameObject is Captor selectedCaptor)
-            DrawBox(renderer, scene2D.Playfield, selectedCaptor.GetCaptorBox(), Color.Red);
+        if (HighlightedGameObject != null)
+            DrawBox(renderer, scene2D.Playfield, GetObjBox(HighlightedGameObject), Color.Orange);
+
+        if (SelectedGameObject != null)
+            DrawBox(renderer, scene2D.Playfield, GetObjBox(SelectedGameObject), Color.Red);
     }
 }

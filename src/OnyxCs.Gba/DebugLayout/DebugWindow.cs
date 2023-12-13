@@ -9,4 +9,7 @@ public abstract class DebugWindow
     public abstract void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager);
 
     public virtual void DrawGame(GfxRenderer renderer) { }
+
+    public virtual void OnWindowOpened() { }
+    public virtual void OnWindowClosed() { }
 }

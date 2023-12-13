@@ -53,6 +53,7 @@ public readonly struct Box
     public Box FlipX() => new(MaxX * -1, MinY, MinX * -1, MaxY);
     public Box FlipY() => new(MinX, MaxY * -1, MaxX, MinX * -1);
     public bool Intersects(Box otherBox) => otherBox.MinX < MaxX && MinX < otherBox.MaxX && otherBox.MinY < MaxY && MinY < otherBox.MaxY;
+    public bool Contains(Vector2 position) => MinX <= position.X && position.X < MaxX && MinY <= position.Y && position.Y < MaxY;
 
     public Rectangle ToRectangle() => new((int)MinX, (int)MinY, (int)Width, (int)Height);
 
