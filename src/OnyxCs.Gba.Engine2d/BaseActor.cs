@@ -89,5 +89,6 @@ public class BaseActor : GameObject
         ImGui.Text($"State: {Fsm}");
         ImGui.Text($"Direction: {(IsFacingLeft ? "Left" : "Right")}");
         ImGui.Text($"Y-prio: {AnimatedObject.YPriority}");
+        ImGui.Text($"Animation: {AnimatedObject.CurrentAnimation}");
     }
 }

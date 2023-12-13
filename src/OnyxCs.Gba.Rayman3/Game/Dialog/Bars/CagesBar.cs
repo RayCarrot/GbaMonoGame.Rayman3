@@ -3,6 +3,7 @@ using OnyxCs.Gba.AnimEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Fully implement
 public class CagesBar : Bar
 {
     public AnimatedObject CageIcon { get; set; }

@@ -971,8 +971,7 @@ public partial class Rayman
                         }
                         else
                         {
-                            // TODO: This call is a bit different on N-Gage - why?
-                            PlaySoundEvent(Rayman3SoundEvent.Play__Win_BOSS);
+                            SoundManager.FUN_08001954(Rayman3SoundEvent.Play__Win_BOSS);
                         }
                     }
                     else
@@ -1024,8 +1023,7 @@ public partial class Rayman
                         }
                         else
                         {
-                            // TODO: This call is a bit different on N-Gage - why?
-                            PlaySoundEvent(Rayman3SoundEvent.Play__Win_BOSS);
+                            SoundManager.FUN_08001954(Rayman3SoundEvent.Play__Win_BOSS);
                         }
                     }
                     else
@@ -1077,9 +1075,9 @@ public partial class Rayman
 
                     Flag2_1 = true;
 
-                    if (Engine.Settings.Platform == Platform.GBA)
+                    if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
-                        // TODO: Call function FUN_0808a9f4 if a GCN level
+                        // TODO: Call function in GameCube frame class
                     }
 
                     switch (GameInfo.MapId)
@@ -1116,12 +1114,11 @@ public partial class Rayman
 
                 if (FinishedMap)
                 {
-                    if (Engine.Settings.Platform == Platform.GBA)
+                    if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
-                        // TODO: Load GCN menu if a GCN level
+                        // TODO: Load GCN menu
                     }
-
-                    if (GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
+                    else if (GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
                     {
                         switch (GameInfo.MapId)
                         {
@@ -1162,12 +1159,11 @@ public partial class Rayman
                 }
                 else
                 {
-                    if (Engine.Settings.Platform == Platform.GBA)
+                    if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
-                        // TODO: Load GCN menu if a GCN level
+                        // TODO: Load GCN menu
                     }
-
-                    if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+                    else if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     {
                         // TODO: Load worldmap
                     }

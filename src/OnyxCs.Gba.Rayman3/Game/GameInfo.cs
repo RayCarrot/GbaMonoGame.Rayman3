@@ -16,13 +16,17 @@ public static class GameInfo
 
     public static MapId? NextMapId { get; set; }
     public static MapId MapId { get; set; }
+    public static LevelType LevelType { get; set; }
     public static int World { get; set; }
     public static int LoadedYellowLums { get; set; }
+    public static int YellowLumsCount { get; set; }
+    public static int CagesCount { get; set; }
     public static int GreenLums { get; set; }
     public static int LastGreenLumAlive { get; set; }
     public static Vector2 CheckpointPosition { get; set; }
     public static bool field7_0x7 { get; set; }
     public static byte field12_0xf { get; set; }
+    public static bool field22_0x1b { get; set; }
     public static Power Powers { get; set; }
     public static CheatFlags Cheats { get; set; }
 
@@ -103,6 +107,58 @@ public static class GameInfo
         return (PersistentInfo.Cages[cageId >> 3] & (1 << (cageId & 7))) == 0;
     }
 
+    public static void KillLum(int lumId)
+    {
+        PersistentInfo.Lums[lumId >> 3] = (byte)(PersistentInfo.Lums[lumId >> 3] & ~(1 << (lumId & 7)));
+    }
+
+    public static void KillCage(int cageId)
+    {
+        PersistentInfo.Cages[cageId >> 3] = (byte)(PersistentInfo.Cages[cageId >> 3] & ~(1 << (cageId & 7)));
+    }
+
+    public static int GetCollectedYellowLumsInLevel(MapId mapId)
+    {
+        if (LevelType == LevelType.GameCube)
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            // TODO: Different implementation if GCN level
+
+            int count = 0;
+
+            for (int i = 0; i < Levels[(int)mapId].LumsCount; i++)
+            {
+                if (HasCollectedYellowLum(i, mapId))
+                    count++;
+            }
+
+            return count;
+        }
+    }
+
+    public static int GetCollectedCagesInLevel(MapId cageId)
+    {
+        if (LevelType == LevelType.GameCube)
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            int count = 0;
+
+            for (int i = 0; i < Levels[(int)cageId].CagesCount; i++)
+            {
+                if (HasCollectedCage(i, cageId))
+                    count++;
+            }
+
+            return count;
+        }
+    }
+
     public static int GetTotalCollectedYellowLums()
     {
         int count = 0;
@@ -116,7 +172,7 @@ public static class GameInfo
         return count;
     }
 
-    public static int GetTotalCollectedYellowCages()
+    public static int GetTotalCollectedCages()
     {
         int count = 0;
 
@@ -127,6 +183,49 @@ public static class GameInfo
         }
 
         return count;
+    }
+
+    public static bool HasCollectedYellowLum(int lumId, MapId mapId)
+    {
+        return GetLumStatus(Levels[(int)mapId].GlobalLumsIndex + lumId);
+    }
+
+    public static bool HasCollectedCage(int cageId, MapId mapId)
+    {
+        return GetCageStatus(Levels[(int)mapId].GlobalCagesIndex + cageId);
+    }
+
+    public static void SetYellowLumAsCollected(int lumId)
+    {
+        if (LevelType == LevelType.GameCube)
+        {
+            // TODO: Implement
+            return;
+        }
+
+        KillLum(Level.GlobalLumsIndex + lumId);
+
+        // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
+        if (GetCollectedYellowLumsInLevel(MapId) == YellowLumsCount && LevelType != LevelType.Race)
+        {
+            SoundManager.Play(Rayman3SoundEvent.Play__LumTotal_Mix02);
+            SoundManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+        }
+    }
+
+    public static void SetCageAsCollected(int cageId)
+    {
+        if (LevelType == LevelType.GameCube)
+        {
+            // TODO: Implement
+            return;
+        }
+
+        KillCage(Level.GlobalLumsIndex + cageId);
+
+        // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
+        if (GetCollectedCagesInLevel(MapId) == CagesCount)
+            SoundManager.Play(Rayman3SoundEvent.Play__LumTotal_Mix02);
     }
 
     public static void SetPowerBasedOnMap(MapId mapId)
@@ -256,7 +355,7 @@ public static class GameInfo
         LastGreenLumAlive = 0;
         NextMapId = mapId;
         GreenLums = 0;
-        // TODO: Implement
+        field22_0x1b = false;
         SetPowerBasedOnMap((MapId)PersistentInfo.LastCompletedLevel);
 
         switch (mapId)
@@ -350,6 +449,7 @@ public static class GameInfo
 
     public static void StopLevelMusic()
     {
-        SoundManager.Play(Level.StopMusicSoundEvent);
+        if (LevelType != LevelType.GameCube)
+            SoundManager.Play(Level.StopMusicSoundEvent);
     }
 }

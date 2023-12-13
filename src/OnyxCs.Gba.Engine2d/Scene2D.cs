@@ -161,12 +161,9 @@ public class Scene2D
         Camera.Fsm.Step();
     }
 
-    public bool IsDetectedMainActor(ActionActor actor)
+    public bool IsDetectedMainActor(Box box)
     {
-        Box actionBox = actor.GetActionBox();
-        Box mainActorDetectionBox = MainActor.GetDetectionBox();
-
-        return actionBox.Intersects(mainActorDetectionBox);
+        return box.Intersects(MainActor.GetDetectionBox());
     }
 
     public bool IsHitMainActor(InteractableActor actor)

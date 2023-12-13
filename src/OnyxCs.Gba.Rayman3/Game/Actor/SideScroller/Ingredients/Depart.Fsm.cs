@@ -11,7 +11,7 @@ public partial class Depart
                 break;
 
             case FsmAction.Step:
-                if (Scene.IsDetectedMainActor(this))
+                if (Scene.IsDetectedMainActor(GetActionBox()))
                 {
                     Scene.MainActor.ProcessMessage(MessageToSend);
                     Fsm.ChangeAction(null);

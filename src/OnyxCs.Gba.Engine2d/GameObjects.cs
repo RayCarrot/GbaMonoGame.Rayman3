@@ -120,6 +120,7 @@ public class GameObjects
 
     public BaseActor SpawnActor(int actorType)
     {
+        // TODO: Check IsSpawnable flag
         BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
         actor?.ProcessMessage(Message.ResurrectWakeUp);
         return actor;

@@ -121,6 +121,7 @@ public class AnimatedObject : AObject
     public int Timer { get; set; }
 
     public AffineMatrix? AffineMatrix { get; set; }
+    public int? PaletteIndex { get; set; }
 
     public BoxTable BoxTable { get; set; }
 
@@ -296,7 +297,7 @@ public class AnimatedObject : AObject
                         spriteShape: channel.SpriteShape,
                         spriteSize: channel.SpriteSize,
                         tileIndex: channel.TileIndex,
-                        paletteIndex: channel.PalIndex);
+                        paletteIndex: PaletteIndex ?? channel.PalIndex);
                     Gfx.AddSprite(new Sprite(
                         texture: tex,
                         position: new Vector2(xPos, yPos),

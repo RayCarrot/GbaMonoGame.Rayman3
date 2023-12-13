@@ -11,7 +11,7 @@ public abstract class GameObject : Object
         IsEnabled = gameObjectResource.IsEnabled;
         IsAwake = gameObjectResource.IsAwake;
         Flag_2 = false;
-        Flag_3 = gameObjectResource.Flag_3;
+        IsSpawnable = gameObjectResource.IsSpawnable;
         ResurrectsImmediately = gameObjectResource.ResurrectsImmediately;
         ResurrectsLater = gameObjectResource.ResurrectsLater;
         Flag_6 = gameObjectResource.Flag_6;
@@ -26,7 +26,7 @@ public abstract class GameObject : Object
     public bool IsEnabled { get; set; }
     public bool IsAwake { get; set; }
     public bool Flag_2 { get; set; }
-    public bool Flag_3 { get; set; }
+    public bool IsSpawnable { get; set; } // True for all always actors except the main actor(s)
     public bool ResurrectsImmediately { get; set; }
     public bool ResurrectsLater { get; set; }
     public bool Flag_6 { get; set; }

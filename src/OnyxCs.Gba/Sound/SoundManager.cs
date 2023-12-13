@@ -180,6 +180,12 @@ public static class SoundManager
         // TODO: Implement. Implement flags in Ghidra to understand this.
     }
 
+    public static void FUN_08001954(Enum soundEventId) => FUN_08001954((ushort)(object)soundEventId);
+    public static void FUN_08001954(ushort soundEventId)
+    {
+        // TODO: Implement
+    }
+
     public static void StopAll()
     {
         foreach (PlayingSong playingSong in _playingSongs)

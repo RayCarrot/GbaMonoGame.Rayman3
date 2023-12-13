@@ -18,7 +18,7 @@ public partial class Piranha
             case FsmAction.Step:
                 Timer++;
                 
-                if (Scene.IsDetectedMainActor(this) && Timer > 120)
+                if (Scene.IsDetectedMainActor(GetActionBox()) && Timer > 120)
                     Fsm.ChangeAction(Fsm_Move);
                 break;
 

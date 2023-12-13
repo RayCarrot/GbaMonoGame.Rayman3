@@ -346,7 +346,7 @@ public class MenuAll : Frame, IHasPlayfield
             bool loaded = GameInfo.Load(i);
 
             if (GameInfo.PersistentInfo.Lives != 0 && loaded)
-                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedYellowCages(), GameInfo.PersistentInfo.Lives);
+                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedCages(), GameInfo.PersistentInfo.Lives);
             else
                 Slots[i] = null;
         }

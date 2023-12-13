@@ -13,7 +13,7 @@ public partial class Arrive
                 break;
 
             case FsmAction.Step:
-                if (Scene.IsDetectedMainActor(this))
+                if (Scene.IsDetectedMainActor(GetActionBox()))
                 {
                     Scene.MainActor.ProcessMessage(Message.LevelEnd);
                     Fsm.ChangeAction(Fsm_EndLevel);

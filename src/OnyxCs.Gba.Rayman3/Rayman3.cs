@@ -358,6 +358,7 @@ public class Rayman3 : GbaGame
             { ActorType.Piranha, (id, scene, resource) => new Piranha(id, scene, resource) },
             { ActorType.Splash, (id, scene, resource) => new Splash(id, scene, resource) },
 
+            { ActorType.Lums, (id, scene, resource) => new Lums(id, scene, resource) },
             { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
 
             { ActorType.Depart, (id, scene, resource) => new Depart(id, scene, resource) },
