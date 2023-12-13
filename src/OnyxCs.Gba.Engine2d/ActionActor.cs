@@ -37,9 +37,9 @@ public class ActionActor : BaseActor
 
     public bool NewAction { get; set; }
 
-    public Box GetDetectionBox() => _detectionBox.Offset(Position);
-    public Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
-    public Box GetActionBox() => _actionBox.Offset(Position);
+    public virtual Box GetDetectionBox() => _detectionBox.Offset(Position);
+    public virtual Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
+    public virtual Box GetActionBox() => _actionBox.Offset(Position);
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {

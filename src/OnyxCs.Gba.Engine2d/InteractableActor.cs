@@ -12,7 +12,7 @@ public class InteractableActor : ActionActor
 
     private BoxTable AnimationBoxTable { get; }
 
-    public Box GetAttackBox()
+    public virtual Box GetAttackBox()
     {
         Box box = AnimationBoxTable.AttackBox;
 
@@ -25,7 +25,7 @@ public class InteractableActor : ActionActor
         return box.Offset(Position);
     }
 
-    public Box GetVulnerabilityBox()
+    public virtual Box GetVulnerabilityBox()
     {
         Box box = AnimationBoxTable.VulnerabilityBox;
 
