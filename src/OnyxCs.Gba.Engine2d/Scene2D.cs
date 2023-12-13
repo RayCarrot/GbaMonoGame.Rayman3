@@ -158,7 +158,7 @@ public class Scene2D
 
     public void RunCamera()
     {
-        Camera.Fsm.Step();
+        Camera.Step();
     }
 
     public bool IsDetectedMainActor(Box box)

@@ -329,12 +329,6 @@ public class Rayman3 : GbaGame
         }
     }
 
-    private void UpdateGameScroll()
-    {
-        if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed && Frame.Current is IHasPlayfield { Playfield: TgxPlayfield2D playfield2D })
-            playfield2D.Camera.Position += JoyPad.GetMousePositionDelta() * -1;
-    }
-
     #endregion
 
     #region Protected Methods
@@ -386,7 +380,7 @@ public class Rayman3 : GbaGame
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
-        base.Update(gameTime);
+        UpdateGameZoom(gameTime);
 
         // Toggle showing debug collision screen
         if (JoyPad.CheckSingle(Keys.T))
@@ -395,8 +389,7 @@ public class Rayman3 : GbaGame
                 playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
         }
 
-        UpdateGameZoom(gameTime);
-        UpdateGameScroll();
+        base.Update(gameTime);
     }
 
     #endregion

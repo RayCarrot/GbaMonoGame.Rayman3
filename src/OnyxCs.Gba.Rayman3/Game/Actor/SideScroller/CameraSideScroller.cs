@@ -1,6 +1,7 @@
 ﻿using System;
 using BinarySerializer.Onyx.Gba;
 using ImGuiNET;
+using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
 
@@ -57,6 +58,8 @@ public class CameraSideScroller : CameraActor2D
     public byte field18_0x30 { get; set; }
     public byte field20_0x32 { get; set; } // TODO: Enum? ScrollYMode?
     public byte field21_0x33 { get; set; }
+
+    public bool Debug_FreeMoveCamera { get; set; } // Custom free move camera
 
     private void UpdateTargetX()
     {
@@ -315,6 +318,19 @@ public class CameraSideScroller : CameraActor2D
         }
     }
 
+    public override void Step()
+    {
+        if (Debug_FreeMoveCamera)
+        {
+            if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed)
+                Scene.Playfield.Camera.Position += JoyPad.GetMousePositionDelta() * -1;
+        }
+        else
+        {
+            base.Step();
+        }
+    }
+
     public override void SetFirstPosition()
     {
         Vector2 pos;
@@ -361,6 +377,10 @@ public class CameraSideScroller : CameraActor2D
     public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
         base.DrawDebugLayout(debugLayout, textureManager);
+
+        bool freeMove = Debug_FreeMoveCamera;
+        ImGui.Checkbox("Free move (right mouse button)", ref freeMove);
+        Debug_FreeMoveCamera = freeMove;
 
         ImGui.Text($"Speed: {Speed.X} x {Speed.Y}");
         ImGui.Text($"Target: {TargetX} x {TargetY}");

@@ -51,7 +51,7 @@ public sealed partial class Rayman : MovableActor
     public bool IsSliding => PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f;
     public float PrevSpeedY { get; set; }
 
-    public bool NoClip { get; set; } // Custom no-clip mode
+    public bool Debug_NoClip { get; set; } // Custom no-clip mode
 
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
@@ -726,9 +726,9 @@ public sealed partial class Rayman : MovableActor
     {
         if (JoyPad.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
         {
-            NoClip = !NoClip;
+            Debug_NoClip = !Debug_NoClip;
 
-            if (NoClip)
+            if (Debug_NoClip)
             {
                 ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                 ChangeAction();
@@ -873,7 +873,7 @@ public sealed partial class Rayman : MovableActor
 
     public override void DoBehavior()
     {
-        if (NoClip)
+        if (Debug_NoClip)
             DoNoClipBehavior();
         else
             base.DoBehavior();
