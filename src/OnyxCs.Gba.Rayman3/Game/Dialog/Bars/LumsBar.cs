@@ -145,7 +145,7 @@ public class LumsBar : Bar
                 break;
         }
 
-        if (State != 0)
+        if (State != LumsBarState.Hide)
         {
             LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 77, 8 - YOffset);
             CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 52, 24 - YOffset);
