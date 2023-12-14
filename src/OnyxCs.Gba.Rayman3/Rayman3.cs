@@ -347,6 +347,7 @@ public class Rayman3 : GbaGame
     {
         base.Initialize();
 
+        // TODO: Implement the rest
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (id, scene, resource) => new Rayman(id, scene, resource) },
@@ -366,7 +367,28 @@ public class Rayman3 : GbaGame
         }, x => ((ActorType)x).ToString());
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {
+            // World 1
             { MapId.WoodLight_M1, id => new WoodLight_M1(id) },
+            { MapId.WoodLight_M2, id => new WoodLight_M2(id) },
+            { MapId.FairyGlade_M1, id => new FairyGlade_M1(id) },
+            { MapId.FairyGlade_M2, id => new FairyGlade_M2(id) },
+            // TODO: MarshAwakening1 - different on N-Gage
+            { MapId.BossMachine, id => new BossMachine(id) },
+            { MapId.SanctuaryOfBigTree_M1, id => new SanctuaryOfBigTree(id) },
+            { MapId.SanctuaryOfBigTree_M2, id => new SanctuaryOfBigTree(id) },
+
+            // World 2
+            // TODO: MissileSurPattes1 - different on N-Gage
+            { MapId.EchoingCaves_M1, id => new EchoingCaves_M1(id) },
+            { MapId.EchoingCaves_M2, id => new EchoingCaves_M2(id) },
+            { MapId.CavesOfBadDreams_M1, id => new CavesOfBadDreams(id) },
+            { MapId.CavesOfBadDreams_M2, id => new CavesOfBadDreams(id) },
+            { MapId.BossBadDreams, id => new BossBadDreams(id) },
+            { MapId.MenhirHills_M1, id => new MenhirHills_M1(id) },
+            { MapId.MenhirHills_M2, id => new FrameSideScroller(id) },
+            // TODO: MarshAwakening2 - different on N-Gage
+
+            // TODO: Implement the rest
         });
 
         // Set default language

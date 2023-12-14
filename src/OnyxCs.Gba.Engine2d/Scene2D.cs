@@ -57,7 +57,7 @@ public class Scene2D
         DrawActors();
     }
 
-    public void AddDialog(Dialog dialog)
+    public void AddDialog(Dialog dialog, bool param1, bool param2) // TODO: USe the bool params like the game does
     {
         Dialogs.Add(dialog);
         dialog.Load();

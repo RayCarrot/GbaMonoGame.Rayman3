@@ -3,9 +3,9 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class WoodLight_M1 : FrameSideScroller
+public class WoodLight_M2 : FrameSideScroller
 {
-    public WoodLight_M1(MapId mapId) : base(mapId) { }
+    public WoodLight_M2(MapId mapId) : base(mapId) { }
 
     private TextBoxDialog TextBox { get; set; }
 
@@ -22,7 +22,7 @@ public class WoodLight_M1 : FrameSideScroller
             TgxTileLayer cloudsLayer = Scene.Playfield.TileLayers[0];
             cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(((TextureScreenRenderer)cloudsLayer.Screen.Renderer).Texture, new[]
             {
-                32, 120, 227
+                15, 71, 227
             });
         }
     }

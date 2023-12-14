@@ -125,7 +125,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
         // TODO: More setup...
         UserInfo = new UserInfoSideScroller(GameInfo.Level.HasBlueLum);
-        Scene.AddDialog(UserInfo);
+        Scene.AddDialog(UserInfo, false, false);
         // TODO: More setup...
         Scene.Init();
 
@@ -153,6 +153,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     public override void UnInit()
     {
         GameInfo.StopLevelMusic();
+        SoundManager.StopAll();
     }
 
     public override void Step()

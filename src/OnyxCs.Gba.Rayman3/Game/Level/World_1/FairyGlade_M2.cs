@@ -3,9 +3,9 @@ using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;
 
-public class WoodLight_M1 : FrameSideScroller
+public class FairyGlade_M2 : FrameSideScroller
 {
-    public WoodLight_M1(MapId mapId) : base(mapId) { }
+    public FairyGlade_M2(MapId mapId) : base(mapId) { }
 
     private TextBoxDialog TextBox { get; set; }
 

@@ -7,10 +7,13 @@ namespace OnyxCs.Gba.Rayman3;
 // we do wrapping based on the entire map rather than what's loaded into vram (like the gba does).
 public class LevelCloudsRenderer : IScreenRenderer
 {
-    public LevelCloudsRenderer(Texture2D texture)
+    public LevelCloudsRenderer(Texture2D texture, int[] splits)
     {
         Texture = texture;
+        Splits = splits;
     }
+
+    private int[] Splits { get; }
 
     public Texture2D Texture { get; }
     public Vector2 Size => new(256, Texture.Height);
@@ -25,16 +28,26 @@ public class LevelCloudsRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        byte scroll0 = (byte)(GameTime.ElapsedFrames >> 1);
-        byte scroll1 = (byte)(GameTime.ElapsedFrames >> 2);
-        byte scroll2 = (byte)(GameTime.ElapsedFrames >> 3);
+        byte[] scrolls = 
+        {
+            (byte)(GameTime.ElapsedFrames >> 1),
+            (byte)(GameTime.ElapsedFrames >> 2),
+            (byte)(GameTime.ElapsedFrames >> 3),
+        };
 
-        DrawCloud(renderer, position, color, -scroll0, 0, 32);
-        DrawCloud(renderer, position, color, -scroll1, 32, 88);
-        DrawCloud(renderer, position, color, -scroll2, 120, 108);
+        int offsetY = 0;
+        for (int i = 0; i < Splits.Length; i++)
+        {
+            DrawCloud(renderer, position, color, -scrolls[i], offsetY, Splits[i] - offsetY);
+            offsetY = Splits[i];
+        }
 
-        DrawCloud(renderer, position, color, 256 - scroll0, 0, 32);
-        DrawCloud(renderer, position, color, 256 - scroll1, 32, 88);
-        DrawCloud(renderer, position, color, 256 - scroll2, 120, 108);
+        // Wrap
+        offsetY = 0;
+        for (int i = 0; i < Splits.Length; i++)
+        {
+            DrawCloud(renderer, position, color, 256 - scrolls[i], offsetY, Splits[i] - offsetY);
+            offsetY = Splits[i];
+        }
     }
 }
