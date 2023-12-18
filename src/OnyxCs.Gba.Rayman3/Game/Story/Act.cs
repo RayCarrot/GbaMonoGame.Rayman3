@@ -272,6 +272,8 @@ public abstract class Act : Frame
         {
             IsEnabled = true,
             Priority = 1,
+            // Center the screen
+            Offset = -(Engine.ScreenCamera.GameResolution - Engine.ScreenCamera.OriginalGameResolution) / 2,
         };
         Gfx.AddScreen(BitmapScreen);
 
