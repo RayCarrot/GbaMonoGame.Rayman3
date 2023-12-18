@@ -18,11 +18,27 @@ public class ScreenCamera
             _ => throw new UnsupportedPlatformException(),
         };
         ScaledGameResolution = GameResolution;
+        _scale = Vector2.One;
     }
+
+    private Vector2 _scale;
 
     public Vector2 ScaledGameResolution { get; private set; }
     public Vector2 GameResolution { get; }
-    public Vector2 Scale { get; private set; }
+    public Vector2 Scale
+    {
+        get => _scale;
+        set
+        {
+            _scale = value;
+            ScaledGameResolution = GameResolution * value;
+
+            // Refresh
+            ResizeScreen(ScreenSize);
+        }
+    }
+    public bool IsScaled => Scale != Vector2.One;
+
     public Rectangle ScreenRectangle { get; private set; }
     public Point ScreenSize { get; private set; }
     public Box ScaledVisibleArea { get; private set; }
@@ -62,15 +78,6 @@ public class ScreenCamera
             return ScaledVisibleArea.Intersects(new Box(position.X, position.Y, position.X + size.X, position.Y + size.Y));
         else
             return VisibleArea.Intersects(new Box(position.X, position.Y, position.X + size.X, position.Y + size.Y));
-    }
-
-    public void ResizeGame(Vector2 scale)
-    {
-        Scale = scale;
-        ScaledGameResolution = GameResolution * scale;
-
-        // Refresh
-        ResizeScreen(ScreenSize);
     }
 
     public void ResizeScreen(

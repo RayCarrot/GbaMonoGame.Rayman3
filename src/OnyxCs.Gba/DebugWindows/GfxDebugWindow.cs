@@ -12,6 +12,15 @@ public class GfxDebugWindow : DebugWindow
     {
         ImGui.SeparatorText("General");
 
+        if (ImGui.Button("Reset scale"))
+            Engine.ScreenCamera.Scale = Vector2.One;
+
+        float scale = Engine.ScreenCamera.Scale.X;
+        if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
+            Engine.ScreenCamera.Scale = new Vector2(scale);
+
+        ImGui.Spacing();
+
         float fade = Gfx.Fade;
         ImGui.SliderFloat("Fade", ref fade, 0, 1);
         Gfx.Fade = fade;

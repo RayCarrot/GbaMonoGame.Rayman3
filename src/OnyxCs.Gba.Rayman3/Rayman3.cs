@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BinarySerializer.Onyx.Gba;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
@@ -286,52 +284,6 @@ public class Rayman3 : GbaGame
 
     #endregion
 
-    #region Private Methods
-
-    private void SetGameZoom(float zoom)
-    {
-        Engine.ScreenCamera.ResizeGame(new Vector2(zoom));
-        //Gfx.GfxCamera.ResizeScreen(Window.ClientBounds.Size);
-    }
-
-    private void UpdateGameZoom(Microsoft.Xna.Framework.GameTime gameTime)
-    {
-        if (!JoyPad.IsMouseOnScreen())
-            return;
-
-        MouseState mouse = JoyPad.GetMouseState();
-
-        if (mouse.MiddleButton == ButtonState.Pressed)
-        {
-            SetGameZoom(1);
-        }
-        else if (Frame.Current is IHasPlayfield { Playfield: TgxPlayfield2D playfield2D })
-        {
-            int mouseWheelDelta = JoyPad.GetMouseWheelDelta();
-
-            if (mouseWheelDelta != 0)
-            {
-                float deltaFloat = mouseWheelDelta * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                const float zoomSpeed = 0.03f;
-
-                TgxCluster mainCluster = playfield2D.Camera.GetMainCluster();
-
-                // TODO: Modify position if max zoom so that we can zoom more?
-                // TODO: Auto-correct zoom when playfield changes?
-                float maxZoom = Math.Min(
-                    (mainCluster.Size.X - mainCluster.Position.X) / Engine.ScreenCamera.GameResolution.X, 
-                    (mainCluster.Size.Y - mainCluster.Position.Y) / Engine.ScreenCamera.GameResolution.Y);
-
-                float zoom = Engine.ScreenCamera.Scale.X;
-                zoom = Math.Clamp(zoom + zoomSpeed * deltaFloat * -1, 0.2f, maxZoom);
-
-                SetGameZoom(zoom);
-            }
-        }
-    }
-
-    #endregion
-
     #region Protected Methods
 
     protected override Frame CreateInitialFrame() => Engine.Settings.Platform switch
@@ -403,8 +355,6 @@ public class Rayman3 : GbaGame
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
-        UpdateGameZoom(gameTime);
-
         // Toggle showing debug collision screen
         if (JoyPad.CheckSingle(Keys.T))
         {
