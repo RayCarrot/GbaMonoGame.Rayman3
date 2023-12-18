@@ -29,10 +29,20 @@ public class TgxCamera2D : TgxCamera
 
                 // If it's not scaled we have to update the scroll factor so it scrolls the same range
                 if (!cluster.IsScaled)
+                {
                     scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
+
+                    // Avoid issues with dividing by 0. Should never happen, but will if we scale out of bounds.
+                    if (Single.IsInfinity(scrollFactor.X))
+                        scrollFactor = new Vector2(0, scrollFactor.Y);
+                    if (Single.IsInfinity(scrollFactor.Y))
+                        scrollFactor = new Vector2(scrollFactor.X, 0);
+                }
                 else
+                {
                     scrollFactor = cluster.ScrollFactor;
-                
+                }
+
                 cluster.Position = mainCluster.Position * scrollFactor;
             }
         }
