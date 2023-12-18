@@ -22,7 +22,8 @@ public class BaseActor : GameObject
         {
             CurrentAnimation = 0,
             SpritePriority = ActorDrawPriority,
-            YPriority = 32
+            YPriority = 32,
+            IsScaled = true,
         };
 
         _viewBox = new Box(ActorModel.ViewBox);

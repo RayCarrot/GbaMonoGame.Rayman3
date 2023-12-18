@@ -34,7 +34,9 @@ public class AnimatedObject : AObject
 
     #region Public Properties
 
-    public AnimatedObjectResource Resource { get; set; }
+    public AnimatedObjectResource Resource { get; }
+
+    public bool IsScaled { get; set; }
 
     // Flags
     public bool IsSoundEnabled { get; set; }
@@ -287,7 +289,7 @@ public class AnimatedObject : AObject
                         flipY: channel.FlipY ^ FlipY,
                         priority: SpritePriority,
                         affineMatrix: affineMatrix,
-                        isScaled: true)); // TODO: Allow this to be configured. We don't want to scale UI elements.
+                        isScaled: IsScaled));
                     break;
 
                 case AnimationChannelType.Sound:
