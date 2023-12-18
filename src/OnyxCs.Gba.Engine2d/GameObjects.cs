@@ -17,7 +17,18 @@ public class GameObjects
         KnotsWidth = sceneResource.KnotsWidth;
         Objects = new GameObject[ObjectsCount];
         Knots = sceneResource.Knots;
+
+        // Create a special knot with every object which we use when loading all objects at once
+        FullKnot = new Knot
+        {
+            ActorsCount = (byte)ActorsCount,
+            CaptorsCount = (byte)CaptorsCount,
+            ActorIds = Enumerable.Range(AlwaysActorsCount, ActorsCount).Select(x => (byte)x).ToArray(),
+            CaptorIds = Enumerable.Range(AlwaysActorsCount + ActorsCount, CaptorsCount).Select(x => (byte)x).ToArray(),
+        };
     }
+
+    private Knot FullKnot { get; }
 
     public int ObjectsCount { get; }
     public int AlwaysActorsCount { get; }
@@ -89,19 +100,31 @@ public class GameObjects
 
     public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos)
     {
-        // TODO: Offset position if Mode7
+        Knot knot;
 
-        TgxGameLayer physicalLayer = playfield.PhysicalLayer;
+        // If the game is scaled we can't use the knots as they're pre-calculated for the original
+        // screen resolution. So instead we use a knot where every object is loaded.
+        if (Engine.ScreenCamera.IsScaled) // TODO: Have this be a setting
+        {
+            knot = FullKnot;
+        }
+        else
+        {
+            // TODO: Offset position if Mode7
 
-        if (physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X <= camPos.X)
-            camPos = new Vector2(physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X - 1, camPos.Y);
+            TgxGameLayer physicalLayer = playfield.PhysicalLayer;
 
-        if (physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y <= camPos.Y)
-            camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y - 1);
+            if (physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X <= camPos.X)
+                camPos = new Vector2(physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X - 1, camPos.Y);
 
-        int knotX = (int)(camPos.X / Engine.ScreenCamera.GameResolution.X);
-        int knotY = (int)(camPos.Y / Engine.ScreenCamera.GameResolution.Y);
-        Knot knot = Knots[knotX + knotY * KnotsWidth];
+            if (physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y <= camPos.Y)
+                camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y - 1);
+
+            int knotX = (int)(camPos.X / Engine.ScreenCamera.GameResolution.X);
+            int knotY = (int)(camPos.Y / Engine.ScreenCamera.GameResolution.Y);
+            knot = Knots[knotX + knotY * KnotsWidth];
+        }
+
 
         if (knot == CurrentKnot)
             return false;
