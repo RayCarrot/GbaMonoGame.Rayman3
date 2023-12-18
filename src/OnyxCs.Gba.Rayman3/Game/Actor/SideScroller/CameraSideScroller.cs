@@ -44,8 +44,8 @@ public class CameraSideScroller : CameraActor2D
     };
 
     public byte HorizontalOffset { get; set; }
-    public byte TargetX { get; set; }
-    public byte TargetY { get; set; }
+    public float TargetX { get; set; }
+    public float TargetY { get; set; }
     public Vector2 PreviousLinkedObjectPosition { get; set; }
     public bool IsFacingRight { get; set; }
     public uint Timer { get; set; }
@@ -64,12 +64,7 @@ public class CameraSideScroller : CameraActor2D
     private void UpdateTargetX()
     {
         if (LinkedObject.IsFacingLeft)
-            TargetX = Engine.Settings.Platform switch
-            {
-                Platform.GBA => (byte)(-HorizontalOffset - 16),
-                Platform.NGage => (byte)(-80 - HorizontalOffset),
-                _ => throw new UnsupportedPlatformException()
-            };
+            TargetX = Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset;
         else
             TargetX = HorizontalOffset;
     }
