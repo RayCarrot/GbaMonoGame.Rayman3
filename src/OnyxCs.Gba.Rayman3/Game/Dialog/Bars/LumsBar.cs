@@ -147,11 +147,11 @@ public class LumsBar : Bar
 
         if (State != LumsBarState.Hide)
         {
-            LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 77, 8 - YOffset);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 52, 24 - YOffset);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 40, 24 - YOffset);
-            TotalLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 22, 24 - YOffset);
-            TotalLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 10, 24 - YOffset);
+            LumsIcon.ScreenPos = new Vector2(LumsIcon.ScreenPos.X, 8 - YOffset);
+            CollectedLumsDigit1.ScreenPos = new Vector2(CollectedLumsDigit1.ScreenPos.X, 24 - YOffset);
+            CollectedLumsDigit2.ScreenPos = new Vector2(CollectedLumsDigit2.ScreenPos.X, 24 - YOffset);
+            TotalLumsDigit1.ScreenPos = new Vector2(TotalLumsDigit1.ScreenPos.X, 24 - YOffset);
+            TotalLumsDigit2.ScreenPos = new Vector2(TotalLumsDigit2.ScreenPos.X, 24 - YOffset);
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;
