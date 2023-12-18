@@ -36,8 +36,8 @@ public class TileMapScreenRenderer : IScreenRenderer
 
         int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Constants.TileSize);
         int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Constants.TileSize);
-        int xEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.GameResolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.ScaledGameResolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min((double)Engine.ScreenCamera.ScaledGameResolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }

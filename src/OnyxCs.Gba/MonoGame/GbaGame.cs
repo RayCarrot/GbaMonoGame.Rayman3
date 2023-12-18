@@ -138,7 +138,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // TODO: Save window size in config, as well as if maximized etc.
-        Point windowSize = new(Engine.ScreenCamera.OriginalGameResolution.X * 4, Engine.ScreenCamera.OriginalGameResolution.Y * 4);
+        Point windowSize = new(Engine.ScreenCamera.GameResolution.X * 4, Engine.ScreenCamera.GameResolution.Y * 4);
         Engine.ScreenCamera.ResizeScreen(windowSize);
         SetWindowSize(windowSize);
 
@@ -258,11 +258,10 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         GraphicsDevice.Clear(Color.Black);
 
         // Draw screen
-        _gfxRenderer.Begin();
         Gfx.Draw(_gfxRenderer);
         if (DebugMode)
             _debugLayout.DrawGame(_gfxRenderer);
-        _gfxRenderer.End();
+        _gfxRenderer.EndRender();
 
         if (DebugMode)
         {

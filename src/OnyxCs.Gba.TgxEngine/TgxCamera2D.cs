@@ -17,12 +17,23 @@ public class TgxCamera2D : TgxCamera
             TgxCluster mainCluster = GetMainCluster();
             mainCluster.Position = value;
 
+            Vector2 originalMax = mainCluster.GetMaxPosition(false);
+            Vector2 scaledMax = mainCluster.GetMaxPosition(true);
+
             foreach (TgxCluster cluster in Clusters)
             {
                 if (cluster.Stationary)
                     continue;
 
-                cluster.Position = value * cluster.ScrollFactor;
+                Vector2 scrollFactor;
+
+                // If it's not scaled we have to update the scroll factor so it scrolls the same range
+                if (!cluster.IsScaled)
+                    scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
+                else
+                    scrollFactor = cluster.ScrollFactor;
+                
+                cluster.Position = mainCluster.Position * scrollFactor;
             }
         }
     }

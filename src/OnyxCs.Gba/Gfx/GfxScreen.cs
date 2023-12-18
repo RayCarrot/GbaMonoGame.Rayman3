@@ -37,6 +37,8 @@ public class GfxScreen
     /// </summary>
     public Vector2 Offset { get; set; }
 
+    public bool IsScaled { get; set; }
+
     public bool IsAlphaBlendEnabled { get; set; }
     public float Alpha { get; set; }
     public float GbaAlpha
@@ -61,30 +63,26 @@ public class GfxScreen
         if (Renderer == null)
             return;
 
-        bool alpha = IsAlphaBlendEnabled;
-        Color color;
+        Color color = Color.White;
 
-        if (alpha)
-        {
-            renderer.BeginAlpha();
-            color = new Color(Color.White, Alpha);
-        }
-        else
-        {
-            color = Color.White;
-        }
+        renderer.BeginRender(new RenderOptions(IsAlphaBlendEnabled, IsScaled));
+
+        if (IsAlphaBlendEnabled)
+            color = new Color(color, Alpha);
 
         if (Wrap)
         {
+            Point res = IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
+
             Vector2 size = Renderer.Size;
             Vector2 wrappedPos = new(-Offset.X % size.X, -Offset.Y % size.Y);
 
             float startX = 0 - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
             float startY = 0 - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
 
-            for (float y = startY; y < Engine.ScreenCamera.GameResolution.Y; y += size.Y)
+            for (float y = startY; y < res.Y; y += size.Y)
             {
-                for (float x = startX; x < Engine.ScreenCamera.GameResolution.X; x += size.X)
+                for (float x = startX; x < res.X; x += size.X)
                 {
                     Renderer?.Draw(renderer, this, new Vector2(x, y), color);
                 }
@@ -94,8 +92,5 @@ public class GfxScreen
         {
             Renderer?.Draw(renderer, this, -Offset, color);
         }
-
-        if (alpha)
-            renderer.EndAlpha();
     }
 }

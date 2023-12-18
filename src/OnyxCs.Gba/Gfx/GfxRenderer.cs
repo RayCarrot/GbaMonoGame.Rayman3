@@ -26,6 +26,7 @@ public class GfxRenderer
     private Texture2D Pixel { get; }
     private SpriteBatch SpriteBatch { get; }
     private RasterizerState RasterizerState { get; }
+    private RenderOptions? RenderOptions { get; set; }
 
     #endregion
 
@@ -37,34 +38,38 @@ public class GfxRenderer
 
     #region Standard
 
-    public void Begin()
+    public void BeginRender(RenderOptions options)
     {
-        // TODO: Should maybe move this somewhere else so it's not set every frame?
-        SpriteBatch.GraphicsDevice.ScissorRectangle = Camera.ScreenRectangle;
+        // Set the scissor area first time we render this frame
+        if (RenderOptions == null)
+            SpriteBatch.GraphicsDevice.ScissorRectangle = Camera.ScreenRectangle;
 
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
+        // If we have new render options then we need to begin a new batch
+        if (RenderOptions != options)
+        {
+            // End previous batch
+            if (RenderOptions != null)
+                SpriteBatch.End();
+
+            RenderOptions = options;
+
+            // Begin a new batch
+            SpriteBatch.Begin(
+                samplerState: SamplerState.PointClamp,
+                blendState: options.Alpha ? BlendState.NonPremultiplied : null,
+                transformMatrix: options.IsScaled ? Camera.ScaledTransformMatrix : Camera.TransformMatrix,
+                rasterizerState: RasterizerState);
+        }
     }
 
-    public void End()
+    public void EndRender()
     {
-        //DrawFilledRectangle(Camera.VisibleArea, new Color(Color.Red, 0.5f));
+        // Ignore if we never began a render batch
+        if (RenderOptions == null) 
+            return;
+        
         SpriteBatch.End();
-    }
-
-    #endregion
-
-    #region Alpha
-
-    public void BeginAlpha()
-    {
-        SpriteBatch.End();
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.NonPremultiplied, transformMatrix: Camera.TransformMatrix, rasterizerState: RasterizerState);
-    }
-
-    public void EndAlpha()
-    {
-        SpriteBatch.End();
-        Begin();
+        RenderOptions = null;
     }
 
     #endregion
@@ -76,23 +81,23 @@ public class GfxRenderer
 
     public void Draw(Texture2D texture, Vector2 position, Color? color = null)
     {
-        if (Camera.IsVisible(position, texture.Bounds.Size))
+        if (Camera.IsVisible(position, texture.Bounds.Size, RenderOptions!.Value.IsScaled))
             SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color? color = null)
     {
-        if (Camera.IsVisible(position, sourceRectangle.Size))
+        if (Camera.IsVisible(position, sourceRectangle.Size, RenderOptions!.Value.IsScaled))
             SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White);
     }
 
     public void Draw(Texture2D texture, Vector2 position, SpriteEffects effects, Color? color = null)
     {
-        if (Camera.IsVisible(position, texture.Bounds.Size))
+        if (Camera.IsVisible(position, texture.Bounds.Size, RenderOptions!.Value.IsScaled))
             SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, SpriteEffects effects, Color? color = null)
     {
-        if (Camera.IsVisible(position, sourceRectangle.Size))
+        if (Camera.IsVisible(position, sourceRectangle.Size, RenderOptions!.Value.IsScaled))
             SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
 

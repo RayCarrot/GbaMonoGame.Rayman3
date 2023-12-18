@@ -21,9 +21,9 @@ public class CagesBar : Bar
         CollectedCagesDigit.CurrentAnimation = 0;
         TotalCagesDigit.CurrentAnimation = 0;
 
-        CageIcon.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 44, 41);
-        CollectedCagesDigit.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 28, 45);
-        TotalCagesDigit.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 10, 45);
+        CageIcon.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 44, 41);
+        CollectedCagesDigit.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 28, 45);
+        TotalCagesDigit.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 10, 45);
     }
 
     public override void Load()

@@ -167,8 +167,8 @@ public class CameraSideScroller : CameraActor2D
                                 HorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
                                 HorizontalOffset <= LinkedObject.ScreenPosition.X) ||
                                 (LinkedObject.IsFacingLeft &&
-                                 Engine.ScreenCamera.GameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
-                                 Engine.ScreenCamera.GameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
+                                 Engine.ScreenCamera.ScaledGameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
+                                 Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
                             {
                                 if (Timer > 2 && Math.Abs(Speed.X) > 1)
                                 {
@@ -339,7 +339,7 @@ public class CameraSideScroller : CameraActor2D
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
-        else if (LinkedObject.Position.X < (Engine.ScreenCamera.GameResolution.X - HorizontalOffset) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < (Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset) && LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
@@ -363,7 +363,7 @@ public class CameraSideScroller : CameraActor2D
                 }
                 else
                 {
-                    pos = new Vector2(LinkedObject.Position.X + HorizontalOffset - Engine.ScreenCamera.GameResolution.X, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X + HorizontalOffset - Engine.ScreenCamera.ScaledGameResolution.X, LinkedObject.Position.Y);
                 }
             }
         }

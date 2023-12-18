@@ -286,7 +286,8 @@ public class AnimatedObject : AObject
                         flipX: channel.FlipX ^ FlipX,
                         flipY: channel.FlipY ^ FlipY,
                         priority: SpritePriority,
-                        affineMatrix: affineMatrix));
+                        affineMatrix: affineMatrix,
+                        isScaled: true)); // TODO: Allow this to be configured. We don't want to scale UI elements.
                     break;
 
                 case AnimationChannelType.Sound:

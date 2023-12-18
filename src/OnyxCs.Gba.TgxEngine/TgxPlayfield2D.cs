@@ -27,6 +27,10 @@ public class TgxPlayfield2D : TgxPlayfield
                 
                 // The game does this in the layer constructor, but it's easier here since we have access to the camera
                 Camera.AddLayer(gameLayerResource.TileLayer.ClusterIndex, layer);
+
+                // Set if the layer is scaled. The game doesn't do this as it has no concept of scaling.
+                TgxCluster cluster = Camera.GetCluster(gameLayerResource.TileLayer.ClusterIndex);
+                layer.Screen.IsScaled = cluster.IsScaled;
             }
             else if (gameLayerResource.Type == GameLayerType.PhysicalLayer)
             {

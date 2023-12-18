@@ -13,6 +13,9 @@ public class TgxCluster
         Layers = new List<TgxGameLayer>();
         Size = new Vector2(cluster.SizeX * Constants.TileSize, cluster.SizeY * Constants.TileSize);
         Stationary = cluster.Stationary;
+
+        // To allow higher resolutions we mark some clusters as scaled
+        IsScaled = !Stationary && ScrollFactor == Vector2.One;
     }
 
     private Vector2 _position;
@@ -43,12 +46,19 @@ public class TgxCluster
                 layer.SetOffset(value);
         }
     }
-    public Vector2 MaxPosition => new(
-        x: Math.Max(0, Size.X - Engine.ScreenCamera.GameResolution.X),
-        y: Math.Max(0, Size.Y - Engine.ScreenCamera.GameResolution.Y));
+
+    public Vector2 MaxPosition => GetMaxPosition(IsScaled);
 
     public Vector2 ScrollFactor { get; }
+
     public bool Stationary { get; }
+    public bool IsScaled { get; }
+
+    public Vector2 GetMaxPosition(bool scaled)
+    {
+        Point res = scaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
+        return new Vector2(Math.Max(0, Size.X - res.X), Math.Max(0, Size.Y - res.Y));
+    }
 
     public void AddLayer(TgxGameLayer layer)
     {

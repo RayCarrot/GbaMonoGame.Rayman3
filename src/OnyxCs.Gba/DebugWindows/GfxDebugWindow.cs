@@ -18,7 +18,7 @@ public class GfxDebugWindow : DebugWindow
 
         ImGui.SeparatorText("Screens");
 
-        if (ImGui.BeginTable("_screens", 7))
+        if (ImGui.BeginTable("_screens", 8))
         {
             ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Wrap", ImGuiTableColumnFlags.WidthFixed);
@@ -26,6 +26,7 @@ public class GfxDebugWindow : DebugWindow
             ImGui.TableSetupColumn("Priority", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Offset");
             ImGui.TableSetupColumn("Size");
+            ImGui.TableSetupColumn("Scaled");
             ImGui.TableSetupColumn("Color mode");
             ImGui.TableHeadersRow();
 
@@ -54,6 +55,9 @@ public class GfxDebugWindow : DebugWindow
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{screen.Renderer?.Size.X:0.00} x {screen.Renderer?.Size.Y:0.00}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.IsScaled}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(screen.Is8Bit switch

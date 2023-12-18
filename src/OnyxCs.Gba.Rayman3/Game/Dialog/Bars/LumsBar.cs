@@ -63,11 +63,11 @@ public class LumsBar : Bar
         TotalLumsDigit1.CurrentAnimation = 0;
         TotalLumsDigit2.CurrentAnimation = 0;
 
-        LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 77, 8);
-        CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 52, 24);
-        CollectedLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 40, 24);
-        TotalLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 22, 24);
-        TotalLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 10, 24);
+        LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 77, 8);
+        CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 52, 24);
+        CollectedLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 40, 24);
+        TotalLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 22, 24);
+        TotalLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 10, 24);
     }
 
     public override void Load()
@@ -147,11 +147,11 @@ public class LumsBar : Bar
 
         if (State != LumsBarState.Hide)
         {
-            LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 77, 8 - YOffset);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 52, 24 - YOffset);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 40, 24 - YOffset);
-            TotalLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 22, 24 - YOffset);
-            TotalLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.GameResolution.X - 10, 24 - YOffset);
+            LumsIcon.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 77, 8 - YOffset);
+            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 52, 24 - YOffset);
+            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 40, 24 - YOffset);
+            TotalLumsDigit1.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 22, 24 - YOffset);
+            TotalLumsDigit2.ScreenPos = new Vector2(Engine.ScreenCamera.ScaledGameResolution.X - 10, 24 - YOffset);
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;

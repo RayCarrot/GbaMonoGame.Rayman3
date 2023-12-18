@@ -6,13 +6,13 @@ namespace OnyxCs.Gba;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, null) { }
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, isScaled, null) { }
 
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, Color? color) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, color) { }
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled, Color? color) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, isScaled, color) { }
 
-    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, Color? color)
+    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled, Color? color)
     {
         Texture = texture;
         TextureRectangle = textureRectangle;
@@ -78,6 +78,7 @@ public class Sprite
         Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
         Origin = new Vector2(TextureRectangle.Width / 2f, TextureRectangle.Height / 2f);
         Color = color ?? Color.White;
+        IsScaled = isScaled;
     }
 
     public Texture2D Texture { get; }
@@ -93,8 +94,11 @@ public class Sprite
     public SpriteEffects Effects { get; }
     public Color Color { get; }
 
+    public bool IsScaled { get; }
+
     public void Draw(GfxRenderer renderer)
     {
+        renderer.BeginRender(new RenderOptions(false, IsScaled));
         renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, Color);
     }
 }

@@ -291,8 +291,8 @@ public class Rayman3 : GbaGame
     private void SetGameZoom(float zoom)
     {
         Engine.ScreenCamera.ResizeGame(new Point(
-            (int)Math.Round(Engine.ScreenCamera.OriginalGameResolution.X * zoom), 
-            (int)Math.Round(Engine.ScreenCamera.OriginalGameResolution.Y * zoom)));
+            (int)Math.Round(Engine.ScreenCamera.GameResolution.X * zoom), 
+            (int)Math.Round(Engine.ScreenCamera.GameResolution.Y * zoom)));
         //Gfx.GfxCamera.ResizeScreen(Window.ClientBounds.Size);
     }
 
@@ -321,10 +321,10 @@ public class Rayman3 : GbaGame
                 // TODO: Modify position if max zoom so that we can zoom more?
                 // TODO: Auto-correct zoom when playfield changes?
                 float maxZoom = Math.Min(
-                    (mainCluster.Size.X - mainCluster.Position.X) / Engine.ScreenCamera.OriginalGameResolution.X, 
-                    (mainCluster.Size.Y - mainCluster.Position.Y) / Engine.ScreenCamera.OriginalGameResolution.Y);
+                    (mainCluster.Size.X - mainCluster.Position.X) / Engine.ScreenCamera.GameResolution.X, 
+                    (mainCluster.Size.Y - mainCluster.Position.Y) / Engine.ScreenCamera.GameResolution.Y);
 
-                float zoom = Engine.ScreenCamera.GameResolution.X / (float)Engine.ScreenCamera.OriginalGameResolution.X;
+                float zoom = Engine.ScreenCamera.ScaledGameResolution.X / (float)Engine.ScreenCamera.GameResolution.X;
                 zoom = Math.Clamp(zoom + zoomSpeed * deltaFloat * -1, 0.2f, maxZoom);
 
                 SetGameZoom(zoom);

@@ -23,8 +23,6 @@ public class IntroCloudsRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        renderer.BeginAlpha();
-
         byte scroll0 = (byte)(GameTime.ElapsedFrames >> 1);
         byte scroll1 = (byte)~(byte)(GameTime.ElapsedFrames >> 2);
         byte scroll2 = (byte)(GameTime.ElapsedFrames >> 3);
@@ -36,7 +34,5 @@ public class IntroCloudsRenderer : IScreenRenderer
         DrawCloud(renderer, position, color, 0, Texture.Width - scroll0);
         DrawCloud(renderer, position, color, 1, Texture.Width - scroll1);
         DrawCloud(renderer, position, color, 2, Texture.Width - scroll2);
-
-        renderer.EndAlpha();
     }
 }

@@ -60,7 +60,7 @@ public abstract class Act : Frame
 
         CurrentText = Localization.TextBanks[ActResource.TextBankId].Texts[textId];
 
-        float centerX = Engine.ScreenCamera.OriginalGameResolution.X / 2f;
+        float centerX = Engine.ScreenCamera.GameResolution.X / 2f;
         float baseY = Engine.Settings.Platform switch
         {
             Platform.GBA => 129,
@@ -165,8 +165,8 @@ public abstract class Act : Frame
         if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
         {
             renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: Engine.ScreenCamera.OriginalGameResolution.X,
-                height: Engine.ScreenCamera.OriginalGameResolution.Y,
+                width: Engine.ScreenCamera.GameResolution.X,
+                height: Engine.ScreenCamera.GameResolution.Y,
                 bitmap: frame.Bitmap.ImgData,
                 palette: new Palette(frame.Palette)));
             CachedTextureRenderers[frame.Bitmap] = renderer;

@@ -93,14 +93,14 @@ public class GameObjects
 
         TgxGameLayer physicalLayer = playfield.PhysicalLayer;
 
-        if (physicalLayer.PixelWidth - Engine.ScreenCamera.GameResolution.X <= camPos.X)
-            camPos = new Vector2(physicalLayer.PixelWidth - Engine.ScreenCamera.GameResolution.X - 1, camPos.Y);
+        if (physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X <= camPos.X)
+            camPos = new Vector2(physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X - 1, camPos.Y);
 
-        if (physicalLayer.PixelHeight - Engine.ScreenCamera.GameResolution.Y <= camPos.Y)
-            camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.GameResolution.Y - 1);
+        if (physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y <= camPos.Y)
+            camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y - 1);
 
-        int knotX = (int)(camPos.X / Engine.ScreenCamera.OriginalGameResolution.X);
-        int knotY = (int)(camPos.Y / Engine.ScreenCamera.OriginalGameResolution.Y);
+        int knotX = (int)(camPos.X / Engine.ScreenCamera.GameResolution.X);
+        int knotY = (int)(camPos.Y / Engine.ScreenCamera.GameResolution.Y);
         Knot knot = Knots[knotX + knotY * KnotsWidth];
 
         if (knot == CurrentKnot)

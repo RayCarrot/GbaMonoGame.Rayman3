@@ -83,7 +83,7 @@ public static class JoyPad
         return KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
     }
 
-    public static bool IsMouseOnScreen() => Engine.ScreenCamera.VisibleArea.Contains(GetMousePosition());
+    public static bool IsMouseOnScreen() => Engine.ScreenCamera.ScaledVisibleArea.Contains(GetMousePosition());
 
     public static Vector2 GetMousePosition()
     {
