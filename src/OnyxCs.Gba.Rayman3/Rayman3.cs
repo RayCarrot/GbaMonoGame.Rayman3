@@ -290,9 +290,7 @@ public class Rayman3 : GbaGame
 
     private void SetGameZoom(float zoom)
     {
-        Engine.ScreenCamera.ResizeGame(new Point(
-            (int)Math.Round(Engine.ScreenCamera.GameResolution.X * zoom), 
-            (int)Math.Round(Engine.ScreenCamera.GameResolution.Y * zoom)));
+        Engine.ScreenCamera.ResizeGame(new Vector2(zoom));
         //Gfx.GfxCamera.ResizeScreen(Window.ClientBounds.Size);
     }
 
@@ -324,7 +322,7 @@ public class Rayman3 : GbaGame
                     (mainCluster.Size.X - mainCluster.Position.X) / Engine.ScreenCamera.GameResolution.X, 
                     (mainCluster.Size.Y - mainCluster.Position.Y) / Engine.ScreenCamera.GameResolution.Y);
 
-                float zoom = Engine.ScreenCamera.ScaledGameResolution.X / (float)Engine.ScreenCamera.GameResolution.X;
+                float zoom = Engine.ScreenCamera.Scale.X;
                 zoom = Math.Clamp(zoom + zoomSpeed * deltaFloat * -1, 0.2f, maxZoom);
 
                 SetGameZoom(zoom);

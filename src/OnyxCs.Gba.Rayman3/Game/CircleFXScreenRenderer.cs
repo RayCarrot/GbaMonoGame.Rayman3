@@ -46,7 +46,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
         return CachedCircleTextures[radius - 1];
     }
 
-    public Vector2 Size => Engine.ScreenCamera.ScaledGameResolution.ToVector2();
+    public Vector2 Size => Engine.ScreenCamera.ScaledGameResolution;
 
     public int Radius { get; set; }
     public Vector2 CirclePosition { get; set; }
@@ -65,7 +65,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
             renderer.Draw(tex, pos + new Vector2(Radius, Radius), SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically, Color.Black); // Bottom-right
         }
 
-        Point res = Engine.ScreenCamera.ScaledGameResolution;
+        Vector2 res = Engine.ScreenCamera.ScaledGameResolution;
 
         // Draw black around circle to fill screen
         renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top

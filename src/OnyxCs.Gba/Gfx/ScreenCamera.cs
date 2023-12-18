@@ -13,15 +13,16 @@ public class ScreenCamera
     {
         GameResolution = Engine.Settings.Platform switch
         {
-            Platform.GBA => new Point(240, 160),
-            Platform.NGage => new Point(176, 208),
+            Platform.GBA => new Vector2(240, 160),
+            Platform.NGage => new Vector2(176, 208),
             _ => throw new UnsupportedPlatformException(),
         };
         ScaledGameResolution = GameResolution;
     }
 
-    public Point ScaledGameResolution { get; private set; }
-    public Point GameResolution { get; }
+    public Vector2 ScaledGameResolution { get; private set; }
+    public Vector2 GameResolution { get; }
+    public Vector2 Scale { get; private set; }
     public Rectangle ScreenRectangle { get; private set; }
     public Point ScreenSize { get; private set; }
     public Box ScaledVisibleArea { get; private set; }
@@ -63,9 +64,10 @@ public class ScreenCamera
             return VisibleArea.Intersects(new Box(position.X, position.Y, position.X + size.X, position.Y + size.Y));
     }
 
-    public void ResizeGame(Point newGameSize)
+    public void ResizeGame(Vector2 scale)
     {
-        ScaledGameResolution = newGameSize;
+        Scale = scale;
+        ScaledGameResolution = GameResolution * scale;
 
         // Refresh
         ResizeScreen(ScreenSize);
@@ -78,7 +80,7 @@ public class ScreenCamera
         Action<Point> changeScreenSizeCallback = null)
     {
         float screenRatio = newScreenSize.X / (float)newScreenSize.Y;
-        float gameRatio = ScaledGameResolution.X / (float)ScaledGameResolution.Y;
+        float gameRatio = ScaledGameResolution.X / ScaledGameResolution.Y;
 
         float worldScale;
         float screenScale;
@@ -87,8 +89,8 @@ public class ScreenCamera
 
         if (screenRatio > gameRatio)
         {
-            worldScale = newScreenSize.Y / (float)ScaledGameResolution.Y;
-            screenScale = newScreenSize.Y / (float)GameResolution.Y;
+            worldScale = newScreenSize.Y / ScaledGameResolution.Y;
+            screenScale = newScreenSize.Y / GameResolution.Y;
 
             if (maintainScreenRatio)
                 newScreenSize = new Point((int)Math.Round(ScaledGameResolution.X * worldScale), (int)Math.Round(ScaledGameResolution.Y * worldScale));
@@ -100,8 +102,8 @@ public class ScreenCamera
         }
         else
         {
-            worldScale = newScreenSize.X / (float)ScaledGameResolution.X;
-            screenScale = newScreenSize.X / (float)GameResolution.X;
+            worldScale = newScreenSize.X / ScaledGameResolution.X;
+            screenScale = newScreenSize.X / GameResolution.X;
 
             if (maintainScreenRatio)
                 newScreenSize = new Point((int)Math.Round(ScaledGameResolution.X * worldScale), (int)Math.Round(ScaledGameResolution.Y * worldScale));

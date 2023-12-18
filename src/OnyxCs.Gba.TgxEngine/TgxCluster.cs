@@ -56,7 +56,7 @@ public class TgxCluster
 
     public Vector2 GetMaxPosition(bool scaled)
     {
-        Point res = scaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
+        Vector2 res = scaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
         return new Vector2(Math.Max(0, Size.X - res.X), Math.Max(0, Size.Y - res.Y));
     }
 

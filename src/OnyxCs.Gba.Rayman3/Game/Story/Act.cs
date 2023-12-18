@@ -165,8 +165,8 @@ public abstract class Act : Frame
         if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
         {
             renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: Engine.ScreenCamera.GameResolution.X,
-                height: Engine.ScreenCamera.GameResolution.Y,
+                width: (int)Engine.ScreenCamera.GameResolution.X,
+                height: (int)Engine.ScreenCamera.GameResolution.Y,
                 bitmap: frame.Bitmap.ImgData,
                 palette: new Palette(frame.Palette)));
             CachedTextureRenderers[frame.Bitmap] = renderer;
