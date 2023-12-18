@@ -120,8 +120,8 @@ public class GameObjects
             if (physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y <= camPos.Y)
                 camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y - 1);
 
-            int knotX = (int)(camPos.X / Engine.ScreenCamera.GameResolution.X);
-            int knotY = (int)(camPos.Y / Engine.ScreenCamera.GameResolution.Y);
+            int knotX = (int)(camPos.X / Engine.ScreenCamera.OriginalGameResolution.X);
+            int knotY = (int)(camPos.Y / Engine.ScreenCamera.OriginalGameResolution.Y);
             knot = Knots[knotX + knotY * KnotsWidth];
         }
 

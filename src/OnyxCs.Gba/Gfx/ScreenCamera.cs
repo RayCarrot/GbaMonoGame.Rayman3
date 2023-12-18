@@ -11,20 +11,22 @@ public class ScreenCamera
 {
     public ScreenCamera()
     {
-        GameResolution = Engine.Settings.Platform switch
+        OriginalGameResolution = Engine.Settings.Platform switch
         {
             Platform.GBA => new Vector2(240, 160),
             Platform.NGage => new Vector2(176, 208),
             _ => throw new UnsupportedPlatformException(),
         };
+        GameResolution = OriginalGameResolution;
         ScaledGameResolution = GameResolution;
         _scale = Vector2.One;
     }
 
     private Vector2 _scale;
 
-    public Vector2 ScaledGameResolution { get; private set; }
+    public Vector2 OriginalGameResolution { get; }
     public Vector2 GameResolution { get; }
+    public Vector2 ScaledGameResolution { get; private set; }
     public Vector2 Scale
     {
         get => _scale;
