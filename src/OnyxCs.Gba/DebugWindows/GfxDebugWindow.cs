@@ -63,7 +63,7 @@ public class GfxDebugWindow : DebugWindow
                 ImGui.Text($"{screen.Offset.X:0.00} x {screen.Offset.Y:0.00}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{screen.Renderer?.Size.X:0.00} x {screen.Renderer?.Size.Y:0.00}");
+                ImGui.Text($"{screen.Renderer?.GetSize(screen).X:0.00} x {screen.Renderer?.GetSize(screen).Y:0.00}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{screen.IsScaled}");

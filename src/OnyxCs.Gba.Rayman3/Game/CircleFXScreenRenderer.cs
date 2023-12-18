@@ -46,14 +46,21 @@ public class CircleFXScreenRenderer : IScreenRenderer
         return CachedCircleTextures[radius - 1];
     }
 
-    public Vector2 Size => Engine.ScreenCamera.ScaledGameResolution;
+    public Vector2 GetSize(GfxScreen screen) => screen.IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
 
     public int Radius { get; set; }
     public Vector2 CirclePosition { get; set; }
     
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        Vector2 pos = CirclePosition - new Vector2(Radius);
+        Vector2 pos;
+
+        if (screen.IsScaled)
+            pos = CirclePosition;
+        else
+            pos = CirclePosition / Engine.ScreenCamera.Scale;
+
+        pos -= new Vector2(Radius);
 
         if (Radius != 0)
         {
@@ -65,7 +72,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
             renderer.Draw(tex, pos + new Vector2(Radius, Radius), SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically, Color.Black); // Bottom-right
         }
 
-        Vector2 res = Engine.ScreenCamera.ScaledGameResolution;
+        Vector2 res = screen.IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
 
         // Draw black around circle to fill screen
         renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top

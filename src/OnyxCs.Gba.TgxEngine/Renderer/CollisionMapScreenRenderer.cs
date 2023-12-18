@@ -23,11 +23,9 @@ public class CollisionMapScreenRenderer : IScreenRenderer
     public int Height { get; }
     public byte[] CollisionMap { get; }
 
-    public Vector2 Size => new(Width * Constants.TileSize, Height * Constants.TileSize);
-
-    private Rectangle GetVisibleTilesArea(Vector2 position)
+    private Rectangle GetVisibleTilesArea(Vector2 position, GfxScreen screen)
     {
-        Rectangle rect = new(position.ToPoint(), Size.ToPoint());
+        Rectangle rect = new(position.ToPoint(), GetSize(screen).ToPoint());
 
         int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
         int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
@@ -37,9 +35,10 @@ public class CollisionMapScreenRenderer : IScreenRenderer
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
 
+    public Vector2 GetSize(GfxScreen screen) => new(Width * Constants.TileSize, Height * Constants.TileSize);
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        Rectangle visibleTilesArea = GetVisibleTilesArea(position);
+        Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
         float absTileY = position.Y + visibleTilesArea.Y * Constants.TileSize;
 

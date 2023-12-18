@@ -74,7 +74,7 @@ public class GfxScreen
         {
             Vector2 res = IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
 
-            Vector2 size = Renderer.Size;
+            Vector2 size = Renderer.GetSize(this);
             Vector2 wrappedPos = new(-Offset.X % size.X, -Offset.Y % size.Y);
 
             float startX = 0 - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);

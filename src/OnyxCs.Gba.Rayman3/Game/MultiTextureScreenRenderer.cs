@@ -12,8 +12,8 @@ public class MultiTextureScreenRenderer : IScreenRenderer
 
     public Texture2D[] Textures { get; }
     public int CurrentTextureIndex { get; set; }
-    public Vector2 Size => new(Textures[CurrentTextureIndex].Width, Textures[CurrentTextureIndex].Height);
 
+    public Vector2 GetSize(GfxScreen screen) => new(Textures[CurrentTextureIndex].Width, Textures[CurrentTextureIndex].Height);
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {

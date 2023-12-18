@@ -16,8 +16,8 @@ public class LevelCloudsRenderer : IScreenRenderer
     private int[] Splits { get; }
 
     public Texture2D Texture { get; }
-    public Vector2 Size => new(256, Texture.Height);
 
+    public Vector2 GetSize(GfxScreen screen) => new(256, Texture.Height);
     private void DrawCloud(GfxRenderer renderer, Vector2 position, Color color, int offsetX, int offsetY, int height)
     {
         position += new Vector2(offsetX, offsetY);

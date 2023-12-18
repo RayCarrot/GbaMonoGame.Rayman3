@@ -28,11 +28,9 @@ public class TileMapScreenRenderer : IScreenRenderer
     public bool Is8Bit { get; }
     public Dictionary<int, Texture2D> TileTextures { get; }
 
-    public Vector2 Size => new(Width * Constants.TileSize, Height * Constants.TileSize);
-
-    private Rectangle GetVisibleTilesArea(Vector2 position)
+    private Rectangle GetVisibleTilesArea(Vector2 position, GfxScreen screen)
     {
-        Box renderBox = new(position, Size);
+        Box renderBox = new(position, GetSize(screen));
 
         int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Constants.TileSize);
         int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Constants.TileSize);
@@ -50,9 +48,11 @@ public class TileMapScreenRenderer : IScreenRenderer
         return new TiledTexture2D(TileSet, tile.TileIndex - 1, tile.PaletteIndex, Palette, Is8Bit);
     }
 
+    public Vector2 GetSize(GfxScreen screen) => new(Width * Constants.TileSize, Height * Constants.TileSize);
+
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        Rectangle visibleTilesArea = GetVisibleTilesArea(position);
+        Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
         float absTileY = position.Y + visibleTilesArea.Y * Constants.TileSize;
 

@@ -11,8 +11,8 @@ public class IntroCloudsRenderer : IScreenRenderer
     }
 
     public Texture2D Texture { get; }
-    public Vector2 Size => new(Texture.Width, Texture.Height);
 
+    public Vector2 GetSize(GfxScreen screen) => new(Texture.Width, Texture.Height);
     private void DrawCloud(GfxRenderer renderer, Vector2 position, Color color, int index, float offsetX)
     {
         position += new Vector2(offsetX, 85 * index);

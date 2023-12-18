@@ -135,6 +135,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         {
             Priority = -1,
             IsEnabled = false,
+            IsScaled = false, // If we scale then it won't fill the entire screen, so don't scale for now
             Renderer = CircleFXRenderer,
         };
 
