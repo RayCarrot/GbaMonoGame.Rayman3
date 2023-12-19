@@ -148,43 +148,50 @@ public class CameraSideScroller : CameraActor2D
                         Speed = new Vector2(0, Speed.Y);
                     }
 
-                    float dir = LinkedObject.ScreenPosition.X > TargetX ? 0.5f : -0.5f;
+                    float dir = LinkedObject.ScreenPosition.X > TargetX ? 1 : -1;
 
+                    // If the linked object is moving faster than 2...
                     if (Math.Abs(linkedObjDeltaX) > 2)
                     {
-                        Speed = new Vector2(12 * dir, Speed.Y);
+                        // Move the camera alongside the linked object with a speed of 6
+                        Speed = new Vector2(dir * 6, Speed.Y);
                     }
-                    else if (LinkedObject.Speed.X == 0 || Timer < 3 || Math.Abs(Speed.X) >= 4)
+                    // If the linked object is moving and
+                    // the timer is greater than or equal to 3 and
+                    // the absolute camera speed is less than 4...
+                    else if (LinkedObject.Speed.X != 0 && Timer >= 3 && Math.Abs(Speed.X) < 4)
                     {
-                        if (LinkedObject.Speed.X == 0)
+                        // Move the camera with a speed of 0.5 and reset the timer
+                        Speed += new Vector2(dir * 0.5f, 0);
+                        Timer = 0;
+                    }
+                    // If the linked object is not moving...
+                    else if (LinkedObject.Speed.X == 0)
+                    {
+                        // If the linked object is within 40 pixels of the horizontal offset...
+                        if ((LinkedObject.IsFacingRight &&
+                           HorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
+                           HorizontalOffset <= LinkedObject.ScreenPosition.X) ||
+                          (LinkedObject.IsFacingLeft &&
+                           Engine.ScreenCamera.ScaledGameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
+                           Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
                         {
-                            if ((LinkedObject.IsFacingRight && 
-                                HorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
-                                HorizontalOffset <= LinkedObject.ScreenPosition.X) ||
-                                (LinkedObject.IsFacingLeft &&
-                                 Engine.ScreenCamera.ScaledGameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
-                                 Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
+                            // If timer is greater than 2, slow down the speed if it's absolute greater than 1
+                            if (Timer > 2 && Math.Abs(Speed.X) > 1)
                             {
-                                if (Timer > 2 && Math.Abs(Speed.X) > 1)
-                                {
-                                    Speed -= new Vector2(dir, 0);
-                                    Timer = 0;
-                                }
-                            }
-                            else
-                            {
-                                if (Timer > 5 && Math.Abs(Speed.X) < 4)
-                                {
-                                    Speed += new Vector2(dir, 0);
-                                    Timer = 0;
-                                }
+                                Speed -= new Vector2(dir * 0.5f, 0);
+                                Timer = 0;
                             }
                         }
-                    }
-                    else
-                    {
-                        Speed += new Vector2(dir, 0);
-                        Timer = 0;
+                        else
+                        {
+                            // If the timer is greater than 5, increase the speed if it's absolute less than 4
+                            if (Timer > 5 && Math.Abs(Speed.X) < 4)
+                            {
+                                Speed += new Vector2(dir * 0.5f, 0);
+                                Timer = 0;
+                            }
+                        }
                     }
                 }
 
