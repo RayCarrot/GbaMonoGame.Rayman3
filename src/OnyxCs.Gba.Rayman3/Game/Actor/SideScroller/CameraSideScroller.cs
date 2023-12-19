@@ -43,6 +43,12 @@ public class CameraSideScroller : CameraActor2D
         0.75f, 0.50f, 0.25f, 0.00f,
     };
 
+    // Handle scaling by centering the target offsets within the new scaled view area
+    private float ScaledHorizontalOffset => HorizontalOffset +
+                                            (Engine.ScreenCamera.ScaledGameResolution.X - Engine.ScreenCamera.GameResolution.X) / 2;
+    private float ScaledTargetY => TargetY + 
+                                   (Engine.ScreenCamera.ScaledGameResolution.Y - Engine.ScreenCamera.GameResolution.Y) / 2;
+    
     public byte HorizontalOffset { get; set; }
     public float TargetX { get; set; }
     public float TargetY { get; set; }
@@ -64,9 +70,9 @@ public class CameraSideScroller : CameraActor2D
     private void UpdateTargetX()
     {
         if (LinkedObject.IsFacingLeft)
-            TargetX = Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset;
+            TargetX = Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset;
         else
-            TargetX = HorizontalOffset;
+            TargetX = ScaledHorizontalOffset;
     }
 
     // What does this function do?
@@ -169,12 +175,12 @@ public class CameraSideScroller : CameraActor2D
                     else if (LinkedObject.Speed.X == 0)
                     {
                         // If the linked object is within 40 pixels of the horizontal offset...
-                        if ((LinkedObject.IsFacingRight &&
-                           HorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
-                           HorizontalOffset <= LinkedObject.ScreenPosition.X) ||
+                        if ((LinkedObject.IsFacingRight && 
+                             ScaledHorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
+                             ScaledHorizontalOffset <= LinkedObject.ScreenPosition.X) ||
                           (LinkedObject.IsFacingLeft &&
-                           Engine.ScreenCamera.ScaledGameResolution.X - 40 - HorizontalOffset < LinkedObject.ScreenPosition.X &&
-                           Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset > LinkedObject.ScreenPosition.X))
+                           Engine.ScreenCamera.ScaledGameResolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
+                           Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
                         {
                             // If timer is greater than 2, slow down the speed if it's absolute greater than 1
                             if (Timer > 2 && Math.Abs(Speed.X) > 1)
@@ -197,17 +203,22 @@ public class CameraSideScroller : CameraActor2D
 
                 float linkedObjDeltaY = LinkedObject.Position.Y - PreviousLinkedObjectPosition.Y;
 
+                // Do not follow Y (unless near the edge). Used when jumping for example.
                 if (field20_0x32 == 0)
                 {
-                    if ((LinkedObject.ScreenPosition.Y < 70 && linkedObjDeltaY < 0) ||
-                        (LinkedObject.ScreenPosition.Y > 130 && linkedObjDeltaY > 0))
+                    float yOff = (Engine.ScreenCamera.ScaledGameResolution.Y - Engine.ScreenCamera.GameResolution.Y);
+
+                    if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
+                        (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))
                     {
                         Speed = new Vector2(Speed.X, linkedObjDeltaY);
                     }
+
                 }
+                // Follow Y, the default
                 else
                 {
-                    if (Math.Abs(LinkedObject.ScreenPosition.Y - TargetY) <= 4)
+                    if (Math.Abs(LinkedObject.ScreenPosition.Y - ScaledTargetY) <= 4)
                     {
                         Speed = new Vector2(Speed.X, linkedObjDeltaY);
 
@@ -216,13 +227,13 @@ public class CameraSideScroller : CameraActor2D
                     }
                     else
                     {
-                        if (TargetY < LinkedObject.ScreenPosition.Y)
+                        if (ScaledTargetY < LinkedObject.ScreenPosition.Y)
                         {
                             if (linkedObjDeltaY >= 2)
                             {
                                 Speed = new Vector2(Speed.X, 5);
                             }
-                            else if (LinkedObject.ScreenPosition.Y - TargetY >= 21)
+                            else if (LinkedObject.ScreenPosition.Y - ScaledTargetY >= 21)
                             {
                                 Speed = new Vector2(Speed.X, 3);
                             }
@@ -241,7 +252,7 @@ public class CameraSideScroller : CameraActor2D
                             {
                                 Speed = new Vector2(Speed.X, -5);
                             }
-                            else if (LinkedObject.ScreenPosition.Y - TargetY <= -21)
+                            else if (LinkedObject.ScreenPosition.Y - ScaledTargetY <= -21)
                             {
                                 Speed = new Vector2(Speed.X, -3);
                             }
@@ -337,11 +348,11 @@ public class CameraSideScroller : CameraActor2D
     {
         Vector2 pos;
 
-        if (LinkedObject.Position.X < HorizontalOffset && !LinkedObject.IsFacingLeft)
+        if (LinkedObject.Position.X < ScaledHorizontalOffset && !LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
-        else if (LinkedObject.Position.X < (Engine.ScreenCamera.ScaledGameResolution.X - HorizontalOffset) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < (Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset) && LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
@@ -355,17 +366,17 @@ public class CameraSideScroller : CameraActor2D
                     Platform.NGage => 88,
                     _ => throw new UnsupportedPlatformException()
                 };
-                pos = new Vector2(LinkedObject.Position.X - HorizontalOffset, LinkedObject.Position.Y);
+                pos = new Vector2(LinkedObject.Position.X - ScaledHorizontalOffset, LinkedObject.Position.Y);
             }
             else
             {
                 if (!LinkedObject.IsFacingLeft)
                 {
-                    pos = new Vector2(LinkedObject.Position.X - HorizontalOffset, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X - ScaledHorizontalOffset, LinkedObject.Position.Y);
                 }
                 else
                 {
-                    pos = new Vector2(LinkedObject.Position.X + HorizontalOffset - Engine.ScreenCamera.ScaledGameResolution.X, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X + ScaledHorizontalOffset - Engine.ScreenCamera.ScaledGameResolution.X, LinkedObject.Position.Y);
                 }
             }
         }
