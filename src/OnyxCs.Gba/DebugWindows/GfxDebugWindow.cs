@@ -6,18 +6,46 @@ namespace OnyxCs.Gba;
 
 public class GfxDebugWindow : DebugWindow
 {
+    private bool _cropAspectRatio;
+
     public override string Name => "Gfx";
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
         ImGui.SeparatorText("General");
 
-        if (ImGui.Button("Reset scale"))
-            Engine.ScreenCamera.Scale = Vector2.One;
-
         float scale = Engine.ScreenCamera.Scale.X;
         if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
             Engine.ScreenCamera.Scale = new Vector2(scale);
+
+        ImGui.SameLine();
+        if (ImGui.Button("Reset"))
+            Engine.ScreenCamera.Scale = Vector2.One;
+
+        ImGui.Spacing();
+
+        ImGui.Checkbox("Crop", ref _cropAspectRatio);
+
+        if (ImGui.Button("GBA (3:2"))
+            Engine.ScreenCamera.SetAspectRatio(3 / 2f, _cropAspectRatio);
+
+        ImGui.SameLine();
+        if (ImGui.Button("N-Gage (11:13)"))
+            Engine.ScreenCamera.SetAspectRatio(11 / 13f, _cropAspectRatio);
+
+        ImGui.SameLine();
+        if (ImGui.Button("Widescreen (16:9)"))
+            Engine.ScreenCamera.SetAspectRatio(16 / 9f, _cropAspectRatio);
+
+        float ratio = Engine.ScreenCamera.GameResolution.X / Engine.ScreenCamera.GameResolution.Y;
+        if (ImGui.InputFloat("Aspect ratio", ref ratio))
+            Engine.ScreenCamera.SetAspectRatio(ratio, _cropAspectRatio);
+
+        ImGui.Spacing();
+
+        ImGui.Text($"Original resolution: {Engine.ScreenCamera.OriginalGameResolution.X} x {Engine.ScreenCamera.OriginalGameResolution.Y}");
+        ImGui.Text($"Resolution: {Engine.ScreenCamera.GameResolution.X} x {Engine.ScreenCamera.GameResolution.Y}");
+        ImGui.Text($"Scaled resolution: {Engine.ScreenCamera.ScaledGameResolution.X} x {Engine.ScreenCamera.ScaledGameResolution.Y}");
 
         ImGui.Spacing();
 

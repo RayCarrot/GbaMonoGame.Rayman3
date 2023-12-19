@@ -25,7 +25,7 @@ public class ScreenCamera
     private Vector2 _scale;
 
     public Vector2 OriginalGameResolution { get; }
-    public Vector2 GameResolution { get; }
+    public Vector2 GameResolution { get; private set; }
     public Vector2 ScaledGameResolution { get; private set; }
     public Vector2 Scale
     {
@@ -137,5 +137,27 @@ public class ScreenCamera
 
         VisibleArea = GetVisibleArea(TransformMatrix);
         ScaledVisibleArea = GetVisibleArea(ScaledTransformMatrix);
+    }
+
+    public void SetAspectRatio(float aspectRatio, bool crop)
+    {
+        if ((crop && aspectRatio < 1) || (!crop && aspectRatio > 1))
+        {
+            float height = OriginalGameResolution.Y;
+            float width = height * aspectRatio;
+
+            GameResolution = new Vector2(width, height);
+        }
+        else
+        {
+            float width = OriginalGameResolution.X;
+            float height = width / aspectRatio;
+
+            GameResolution = new Vector2(width, height);
+        }
+
+        // Refresh scaled resolution
+        ScaledGameResolution = GameResolution * Scale;
+        ResizeScreen(ScreenSize);
     }
 }
