@@ -37,7 +37,10 @@ public class GfxScreen
     /// </summary>
     public Vector2 Offset { get; set; }
 
-    public bool IsScaled { get; set; }
+    /// <summary>
+    /// The camera to render the screen to.
+    /// </summary>
+    public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
 
     public bool IsAlphaBlendEnabled { get; set; }
     public float Alpha { get; set; }
@@ -65,24 +68,22 @@ public class GfxScreen
 
         Color color = Color.White;
 
-        renderer.BeginRender(new RenderOptions(IsAlphaBlendEnabled, IsScaled));
+        renderer.BeginRender(new RenderOptions(IsAlphaBlendEnabled, Camera));
 
         if (IsAlphaBlendEnabled)
             color = new Color(color, Alpha);
 
         if (Wrap)
         {
-            Vector2 res = IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
-
             Vector2 size = Renderer.GetSize(this);
             Vector2 wrappedPos = new(-Offset.X % size.X, -Offset.Y % size.Y);
 
             float startX = 0 - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
             float startY = 0 - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
 
-            for (float y = startY; y < res.Y; y += size.Y)
+            for (float y = startY; y < Camera.Resolution.Y; y += size.Y)
             {
-                for (float x = startX; x < res.X; x += size.X)
+                for (float x = startX; x < Camera.Resolution.X; x += size.X)
                 {
                     Renderer?.Draw(renderer, this, new Vector2(x, y), color);
                 }

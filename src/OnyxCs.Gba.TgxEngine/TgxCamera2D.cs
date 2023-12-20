@@ -6,6 +6,8 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxCamera2D : TgxCamera
 {
+    public TgxCamera2D(GameWindow gameWindow) : base(gameWindow) { }
+
     private TgxCluster MainCluster { get; set; }
     private List<TgxCluster> Clusters { get; } = new();
 
@@ -17,8 +19,8 @@ public class TgxCamera2D : TgxCamera
             TgxCluster mainCluster = GetMainCluster();
             mainCluster.Position = value;
 
-            Vector2 originalMax = mainCluster.GetMaxPosition(false);
-            Vector2 scaledMax = mainCluster.GetMaxPosition(true);
+            Vector2 originalMax = mainCluster.GetMaxPosition(Engine.ScreenCamera);
+            Vector2 scaledMax = mainCluster.GetMaxPosition(this);
 
             foreach (TgxCluster cluster in Clusters)
             {
@@ -28,7 +30,7 @@ public class TgxCamera2D : TgxCamera
                 Vector2 scrollFactor;
 
                 // If it's not scaled we have to update the scroll factor so it scrolls the same range
-                if (!cluster.IsScaled)
+                if (cluster.Camera == Engine.ScreenCamera)
                 {
                     scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
 
@@ -70,9 +72,9 @@ public class TgxCamera2D : TgxCamera
     public void AddCluster(ClusterResource clusterResource)
     {
         if (MainCluster == null)
-            MainCluster = new TgxCluster(clusterResource);
+            MainCluster = new TgxCluster(clusterResource, this);
         else
-            Clusters.Add(new TgxCluster(clusterResource));
+            Clusters.Add(new TgxCluster(clusterResource, this));
     }
 
     public void AddLayer(int clusterId, TgxGameLayer layer)

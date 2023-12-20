@@ -176,6 +176,7 @@ public class Intro : Frame, IHasPlayfield
 
     public override void UnInit()
     {
+        Playfield.UnInit();
         SoundManager.Play(Rayman3SoundEvent.Stop__sadslide);
     }
 

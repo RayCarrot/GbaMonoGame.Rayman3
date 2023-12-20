@@ -7,8 +7,9 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class CollisionMapScreenRenderer : IScreenRenderer
 {
-    public CollisionMapScreenRenderer(int width, int height, byte[] collisionMap)
+    public CollisionMapScreenRenderer(GfxCamera camera, int width, int height, byte[] collisionMap)
     {
+        Camera = camera;
         Width = width;
         Height = height;
         CollisionMap = collisionMap;
@@ -19,6 +20,7 @@ public class CollisionMapScreenRenderer : IScreenRenderer
 
     private static readonly Texture2D _tex = Engine.ContentManager.Load<Texture2D>("CollisionTileSet");
 
+    public GfxCamera Camera { get; }
     public int Width { get; }
     public int Height { get; }
     public byte[] CollisionMap { get; }
@@ -29,8 +31,8 @@ public class CollisionMapScreenRenderer : IScreenRenderer
 
         int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
         int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
-        int xEnd = (int)Math.Ceiling((Math.Min(Engine.ScreenCamera.ScaledGameResolution.X, rect.Right) - rect.X) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min(Engine.ScreenCamera.ScaledGameResolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.X, rect.Right) - rect.X) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }

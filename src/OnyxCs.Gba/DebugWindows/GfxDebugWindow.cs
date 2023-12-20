@@ -14,38 +14,43 @@ public class GfxDebugWindow : DebugWindow
     {
         ImGui.SeparatorText("General");
 
-        float scale = Engine.ScreenCamera.Scale.X;
+        float scale = Engine.Config.Scale;
         if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
-            Engine.ScreenCamera.Scale = new Vector2(scale);
+        {
+            Engine.Config.Scale = scale;
+            Engine.Config.OnConfigChanged();
+        }
 
         ImGui.SameLine();
         if (ImGui.Button("Reset"))
-            Engine.ScreenCamera.Scale = Vector2.One;
+        {
+            Engine.Config.Scale = 1;
+            Engine.Config.OnConfigChanged();
+        }
 
         ImGui.Spacing();
 
         ImGui.Checkbox("Crop", ref _cropAspectRatio);
 
         if (ImGui.Button("GBA (3:2"))
-            Engine.ScreenCamera.SetAspectRatio(3 / 2f, _cropAspectRatio);
+            Engine.GameWindow.SetAspectRatio(3 / 2f, _cropAspectRatio);
 
         ImGui.SameLine();
         if (ImGui.Button("N-Gage (11:13)"))
-            Engine.ScreenCamera.SetAspectRatio(11 / 13f, _cropAspectRatio);
+            Engine.GameWindow.SetAspectRatio(11 / 13f, _cropAspectRatio);
 
         ImGui.SameLine();
         if (ImGui.Button("Widescreen (16:9)"))
-            Engine.ScreenCamera.SetAspectRatio(16 / 9f, _cropAspectRatio);
+            Engine.GameWindow.SetAspectRatio(16 / 9f, _cropAspectRatio);
 
-        float ratio = Engine.ScreenCamera.GameResolution.X / Engine.ScreenCamera.GameResolution.Y;
+        float ratio = Engine.GameWindow.AspectRatio;
         if (ImGui.InputFloat("Aspect ratio", ref ratio))
-            Engine.ScreenCamera.SetAspectRatio(ratio, _cropAspectRatio);
+            Engine.GameWindow.SetAspectRatio(ratio, _cropAspectRatio);
 
         ImGui.Spacing();
 
-        ImGui.Text($"Original resolution: {Engine.ScreenCamera.OriginalGameResolution.X} x {Engine.ScreenCamera.OriginalGameResolution.Y}");
-        ImGui.Text($"Resolution: {Engine.ScreenCamera.GameResolution.X} x {Engine.ScreenCamera.GameResolution.Y}");
-        ImGui.Text($"Scaled resolution: {Engine.ScreenCamera.ScaledGameResolution.X} x {Engine.ScreenCamera.ScaledGameResolution.Y}");
+        ImGui.Text($"Original resolution: {Engine.GameWindow.OriginalGameResolution.X} x {Engine.GameWindow.OriginalGameResolution.Y}");
+        ImGui.Text($"Resolution: {Engine.GameWindow.GameResolution.X} x {Engine.GameWindow.GameResolution.Y}");
 
         ImGui.Spacing();
 
@@ -63,7 +68,7 @@ public class GfxDebugWindow : DebugWindow
             ImGui.TableSetupColumn("Priority", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Offset");
             ImGui.TableSetupColumn("Size");
-            ImGui.TableSetupColumn("Scaled");
+            ImGui.TableSetupColumn("Camera");
             ImGui.TableSetupColumn("Color mode");
             ImGui.TableHeadersRow();
 
@@ -94,7 +99,7 @@ public class GfxDebugWindow : DebugWindow
                 ImGui.Text($"{screen.Renderer?.GetSize(screen).X:0.00} x {screen.Renderer?.GetSize(screen).Y:0.00}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{screen.IsScaled}");
+                ImGui.Text($"{screen.Camera.GetType().Name}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text(screen.Is8Bit switch

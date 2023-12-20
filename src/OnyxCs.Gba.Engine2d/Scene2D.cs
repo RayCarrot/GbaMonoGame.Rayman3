@@ -45,6 +45,11 @@ public class Scene2D
         DrawActors();
     }
 
+    public void UnInit()
+    {
+        Playfield.UnInit();
+    }
+
     public void Step()
     {
         RunActors();

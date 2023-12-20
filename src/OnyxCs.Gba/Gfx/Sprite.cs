@@ -6,13 +6,13 @@ namespace OnyxCs.Gba;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, isScaled, null) { }
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, null) { }
 
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled, Color? color) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, isScaled, color) { }
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, color) { }
 
-    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, bool isScaled, Color? color)
+    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color)
     {
         Texture = texture;
         TextureRectangle = textureRectangle;
@@ -78,7 +78,7 @@ public class Sprite
         Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
         Origin = new Vector2(TextureRectangle.Width / 2f, TextureRectangle.Height / 2f);
         Color = color ?? Color.White;
-        IsScaled = isScaled;
+        Camera = camera;
     }
 
     public Texture2D Texture { get; }
@@ -94,11 +94,11 @@ public class Sprite
     public SpriteEffects Effects { get; }
     public Color Color { get; }
 
-    public bool IsScaled { get; }
+    public GfxCamera Camera { get; }
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.BeginRender(new RenderOptions(false, IsScaled));
+        renderer.BeginRender(new RenderOptions(false, Camera));
         renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, Color);
     }
 }

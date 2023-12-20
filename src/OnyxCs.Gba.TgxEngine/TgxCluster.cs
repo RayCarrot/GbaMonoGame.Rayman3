@@ -7,15 +7,15 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxCluster
 {
-    public TgxCluster(ClusterResource cluster)
+    public TgxCluster(ClusterResource cluster, TgxCamera2D tgxCamera)
     {
         ScrollFactor = new Vector2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
         Layers = new List<TgxGameLayer>();
         Size = new Vector2(cluster.SizeX * Constants.TileSize, cluster.SizeY * Constants.TileSize);
         Stationary = cluster.Stationary;
 
-        // To allow higher resolutions we mark some clusters as scaled
-        IsScaled = !Stationary && ScrollFactor == Vector2.One;
+        // Render backgrounds to the screen camera
+        Camera = !Stationary && ScrollFactor == Vector2.One ? tgxCamera : Engine.ScreenCamera;
     }
 
     private Vector2 _position;
@@ -47,18 +47,14 @@ public class TgxCluster
         }
     }
 
-    public Vector2 MaxPosition => GetMaxPosition(IsScaled);
+    public Vector2 MaxPosition => GetMaxPosition(Camera);
 
     public Vector2 ScrollFactor { get; }
 
     public bool Stationary { get; }
-    public bool IsScaled { get; }
+    public GfxCamera Camera { get; }
 
-    public Vector2 GetMaxPosition(bool scaled)
-    {
-        Vector2 res = scaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
-        return new Vector2(Math.Max(0, Size.X - res.X), Math.Max(0, Size.Y - res.Y));
-    }
+    public Vector2 GetMaxPosition(GfxCamera camera) => new(Math.Max(0, Size.X - camera.Resolution.X), Math.Max(0, Size.Y - camera.Resolution.Y));
 
     public void AddLayer(TgxGameLayer layer)
     {

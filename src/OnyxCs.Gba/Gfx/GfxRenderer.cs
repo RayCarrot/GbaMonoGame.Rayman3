@@ -8,10 +8,10 @@ public class GfxRenderer
 {
     #region Constructor
 
-    public GfxRenderer(SpriteBatch spriteBatch, ScreenCamera camera)
+    public GfxRenderer(SpriteBatch spriteBatch, GameWindow gameWindow)
     {
         SpriteBatch = spriteBatch;
-        Camera = camera;
+        GameWindow = gameWindow;
 
         Pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
         Pixel.SetData(new[] { Color.White });
@@ -23,16 +23,12 @@ public class GfxRenderer
 
     #region Private Properties
 
-    private Texture2D Pixel { get; }
     private SpriteBatch SpriteBatch { get; }
+    private GameWindow GameWindow { get; }
+    private Texture2D Pixel { get; }
     private RasterizerState RasterizerState { get; }
     private RenderOptions? RenderOptions { get; set; }
-
-    #endregion
-
-    #region Public Properties
-
-    public ScreenCamera Camera { get; }
+    private GfxCamera CurrentCamera => RenderOptions?.Camera ?? throw new Exception("Can't access a camera to render with if no options have been set");
 
     #endregion
 
@@ -42,7 +38,7 @@ public class GfxRenderer
     {
         // Set the scissor area first time we render this frame
         if (RenderOptions == null)
-            SpriteBatch.GraphicsDevice.ScissorRectangle = Camera.ScreenRectangle;
+            SpriteBatch.GraphicsDevice.ScissorRectangle = GameWindow.ScreenRectangle;
 
         // If we have new render options then we need to begin a new batch
         if (RenderOptions != options)
@@ -57,7 +53,7 @@ public class GfxRenderer
             SpriteBatch.Begin(
                 samplerState: SamplerState.PointClamp,
                 blendState: options.Alpha ? BlendState.NonPremultiplied : null,
-                transformMatrix: options.IsScaled ? Camera.ScaledTransformMatrix : Camera.TransformMatrix,
+                transformMatrix: options.Camera.Matrix,
                 rasterizerState: RasterizerState);
         }
     }
@@ -76,28 +72,25 @@ public class GfxRenderer
 
     #region Draw
 
-    // TODO: Maybe we don't need to check if texture is in camera bounds since game engine does most of it? Not all though, and right now
-    //       the AnimatedObject IsFramed and sprite visibility flags haven't been implemented as it didn't seem needed.
-
     public void Draw(Texture2D texture, Vector2 position, Color? color = null)
     {
-        if (Camera.IsVisible(position, texture.Bounds.Size, RenderOptions!.Value.IsScaled))
+        if (CurrentCamera.IsVisible(position, texture.Bounds.Size))
             SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color? color = null)
     {
-        if (Camera.IsVisible(position, sourceRectangle.Size, RenderOptions!.Value.IsScaled))
+        if (CurrentCamera.IsVisible(position, sourceRectangle.Size))
             SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White);
     }
 
     public void Draw(Texture2D texture, Vector2 position, SpriteEffects effects, Color? color = null)
     {
-        if (Camera.IsVisible(position, texture.Bounds.Size, RenderOptions!.Value.IsScaled))
+        if (CurrentCamera.IsVisible(position, texture.Bounds.Size))
             SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, SpriteEffects effects, Color? color = null)
     {
-        if (Camera.IsVisible(position, sourceRectangle.Size, RenderOptions!.Value.IsScaled))
+        if (CurrentCamera.IsVisible(position, sourceRectangle.Size))
             SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
 

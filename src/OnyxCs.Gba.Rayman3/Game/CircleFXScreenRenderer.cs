@@ -46,7 +46,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
         return CachedCircleTextures[radius - 1];
     }
 
-    public Vector2 GetSize(GfxScreen screen) => screen.IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
+    public Vector2 GetSize(GfxScreen screen) => screen.Camera.Resolution;
 
     public int Radius { get; set; }
     public Vector2 CirclePosition { get; set; }
@@ -55,10 +55,11 @@ public class CircleFXScreenRenderer : IScreenRenderer
     {
         Vector2 pos;
 
-        if (screen.IsScaled)
-            pos = CirclePosition;
+        // TODO: Could maybe write this a bit cleaner, but essentially the position is in the tgx camera, so we need to use those coordinates
+        if (screen.Camera == Engine.ScreenCamera)
+            pos = CirclePosition / Engine.Config.Scale;
         else
-            pos = CirclePosition / Engine.ScreenCamera.Scale;
+            pos = CirclePosition;
 
         pos -= new Vector2(Radius);
 
@@ -72,7 +73,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
             renderer.Draw(tex, pos + new Vector2(Radius, Radius), SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically, Color.Black); // Bottom-right
         }
 
-        Vector2 res = screen.IsScaled ? Engine.ScreenCamera.ScaledGameResolution : Engine.ScreenCamera.GameResolution;
+        Vector2 res = screen.Camera.Resolution;
 
         // Draw black around circle to fill screen
         renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top

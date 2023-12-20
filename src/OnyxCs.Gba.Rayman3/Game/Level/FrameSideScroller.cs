@@ -135,7 +135,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         {
             Priority = -1,
             IsEnabled = false,
-            IsScaled = false, // If we scale then it won't fill the entire screen, so don't scale for now
+            Camera = Engine.ScreenCamera, // If we use the tgx camera then it won't fill the entire screen, so use the screen camera for now
             Renderer = CircleFXRenderer,
         };
 
@@ -153,6 +153,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     
     public override void UnInit()
     {
+        Scene.UnInit();
         GameInfo.StopLevelMusic();
         SoundManager.StopAll();
     }

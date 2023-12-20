@@ -85,8 +85,6 @@ public class DebugLayout
 
     public void DrawGame(GfxRenderer renderer)
     {
-        renderer.BeginRender(new RenderOptions(false, true));
-
         foreach (DebugWindow window in _windows)
         {
             if (window.IsOpen || !window.CanClose)

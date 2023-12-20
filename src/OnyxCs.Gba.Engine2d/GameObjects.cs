@@ -104,7 +104,7 @@ public class GameObjects
 
         // If the game is scaled we can't use the knots as they're pre-calculated for the original
         // screen resolution. So instead we use a knot where every object is loaded.
-        if (Engine.ScreenCamera.IsScaled) // TODO: Have this be a setting
+        if (Engine.Config.Scale != 1f) // TODO: Have this be a setting
         {
             knot = FullKnot;
         }
@@ -114,14 +114,14 @@ public class GameObjects
 
             TgxGameLayer physicalLayer = playfield.PhysicalLayer;
 
-            if (physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X <= camPos.X)
-                camPos = new Vector2(physicalLayer.PixelWidth - Engine.ScreenCamera.ScaledGameResolution.X - 1, camPos.Y);
+            if (physicalLayer.PixelWidth - playfield.Camera.Resolution.X <= camPos.X)
+                camPos = new Vector2(physicalLayer.PixelWidth - playfield.Camera.Resolution.X - 1, camPos.Y);
 
-            if (physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y <= camPos.Y)
-                camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - Engine.ScreenCamera.ScaledGameResolution.Y - 1);
+            if (physicalLayer.PixelHeight - playfield.Camera.Resolution.Y <= camPos.Y)
+                camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - playfield.Camera.Resolution.Y - 1);
 
-            int knotX = (int)(camPos.X / Engine.ScreenCamera.OriginalGameResolution.X);
-            int knotY = (int)(camPos.Y / Engine.ScreenCamera.OriginalGameResolution.Y);
+            int knotX = (int)(camPos.X / Engine.GameWindow.OriginalGameResolution.X);
+            int knotY = (int)(camPos.Y / Engine.GameWindow.OriginalGameResolution.Y);
             knot = Knots[knotX + knotY * KnotsWidth];
         }
 

@@ -6,16 +6,16 @@ namespace OnyxCs.Gba;
 
 public class GameRenderTarget
 {
-    public GameRenderTarget(GraphicsDevice graphicsDevice, ScreenCamera screenCamera)
+    public GameRenderTarget(GraphicsDevice graphicsDevice, GameWindow gameWindow)
     {
         GraphicsDevice = graphicsDevice;
-        ScreenCamera = screenCamera;
+        GameWindow = gameWindow;
     }
 
     private Point? PendingResize { get; set; }
 
     public GraphicsDevice GraphicsDevice { get; }
-    public ScreenCamera ScreenCamera { get; }
+    public GameWindow GameWindow { get; }
     public RenderTarget2D RenderTarget { get; private set; }
 
     public void ResizeGame(Point newSize)
@@ -28,7 +28,7 @@ public class GameRenderTarget
     {
         if (PendingResize != null)
         {
-            ScreenCamera.ResizeScreen(PendingResize.Value);
+            GameWindow.Resize(PendingResize.Value);
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,

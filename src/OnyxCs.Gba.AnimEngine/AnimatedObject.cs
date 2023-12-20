@@ -36,7 +36,7 @@ public class AnimatedObject : AObject
 
     public AnimatedObjectResource Resource { get; }
 
-    public bool IsScaled { get; set; }
+    public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
 
     // Flags
     public bool IsSoundEnabled { get; set; }
@@ -289,7 +289,7 @@ public class AnimatedObject : AObject
                         flipY: channel.FlipY ^ FlipY,
                         priority: SpritePriority,
                         affineMatrix: affineMatrix,
-                        isScaled: IsScaled));
+                        camera: Camera));
                     break;
 
                 case AnimationChannelType.Sound:

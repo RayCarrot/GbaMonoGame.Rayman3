@@ -8,8 +8,9 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TileMapScreenRenderer : IScreenRenderer
 {
-    public TileMapScreenRenderer(int width, int height, MapTile[] tileMap, byte[] tileSet, Palette palette, bool is8Bit)
+    public TileMapScreenRenderer(GfxCamera camera, int width, int height, MapTile[] tileMap, byte[] tileSet, Palette palette, bool is8Bit)
     {
+        Camera = camera;
         Width = width;
         Height = height;
         TileMap = tileMap;
@@ -20,6 +21,7 @@ public class TileMapScreenRenderer : IScreenRenderer
         TileTextures = new Dictionary<int, Texture2D>();
     }
 
+    public GfxCamera Camera { get; }
     public int Width { get; }
     public int Height { get; }
     public MapTile[] TileMap { get; }
@@ -34,8 +36,8 @@ public class TileMapScreenRenderer : IScreenRenderer
 
         int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Constants.TileSize);
         int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Constants.TileSize);
-        int xEnd = (int)Math.Ceiling((Math.Min(Engine.ScreenCamera.ScaledGameResolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min(Engine.ScreenCamera.ScaledGameResolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
+        int xEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
+        int yEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }

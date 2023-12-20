@@ -47,9 +47,9 @@ public class SceneDebugWindow : DebugWindow
 
     private void UpdateMouseDetection(Scene2D scene)
     {
-        Vector2 mousePos = JoyPad.GetMousePosition();
+        Vector2 mousePos = JoyPad.GetMousePosition(scene.Playfield.Camera);
 
-        if (!JoyPad.IsMouseOnScreen())
+        if (!JoyPad.IsMouseOnScreen(scene.Playfield.Camera))
             return;
         
         HighlightedGameObject = null;
@@ -173,6 +173,8 @@ public class SceneDebugWindow : DebugWindow
     {
         if (Frame.Current is not IHasScene { Scene: { } scene2D }) 
             return;
+
+        renderer.BeginRender(new RenderOptions(false, scene2D.Playfield.Camera));
 
         foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
         {

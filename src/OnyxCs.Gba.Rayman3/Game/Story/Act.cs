@@ -60,7 +60,7 @@ public abstract class Act : Frame
 
         CurrentText = Localization.TextBanks[ActResource.TextBankId].Texts[textId];
 
-        float centerX = Engine.ScreenCamera.GameResolution.X / 2f;
+        float centerX = Engine.GameWindow.GameResolution.X / 2f;
         float baseY = Engine.Settings.Platform switch
         {
             Platform.GBA => 129,
@@ -165,8 +165,8 @@ public abstract class Act : Frame
         if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
         {
             renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: (int)Engine.ScreenCamera.OriginalGameResolution.X,
-                height: (int)Engine.ScreenCamera.OriginalGameResolution.Y,
+                width: (int)Engine.GameWindow.OriginalGameResolution.X,
+                height: (int)Engine.GameWindow.OriginalGameResolution.Y,
                 bitmap: frame.Bitmap.ImgData,
                 palette: new Palette(frame.Palette)));
             CachedTextureRenderers[frame.Bitmap] = renderer;
@@ -273,7 +273,7 @@ public abstract class Act : Frame
             IsEnabled = true,
             Priority = 1,
             // Center the screen
-            Offset = -(Engine.ScreenCamera.GameResolution - Engine.ScreenCamera.OriginalGameResolution) / 2,
+            Offset = -(Engine.GameWindow.GameResolution - Engine.GameWindow.OriginalGameResolution) / 2,
         };
         Gfx.AddScreen(BitmapScreen);
 

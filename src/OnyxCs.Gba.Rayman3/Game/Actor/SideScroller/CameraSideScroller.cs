@@ -45,9 +45,9 @@ public class CameraSideScroller : CameraActor2D
 
     // Handle scaling by centering the target offsets within the new scaled view area
     private float ScaledHorizontalOffset => HorizontalOffset +
-                                            (Engine.ScreenCamera.ScaledGameResolution.X - Engine.ScreenCamera.GameResolution.X) / 2;
+                                            (Scene.Playfield.Camera.Resolution.X - Engine.GameWindow.GameResolution.X) / 2;
     private float ScaledTargetY => TargetY + 
-                                   (Engine.ScreenCamera.ScaledGameResolution.Y - Engine.ScreenCamera.GameResolution.Y) / 2;
+                                   (Scene.Playfield.Camera.Resolution.Y - Engine.GameWindow.GameResolution.Y) / 2;
     
     public byte HorizontalOffset { get; set; }
     public float TargetX { get; set; }
@@ -70,7 +70,7 @@ public class CameraSideScroller : CameraActor2D
     private void UpdateTargetX()
     {
         if (LinkedObject.IsFacingLeft)
-            TargetX = Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset;
+            TargetX = Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset;
         else
             TargetX = ScaledHorizontalOffset;
     }
@@ -179,8 +179,8 @@ public class CameraSideScroller : CameraActor2D
                              ScaledHorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
                              ScaledHorizontalOffset <= LinkedObject.ScreenPosition.X) ||
                           (LinkedObject.IsFacingLeft &&
-                           Engine.ScreenCamera.ScaledGameResolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
-                           Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
+                           Scene.Playfield.Camera.Resolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
+                           Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
                         {
                             // If timer is greater than 2, slow down the speed if it's absolute greater than 1
                             if (Timer > 2 && Math.Abs(Speed.X) > 1)
@@ -206,7 +206,7 @@ public class CameraSideScroller : CameraActor2D
                 // Do not follow Y (unless near the edge). Used when jumping for example.
                 if (field20_0x32 == 0)
                 {
-                    float yOff = (Engine.ScreenCamera.ScaledGameResolution.Y - Engine.ScreenCamera.GameResolution.Y);
+                    float yOff = (Scene.Playfield.Camera.Resolution.Y - Engine.GameWindow.GameResolution.Y);
 
                     if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
                         (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))
@@ -336,7 +336,7 @@ public class CameraSideScroller : CameraActor2D
         if (Debug_FreeMoveCamera)
         {
             if (JoyPad.GetMouseState().RightButton == ButtonState.Pressed)
-                Scene.Playfield.Camera.Position += JoyPad.GetMousePositionDelta() * -1;
+                Scene.Playfield.Camera.Position += JoyPad.GetMousePositionDelta(Scene.Playfield.Camera) * -1;
         }
         else
         {
@@ -352,7 +352,7 @@ public class CameraSideScroller : CameraActor2D
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
-        else if (LinkedObject.Position.X < (Engine.ScreenCamera.ScaledGameResolution.X - ScaledHorizontalOffset) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < (Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset) && LinkedObject.IsFacingLeft)
         {
             pos = new Vector2(0, LinkedObject.Position.Y);
         }
@@ -376,7 +376,7 @@ public class CameraSideScroller : CameraActor2D
                 }
                 else
                 {
-                    pos = new Vector2(LinkedObject.Position.X + ScaledHorizontalOffset - Engine.ScreenCamera.ScaledGameResolution.X, LinkedObject.Position.Y);
+                    pos = new Vector2(LinkedObject.Position.X + ScaledHorizontalOffset - Scene.Playfield.Camera.Resolution.X, LinkedObject.Position.Y);
                 }
             }
         }

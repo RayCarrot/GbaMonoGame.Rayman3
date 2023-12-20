@@ -138,7 +138,7 @@ public static class FontManager
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
-        Sprite sprite = new(loadedFont.Texture, loadedFont.CharacterRectangles[c], position, false, false, priority, affineMatrix, false, color);
+        Sprite sprite = new(loadedFont.Texture, loadedFont.CharacterRectangles[c], position, false, false, priority, affineMatrix, Engine.ScreenCamera, color);
 
         position += new Vector2(loadedFont.Font.CharacterWidths[c], 0);
 

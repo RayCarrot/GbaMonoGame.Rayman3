@@ -4,7 +4,7 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxTilePhysicalLayer : TgxGameLayer
 {
-    public TgxTilePhysicalLayer(GameLayerResource gameLayerResource) : base(gameLayerResource)
+    public TgxTilePhysicalLayer(GameLayerResource gameLayerResource, GfxCamera camera) : base(gameLayerResource)
     {
         CollisionMap = gameLayerResource.PhysicalLayer.CollisionMap;
 
@@ -17,7 +17,8 @@ public class TgxTilePhysicalLayer : TgxGameLayer
             Priority = 0,
             Wrap = false,
             Is8Bit = null,
-            Renderer = new CollisionMapScreenRenderer(Width, Height, CollisionMap)
+            Camera = camera,
+            Renderer = new CollisionMapScreenRenderer(camera, Width, Height, CollisionMap)
         };
         Gfx.AddScreen(DebugScreen);
     }

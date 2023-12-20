@@ -83,17 +83,17 @@ public static class JoyPad
         return KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
     }
 
-    public static bool IsMouseOnScreen() => Engine.ScreenCamera.ScaledVisibleArea.Contains(GetMousePosition());
+    public static bool IsMouseOnScreen(GfxCamera camera) => camera.IsVisible(GetMousePosition(camera));
 
-    public static Vector2 GetMousePosition()
+    public static Vector2 GetMousePosition(GfxCamera camera)
     {
-        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2() + MouseOffset);
+        return camera.ToWorldPosition(MouseState.Position.ToVector2() + MouseOffset);
     }
 
-    public static Vector2 GetMousePositionDelta()
+    public static Vector2 GetMousePositionDelta(GfxCamera camera)
     {
-        return Engine.ScreenCamera.ToGamePosition(MouseState.Position.ToVector2()) -
-               Engine.ScreenCamera.ToGamePosition(PreviousMouseState.Position.ToVector2());
+        return camera.ToWorldPosition(MouseState.Position.ToVector2()) -
+               camera.ToWorldPosition(PreviousMouseState.Position.ToVector2());
     }
 
     public static int GetMouseWheelDelta()

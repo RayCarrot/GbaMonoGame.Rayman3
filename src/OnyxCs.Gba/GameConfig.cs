@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace OnyxCs.Gba;
 
-public record GameConfig
+public class GameConfig
 {
     [JsonPropertyName("romFile")]
     public string RomFile { get; set; }
@@ -12,4 +13,10 @@ public record GameConfig
 
     [JsonPropertyName("serializerLogFile")]
     public string SerializerLogFile { get; set; }
+
+    [JsonPropertyName("scale")]
+    public float Scale { get; set; } = 1;
+
+    public event EventHandler ConfigChanged;
+    public void OnConfigChanged() => ConfigChanged?.Invoke(this, EventArgs.Empty);
 }

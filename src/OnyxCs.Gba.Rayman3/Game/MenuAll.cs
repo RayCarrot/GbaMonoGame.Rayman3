@@ -411,6 +411,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
+        Playfield.UnInit();
         SoundManager.Play(Rayman3SoundEvent.Stop__raytheme);
     }
 

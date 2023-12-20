@@ -41,7 +41,9 @@ public static class Engine
     /// <summary>
     /// The screen camera to use when rendering the game.
     /// </summary>
-    public static ScreenCamera ScreenCamera { get; set; }
+    public static ScreenCamera ScreenCamera { get; private set; }
+
+    public static GameWindow GameWindow { get; private set; }
 
     #endregion
 
@@ -114,11 +116,12 @@ public static class Engine
         }
     }
 
-    internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera)
+    internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera, GameWindow gameWindow)
     {
         GraphicsDevice = graphicsDevice;
         ContentManager = contentManager;
         ScreenCamera = screenCamera;
+        GameWindow = gameWindow;
     }
 
     internal static void Unload()

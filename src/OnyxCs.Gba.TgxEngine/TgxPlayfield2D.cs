@@ -5,11 +5,9 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public class TgxPlayfield2D : TgxPlayfield
 {
-    public TgxPlayfield2D(Playfield2DResource playfieldResource)
+    public TgxPlayfield2D(Playfield2DResource playfieldResource) : base(new TgxCamera2D(Engine.GameWindow))
     {
         List<TgxTileLayer> tileLayers = new();
-
-        Camera = new TgxCamera2D();
 
         // Add clusters to the camera
         foreach (ClusterResource clusterResource in playfieldResource.Clusters)
@@ -30,11 +28,11 @@ public class TgxPlayfield2D : TgxPlayfield
 
                 // Set if the layer is scaled. The game doesn't do this as it has no concept of scaling.
                 TgxCluster cluster = Camera.GetCluster(gameLayerResource.TileLayer.ClusterIndex);
-                layer.Screen.IsScaled = cluster.IsScaled;
+                layer.Screen.Camera = cluster.Camera;
             }
             else if (gameLayerResource.Type == GameLayerType.PhysicalLayer)
             {
-                PhysicalLayer = new TgxTilePhysicalLayer(gameLayerResource);
+                PhysicalLayer = new TgxTilePhysicalLayer(gameLayerResource, Camera);
 
                 // We want the debug collision map to scroll with the main cluster
                 Camera.AddLayer(0, PhysicalLayer);
@@ -44,6 +42,6 @@ public class TgxPlayfield2D : TgxPlayfield
         TileLayers = tileLayers;
     }
 
-    public TgxCamera2D Camera { get; }
+    public new TgxCamera2D Camera => (TgxCamera2D)base.Camera;
     public IReadOnlyList<TgxTileLayer> TileLayers { get; }
 }

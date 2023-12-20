@@ -23,7 +23,7 @@ public class BaseActor : GameObject
             CurrentAnimation = 0,
             SpritePriority = ActorDrawPriority,
             YPriority = 32,
-            IsScaled = true,
+            Camera = scene.Playfield.Camera,
         };
 
         _viewBox = new Box(ActorModel.ViewBox);

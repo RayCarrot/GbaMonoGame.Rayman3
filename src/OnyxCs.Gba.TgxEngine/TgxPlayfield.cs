@@ -6,6 +6,13 @@ namespace OnyxCs.Gba.TgxEngine;
 
 public abstract class TgxPlayfield
 {
+    protected TgxPlayfield(TgxCamera camera)
+    {
+        Camera = camera;
+    }
+
+    public TgxCamera Camera { get; }
+
     public TgxTilePhysicalLayer PhysicalLayer { get; set; }
 
     public static TgxPlayfield Load(PlayfieldResource playfieldResource) => Load<TgxPlayfield>(playfieldResource);
@@ -30,5 +37,10 @@ public abstract class TgxPlayfield
             return 0xFF;
         else
             return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
+    }
+
+    public virtual void UnInit()
+    {
+        Camera.UnInit();
     }
 }

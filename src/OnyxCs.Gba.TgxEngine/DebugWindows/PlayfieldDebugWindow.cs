@@ -16,13 +16,17 @@ public class PlayfieldDebugWindow : DebugWindow
 
         Vector2 pos = playfield2D.Camera.Position;
 
-        ImGui.SeparatorText("Camera position");
+        ImGui.SeparatorText("Camera");
 
         bool modifiedX = ImGui.SliderFloat("Camera X", ref pos.X, 0, playfield2D.Camera.GetMainCluster().MaxPosition.X);
         bool modifiedY = ImGui.SliderFloat("Camera Y", ref pos.Y, 0, playfield2D.Camera.GetMainCluster().MaxPosition.Y);
 
         if (modifiedX || modifiedY)
             playfield2D.Camera.Position = pos;
+
+        ImGui.Spacing();
+
+        ImGui.Text($"Resolution: {playfield2D.Camera.Resolution.X} x {playfield2D.Camera.Resolution.Y}");
 
         ImGui.Spacing();
         ImGui.Spacing();

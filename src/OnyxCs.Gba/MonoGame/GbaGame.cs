@@ -89,7 +89,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     private void SizeGameToWindow()
     {
-        Engine.ScreenCamera.ResizeScreen(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: SetWindowSize);
+        Engine.GameWindow.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: SetWindowSize);
     }
 
     private void StepEngine()
@@ -132,14 +132,15 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Engine.LoadConfig(Environment.GetCommandLineArgs().FirstOrDefault(x => x.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase)));
         Engine.LoadRom(Engine.Config.RomFile, Engine.Config.SerializerLogFile, Game);
 
-        Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera());
+        GameWindow gameWindow = new(Engine.Settings);
+        Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
 
         SoundManager.Load(SoundBankResourceId, SongTable);
         FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // TODO: Save window size in config, as well as if maximized etc.
-        Point windowSize = new((int)(Engine.ScreenCamera.GameResolution.X * 4), (int)(Engine.ScreenCamera.GameResolution.Y * 4));
-        Engine.ScreenCamera.ResizeScreen(windowSize);
+        Point windowSize = new((int)(Engine.GameWindow.GameResolution.X * 4), (int)(Engine.GameWindow.GameResolution.Y * 4));
+        Engine.GameWindow.Resize(windowSize);
         SetWindowSize(windowSize);
 
         FrameManager.SetNextFrame(CreateInitialFrame());
@@ -150,8 +151,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.ScreenCamera);
-        _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.ScreenCamera);
+        _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameWindow);
+        _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
 
         _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
         _debugLayout.AddWindow(_performanceWindow = new PerformanceDebugWindow());
