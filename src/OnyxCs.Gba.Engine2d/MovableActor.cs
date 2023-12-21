@@ -176,8 +176,8 @@ public class MovableActor : InteractableActor
         if (Speed.X == 0)
             return;
 
-        // Moving to the right
-        float x = Speed.X > 0 ? detectionBox.MaxX : detectionBox.MinX;
+        // Get the x position to detect
+        float detectionX = Speed.X > 0 ? detectionBox.MaxX : detectionBox.MinX;
 
         // Get bottom-center type
         PhysicalType typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
@@ -200,45 +200,55 @@ public class MovableActor : InteractableActor
         if (typeX.IsAngledSolid)
             return;
 
-        if (Speed.Y > 0)
+        // Not moving down
+        if (Speed.Y <= 0)
         {
-            typeX = Scene.GetPhysicalType(new Vector2(x, detectionBox.MaxY));
-            if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+            float y = detectionBox.MinY + Constants.TileSize;
+            int count = (int)(detectionBox.Height / Constants.TileSize) - 1;
+
+            for (int i = 0; i < count; i++)
             {
-                if (Speed.X > 0)
+                typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
+                y += Constants.TileSize;
+
+                if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+                    break;
+            }
+        }
+        // Moving down
+        else
+        {
+            typeX = Scene.GetPhysicalType(new Vector2(detectionX, detectionBox.MaxY));
+
+            if (!typeX.IsFullySolid || typeX.Value == PhysicalTypeValue.Ledge || typeX.Value == PhysicalTypeValue.Passthrough)
+            {
+                float y = detectionBox.MinY + Constants.TileSize;
+                int count = (int)(detectionBox.Height / Constants.TileSize) - 1;
+
+                for (int i = 0; i < count; i++)
                 {
-                    Speed -= new Vector2(MathHelpers.Mod(x, Constants.TileSize), 0);
-                    Position -= new Vector2(MathHelpers.Mod(x, Constants.TileSize), 0);
+                    typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
+                    y += Constants.TileSize;
+
+                    if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+                        break;
                 }
-                else
-                {
-                    Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(x, Constants.TileSize), 0);
-                    Position += new Vector2(Constants.TileSize - MathHelpers.Mod(x, Constants.TileSize), 0);
-                }
-                IsTouchingMap = true;
-                return;
             }
         }
 
-        for (float i = detectionBox.MinY; i < detectionBox.MaxY; i += Constants.TileSize)
+        if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
         {
-            typeX = Scene.GetPhysicalType(new Vector2(x, i));
-
-            if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+            if (Speed.X > 0)
             {
-                if (Speed.X > 0)
-                {
-                    Speed -= new Vector2(MathHelpers.Mod(x, Constants.TileSize), 0);
-                    Position -= new Vector2(MathHelpers.Mod(x, Constants.TileSize), 0);
-                }
-                else
-                {
-                    Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(x, Constants.TileSize), 0);
-                    Position += new Vector2(Constants.TileSize - MathHelpers.Mod(x, Constants.TileSize), 0);
-                }
-                IsTouchingMap = true;
-                return;
+                Speed -= new Vector2(MathHelpers.Mod(detectionX, Constants.TileSize), 0);
+                Position -= new Vector2(MathHelpers.Mod(detectionX, Constants.TileSize), 0);
             }
+            else
+            {
+                Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionX, Constants.TileSize), 0);
+                Position += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionX, Constants.TileSize), 0);
+            }
+            IsTouchingMap = true;
         }
     }
 

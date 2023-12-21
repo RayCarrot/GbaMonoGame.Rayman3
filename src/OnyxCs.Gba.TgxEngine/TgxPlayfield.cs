@@ -33,10 +33,21 @@ public abstract class TgxPlayfield
 
     public byte GetPhysicalValue(Point mapPoint)
     {
-        if (mapPoint.X < 0 || mapPoint.Y < 0 || mapPoint.X >= PhysicalLayer.Width || mapPoint.Y >= PhysicalLayer.Height)
+        // If we're above the map, always return empty type
+        if (mapPoint.Y < 0)
             return 0xFF;
-        else
-            return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
+        // If we're below the map, always return solid type. Game doesn't do this check, but
+        // this is essentially the result since there are usually 0s after the map.
+        else if (mapPoint.Y >= PhysicalLayer.Height)
+            return 0;
+
+        int index = mapPoint.Y * PhysicalLayer.Width + mapPoint.X;
+
+        // Safety check to avoid out of bounds
+        if (index > PhysicalLayer.CollisionMap.Length)
+            return 0xFF;
+
+        return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
     }
 
     public virtual void UnInit()
