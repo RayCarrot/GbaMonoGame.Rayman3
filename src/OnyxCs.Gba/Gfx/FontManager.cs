@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using BinarySerializer.Onyx.Gba;
 using Microsoft.Xna.Framework;
@@ -110,7 +111,9 @@ public static class FontManager
         return Encoding.GetEncoding(1252).GetBytes(text);
     }
 
-    public static int GetStringWidth(FontSize fontSize, string text)
+    public static int GetStringWidth(FontSize fontSize, string text) => GetStringWidth(fontSize, GetTextBytes(text));
+
+    public static int GetStringWidth(FontSize fontSize, byte[] textBytes)
     {
         LoadedFont loadedFont = fontSize switch
         {
@@ -122,10 +125,73 @@ public static class FontManager
 
         int width = 0;
 
-        foreach (byte c in GetTextBytes(text))
+        foreach (byte c in textBytes)
             width += loadedFont.Font.CharacterWidths[c];
 
         return width;
+    }
+
+    public static int GetFontHeight(FontSize fontSize)
+    {
+        LoadedFont loadedFont = fontSize switch
+        {
+            FontSize.Font8 => Font8,
+            FontSize.Font16 => Font16,
+            FontSize.Font32 => Font32,
+            _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
+        };
+
+        return loadedFont.Font.CharacterHeight;
+    }
+
+    public static byte[][] GetWrappedStringLines(FontSize fontSize, string text, float width) => GetWrappedStringLines(fontSize, GetTextBytes(text), width);
+
+    public static byte[][] GetWrappedStringLines(FontSize fontSize, byte[] textBytes, float width)
+    {
+        LoadedFont loadedFont = fontSize switch
+        {
+            FontSize.Font8 => Font8,
+            FontSize.Font16 => Font16,
+            FontSize.Font32 => Font32,
+            _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
+        };
+
+        List<byte[]> lines = new();
+
+        int xPos = 0;
+        int startIndex = 0;
+
+        for (int charIndex = 0; charIndex < textBytes.Length; charIndex++)
+        {
+            xPos += loadedFont.Font.CharacterWidths[textBytes[charIndex]];
+
+            if (xPos >= width)
+            {
+                for (int i = charIndex; i >= 0; i--)
+                {
+                    if (textBytes[i] == ' ')
+                    {
+                        lines.Add(textBytes[startIndex..i]);
+                        charIndex = i + 1;
+                        startIndex = charIndex;
+                        xPos = 0; 
+                        break;
+                    }
+                }
+
+                if (xPos != 0)
+                {
+                    lines.Add(textBytes[startIndex..(charIndex - 1)]);
+                    charIndex--;
+                    startIndex = charIndex;
+                    xPos = 0;
+                }
+            }
+        }
+
+        lines.Add(textBytes[startIndex..textBytes.Length]);
+
+        return lines.ToArray();
     }
 
     public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color)

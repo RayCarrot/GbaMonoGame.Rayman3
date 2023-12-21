@@ -44,7 +44,7 @@ public class GfxDebugWindow : DebugWindow
             Engine.GameWindow.SetAspectRatio(16 / 9f, _cropAspectRatio);
 
         float ratio = Engine.GameWindow.AspectRatio;
-        if (ImGui.InputFloat("Aspect ratio", ref ratio))
+        if (ImGui.InputFloat("Aspect ratio", ref ratio) && ratio > 0)
             Engine.GameWindow.SetAspectRatio(ratio, _cropAspectRatio);
 
         ImGui.Spacing();

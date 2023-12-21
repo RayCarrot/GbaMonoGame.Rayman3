@@ -13,6 +13,7 @@ public static class Engine
     #region Engine
 
     public static GameConfig Config { get; private set; }
+    public static Version Version => new(0, 0, 0);
 
     #endregion
 

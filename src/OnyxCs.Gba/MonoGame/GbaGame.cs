@@ -18,6 +18,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
         _updateTimeStopWatch = new Stopwatch();
+        _menu = new GameMenu();
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -36,6 +37,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
     private readonly Stopwatch _updateTimeStopWatch;
+    private readonly GameMenu _menu;
 
     private SpriteBatch _spriteBatch;
     private GfxRenderer _gfxRenderer;
@@ -242,6 +244,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         StepEngine();
 
+        if (IsPaused)
+            _menu.Update();
+
         if (DebugMode && !IsPaused)
             _performanceWindow.AddUpdateTime(_updateTimeStopWatch.ElapsedMilliseconds);
     }
@@ -260,6 +265,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         // Draw screen
         Gfx.Draw(_gfxRenderer);
+        if (IsPaused)
+            _menu.Draw(_gfxRenderer);
         if (DebugMode)
             _debugLayout.DrawGame(_gfxRenderer);
         _gfxRenderer.EndRender();
