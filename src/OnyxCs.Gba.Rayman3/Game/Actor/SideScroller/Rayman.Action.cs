@@ -35,6 +35,11 @@ public partial class Rayman
         ChargeFistVariant_Right = 36,
         ChargeFistVariant_Left = 37,
 
+        NearEdgeBehind_Right = 42,
+        NearEdgeBehind_Left = 43,
+        NearEdgeFront_Right = 44,
+        NearEdgeFront_Left = 45,
+
         Victory_Right = 50,
         Victory_Left = 51,
 

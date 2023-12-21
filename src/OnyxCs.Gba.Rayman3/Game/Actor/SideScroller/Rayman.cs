@@ -526,11 +526,23 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    // Checks if near edge?
-    private int FUN_0802986c()
+    // 0 = false, 1 = right, 2 = left
+    private int IsNearEdge()
     {
-        // TODO: Implement
-        return 0;
+        Box detectionBox = GetDetectionBox();
+        
+        PhysicalType centerType = Scene.GetPhysicalType(Position);
+        PhysicalType rightType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+        PhysicalType leftType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+
+        if (centerType.IsSolid)
+            return 0;
+        else if (leftType.IsSolid)
+            return 1;
+        else if (rightType.IsSolid)
+            return 2;
+        else
+            return 0;
     }
 
     private void FUN_0802a65c()

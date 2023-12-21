@@ -258,7 +258,7 @@ public partial class Rayman
                 }
 
                 // Walking off edge
-                if (MechSpeedX != 0 && FUN_0802986c() != 0 && !Flag1_1)
+                if (MechSpeedX != 0 && IsNearEdge() != 0 && !Flag1_1)
                 {
                     PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Position += new Vector2(MechSpeedX < 0 ? -16 : 16, 0);
@@ -267,7 +267,7 @@ public partial class Rayman
                 }
 
                 // Standing near edge
-                if (MechSpeedX == 0 && FUN_0802986c() != 0 && !Flag1_1)
+                if (MechSpeedX == 0 && IsNearEdge() != 0 && !Flag1_1)
                 {
                     PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     Fsm.ChangeAction(Fsm_StandingNearEdge);
@@ -325,8 +325,107 @@ public partial class Rayman
         }
     }
 
-    // TODO: Implement
-    private void Fsm_StandingNearEdge(FsmAction action) { }
+    private void Fsm_StandingNearEdge(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoEquil_Mix03);
+
+                Timer = 120;
+                NextActionId = null;
+
+                Box detectionBox = GetDetectionBox();
+                PhysicalType rightType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+
+                if (rightType.IsSolid)
+                    ActionId = IsFacingRight ? Action.NearEdgeBehind_Right : Action.NearEdgeFront_Left;
+                else
+                    ActionId = IsFacingRight ? Action.NearEdgeFront_Right : Action.NearEdgeBehind_Right;
+                break;
+
+            case FsmAction.Step:
+                if (!Inlined_FUN_1004c544())
+                    return;
+
+                Timer--;
+
+                // Play sound every 2 seconds
+                if (Timer == 0)
+                {
+                    Timer = 120;
+
+                    if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
+                        PlaySoundEvent(Rayman3SoundEvent.Play__OnoEquil_Mix03);
+                }
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.Walk_Left;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.Walk_Right;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        throw new NotImplementedException();
+                }
+
+                // Walk
+                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                {
+                    Fsm.ChangeAction(Fsm_Walk);
+                    return;
+                }
+                
+                // Crouch
+                if (CheckInput(GbaInput.Down))
+                {
+                    Fsm.ChangeAction(Fsm_Crouch);
+                    return;
+                }
+
+                // Jump
+                if (CheckSingleInput(GbaInput.A))
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Fall
+                if (Speed.Y > 1)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Punch
+                if (CheckSingleReleasedInput(GbaInput.B) && CanPunch(2))
+                {
+                    Fsm.ChangeAction(Fsm_ChargeFist);
+                    return;
+                }
+
+                // Default if no longer near edge
+                if (IsNearEdge() == 0)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
 
     private void Fsm_Walk(FsmAction action)
     {
