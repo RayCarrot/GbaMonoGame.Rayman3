@@ -291,7 +291,6 @@ public partial class Rayman
                 }
 
                 Flag1_1 = false;
-
                 break;
 
             case FsmAction.UnInit:
@@ -856,20 +855,21 @@ public partial class Rayman
                 }
 
                 // TODO: Implement
-                //if (FUN_080299d4())
+                //if (IsOnHangable())
                 //{
                 //    FUN_08029c84();
                 //    Fsm.ChangeAction(FUN_0802ee60);
                 //    return;
                 //}
 
-                //if (FUN_08029a78())
-                //{
-                //    Fsm.ChangeAction(FUN_08026cd4);
-                //    return;
-                //}
+                if (IsOnClimbable() != 0)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
 
-                //if (CheckInput(GbaInput.L) && FUN_0802a420())
+                // TODO: Implement
+                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
                 //{
                 //    FUN_0802a4c0();
                 //    Fsm.ChangeAction(FUN_08031554);
@@ -1110,6 +1110,35 @@ public partial class Rayman
             case FsmAction.UnInit:
                 // Restore detection box
                 SetDetectionBox(new Box(ActorModel.DetectionBox));
+                break;
+        }
+    }
+
+    private void Fsm_Climb(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (NextActionId == null)
+                    ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                else
+                    ActionId = NextActionId.Value;
+
+                MechSpeedX = 0;
+                Mechanic.Speed = Vector2.Zero;
+                Timer = 0;
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+
+
+                // TODO: Implement
+                break;
+
+            case FsmAction.UnInit:
+                // TODO: Implement
                 break;
         }
     }
@@ -1359,7 +1388,6 @@ public partial class Rayman
     private void FUN_08033b34(FsmAction action) { }
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
-    private void FUN_08026cd4(FsmAction action) { }
     private void FUN_0802d44c(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
     private void FUN_08031d24(FsmAction action) { }

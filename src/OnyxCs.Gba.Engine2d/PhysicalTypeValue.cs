@@ -21,5 +21,13 @@ public enum PhysicalTypeValue : byte
     SlipperyAngle30Left2 = 24,
     SlipperyAngle30Left1 = 25,
 
+    // Rayman 3
+    Climb = 47,
+
+    ClimbSpider1 = 51,
+    ClimbSpider2 = 52,
+    ClimbSpider3 = 53,
+    ClimbSpider4 = 54,
+
     None = 0xFF,
 }

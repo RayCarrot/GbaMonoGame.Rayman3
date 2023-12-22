@@ -70,6 +70,8 @@ public partial class Rayman
 
         CrouchDown_Right = 130,
         CrouchDown_Left = 131,
+        Climb_Idle_Right = 132,
+        Climb_Idle_Left = 133,
 
         Idle_SpinBody_Right = 142,
         Idle_SpinBody_Left = 143,

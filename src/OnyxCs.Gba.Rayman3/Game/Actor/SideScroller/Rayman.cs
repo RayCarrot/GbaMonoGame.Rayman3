@@ -633,6 +633,50 @@ public sealed partial class Rayman : MovableActor
         return false;
     }
 
+    // 0 = false, 1 = top and bottom, 2 = top, 3 = bottom
+    private int IsOnClimbable()
+    {
+        Vector2 pos = Position;
+
+        if (pos.Y <= 48)
+            return 0;
+
+        pos -= new Vector2(0, 24);
+        PhysicalType bottomType = Scene.GetPhysicalType(pos);
+
+        if (bottomType.Value is 
+            PhysicalTypeValue.ClimbSpider1 or 
+            PhysicalTypeValue.ClimbSpider2 or 
+            PhysicalTypeValue.ClimbSpider3 or 
+            PhysicalTypeValue.ClimbSpider4)
+        {
+            bottomType = PhysicalTypeValue.Climb;
+        }
+
+        pos -= new Vector2(0, 24);
+        PhysicalType topType = Scene.GetPhysicalType(pos);
+
+        if (topType.Value is
+            PhysicalTypeValue.ClimbSpider1 or
+            PhysicalTypeValue.ClimbSpider2 or
+            PhysicalTypeValue.ClimbSpider3 or
+            PhysicalTypeValue.ClimbSpider4)
+        {
+            topType = PhysicalTypeValue.Climb;
+        }
+
+        if (bottomType == PhysicalTypeValue.Climb && topType == PhysicalTypeValue.Climb)
+            return 1;
+
+        if (bottomType == PhysicalTypeValue.Climb)
+            return 3;
+
+        if (topType == PhysicalTypeValue.Climb)
+            return 2;
+
+        return 0;
+    }
+
     private void FUN_0802a65c()
     {
         // TODO: Implement
@@ -723,7 +767,7 @@ public sealed partial class Rayman : MovableActor
             if (!Fsm.EqualsAction(FUN_0802ddac) &&
                 CheckInput(GbaInput.Down) &&
                 (Speed.Y > 0 || Fsm.EqualsAction(Fsm_Crouch)) &&
-                !Fsm.EqualsAction(FUN_08026cd4))
+                !Fsm.EqualsAction(Fsm_Climb))
             {
                 field18_0x93 = 70;
                 message = Message.Cam_1040;
@@ -742,7 +786,7 @@ public sealed partial class Rayman : MovableActor
                 field18_0x93 = 65;
                 message = Message.Cam_1040;
             }
-            else if (Fsm.EqualsAction(FUN_08026cd4) || Fsm.EqualsAction(FUN_0802ddac))
+            else if (Fsm.EqualsAction(Fsm_Climb) || Fsm.EqualsAction(FUN_0802ddac))
             {
                 field18_0x93 = 112;
                 message = Message.Cam_1040;
