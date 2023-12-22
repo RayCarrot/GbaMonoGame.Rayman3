@@ -45,6 +45,7 @@ public sealed partial class Rayman : MovableActor
     private Action? NextActionId { get; set; }
     public BaseActor[] BodyParts { get; } = new BaseActor[4];
     public byte Charge { get; set; }
+    public byte HangDelay { get; set; }
     public uint Timer { get; set; }
     public float MechSpeedX { get; set; } // TODO: SlidingSpeed?
     public byte PhysicalType { get; set; }
@@ -157,7 +158,7 @@ public sealed partial class Rayman : MovableActor
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
     }
 
-    private bool CanPunch(int punchCount)
+    private bool CanAttackWithFist(int punchCount)
     {
         if (MultiplayerManager.IsInMultiplayer)
         {
@@ -171,6 +172,16 @@ public sealed partial class Rayman : MovableActor
             return true;
 
         return true;
+    }
+
+    private bool CanAttackWithFeet()
+    {
+        if (MultiplayerManager.IsInMultiplayer)
+        {
+            // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
+        }
+
+        return BodyParts[2] == null;
     }
 
     private void Attack(int charge, byte type, Vector2 offset, byte param5)
@@ -545,6 +556,83 @@ public sealed partial class Rayman : MovableActor
             return 0;
     }
 
+    private bool IsNearHangableEdge()
+    {
+        if (HangDelay != 0)
+        {
+            HangDelay--;
+            return false;
+        }
+
+        if (Position.Y <= 40)
+            return false;
+
+        Vector2 pos = Position - new Vector2(0, 40);
+
+        if (IsFacingRight)
+        {
+            for (int y = 0; y < 3; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    PhysicalType type = Scene.GetPhysicalType(pos);
+
+                    if (type.Value is PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
+                    {
+                        // Get tile to the left of the ledge
+                        type = Scene.GetPhysicalType(pos - new Vector2(Constants.TileSize, 0));
+                        
+                        // Make sure it's not solid
+                        if (!type.IsSolid)
+                        {
+                            Position = new Vector2(
+                                x: pos.X - MathHelpers.Mod(pos.X, Constants.TileSize) - 17, 
+                                y: Position.Y - MathHelpers.Mod(Position.Y, Constants.TileSize) + y * Constants.TileSize);
+                            return true;
+                        }
+                    }
+
+                    pos += new Vector2(Constants.TileSize, 0);
+                }
+
+                pos += new Vector2(0, Constants.TileSize);
+                pos = new Vector2(Position.X, pos.Y);
+            }
+        }
+        else
+        {
+            for (int y = 0; y < 3; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    PhysicalType type = Scene.GetPhysicalType(pos);
+
+                    if (type.Value is PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
+                    {
+                        // Get tile to the right of the ledge
+                        type = Scene.GetPhysicalType(pos + new Vector2(Constants.TileSize, 0));
+
+                        // Make sure it's not solid
+                        if (!type.IsSolid)
+                        {
+                            Position = new Vector2(
+                                x: pos.X - MathHelpers.Mod(pos.X, Constants.TileSize) + 24,
+                                y: Position.Y - MathHelpers.Mod(Position.Y, Constants.TileSize) + y * Constants.TileSize);
+                            return true;
+                        }
+                    }
+
+                    pos -= new Vector2(Constants.TileSize, 0);
+                }
+
+                pos += new Vector2(0, Constants.TileSize);
+                pos = new Vector2(Position.X, pos.Y);
+            }
+        }
+
+        return false;
+    }
+
     private void FUN_0802a65c()
     {
         // TODO: Implement
@@ -640,7 +728,7 @@ public sealed partial class Rayman : MovableActor
                 field18_0x93 = 70;
                 message = Message.Cam_1040;
             }
-            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(FUN_0802ea74)))
+            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(Fsm_Hang)))
             {
                 field18_0x93 = 160;
                 message = Message.Cam_1040;
@@ -858,7 +946,7 @@ public sealed partial class Rayman : MovableActor
         //field14_0x8e = 0;
         //field25_0x9a = HitPoints;
         field23_0x98 = 0;
-        //field_0x90 = 0;
+        HangDelay = 0;
         //field_0x99 = 0;
         Charge = 0;
         field22_0x97 = 0;

@@ -250,10 +250,10 @@ public partial class Rayman
                 }
                 
                 // Punch
-                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanPunch(2))
+                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanAttackWithFist(2))
                 {
                     PlaySoundEvent(Rayman3SoundEvent.Stop__Grimace1_Mix04);
-                    Fsm.ChangeAction(Fsm_ChargeFist);
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
                 }
 
@@ -407,9 +407,9 @@ public partial class Rayman
                 }
 
                 // Punch
-                if (CheckSingleReleasedInput(GbaInput.B) && CanPunch(2))
+                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFist(2))
                 {
-                    Fsm.ChangeAction(Fsm_ChargeFist);
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
                 }
 
@@ -550,12 +550,12 @@ public partial class Rayman
                 {
                     Charge = 0;
 
-                    if (CanPunch(1))
+                    if (CanAttackWithFist(1))
                     {
                         Attack(0, 0, new Vector2(16, -16), 0);
                         field23_0x98 = 0;
                     }
-                    else if (CanPunch(2))
+                    else if (CanAttackWithFist(2))
                     {
                         Attack(0, 1, new Vector2(16, -16), 0);
 
@@ -649,9 +649,9 @@ public partial class Rayman
                 }
 
                 // Charge punch
-                if (field23_0x98 == 0 && Charge > 10 && CheckInput(GbaInput.B) && CanPunch(2))
+                if (field23_0x98 == 0 && Charge > 10 && CheckInput(GbaInput.B) && CanAttackWithFist(2))
                 {
-                    Fsm.ChangeAction(Fsm_ChargeFist);
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
                 }
                 break;
@@ -718,11 +718,84 @@ public partial class Rayman
                     return;
                 }
 
+                if (GameTime.ElapsedFrames - Timer >= 51)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                if (IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
+
                 // TODO: Implement
                 break;
 
             case FsmAction.UnInit:
                 Flag2_0 = false;
+                break;
+        }
+    }
+
+    private void Fsm_Hang(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySoundEvent(Rayman3SoundEvent.Play__HandTap1_Mix04);
+                MechSpeedX = 0;
+
+                if (NextActionId is Action.UnknownBeginHang_Right or Action.UnknownBeginHang_Left)
+                    ActionId = IsFacingRight ? Action.UnknownBeginHang_Right : Action.UnknownBeginHang_Left;
+                else
+                    ActionId = IsFacingRight ? Action.BeginHang_Right : Action.BeginHang_Left;
+
+                SetDetectionBox(new Box(
+                    minX: ActorModel.DetectionBox.MinX,
+                    minY: ActorModel.DetectionBox.MaxY - 16,
+                    maxX: ActorModel.DetectionBox.MaxX,
+                    maxY: ActorModel.DetectionBox.MaxY + 16));
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+
+                if (IsActionFinished && ActionId is not (Action.Hang_Right or Action.Hang_Left))
+                {
+                    ActionId = IsFacingRight ? Action.Hang_Right : Action.Hang_Left;
+                    NextActionId = null;
+                }
+
+                // Move down
+                if (CheckInput(GbaInput.Down))
+                {
+                    HangDelay = 30;
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Jump
+                if (CheckSingleInput(GbaInput.A))
+                {
+                    HangDelay = 30;
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Attack
+                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFeet())
+                {
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                SetDetectionBox(new Box(ActorModel.DetectionBox));
                 break;
         }
     }
@@ -769,12 +842,11 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (FUN_08029258())
-                //{
-                //    Fsm.ChangeAction(FUN_0802ea74);
-                //    return;
-                //}
+                if (IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
 
                 if (HasLanded())
                 {
@@ -1288,14 +1360,13 @@ public partial class Rayman
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_08026cd4(FsmAction action) { }
-    private void FUN_0802ea74(FsmAction action) { }
     private void FUN_0802d44c(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
     private void FUN_08031d24(FsmAction action) { }
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void Fsm_ChargeFist(FsmAction action) { }
+    private void Fsm_ChargeAttack(FsmAction action) { }
     private void FUN_0802e770(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }

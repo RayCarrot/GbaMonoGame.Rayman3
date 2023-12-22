@@ -32,6 +32,9 @@ public partial class Rayman
         Land_Right = 18,
         Land_Left = 19,
 
+        BeginHang_Right = 22,
+        BeginHang_Left = 23,
+
         ChargeFistVariant_Right = 36,
         ChargeFistVariant_Left = 37,
 
@@ -61,6 +64,9 @@ public partial class Rayman
 
         UnknownJump_Right = 109, // TODO: What is this?
         UnknownJump_Left = 110,
+
+        UnknownBeginHang_Right = 124, // TODO: What is this?
+        UnknownBeginHang_Left = 125,
 
         CrouchDown_Right = 130,
         CrouchDown_Left = 131,
