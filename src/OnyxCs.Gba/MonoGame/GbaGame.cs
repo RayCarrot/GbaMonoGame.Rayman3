@@ -45,6 +45,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private int _skippedDraws = -1;
     private float _fps = 60;
     private bool _isClosingMenu;
+    private bool _showMenu;
 
     #endregion
 
@@ -204,11 +205,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (RunSingleFrame)
         {
             RunSingleFrame = false;
-            IsPaused = true;
+            Pause();
         }
 
         // Toggle debug mode
-        if (JoyPad.CheckSingle(Keys.Escape))
+        if (JoyPad.CheckSingle(Keys.Tab))
         {
             DebugMode = !DebugMode;
 
@@ -227,13 +228,22 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle pause
-        if (!_isClosingMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
+        if (!_showMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
         {
             if (!IsPaused)
+                Pause();
+            else
+                Resume();
+        }
+
+        // Toggle menu
+        if (!_isClosingMenu && JoyPad.CheckSingle(Keys.Escape))
+        {
+            if (!_showMenu)
             {
-                IsPaused = true;
-                SoundManager.Pause();
+                Pause();
                 _menu.Open();
+                _showMenu = true;
             }
             else
             {
@@ -245,12 +255,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (_isClosingMenu && !_menu.IsTransitioningOut)
         {
             _isClosingMenu = false;
-            SoundManager.Resume();
-            IsPaused = false;
+            _showMenu = false;
+            Resume();
         }
 
         // Run one frame
-        if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.F))
+        if (!_showMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.F))
         {
             IsPaused = false;
             RunSingleFrame = true;
@@ -258,7 +268,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         StepEngine();
 
-        if (IsPaused)
+        if (_showMenu)
             _menu.Update();
 
         if (DebugMode && !IsPaused)
@@ -279,7 +289,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         // Draw screen
         Gfx.Draw(_gfxRenderer);
-        if (IsPaused)
+        if (_showMenu)
             _menu.Draw(_gfxRenderer);
         if (DebugMode)
             _debugLayout.DrawGame(_gfxRenderer);
@@ -302,6 +312,22 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         if (disposing)
             Engine.Unload();
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public void Pause()
+    {
+        IsPaused = true;
+        SoundManager.Pause();
+    }
+
+    public void Resume()
+    {
+        IsPaused = false;
+        SoundManager.Resume();
     }
 
     #endregion

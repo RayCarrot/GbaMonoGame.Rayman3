@@ -77,7 +77,8 @@ The button mapping will be made customizable in the future, along with controlle
 | GBA L-button             | Q                  |
 | Toggle pause             | Ctrl+P             |
 | Run one frame            | Ctrl+F             |
-| Toggle debug mode        | Escape             |
+| Toggle debug mode        | Tab                |
+| Toggle menu              | Escape             |
 | Toggle showing collision | T                  |
 | Toggle no-clip           | Z                  |
 | Increase no-clip speed   | Space              |
