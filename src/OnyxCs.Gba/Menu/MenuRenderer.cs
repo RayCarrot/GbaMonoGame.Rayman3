@@ -8,13 +8,15 @@ public class MenuRenderer
 {
     #region Private Properties
 
+    private MenuCamera Camera { get; } = new(Engine.GameWindow);
     private List<Sprite> Sprites { get; } = new();
-    private int Margin => 20;
-    private int LineHeight => 20;
+    private int Margin => 80;
+    private int LineHeight => 40;
     private Color Color { get; } = Color.White;
     private Color HighlightColor { get; } = new(218, 168, 9);
 
     private Action<MenuRenderer> CurrentMenu { get; set; }
+    private Action<MenuRenderer> NextMenu { get; set; }
     private bool NewMenu { get; set; }
 
     private Box RenderBox { get; set; }
@@ -22,14 +24,25 @@ public class MenuRenderer
     private int VerticalButtonsCount { get; set; }
     private int CurrentVerticalIndex { get; set; }
 
+    private byte TransitionTextOutDelay { get; set; }
+    private float TextTransitionValue { get; set; } = 1;
+
+    #endregion
+
+    #region Public Properties
+
+    public bool IsTransitioningTextOut { get; private set; }
+    public bool IsTransitioningTextIn { get; private set; }
+    public bool IsTransitioning => IsTransitioningTextOut || IsTransitioningTextIn;
+
     #endregion
 
     #region Private Methods
 
-    private void DrawText(string text, ref Vector2 position, HorizontalAlignment horizontalAlignment, FontSize fontSize, Color color) =>
-        DrawText(FontManager.GetTextBytes(text), ref position, horizontalAlignment, fontSize, color);
+    private void DrawText(string text, ref Vector2 position, HorizontalAlignment horizontalAlignment, FontSize fontSize, Color color, bool animate) =>
+        DrawText(FontManager.GetTextBytes(text), ref position, horizontalAlignment, fontSize, color, animate);
 
-    private void DrawText(byte[] text, ref Vector2 position, HorizontalAlignment horizontalAlignment, FontSize fontSize, Color color)
+    private void DrawText(byte[] text, ref Vector2 position, HorizontalAlignment horizontalAlignment, FontSize fontSize, Color color, bool animate)
     {
         if (horizontalAlignment == HorizontalAlignment.Center)
         {
@@ -42,9 +55,10 @@ public class MenuRenderer
             position -= new Vector2(width, 0);
         }
 
+        AffineMatrix? matrix = animate ? new AffineMatrix(1, 0, 0, TextTransitionValue) : null;
         foreach (byte b in text)
         {
-            Sprite sprite = FontManager.GetCharacterSprite(b, fontSize, ref position, 0, null, color);
+            Sprite sprite = FontManager.GetCharacterSprite(b, fontSize, ref position, 0, matrix, color, Camera);
             Sprites.Add(sprite);
         }
     }
@@ -64,7 +78,7 @@ public class MenuRenderer
         byte[][] lines = FontManager.GetWrappedStringLines(fontSize, text, availableWidth);
         for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
         {
-            DrawText(lines[lineIndex], ref position, horizontalAlignment, fontSize, color);
+            DrawText(lines[lineIndex], ref position, horizontalAlignment, fontSize, color, true);
 
             if (lineIndex < lines.Length - 1)
                 position = new Vector2(posX, position.Y + FontManager.GetFontHeight(fontSize));
@@ -77,11 +91,47 @@ public class MenuRenderer
 
     public void Update()
     {
-        RenderBox = new Box(Margin, Margin, Engine.GameWindow.GameResolution.X - Margin, Engine.GameWindow.GameResolution.Y - Margin);
+        RenderBox = new Box(Margin, Margin, Camera.Resolution.X - Margin, Camera.Resolution.Y - Margin);
         Position = new Vector2(RenderBox.MinX, RenderBox.MinY);
 
         Sprites.Clear();
         VerticalButtonsCount = 0;
+
+        if (IsTransitioningTextOut)
+        {
+            TextTransitionValue++;
+
+            if (TextTransitionValue > 8)
+            {
+                IsTransitioningTextOut = false;
+                CurrentMenu = NextMenu;
+
+                if (CurrentMenu != null)
+                {
+                    IsTransitioningTextIn = NextMenu != null;
+                    TransitionTextOutDelay = 2;
+                    NewMenu = true;
+                }
+            }
+        }
+        else if (IsTransitioningTextIn)
+        {
+            if (TransitionTextOutDelay == 0)
+            {
+                TextTransitionValue--;
+
+                if (TextTransitionValue < 1)
+                {
+                    TextTransitionValue = 1;
+                    IsTransitioningTextOut = false;
+                    IsTransitioningTextIn = false;
+                }
+            }
+            else
+            {
+                TransitionTextOutDelay--;
+            }
+        }
 
         if (NewMenu)
         {
@@ -89,50 +139,83 @@ public class MenuRenderer
             NewMenu = false;
         }
 
-        CurrentMenu(this);
+        CurrentMenu?.Invoke(this);
 
-        // Run standard controls
-        if (JoyPad.CheckSingle(GbaInput.Down))
+        if (!IsTransitioning)
         {
-            if (CurrentVerticalIndex >= VerticalButtonsCount - 1)
-                CurrentVerticalIndex = 0;
-            else
-                CurrentVerticalIndex++;
-        }
-        else if (JoyPad.CheckSingle(GbaInput.Up))
-        {
-            if (CurrentVerticalIndex <= 0)
-                CurrentVerticalIndex = VerticalButtonsCount - 1;
-            else
-                CurrentVerticalIndex--;
+            // Run standard controls
+            if (JoyPad.CheckSingle(GbaInput.Down))
+            {
+                if (CurrentVerticalIndex >= VerticalButtonsCount - 1)
+                    CurrentVerticalIndex = 0;
+                else
+                    CurrentVerticalIndex++;
+            }
+            else if (JoyPad.CheckSingle(GbaInput.Up))
+            {
+                if (CurrentVerticalIndex <= 0)
+                    CurrentVerticalIndex = VerticalButtonsCount - 1;
+                else
+                    CurrentVerticalIndex--;
+            }
         }
 
         // Draw engine version in the corner
-        Vector2 versionPos = new(Engine.GameWindow.GameResolution.X - 2, Engine.GameWindow.GameResolution.Y - 10);
+        Vector2 versionPos = new(Camera.Resolution.X - 12, Camera.Resolution.Y - 25);
         DrawText(
-            text: Engine.Version.ToString(3),
+            text: $"Version {Engine.Version.ToString(3)}",
             position: ref versionPos,
             horizontalAlignment: HorizontalAlignment.Right,
-            fontSize: FontSize.Font8,
-            color: Color);
+            fontSize: FontSize.Font16,
+            color: Color,
+            animate: false);
+    }
 
+    public void Init(Action<MenuRenderer> mainMenu)
+    {
+        if (IsTransitioning)
+            return;
+
+        CurrentMenu = mainMenu;
+        NewMenu = true;
+
+        IsTransitioningTextOut = false;
+        IsTransitioningTextIn = true;
+        TransitionTextOutDelay = 2;
+        TextTransitionValue = 8;
+    }
+
+    public void UnInit()
+    {
+        if (IsTransitioning)
+            return;
+
+        NextMenu = null;
+        IsTransitioningTextOut = true;
+        IsTransitioningTextIn = false;
+        TextTransitionValue = 1;
     }
 
     public void ChangeMenu(Action<MenuRenderer> newMenu)
     {
-        CurrentMenu = newMenu;
-        NewMenu = true;
+        if (IsTransitioning)
+            return;
+
+        NextMenu = newMenu;
+        IsTransitioningTextOut = true;
+        IsTransitioningTextIn = true;
+        TextTransitionValue = 1;
     }
 
     public void Text(string text)
     {
-        Vector2 pos = new(Engine.GameWindow.GameResolution.X / 2f, Position.Y);
+        Vector2 pos = new(Camera.Resolution.X / 2f, Position.Y);
 
         DrawWrappedText(
             text: text,
             position: ref pos,
             horizontalAlignment: HorizontalAlignment.Center,
-            fontSize: FontSize.Font16,
+            fontSize: FontSize.Font32,
             color: Color);
 
         Position = new Vector2(RenderBox.MinX, pos.Y + LineHeight);
@@ -140,20 +223,20 @@ public class MenuRenderer
 
     public bool Button(string text)
     {
-        Vector2 pos = new(Engine.GameWindow.GameResolution.X / 2f, Position.Y);
+        Vector2 pos = new(Camera.Resolution.X / 2f, Position.Y);
         int index = VerticalButtonsCount;
 
         DrawWrappedText(
             text: text,
             position: ref pos,
             horizontalAlignment: HorizontalAlignment.Center,
-            fontSize: FontSize.Font16,
+            fontSize: FontSize.Font32,
             color: CurrentVerticalIndex == index ? HighlightColor : Color);
 
         VerticalButtonsCount++;
         Position = new Vector2(RenderBox.MinX, pos.Y + LineHeight);
 
-        return CurrentVerticalIndex == index && JoyPad.CheckSingle(GbaInput.A);
+        return CurrentVerticalIndex == index && !IsTransitioning && JoyPad.CheckSingle(GbaInput.A);
     }
 
     public void Draw(GfxRenderer renderer)
@@ -171,6 +254,17 @@ public class MenuRenderer
         Left,
         Center,
         Right,
+    }
+
+    private class MenuCamera : GfxCamera
+    {
+        public MenuCamera(GameWindow gameWindow) : base(gameWindow) { }
+
+        protected override Vector2 GetResolution(GameWindow gameWindow)
+        {
+            // Scale by 3 to fit more text on screen
+            return gameWindow.GameResolution * 3;
+        }
     }
 
     #endregion

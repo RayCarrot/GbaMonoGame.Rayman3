@@ -194,7 +194,7 @@ public static class FontManager
         return lines.ToArray();
     }
 
-    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color)
+    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color, GfxCamera camera)
     {
         LoadedFont loadedFont = fontSize switch
         {
@@ -204,7 +204,7 @@ public static class FontManager
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
-        Sprite sprite = new(loadedFont.Texture, loadedFont.CharacterRectangles[c], position, false, false, priority, affineMatrix, Engine.ScreenCamera, color);
+        Sprite sprite = new(loadedFont.Texture, loadedFont.CharacterRectangles[c], position, false, false, priority, affineMatrix, camera, color);
 
         position += new Vector2(loadedFont.Font.CharacterWidths[c], 0);
 

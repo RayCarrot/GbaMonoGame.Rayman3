@@ -18,7 +18,6 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _graphics = new GraphicsDeviceManager(this);
         _debugLayout = new DebugLayout();
         _updateTimeStopWatch = new Stopwatch();
-        _menu = new GameMenu();
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -37,14 +36,15 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private readonly GraphicsDeviceManager _graphics;
     private readonly DebugLayout _debugLayout;
     private readonly Stopwatch _updateTimeStopWatch;
-    private readonly GameMenu _menu;
 
     private SpriteBatch _spriteBatch;
     private GfxRenderer _gfxRenderer;
+    private GameMenu _menu;
     private GameRenderTarget _debugGameRenderTarget;
     private PerformanceDebugWindow _performanceWindow;
     private int _skippedDraws = -1;
     private float _fps = 60;
+    private bool _isClosingMenu;
 
     #endregion
 
@@ -156,6 +156,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameWindow);
         _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
 
+        _menu = new GameMenu();
+
         _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
         _debugLayout.AddWindow(_performanceWindow = new PerformanceDebugWindow());
         _debugLayout.AddWindow(new LoggerDebugWindow());
@@ -225,14 +227,26 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle pause
-        if (JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
+        if (!_isClosingMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
         {
-            IsPaused = !IsPaused;
-
-            if (IsPaused)
+            if (!IsPaused)
+            {
+                IsPaused = true;
                 SoundManager.Pause();
+                _menu.Open();
+            }
             else
-                SoundManager.Resume();
+            {
+                _isClosingMenu = true;
+                _menu.Close();
+            }
+        }
+
+        if (_isClosingMenu && !_menu.IsTransitioningOut)
+        {
+            _isClosingMenu = false;
+            SoundManager.Resume();
+            IsPaused = false;
         }
 
         // Run one frame

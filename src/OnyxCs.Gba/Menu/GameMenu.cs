@@ -10,7 +10,6 @@ public class GameMenu
     public GameMenu()
     {
         MenuRenderer = new MenuRenderer();
-        MenuRenderer.ChangeMenu(Menu_Main);
     }
 
     #endregion
@@ -18,6 +17,14 @@ public class GameMenu
     #region Private Properties
 
     private MenuRenderer MenuRenderer { get; }
+    private float TransitionValue { get; set; }
+
+    #endregion
+
+    #region Public Properties
+
+    public bool IsTransitioningIn { get; private set; }
+    public bool IsTransitioningOut { get; private set; }
 
     #endregion
 
@@ -88,6 +95,28 @@ public class GameMenu
 
     #region Public Methods
 
+    public void Open()
+    {
+        if (IsTransitioningIn || IsTransitioningOut)
+            return;
+
+        MenuRenderer.Init(Menu_Main);
+        IsTransitioningOut = false;
+        IsTransitioningIn = true;
+        TransitionValue = 0;
+    }
+
+    public void Close()
+    {
+        if (IsTransitioningIn || IsTransitioningOut)
+            return;
+
+        MenuRenderer.UnInit();
+        IsTransitioningOut = true;
+        IsTransitioningIn = false;
+        TransitionValue = 1;
+    }
+
     public void Update()
     {
         MenuRenderer.Update();
@@ -95,8 +124,31 @@ public class GameMenu
 
     public void Draw(GfxRenderer renderer)
     {
+        if (IsTransitioningIn)
+        {
+            TransitionValue += 1 / 10f;
+
+            if (TransitionValue >= 1)
+            {
+                TransitionValue = 1;
+                IsTransitioningIn = false;
+            }
+        }
+        else if (IsTransitioningOut)
+        {
+            TransitionValue -= 1 / 10f;
+
+            if (TransitionValue <= 0)
+            {
+                TransitionValue = 0;
+                IsTransitioningOut = false;
+            }
+        }
+
+        renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
+
         // Fade out the game
-        renderer.DrawFilledRectangle(Vector2.Zero, Engine.GameWindow.GameResolution, Color.Black * 0.7f);
+        renderer.DrawFilledRectangle(Vector2.Zero, Engine.GameWindow.GameResolution, Color.Black * MathHelper.Lerp(0.0f, 0.7f, TransitionValue));
 
         // Draw menu
         MenuRenderer.Draw(renderer);
