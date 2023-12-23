@@ -341,7 +341,7 @@ public partial class Rayman
                 if (rightType.IsSolid)
                     ActionId = IsFacingRight ? Action.NearEdgeBehind_Right : Action.NearEdgeFront_Left;
                 else
-                    ActionId = IsFacingRight ? Action.NearEdgeFront_Right : Action.NearEdgeBehind_Right;
+                    ActionId = IsFacingRight ? Action.NearEdgeFront_Right : Action.NearEdgeBehind_Left;
                 break;
 
             case FsmAction.Step:
