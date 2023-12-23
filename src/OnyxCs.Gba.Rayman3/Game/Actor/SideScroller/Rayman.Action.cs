@@ -59,6 +59,13 @@ public partial class Rayman
         Sliding_Crouch_Right = 76,
         Sliding_Crouch_Left = 77,
 
+        Climb_Side_Right = 80,
+        Climb_Side_Left = 81,
+        Climb_Up_Right = 82,
+        Climb_Up_Left = 83,
+        Climb_Down_Right = 84,
+        Climb_Down_Left = 85,
+
         Damage_Knockback_Right = 100,
         Damage_Knockback_Left = 101,
 
@@ -72,6 +79,11 @@ public partial class Rayman
         CrouchDown_Left = 131,
         Climb_Idle_Right = 132,
         Climb_Idle_Left = 133,
+        Climb_BeginIdle_Right = 134,
+        Climb_BeginIdle_Left = 135,
+
+        Climb_BeginAttack_Right = 138,
+        Climb_BeginAttack_Left = 139,
 
         Idle_SpinBody_Right = 142,
         Idle_SpinBody_Left = 143,

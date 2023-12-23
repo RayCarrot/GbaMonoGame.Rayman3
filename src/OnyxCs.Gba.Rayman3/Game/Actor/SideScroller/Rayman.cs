@@ -119,6 +119,18 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private bool CheckSingleInput2(GbaInput input)
+    {
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            return JoyPad.CheckSingle(input);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     private bool CheckSingleReleasedInput(GbaInput input)
     {
         if (!MultiplayerManager.IsInMultiplayer)
@@ -634,7 +646,7 @@ public sealed partial class Rayman : MovableActor
     }
 
     // 0 = false, 1 = top and bottom, 2 = top, 3 = bottom
-    private int IsOnClimbable()
+    private int IsOnClimbableVertical()
     {
         Vector2 pos = Position;
 
@@ -673,6 +685,50 @@ public sealed partial class Rayman : MovableActor
 
         if (topType == PhysicalTypeValue.Climb)
             return 2;
+
+        return 0;
+    }
+
+    // 0 = false, 4 = right and left, 5 = right, 6 = left
+    private int IsOnClimbableHorizontal()
+    {
+        Vector2 pos = Position;
+
+        if (pos.Y <= 48)
+            return 0;
+
+        pos -= new Vector2(8, 40);
+        PhysicalType leftType = Scene.GetPhysicalType(pos);
+
+        if (leftType.Value is
+            PhysicalTypeValue.ClimbSpider1 or
+            PhysicalTypeValue.ClimbSpider2 or
+            PhysicalTypeValue.ClimbSpider3 or
+            PhysicalTypeValue.ClimbSpider4)
+        {
+            leftType = PhysicalTypeValue.Climb;
+        }
+
+        pos += new Vector2(16, 0);
+        PhysicalType rightType = Scene.GetPhysicalType(pos);
+
+        if (rightType.Value is
+            PhysicalTypeValue.ClimbSpider1 or
+            PhysicalTypeValue.ClimbSpider2 or
+            PhysicalTypeValue.ClimbSpider3 or
+            PhysicalTypeValue.ClimbSpider4)
+        {
+            rightType = PhysicalTypeValue.Climb;
+        }
+
+        if (leftType == PhysicalTypeValue.Climb && rightType == PhysicalTypeValue.Climb)
+            return 4;
+
+        if (leftType == PhysicalTypeValue.Climb)
+            return 6;
+
+        if (rightType == PhysicalTypeValue.Climb)
+            return 5;
 
         return 0;
     }

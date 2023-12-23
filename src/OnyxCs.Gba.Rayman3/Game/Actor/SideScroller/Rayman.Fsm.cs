@@ -730,6 +730,14 @@ public partial class Rayman
                 }
 
                 // TODO: Implement
+
+                if (GameTime.ElapsedFrames - Timer > 10 && IsOnClimbableVertical() == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                // TODO: Implement
                 break;
 
             case FsmAction.UnInit:
@@ -862,7 +870,7 @@ public partial class Rayman
                 //    return;
                 //}
 
-                if (IsOnClimbable() != 0)
+                if (IsOnClimbableVertical() == 1)
                 {
                     Fsm.ChangeAction(Fsm_Climb);
                     return;
@@ -1114,8 +1122,11 @@ public partial class Rayman
         }
     }
 
+    // TODO: Camera doesn't behave correctly when climbing. It's supposed to move to center x. What triggers that?
     private void Fsm_Climb(FsmAction action)
     {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
         switch (action)
         {
             case FsmAction.Init:
@@ -1133,12 +1144,226 @@ public partial class Rayman
                 if (!DoInTheAir())
                     return;
 
+                Timer++;
 
-                // TODO: Implement
+                // Keep the same frame across all climbing animations
+                int animFrame = AnimatedObject.CurrentFrame;
+                bool jump = CheckSingleInput(GbaInput.A);
+
+                int climbHoriontal = IsOnClimbableHorizontal();
+                int climbVertical = IsOnClimbableVertical();
+
+                PhysicalType type = PhysicalTypeValue.None;
+
+                Mechanic.Speed = new Vector2(0, Mechanic.Speed.Y);
+
+                if (CheckInput(GbaInput.Left))
+                {
+                    if (CheckSingleInput2(GbaInput.Left))
+                        Timer = 0;
+
+                    if (climbHoriontal is 4 or 6)
+                    {
+                        if (!MultiplayerManager.IsInMultiplayer)
+                        {
+                            Mechanic.Speed = new Vector2(-1.5f, Mechanic.Speed.Y);
+
+                            if (Timer > 50)
+                                Timer = 0;
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                    else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                    {
+                        cam.HorizontalOffset = Engine.Settings.Platform switch
+                        {
+                            Platform.GBA => 40,
+                            Platform.NGage => 25,
+                            _ => throw new UnsupportedPlatformException()
+                        };
+                        Timer = 0;
+                    }
+                }
+                else if (CheckInput(GbaInput.Right))
+                {
+                    if (CheckSingleInput2(GbaInput.Right))
+                        Timer = 0;
+
+                    if (climbHoriontal is 4 or 5)
+                    {
+                        if (!MultiplayerManager.IsInMultiplayer)
+                        {
+                            Mechanic.Speed = new Vector2(1.5f, Mechanic.Speed.Y);
+
+                            if (Timer > 50)
+                                Timer = 0;
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                    else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                    {
+                        cam.HorizontalOffset = Engine.Settings.Platform switch
+                        {
+                            Platform.GBA => 40,
+                            Platform.NGage => 25,
+                            _ => throw new UnsupportedPlatformException()
+                        };
+                        Timer = 0;
+                    }
+                }
+                else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                {
+                    Timer = 0;
+                }
+
+                if (CheckInput(GbaInput.Up) && climbVertical is 1 or 2)
+                {
+                    if (!MultiplayerManager.IsInMultiplayer)
+                    {
+                        Mechanic.Speed = new Vector2(Mechanic.Speed.X, -1.5f);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    if (ActionId is not (Action.Climb_Up_Right or Action.Climb_Up_Left))
+                    {
+                        ActionId = IsFacingRight ? Action.Climb_Up_Right : Action.Climb_Up_Left;
+                        AnimatedObject.CurrentFrame = animFrame;
+                    }
+                }
+                else if (CheckInput(GbaInput.Down) && climbVertical is 1 or 3)
+                {
+                    if (!MultiplayerManager.IsInMultiplayer)
+                    {
+                        Mechanic.Speed = new Vector2(Mechanic.Speed.X, 1.5f);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    if (ActionId is not (Action.Climb_Down_Right or Action.Climb_Down_Left))
+                    {
+                        ActionId = IsFacingRight ? Action.Climb_Down_Right : Action.Climb_Down_Left;
+                        AnimatedObject.CurrentFrame = animFrame;
+                    }
+                }
+                else
+                {
+                    Mechanic.Speed = new Vector2(Mechanic.Speed.X, 0);
+
+                    if (CheckInput(GbaInput.Left) && ActionId != Action.Climb_Side_Left && Speed.X != 0)
+                    {
+                        ActionId = Action.Climb_Side_Left;
+                        AnimatedObject.CurrentFrame = animFrame;
+                    }
+                    else if (CheckInput(GbaInput.Right) && ActionId != Action.Climb_Side_Right && Speed.X != 0)
+                    {
+                        ActionId = Action.Climb_Side_Right;
+                        AnimatedObject.CurrentFrame = animFrame;
+                    }
+
+                    if (CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                    {
+                        type = Scene.GetPhysicalType(Position + new Vector2(0, 32));
+                    }
+                }
+
+                if (Speed == Vector2.Zero)
+                {
+                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                        AnimatedObject.FlipX = true;
+                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                        AnimatedObject.FlipX = false;
+
+                    if (ActionId == NextActionId)
+                    {
+                        if (IsActionFinished)
+                        {
+                            ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                            NextActionId = null;
+                        }
+                    }
+                    else
+                    {
+                        if (IsActionFinished && ActionId is (Action.Climb_BeginIdle_Right or Action.Climb_BeginIdle_Left))
+                        {
+                            ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                        }
+                        else if (ActionId is not (Action.Climb_Idle_Right or Action.Climb_Idle_Left or Action.Climb_BeginIdle_Right or Action.Climb_BeginIdle_Left))
+                        {
+                            ActionId = IsFacingRight ? Action.Climb_BeginIdle_Right : Action.Climb_BeginIdle_Left;
+                        }
+                    }
+                }
+
+                // Punch
+                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFist(1))
+                {
+                    ActionId = IsFacingRight ? Action.Climb_BeginAttack_Right : Action.Climb_BeginAttack_Left;
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
+                    return;
+                }
+
+                // Jump left
+                if (jump && CheckInput(GbaInput.Left) && climbHoriontal is not (4 or 6))
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Jump right
+                if (jump && CheckInput(GbaInput.Right) && climbHoriontal is not (4 or 5))
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Jump up
+                if (jump && CheckInput(GbaInput.Up) && climbVertical is not (1 or 2))
+                {
+                    Fsm.ChangeAction(Fsm_Jump);
+                    return;
+                }
+
+                // Move down
+                if (type.IsSolid && CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Jump down
+                if (jump && CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                {
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
-                // TODO: Implement
+                if (!MultiplayerManager.IsInMultiplayer)
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 40,
+                        Platform.NGage => 25,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+
+                if (!CheckSingleInput(GbaInput.B) && IsLocalPlayer)
+                    cam.ProcessMessage(Message.Cam_1027);
+
+                if (ActionId == NextActionId)
+                    NextActionId = null;
                 break;
         }
     }
