@@ -1122,7 +1122,6 @@ public partial class Rayman
         }
     }
 
-    // TODO: Camera doesn't behave correctly when climbing. It's supposed to move to center x. What triggers that?
     private void Fsm_Climb(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
@@ -1219,6 +1218,10 @@ public partial class Rayman
                 }
                 else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
                 {
+                    // Center camera, only on GBA
+                    if (Engine.Settings.Platform == Platform.GBA)
+                        cam.HorizontalOffset = 120;
+
                     Timer = 0;
                 }
 
