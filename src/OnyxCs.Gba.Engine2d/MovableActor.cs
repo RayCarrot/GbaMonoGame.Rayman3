@@ -26,12 +26,97 @@ public class MovableActor : InteractableActor
 
     private bool CheckObjectCollision1(Box actorDetectionBox, Box otherDetectionBox)
     {
-        if (!actorDetectionBox.Intersects(otherDetectionBox))
+        // TODO: The game removes the decimals in the commented out code - should we? I probably haven't done it
+        //       elsewhere since the game goes between int and fixed-point a bunch.
+
+        Box intersectBox = Box.Intersect(actorDetectionBox, otherDetectionBox);
+
+        if (intersectBox == Box.Empty)
             return false;
 
-        // TODO: Modify position and speed
+        float width = intersectBox.Width;
+        float height = intersectBox.Height;
 
-        return true;
+        if (Speed.Y >= 1 &&
+            otherDetectionBox.MinY > actorDetectionBox.MinY &&
+            otherDetectionBox.MaxY > actorDetectionBox.MaxY &&
+            height < Constants.TileSize)
+        {
+            Speed -= new Vector2(0, height);
+            Position -= new Vector2(0, height);
+
+            if (Speed.Y < 0)
+                Speed += new Vector2(0, 1);
+
+            // Speed = new Vector2(Speed.X, (int)Speed.Y);
+
+            if (Position.Y < 0)
+                Position += new Vector2(0, 1);
+
+            // Position = new Vector2(Position.X, (int)Position.Y);
+            return true;
+        }
+
+        if (Speed.Y < 0 &&
+            actorDetectionBox.MaxY > otherDetectionBox.MaxY &&
+            actorDetectionBox.MinY > otherDetectionBox.MinY)
+        {
+            Speed += new Vector2(0, height);
+            Position += new Vector2(0, height);
+
+            if (Speed.Y < 0)
+                Speed += new Vector2(0, 1);
+
+            // Speed = new Vector2(Speed.X, (int)Speed.Y);
+
+            if (Position.Y < 0)
+                Position += new Vector2(0, 1);
+
+            // Position = new Vector2(Position.X, (int)Position.Y);
+            return true;
+        }
+
+        if (Speed.X < 1)
+        {
+            if (-1 < Speed.X)
+                return true;
+
+            if (actorDetectionBox.MinX <= otherDetectionBox.MinX)
+                return true;
+
+            Speed += new Vector2(width, 0);
+            Position += new Vector2(width, 0);
+
+            if (Speed.X < 0)
+                Speed += new Vector2(1, 0);
+
+            // Speed = new Vector2((int)Speed.X, Speed.Y);
+
+            if (Position.X < 0)
+                Position += new Vector2(1, 0);
+
+            // Position = new Vector2((int)Position.X, Position.Y);
+            return true;
+        }
+        else
+        {
+            if (otherDetectionBox.MaxX <= actorDetectionBox.MaxX)
+                return true;
+
+            Speed -= new Vector2(width, 0);
+            Position -= new Vector2(width, 0);
+
+            if (Speed.X < 0)
+                Speed += new Vector2(1, 0);
+
+            // Speed = new Vector2((int)Speed.X, Speed.Y);
+
+            if (Position.X < 0)
+                Position += new Vector2(1, 0);
+
+            // Position = new Vector2((int)Position.X, Position.Y);
+            return true;
+        }
     }
 
     private bool CheckObjectCollision2(Box actorDetectionBox, Box otherDetectionBox)

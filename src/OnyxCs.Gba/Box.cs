@@ -57,6 +57,30 @@ public readonly struct Box
 
     public Rectangle ToRectangle() => new((int)MinX, (int)MinY, (int)Width, (int)Height);
 
+    public static Box Intersect(Box box1, Box box2)
+    {
+        float largestXMin = box2.MinX;
+        if (largestXMin < box1.MinX)
+            largestXMin = box1.MinX;
+
+        float largestYMin = box2.MinY;
+        if (largestYMin < box1.MinY)
+            largestYMin = box1.MinY;
+
+        float smallestXMax = box2.MaxX;
+        if (box1.MaxX < smallestXMax)
+            smallestXMax = box1.MaxX;
+
+        float smallestYMax = box2.MaxY;
+        if (box1.MaxY < smallestYMax)
+            smallestYMax = box1.MaxY;
+
+        if (largestXMin < smallestXMax && largestYMin < smallestYMax)
+            return new Box(largestXMin, largestYMin, smallestXMax, smallestYMax);
+        else
+            return Empty;
+    }
+
     public static bool operator ==(Box a, Box b)
     {
         return a.MinX == b.MinX && a.MinY == b.MinY && a.MaxX == b.MaxX && a.MaxY == b.MaxY;
