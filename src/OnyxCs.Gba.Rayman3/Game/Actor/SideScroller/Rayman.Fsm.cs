@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
 using OnyxCs.Gba.Engine2d;
@@ -717,7 +718,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (GameTime.ElapsedFrames - Timer >= 51)
+                if (GameTime.ElapsedFrames - Timer > 50)
                 {
                     Fsm.ChangeAction(Fsm_Fall);
                     return;
@@ -725,7 +726,13 @@ public partial class Rayman
 
                 if (IsNearHangableEdge())
                 {
-                    Fsm.ChangeAction(Fsm_Hang);
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                {
+                    Fsm.ChangeAction(Fsm_Helico);
                     return;
                 }
 
@@ -746,7 +753,7 @@ public partial class Rayman
         }
     }
 
-    private void Fsm_Hang(FsmAction action)
+    private void Fsm_HangOnEdge(FsmAction action)
     {
         switch (action)
         {
@@ -839,7 +846,7 @@ public partial class Rayman
                 
                 if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
                 {
-                    Fsm.ChangeAction(FUN_0802d44c);
+                    Fsm.ChangeAction(Fsm_Helico);
                     return;
                 }
 
@@ -851,7 +858,7 @@ public partial class Rayman
 
                 if (IsNearHangableEdge())
                 {
-                    Fsm.ChangeAction(Fsm_Hang);
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
                     return;
                 }
 
@@ -886,6 +893,255 @@ public partial class Rayman
 
             case FsmAction.UnInit:
                 Flag2_4 = false;
+                break;
+        }
+    }
+
+    private void Fsm_Helico(FsmAction action)
+    {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySoundEvent(Rayman3SoundEvent.Play__Helico01_Mix10);
+
+                if (ActionId is Action.UnknownJump_Right or Action.UnknownJump_Left)
+                    ActionId = IsFacingRight ? Action.UnknownHelico_Right : Action.UnknownHelico_Left;
+                else
+                    ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
+
+                NextActionId = null;
+                Timer = (uint)GameTime.ElapsedFrames;
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+                
+                AttackInTheAir();
+                FUN_0802c3c8();
+                MoveInTheAir(MechSpeedX);
+
+                if (IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                {
+                    Fsm.ChangeAction(Fsm_StopHelico);
+                    return;
+                }
+
+                if (GameTime.ElapsedFrames - Timer > 40)
+                {
+                    Fsm.ChangeAction(Fsm_TimeoutHelico);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (IsOnHangable())
+                //{
+                //    FUN_08029c84();
+                //    Fsm.ChangeAction(FUN_0802ee60);
+                //    return;
+                //}
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
+                //{
+                //    FUN_0802a4c0();
+                //    Fsm.ChangeAction(FUN_08031554);
+                //}
+
+
+                // TODO: Implement
+
+                break;
+            
+            case FsmAction.UnInit:
+                MechSpeedX = 0;
+                
+                if (IsLocalPlayer)
+                    cam.ProcessMessage(Message.Cam_1027);
+
+                PlaySoundEvent(Rayman3SoundEvent.Stop__Helico01_Mix10);
+
+                if (GameTime.ElapsedFrames - Timer <= 40)
+                    PlaySoundEvent(Rayman3SoundEvent.Play__HeliCut_Mix01);
+                break;
+        }
+    }
+
+    private void Fsm_StopHelico(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+
+                MoveInTheAir(MechSpeedX);
+                AttackInTheAir();
+
+                if (IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                {
+                    Fsm.ChangeAction(FUN_0802ddac);
+                    return;
+                }
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
+                //{
+                //    FUN_0802a4c0();
+                //    Fsm.ChangeAction(FUN_08031554);
+                //}
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_TimeoutHelico(FsmAction action)
+    {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = IsFacingRight ? Action.HelicoTimeout_Right : Action.HelicoTimeout_Left;
+                Timer = 0;
+                PlaySoundEvent(Rayman3SoundEvent.Play__HeliStop_Mix06);
+                break;
+
+            case FsmAction.Step:
+                if (!DoInTheAir())
+                    return;
+
+                Timer++;
+                AttackInTheAir();
+                FUN_0802c3c8();
+                MoveInTheAir(MechSpeedX);
+
+                if (IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    PlaySoundEvent(Rayman3SoundEvent.Play__HeliCut_Mix01);
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B) || Timer > 50)
+                {
+                    Fsm.ChangeAction(Fsm_StopHelico);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (IsOnHangable())
+                //{
+                //    FUN_08029c84();
+                //    Fsm.ChangeAction(FUN_0802ee60);
+                //    return;
+                //}
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
+                //{
+                //    FUN_0802a4c0();
+                //    Fsm.ChangeAction(FUN_08031554);
+                //}
+
+                if (field27_0x9c != 0)
+                {
+                    Fsm.ChangeAction(FUN_0802ddac);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                PlaySoundEvent(Rayman3SoundEvent.Stop__HeliStop_Mix06);
+                MechSpeedX = 0;
+
+                if (IsLocalPlayer)
+                    cam.ProcessMessage(Message.Cam_1027);
+
+                if (Timer > 50)
+                {
+                    Vector2 pos = Position;
+
+                    pos += new Vector2(0, Constants.TileSize);
+                    if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
+                        return;
+
+                    pos += new Vector2(0, Constants.TileSize);
+                    if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
+                        return;
+
+                    pos += new Vector2(0, Constants.TileSize);
+                    if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
+                        return;
+
+                    pos += new Vector2(0, Constants.TileSize);
+                    if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
+                        return;
+
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoPeur1_Mix03);
+                }
                 break;
         }
     }
@@ -1616,14 +1872,12 @@ public partial class Rayman
     private void FUN_08033b34(FsmAction action) { }
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
-    private void FUN_0802d44c(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
     private void FUN_08031d24(FsmAction action) { }
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void Fsm_ChargeAttack(FsmAction action) { }
-    private void FUN_0802e770(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
 }

@@ -35,6 +35,9 @@ public partial class Rayman
         BeginHang_Right = 22,
         BeginHang_Left = 23,
 
+        Helico_Right = 28,
+        Helico_Left = 29,
+
         ChargeFistVariant_Right = 36,
         ChargeFistVariant_Left = 37,
 
@@ -99,8 +102,12 @@ public partial class Rayman
         Walk_Multiplayer_Right = 179,
         Walk_Multiplayer_Left = 180,
 
+        HelicoTimeout_Right = 185,
+        HelicoTimeout_Left = 186,
         Hidden_Right = 187,
         Hidden_Left = 188,
+        UnknownHelico_Right = 189, // TODO: What is this?
+        UnknownHelico_Left = 190,
 
         EnterCurtain_Right = 193,
         EnterCurtain_Left = 194,

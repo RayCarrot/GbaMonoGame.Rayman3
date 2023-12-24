@@ -828,12 +828,12 @@ public sealed partial class Rayman : MovableActor
                 field18_0x93 = 70;
                 message = Message.Cam_1040;
             }
-            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(Fsm_Hang)))
+            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(Fsm_HangOnEdge)))
             {
                 field18_0x93 = 160;
                 message = Message.Cam_1040;
             }
-            else if (Fsm.EqualsAction(FUN_0802d44c) && field27_0x9c == 0)
+            else if (Fsm.EqualsAction(Fsm_Helico) && field27_0x9c == 0)
             {
                 message = Message.Cam_1039;
             }
@@ -875,8 +875,8 @@ public sealed partial class Rayman : MovableActor
     private bool DoInTheAir()
     {
         if (CheckForDamage() &&
-            (Fsm.EqualsAction(FUN_0802e770) ||
-             Fsm.EqualsAction(FUN_0802d44c) ||
+            (Fsm.EqualsAction(Fsm_StopHelico) ||
+             Fsm.EqualsAction(Fsm_Helico) ||
              Fsm.EqualsAction(Fsm_Jump) ||
              Fsm.EqualsAction(FUN_0802cb38)) &&
             ActionId is not (
