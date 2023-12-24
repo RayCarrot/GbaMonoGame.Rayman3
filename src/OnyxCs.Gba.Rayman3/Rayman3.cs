@@ -306,6 +306,8 @@ public class Rayman3 : GbaGame
             { ActorType.Piranha, (id, scene, resource) => new Piranha(id, scene, resource) },
             { ActorType.Splash, (id, scene, resource) => new Splash(id, scene, resource) },
 
+            { ActorType.MovingFlowerPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
+
             { ActorType.Lums, (id, scene, resource) => new Lums(id, scene, resource) },
             { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
 
@@ -313,7 +315,11 @@ public class Rayman3 : GbaGame
 
             { ActorType.Butterfly, (id, scene, resource) => new Butterfly(id, scene, resource) },
 
+            { ActorType.MovingWoodenPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
+
             { ActorType.Arrive, (id, scene, resource) => new Arrive(id, scene, resource) },
+
+            { ActorType.MovingUnusedPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
         }, x => ((ActorType)x).ToString());
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {
