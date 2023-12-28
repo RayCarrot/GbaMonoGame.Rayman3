@@ -20,23 +20,29 @@ public enum Message
     Captor_Trigger_SendMessageWithCaptorParam = 204,
     
     // Rayman 3
-    CollectedYellowLum = 1009,
-    CollectedRedLum = 1010,
-    CollectedGreenLum = 1011,
-    CollectedBlueLum = 1012,
-    CollectedWhiteLum = 1013,
-    CollectedUnusedLum = 1014, // Doesn't exist
-    CollectedBigYellowLum = 1015,
-    CollectedBigBlueLum = 1016,
+    Main_LinkMovement = 1003,
+    Main_UnlinkMovement = 1004,
 
-    LevelEnd = 1019,
+    Main_CollectedYellowLum = 1009,
+    Main_CollectedRedLum = 1010,
+    Main_CollectedGreenLum = 1011,
+    Main_CollectedBlueLum = 1012,
+    Main_CollectedWhiteLum = 1013,
+    Main_CollectedUnusedLum = 1014, // Doesn't exist
+    Main_CollectedBigYellowLum = 1015,
+    Main_CollectedBigBlueLum = 1016,
 
-    Cam_1027 = 1027,
+    Main_LevelEnd = 1019,
 
-    LevelExit = 1031,
+    Cam_1027 = 1027, // TODO: Name
 
-    Cam_1039 = 1039,
-    Cam_1040 = 1040,
-    
+    Main_LevelExit = 1031,
+
+    FlowerFire_End = 1034,
+
+    Cam_1039 = 1039, // TODO: Name
+    Cam_1040 = 1040, // TODO: Name
+
+    Main_AllowCoyoteJump = 1048,
     Murphy_NewMultiplayerLevel = 1049,
 }

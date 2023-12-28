@@ -7,7 +7,7 @@ public sealed partial class Depart : ActionActor
     public Depart(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
     {
         // The behavior to end a level with the sign facing to the right seems unused in the game
-        MessageToSend = (Action)actorResource.FirstActionId == Action.EndLevel ? Message.LevelEnd : Message.LevelExit;
+        MessageToSend = (Action)actorResource.FirstActionId == Action.EndLevel ? Message.Main_LevelEnd : Message.Main_LevelExit;
         Fsm.ChangeAction(Fsm_Idle);
     }
 

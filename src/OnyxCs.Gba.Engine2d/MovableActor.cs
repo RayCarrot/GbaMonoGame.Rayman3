@@ -12,7 +12,7 @@ public class MovableActor : InteractableActor
         HasMapCollision = actorResource.Model.HasMapCollision;
         HasObjectCollision = actorResource.Model.HasObjectCollision;
 
-        ActorFlag_C = false;
+        HasMoved = false;
     }
 
     public Mechanic Mechanic { get; } = new();
@@ -339,12 +339,20 @@ public class MovableActor : InteractableActor
 
     public void Move()
     {
+        if (HasMoved)
+            return;
+
         // Update the speed
         Speed = Mechanic.UpdateSpeedAction();
 
         if (LinkedMovementActor != null)
         {
             LinkedMovementActor.Move();
+
+            // If on a linked object then we remove gravity
+            Speed = new Vector2(Speed.X, 0);
+
+            // Add speed from the linked object
             Speed += LinkedMovementActor.Speed;
         }
 
@@ -416,18 +424,18 @@ public class MovableActor : InteractableActor
                 }
             }
 
+            // If on a linked object then we remove gravity
             if (LinkedMovementActor != null)
-            {
                 Speed = new Vector2(Speed.X, 0);
-            }
         }
 
-        ActorFlag_C = true;
+        HasMoved = true;
     }
 
     public override void Step()
     {
         IsTouchingMap = false;
+        HasMoved = false;
         base.Step();
     }
 

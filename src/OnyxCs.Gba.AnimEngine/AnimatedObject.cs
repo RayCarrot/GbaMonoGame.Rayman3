@@ -113,8 +113,6 @@ public class AnimatedObject : AObject
 
     #region Private Methods
 
-    private Animation GetAnimation() => Resource.Animations[CurrentAnimation];
-
     private IEnumerable<AnimationChannel> EnumerateCurrentChannels()
     {
         Animation anim = GetAnimation();
@@ -198,6 +196,10 @@ public class AnimatedObject : AObject
     #endregion
 
     #region Public Methods
+
+    public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
+
+    public void Rewind() => CurrentFrame = 0;
 
     public void ExecuteUnframed()
     {

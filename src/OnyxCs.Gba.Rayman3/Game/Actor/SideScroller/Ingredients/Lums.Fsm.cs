@@ -118,14 +118,14 @@ public partial class Lums
 
                 Scene.MainActor.ProcessMessage(ActionId switch
                 {
-                    Action.YellowLum => Message.CollectedYellowLum,
-                    Action.RedLum => Message.CollectedRedLum,
-                    Action.GreenLum => Message.CollectedGreenLum,
-                    Action.BlueLum => Message.CollectedBlueLum,
-                    Action.WhiteLum => Message.CollectedWhiteLum,
-                    Action.UnusedLum => Message.CollectedUnusedLum,
-                    Action.BigYellowLum => Message.CollectedBigYellowLum,
-                    Action.BigBlueLum => Message.CollectedBigBlueLum,
+                    Action.YellowLum => Message.Main_CollectedYellowLum,
+                    Action.RedLum => Message.Main_CollectedRedLum,
+                    Action.GreenLum => Message.Main_CollectedGreenLum,
+                    Action.BlueLum => Message.Main_CollectedBlueLum,
+                    Action.WhiteLum => Message.Main_CollectedWhiteLum,
+                    Action.UnusedLum => Message.Main_CollectedUnusedLum,
+                    Action.BigYellowLum => Message.Main_CollectedBigYellowLum,
+                    Action.BigBlueLum => Message.Main_CollectedBigBlueLum,
                     _ => throw new ArgumentOutOfRangeException(nameof(ActionId), ActionId, null)
                 });
                 AnimatedObject.CurrentAnimation = 9;

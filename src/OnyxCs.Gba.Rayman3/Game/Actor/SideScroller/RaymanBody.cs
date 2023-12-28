@@ -28,7 +28,7 @@ public sealed partial class RaymanBody : MovableActor
         {
             case (Message)1002: // TODO: Name message
                 // TODO: Implement
-                return true;
+                return false;
 
             default:
                 return false;

@@ -13,9 +13,9 @@ public partial class Arrive
                 break;
 
             case FsmAction.Step:
-                if (Scene.IsDetectedMainActor(GetActionBox()))
+                if (Scene.IsDetectedMainActor(this))
                 {
-                    Scene.MainActor.ProcessMessage(Message.LevelEnd);
+                    Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
                     Fsm.ChangeAction(Fsm_EndLevel);
                 }
                 break;
@@ -57,7 +57,7 @@ public partial class Arrive
                 if (IsActionFinished && ActionId == Action.EndingLevel)
                 {
                     if (GameInfo.MapId == MapId.ChallengeLyGCN)
-                        Scene.MainActor.ProcessMessage(Message.LevelEnd);
+                        Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
 
                     ActionId = Action.EndedLevel;
                 }

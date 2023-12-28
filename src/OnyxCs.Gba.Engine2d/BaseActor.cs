@@ -16,7 +16,7 @@ public class BaseActor : GameObject
         IsAgainstCaptor = ActorModel.IsAgainstCaptor;
         ReceivesDamage = ActorModel.ReceivesDamage;
         Type = actorResource.Type;
-        ActorFlag_C = true;
+        HasMoved = true;
 
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)
         {
@@ -52,7 +52,7 @@ public class BaseActor : GameObject
     public bool IsInvulnerable { get; set; }
     public bool IsTouchingActor { get; set; }
     public bool IsTouchingMap { get; set; }
-    public bool ActorFlag_C { get; set; }
+    public bool HasMoved { get; set; }
     public bool ActorFlag_E { get; set; }
 
     public Box GetViewBox() => _viewBox.Offset(Position);

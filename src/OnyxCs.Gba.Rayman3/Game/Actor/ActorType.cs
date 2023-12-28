@@ -7,6 +7,7 @@ public enum ActorType
 
     Piranha = 3,
     Splash = 4,
+    Explosion = 5,
 
     MovingFlowerPlatform = 8,
 
@@ -18,6 +19,8 @@ public enum ActorType
     Butterfly = 37,
 
     MovingWoodenPlatform = 53,
+
+    FlowerFire = 61,
 
     Arrive = 101,
 

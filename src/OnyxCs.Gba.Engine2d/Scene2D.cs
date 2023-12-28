@@ -166,6 +166,11 @@ public class Scene2D
         Camera.Step();
     }
 
+    public bool IsDetectedMainActor(ActionActor actor)
+    {
+        return IsDetectedMainActor(actor.GetActionBox());
+    }
+
     public bool IsDetectedMainActor(Box box)
     {
         return box.Intersects(MainActor.GetDetectionBox());

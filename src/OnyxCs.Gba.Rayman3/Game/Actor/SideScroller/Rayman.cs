@@ -77,7 +77,7 @@ public sealed partial class Rayman : MovableActor
     public bool Flag2_1 { get; set; }
     public bool Flag2_2 { get; set; }
     public bool IsLocalPlayer { get; set; }
-    public bool Flag2_4 { get; set; }
+    public bool CanCoyoteJump { get; set; }
     public bool Flag2_5 { get; set; }
     public bool Flag2_6 { get; set; }
     public bool Flag2_7 { get; set; }
@@ -967,44 +967,73 @@ public sealed partial class Rayman : MovableActor
     protected override bool ProcessMessageImpl(Message message, object param)
     {
         if (base.ProcessMessageImpl(message, param))
-            return true;
+            return false;
 
+        // TODO: Implement remaining messages
         switch (message)
         {
-            // TODO: Implement
+            case Message.Main_LinkMovement:
+                if (!Fsm.EqualsAction(FUN_08032650))
+                {
+                    if (Fsm.EqualsAction(Fsm_Jump) && Speed.Y < 1)
+                        return false;
 
-            case Message.CollectedYellowLum:
+                    MovableActor actorToLink = ((MovableActor)param);
+                    Box actorToLinkBox = actorToLink.GetDetectionBox();
+
+                    if (Position.Y < actorToLinkBox.MinY + 7)
+                    {
+                        LinkedMovementActor = actorToLink;
+                        Position = new Vector2(Position.X, actorToLinkBox.MinY);
+                    }
+
+                    if (Fsm.EqualsAction(Fsm_HangOnEdge))
+                        Fsm.ChangeAction(Fsm_Default);
+                }
+                return false;
+
+            case Message.Main_UnlinkMovement:
+                LinkedMovementActor = null;
+                Flag2_2 = true;
+                return false;
+
+            case Message.Main_CollectedYellowLum:
                 ((FrameSideScroller)Frame.Current).UserInfo.AddLums(1);
-                return true;
+                return false;
 
-            case Message.CollectedRedLum:
+            case Message.Main_CollectedRedLum:
                 // TODO: Implement
-                return true;
+                return false;
 
-            case Message.CollectedBlueLum:
+            case Message.Main_CollectedBlueLum:
                 // TODO: Implement
-                return true;
+                return false;
 
-            case Message.CollectedWhiteLum:
+            case Message.Main_CollectedWhiteLum:
                 // TODO: Implement
-                return true;
+                return false;
 
-            case Message.CollectedBigYellowLum:
+            case Message.Main_CollectedBigYellowLum:
                 ((FrameSideScroller)Frame.Current).UserInfo.AddLums(10);
-                return true;
+                return false;
 
-            case Message.CollectedBigBlueLum:
+            case Message.Main_CollectedBigBlueLum:
                 // TODO: Implement
-                return true;
+                return false;
 
-            case Message.LevelEnd:
+            case Message.Main_LevelEnd:
                 FinishedMap = true;
                 Fsm.ChangeAction(Fsm_EndMap);
-                return true;
+                return false;
 
-            case Message.LevelExit:
+            case Message.Main_LevelExit:
                 Fsm.ChangeAction(Fsm_EndMap);
-                return true;
+                return false;
+
+            case Message.Main_AllowCoyoteJump:
+                if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(FUN_0802cb38))
+                    CanCoyoteJump = true;
+                return false;
 
             default:
                 return false;

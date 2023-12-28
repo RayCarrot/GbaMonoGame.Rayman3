@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
@@ -831,14 +831,14 @@ public partial class Rayman
                 
                 Timer++;
 
-                if (Flag2_4 && Timer > 15)
-                    Flag2_4 = false;
+                if (CanCoyoteJump && Timer > 15)
+                    CanCoyoteJump = false;
 
                 MoveInTheAir(MechSpeedX);
                 FUN_0802c3c8();
                 AttackInTheAir();
 
-                if (CheckSingleInput(GbaInput.A) && Flag2_4)
+                if (CheckSingleInput(GbaInput.A) && CanCoyoteJump)
                 {
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
@@ -892,7 +892,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.UnInit:
-                Flag2_4 = false;
+                CanCoyoteJump = false;
                 break;
         }
     }
