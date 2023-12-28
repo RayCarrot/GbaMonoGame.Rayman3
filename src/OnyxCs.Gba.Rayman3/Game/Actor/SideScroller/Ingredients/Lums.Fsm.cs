@@ -51,7 +51,7 @@ public partial class Lums
                     }
                     else if (ActionId is not (Action.BigYellowLum or Action.BigBlueLum))
                     {
-                        AnimatedObject.CurrentAnimation = (byte)ActionId + Random.Shared.Next(3);
+                        AnimatedObject.CurrentAnimation = (byte)ActionId * 3 + Random.Shared.Next(3);
                     }
                 }
 
