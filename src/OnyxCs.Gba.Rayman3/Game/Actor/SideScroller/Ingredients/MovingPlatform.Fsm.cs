@@ -6,7 +6,6 @@ namespace OnyxCs.Gba.Rayman3;
 
 public partial class MovingPlatform
 {
-    // TODO: Place bool fsm functions in fsm partial class file for other actor classes too
     private bool FsmStep_UpdatePreviousValidDirectionalType()
     {
         PhysicalType type = Scene.GetPhysicalType(Position);

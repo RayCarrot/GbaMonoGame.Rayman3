@@ -8,6 +8,137 @@ namespace OnyxCs.Gba.Rayman3;
 
 public partial class Rayman
 {
+    private bool FsmStep_Inlined_FUN_1004c544()
+    {
+        if (!FsmStep_Inlined_FUN_1004c1f4())
+            return false;
+
+        UpdatePhysicalType();
+        HorizontalMovement();
+
+        if (CheckForDamage())
+        {
+            Fsm.ChangeAction(FUN_08031d24);
+            return false;
+        }
+
+        if (CheckSingleInput(GbaInput.A) && PhysicalType != 32)
+        {
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+        else if (FUN_0802a0f8())
+        {
+            PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
+
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool FsmStep_Inlined_FUN_1004c1f4()
+    {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+        if (Flag1_D)
+        {
+            field16_0x91++;
+
+            if (field16_0x91 > 60)
+            {
+                cam.HorizontalOffset = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => 40,
+                    Platform.NGage => 25,
+                    _ => throw new UnsupportedPlatformException()
+                };
+                Flag1_D = false;
+            }
+        }
+
+        if (IsLocalPlayer &&
+            !Fsm.EqualsAction(Fsm_Jump) &&
+            !Fsm.EqualsAction(FUN_0802ce54) &&
+            !Fsm.EqualsAction(FUN_080284ac) &&
+            !Fsm.EqualsAction(FUN_08033b34) &&
+            !Fsm.EqualsAction(FUN_080287d8) &&
+            !Flag1_6)
+        {
+            Message message;
+
+            if (!Fsm.EqualsAction(FUN_0802ddac) &&
+                CheckInput(GbaInput.Down) &&
+                (Speed.Y > 0 || Fsm.EqualsAction(Fsm_Crouch)) &&
+                !Fsm.EqualsAction(Fsm_Climb))
+            {
+                field18_0x93 = 70;
+                message = Message.Cam_1040;
+            }
+            else if (CheckInput(GbaInput.Up) && (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(Fsm_HangOnEdge)))
+            {
+                field18_0x93 = 160;
+                message = Message.Cam_1040;
+            }
+            else if (Fsm.EqualsAction(Fsm_Helico) && field27_0x9c == 0)
+            {
+                message = Message.Cam_1039;
+            }
+            else if (Fsm.EqualsAction(FUN_0803283c))
+            {
+                field18_0x93 = 65;
+                message = Message.Cam_1040;
+            }
+            else if (Fsm.EqualsAction(Fsm_Climb) || Fsm.EqualsAction(FUN_0802ddac))
+            {
+                field18_0x93 = 112;
+                message = Message.Cam_1040;
+            }
+            else
+            {
+                field18_0x93 = 120;
+                message = Message.Cam_1040;
+            }
+
+            cam.ProcessMessage(message, field18_0x93);
+        }
+
+        if (field23_0x98 != 0)
+            field23_0x98--;
+
+        if (IsOnInstaKillType())
+        {
+            if (!MultiplayerManager.IsInMultiplayer)
+                Fsm.ChangeAction(FUN_08032650);
+            else
+                Fsm.ChangeAction(FUN_08033228);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool FsmStep_DoInTheAir()
+    {
+        if (CheckForDamage() &&
+            (Fsm.EqualsAction(Fsm_StopHelico) ||
+             Fsm.EqualsAction(Fsm_Helico) ||
+             Fsm.EqualsAction(Fsm_Jump) ||
+             Fsm.EqualsAction(FUN_0802cb38)) &&
+            ActionId is not (
+                Action.Damage_Knockback_Right or
+                Action.Damage_Knockback_Left or
+                Action.Damage_Shock_Right or
+                Action.Damage_Shock_Left))
+        {
+            ActionId = IsFacingRight ? Action.Damage_Knockback_Right : Action.Damage_Knockback_Left;
+        }
+
+        return FsmStep_Inlined_FUN_1004c1f4();
+    }
+
     private void Fsm_LevelStart(FsmAction action)
     {
         switch (action)
@@ -135,7 +266,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!Inlined_FUN_1004c544())
+                if (!FsmStep_Inlined_FUN_1004c544())
                     return;
 
                 Timer++;
@@ -346,7 +477,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!Inlined_FUN_1004c544())
+                if (!FsmStep_Inlined_FUN_1004c544())
                     return;
 
                 Timer--;
@@ -471,7 +602,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!Inlined_FUN_1004c544())
+                if (!FsmStep_Inlined_FUN_1004c544())
                     return;
 
                 if (Speed.Y > 1 && MechSpeedX == 0)
@@ -689,7 +820,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
 
                 if (IsLocalPlayer)
@@ -774,7 +905,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
 
                 if (IsActionFinished && ActionId is not (Action.Hang_Right or Action.Hang_Left))
@@ -826,7 +957,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
                 
                 Timer++;
@@ -916,7 +1047,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
                 
                 AttackInTheAir();
@@ -998,7 +1129,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
 
                 MoveInTheAir(MechSpeedX);
@@ -1057,7 +1188,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
 
                 Timer++;
@@ -1177,7 +1308,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!Inlined_FUN_1004c544())
+                if (!FsmStep_Inlined_FUN_1004c544())
                     return;
 
                 if (IsActionFinished && ActionId is Action.CrouchDown_Right or Action.CrouchDown_Left)
@@ -1295,7 +1426,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!Inlined_FUN_1004c544())
+                if (!FsmStep_Inlined_FUN_1004c544())
                     return;
 
                 Box detectionBox = GetDetectionBox();
@@ -1378,6 +1509,7 @@ public partial class Rayman
         }
     }
 
+    // TODO: There's a bug where if you jump up you can go through solid collision. See Rock and Lava 3.
     private void Fsm_Climb(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
@@ -1396,7 +1528,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!DoInTheAir())
+                if (!FsmStep_DoInTheAir())
                     return;
 
                 Timer++;
