@@ -172,7 +172,7 @@ public class Mechanic
     // Temporary
     private void Dummy(float[] mechParams, int offset)
     {
-
+        throw new NotImplementedException();
     }
 
     private void Reset(float[] mechParams, int offset)
