@@ -11,6 +11,6 @@ public enum Power : byte
     Climb = 1 << 2,
     SuperHelico = 1 << 3,
     BodyShot = 1 << 4,
-    ChargeShot = 1 << 5,
+    SuperFist = 1 << 5,
     All = 0xFF,
 }

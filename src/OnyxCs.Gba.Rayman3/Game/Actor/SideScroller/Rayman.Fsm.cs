@@ -139,6 +139,60 @@ public partial class Rayman
         return FsmStep_Inlined_FUN_1004c1f4();
     }
 
+    // TODO: Name
+    private bool FsmStep_FUN_08020e8c()
+    {
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+            cam.HorizontalOffset = 120;
+        }
+
+        if (field23_0x98 != 0)
+            field23_0x98--;
+
+        CheckForDamage();
+
+        if (HitPoints == 0)
+        {
+            Fsm.ChangeAction(FUN_08032650);
+            return false;
+        }
+
+        return true;
+    }
+
+    // TODO: Name
+    private bool FsmStep_FUN_08020ee0()
+    {
+        if (!FsmStep_Inlined_FUN_1004c1f4())
+            return false;
+
+        UpdatePhysicalType();
+        HorizontalMovement();
+
+        if (CheckForDamage())
+        {
+            Fsm.ChangeAction(FUN_08031d24);
+            return false;
+        }
+
+        if (CheckSingleInput(GbaInput.A) && PhysicalType != 32)
+        {
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+
+        if (FUN_0802a0f8())
+        {
+            PlaySoundEvent(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
+            Fsm.ChangeAction(FUN_0802cb38);
+            return false;
+        }
+
+        return true;
+    }
+
     private void Fsm_LevelStart(FsmAction action)
     {
         switch (action)
@@ -538,7 +592,7 @@ public partial class Rayman
                 }
 
                 // Punch
-                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFist(2))
+                if (CheckInput2(GbaInput.B) && CanAttackWithFist(2))
                 {
                     Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
@@ -673,7 +727,7 @@ public partial class Rayman
                     }
                 }
 
-                if (CheckInput(GbaInput.B))
+                if (CheckInput2(GbaInput.B))
                 {
                     Charge++;
                 }
@@ -683,12 +737,12 @@ public partial class Rayman
 
                     if (CanAttackWithFist(1))
                     {
-                        Attack(0, 0, new Vector2(16, -16), 0);
+                        Attack(0, RaymanBody.RaymanBodyPartType.Fist, new Vector2(16, -16), false);
                         field23_0x98 = 0;
                     }
                     else if (CanAttackWithFist(2))
                     {
-                        Attack(0, 1, new Vector2(16, -16), 0);
+                        Attack(0, RaymanBody.RaymanBodyPartType.SecondFist, new Vector2(16, -16), false);
 
                         if ((GameInfo.Powers & Power.DoubleFist) == 0)
                             field23_0x98 = 0;
@@ -814,7 +868,7 @@ public partial class Rayman
                 if (IsLocalPlayer)
                     cam.ProcessMessage(Message.Cam_1039, field18_0x93);
 
-                Timer = (uint)GameTime.ElapsedFrames;
+                Timer = GameTime.ElapsedFrames;
                 PhysicalType = 32;
                 LinkedMovementActor = null;
                 break;
@@ -827,7 +881,7 @@ public partial class Rayman
                     cam.ProcessMessage(Message.Cam_1039, (byte)130);
 
                 if (ActionId is Action.Jump_Right or Action.Jump_Left &&
-                    CheckReleasedInput(GbaInput.A) && 
+                    CheckReleasedInput2(GbaInput.A) && 
                     Mechanic.Speed.Y < -4 && 
                     !Flag2_0)
                 {
@@ -892,10 +946,10 @@ public partial class Rayman
                 PlaySoundEvent(Rayman3SoundEvent.Play__HandTap1_Mix04);
                 MechSpeedX = 0;
 
-                if (NextActionId is Action.UnknownBeginHang_Right or Action.UnknownBeginHang_Left)
-                    ActionId = IsFacingRight ? Action.UnknownBeginHang_Right : Action.UnknownBeginHang_Left;
+                if (NextActionId is Action.HangOnEdge_EndAttack_Right or Action.HangOnEdge_EndAttack_Left)
+                    ActionId = IsFacingRight ? Action.HangOnEdge_EndAttack_Right : Action.HangOnEdge_EndAttack_Left;
                 else
-                    ActionId = IsFacingRight ? Action.BeginHang_Right : Action.BeginHang_Left;
+                    ActionId = IsFacingRight ? Action.HangOnEdge_Begin_Right : Action.HangOnEdge_Begin_Left;
 
                 SetDetectionBox(new Box(
                     minX: ActorModel.DetectionBox.MinX,
@@ -908,16 +962,16 @@ public partial class Rayman
                 if (!FsmStep_DoInTheAir())
                     return;
 
-                if (IsActionFinished && ActionId is not (Action.Hang_Right or Action.Hang_Left))
+                if (IsActionFinished && ActionId is not (Action.HangOnEdge_Idle_Right or Action.HangOnEdge_Idle_Left))
                 {
-                    ActionId = IsFacingRight ? Action.Hang_Right : Action.Hang_Left;
+                    ActionId = IsFacingRight ? Action.HangOnEdge_Idle_Right : Action.HangOnEdge_Idle_Left;
                     NextActionId = null;
                 }
 
                 // Move down
                 if (CheckInput(GbaInput.Down))
                 {
-                    HangDelay = 30;
+                    HangOnEdgeDelay = 30;
                     PlaySoundEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                     Fsm.ChangeAction(Fsm_Fall);
                     return;
@@ -926,13 +980,13 @@ public partial class Rayman
                 // Jump
                 if (CheckSingleInput(GbaInput.A))
                 {
-                    HangDelay = 30;
+                    HangOnEdgeDelay = 30;
                     Fsm.ChangeAction(Fsm_Jump);
                     return;
                 }
 
                 // Attack
-                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFeet())
+                if (CheckInput2(GbaInput.B) && CanAttackWithFoot())
                 {
                     Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
@@ -1043,7 +1097,7 @@ public partial class Rayman
                     ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
 
                 NextActionId = null;
-                Timer = (uint)GameTime.ElapsedFrames;
+                Timer = GameTime.ElapsedFrames;
                 break;
 
             case FsmAction.Step:
@@ -1509,6 +1563,327 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_ChargeAttack(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                MechSpeedX = 0;
+                NextActionId = null;
+
+                // Climb
+                if (ActionId is Action.Climb_BeginChargeFist_Right or Action.Climb_BeginChargeFist_Left)
+                {
+                    Timer = 0;
+                }
+                // Hang
+                else if (ActionId is
+                         Action.Hang_Move_Right or Action.Hang_Move_Left or
+                         Action.Hang_Idle_Right or Action.Hang_Idle_Left or
+                         Action.Hang_Attack_Right or Action.Hang_Attack_Left or
+                         Action.Hang_BeginIdle_Right or Action.Hang_BeginIdle_Left)
+                {
+                    // Probably a bug in the GBA code since this causes the sound to play twice. This was fixed for N-Gage.
+                    if (Engine.Settings.Platform == Platform.GBA)
+                        SoundManager.Play(Rayman3SoundEvent.Play__Charge_Mix05);
+
+                    ActionId = IsFacingRight ? Action.Hang_ChargeAttack_Right : Action.Hang_ChargeAttack_Left;
+                    Timer = GameTime.ElapsedFrames;
+                }
+                // Hang on edge
+                else if (ActionId is 
+                         Action.HangOnEdge_Begin_Right or Action.HangOnEdge_Begin_Left or
+                         Action.HangOnEdge_Idle_Right or Action.HangOnEdge_Idle_Left or
+                         Action.HangOnEdge_EndAttack_Right or Action.HangOnEdge_EndAttack_Left)
+                {
+                    ActionId = IsFacingRight ? Action.HangOnEdge_BeginAttack_Right : Action.HangOnEdge_BeginAttack_Left;
+                    Timer = 0;
+                }
+                // Normal fist attack
+                else if (CanAttackWithFist(1))
+                {
+                    ActionId = IsFacingRight ? Action.BeginChargeFist_Right : Action.BeginChargeFist_Left;
+                    Timer = 0;
+                }
+                // Second normal fist attack
+                else
+                {
+                    ActionId = IsFacingRight ? Action.BeginChargeSecondFist_Right : Action.BeginChargeSecondFist_Left;
+                    Timer = 0;
+                }
+
+                PlaySoundEvent(Rayman3SoundEvent.Play__Charge_Mix05);
+                break;
+
+            case FsmAction.Step:
+                // Check for damage
+                if (field4_0x78?.Type == (int)ActorType.Plum)
+                {
+                    if (!FsmStep_FUN_08020e8c())
+                        return;
+
+                    if (Engine.Settings.Platform == Platform.NGage)
+                    {
+                        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+                        if (IsFacingRight)
+                        {
+                            if (Speed.X < 0)
+                                cam.HorizontalOffset = 151;
+                            else
+                                cam.HorizontalOffset = 25;
+                        }
+                        else
+                        {
+                            if (Speed.X < 0)
+                                cam.HorizontalOffset = 25;
+                            else
+                                cam.HorizontalOffset = 151;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!FsmStep_FUN_08020ee0())
+                        return;
+                }
+
+                // Change direction (if not hanging on an edge)
+                if (ActionId is not (
+                    Action.HangOnEdge_ChargeAttack_Right or Action.HangOnEdge_ChargeAttack_Left or
+                    Action.HangOnEdge_BeginAttack_Right or Action.HangOnEdge_BeginAttack_Left))
+                {
+                    if (CheckInput(GbaInput.Left))
+                    {
+                        if (IsFacingRight)
+                            AnimatedObject.FlipX = true;
+                    }
+                    else if (CheckInput(GbaInput.Right))
+                    {
+                        if (IsFacingLeft)
+                            AnimatedObject.FlipX = false;
+                    }
+                }
+
+                // Update action
+                if (IsActionFinished && Timer == 0)
+                {
+                    if (ActionId is Action.BeginChargeFist_Right or Action.BeginChargeFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.ChargeFist_Right : Action.ChargeFist_Left;
+                        Timer = GameTime.ElapsedFrames;
+                    }
+                    else if (ActionId is Action.BeginChargeSecondFist_Right or Action.BeginChargeSecondFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.ChargeSecondFist_Right : Action.ChargeSecondFist_Left;
+                        Timer = GameTime.ElapsedFrames;
+                    }
+                    else if (ActionId is Action.Climb_BeginChargeFist_Right or Action.Climb_BeginChargeFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.Climb_ChargeFist_Right : Action.Climb_ChargeFist_Left;
+                        Timer = GameTime.ElapsedFrames;
+                    }
+                    else if (ActionId is Action.HangOnEdge_BeginAttack_Right or Action.HangOnEdge_BeginAttack_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.HangOnEdge_ChargeAttack_Right : Action.HangOnEdge_ChargeAttack_Left;
+                        Timer = GameTime.ElapsedFrames;
+                    }
+
+                    if (Engine.Settings.Platform == Platform.NGage && field4_0x78?.Type == (int)ActorType.Plum && IsLocalPlayer)
+                    {
+                        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+                        cam.HorizontalOffset = 45;
+                    }
+                }
+
+                // TODO: Sound loops wrong
+                // Super fist after 20 frames
+                if (HasPower(Power.SuperFist) && GameTime.ElapsedFrames - Timer == 20)
+                {
+                    if (ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.ChargeSuperFist_Right : Action.ChargeSuperFist_Left;
+                        PlaySoundEvent(Rayman3SoundEvent.Stop__Charge_Mix05);
+                        PlaySoundEvent(Rayman3SoundEvent.Play__Charge2_Mix04);
+                    }
+                    else if (ActionId is Action.ChargeSecondFist_Right or Action.ChargeSecondFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.ChargeSecondSuperFist_Right : Action.ChargeSecondSuperFist_Left;
+                        PlaySoundEvent(Rayman3SoundEvent.Stop__Charge_Mix05);
+                        PlaySoundEvent(Rayman3SoundEvent.Play__Charge2_Mix04);
+                    }
+                    else if (ActionId is Action.Climb_ChargeFist_Right or Action.Climb_ChargeFist_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.Climb_ChargeSuperFist_Right : Action.Climb_ChargeSuperFist_Left;
+                        PlaySoundEvent(Rayman3SoundEvent.Stop__Charge_Mix05);
+                        PlaySoundEvent(Rayman3SoundEvent.Play__Charge2_Mix04);
+                    }
+                }
+
+                int type = 0;
+
+                // Stop charging and perform attack
+                if (CheckReleasedInput2(GbaInput.B))
+                {
+                    if (Timer == 0)
+                        Timer = GameTime.ElapsedFrames;
+
+                    uint chargePower = GameTime.ElapsedFrames - Timer;
+
+                    // Move plum
+                    if (field4_0x78?.Type == (int)ActorType.Plum)
+                    {
+                        // TODO: Implement and handle message to move plum
+                        field4_0x78.ProcessMessage(IsFacingRight ? (Message)0x40c : (Message)0x40d, chargePower);
+                    }
+
+                    if (ActionId is
+                        Action.ChargeFist_Right or Action.ChargeFist_Left or
+                        Action.BeginChargeFist_Right or Action.BeginChargeFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.Fist, new Vector2(16, -16), ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left);
+                        NextActionId = IsFacingRight ? Action.EndChargeFist_Right : Action.EndChargeFist_Left;
+
+                        if ((GameInfo.Powers & Power.DoubleFist) == 0)
+                            field23_0x98 = 0;
+                        type = 1;
+                    }
+                    else if (ActionId is 
+                             Action.ChargeSecondFist_Right or Action.ChargeSecondFist_Left or
+                             Action.BeginChargeSecondFist_Right or Action.BeginChargeSecondFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.SecondFist, new Vector2(16, -16), ActionId is Action.ChargeSecondFist_Right or Action.ChargeSecondFist_Left);
+                        NextActionId = IsFacingRight ? Action.EndChargeSecondFist_Right : Action.EndChargeSecondFist_Left;
+
+                        field23_0x98 = 0;
+                        type = 1;
+                    }
+                    else if (ActionId is Action.ChargeSuperFist_Right or Action.ChargeSuperFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.SuperFist, new Vector2(16, -16), true);
+                        NextActionId = IsFacingRight ? Action.EndChargeFist_Right : Action.EndChargeFist_Left;
+
+                        type = 1;
+                    }
+                    else if (ActionId is Action.ChargeSecondSuperFist_Right or Action.ChargeSecondSuperFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.SecondSuperFist, new Vector2(16, -16), true);
+                        NextActionId = IsFacingRight ? Action.EndChargeFist_Right : Action.EndChargeFist_Left;
+
+                        field23_0x98 = 0;
+                        type = 1;
+                    }
+                    else if (ActionId is Action.Hang_ChargeAttack_Right or Action.Hang_ChargeAttack_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.Foot, new Vector2(16, 0), true);
+                        NextActionId = IsFacingRight ? Action.Hang_Attack_Right : Action.Hang_Attack_Left;
+
+                        type = 2;
+                    }
+                    else if (ActionId is 
+                             Action.HangOnEdge_ChargeAttack_Right or Action.HangOnEdge_ChargeAttack_Left or
+                             Action.HangOnEdge_BeginAttack_Right or Action.HangOnEdge_BeginAttack_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.Foot, new Vector2(16, 16), true);
+                        NextActionId = IsFacingRight ? Action.HangOnEdge_EndAttack_Right : Action.HangOnEdge_EndAttack_Left;
+
+                        type = 3;
+                    }
+                    else if (ActionId is Action.Climb_ChargeSuperFist_Right or Action.Climb_ChargeSuperFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.SuperFist, new Vector2(16, -32), true);
+                        NextActionId = IsFacingRight ? Action.Climb_EndChargeFist_Right : Action.Climb_EndChargeFist_Left;
+
+                        type = 4;
+                    }
+                    else if (ActionId is 
+                             Action.Climb_ChargeFist_Right or Action.Climb_ChargeFist_Left or
+                             Action.Climb_BeginChargeFist_Right or Action.Climb_BeginChargeFist_Left)
+                    {
+                        Attack(chargePower, RaymanBody.RaymanBodyPartType.Fist, new Vector2(16, -32), true);
+                        NextActionId = IsFacingRight ? Action.Climb_EndChargeFist_Right : Action.Climb_EndChargeFist_Left;
+
+                        type = 4;
+                    }
+                }
+
+                if (ActionId is Action.Hang_ChargeAttack_Right or Action.Hang_ChargeAttack_Left && !IsOnHangable())
+                {
+                    Flag1_2 = false;
+                    PlaySoundEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_StopHelico);
+                    return;
+                }
+
+                if (type == 2)
+                {
+                    Fsm.ChangeAction(FUN_0802ee60);
+                    return;
+                }
+
+                if (type == 4)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                if (type == 3)
+                {
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (type == 1 && field4_0x78?.Type == (int)ActorType.Plum)
+                {
+                    Fsm.ChangeAction(FUN_080224f4);
+                    return;
+                }
+
+                if (type == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // TODO: Why is this not on GBA?
+                if (Engine.Settings.Platform == Platform.NGage &&
+                    ActionId is Action.Damage_Shock_Right or Action.Damage_Shock_Left)
+                {
+                    ActionId = IsFacingRight ? Action.Damage_EndShock_Right : Action.Damage_EndShock_Left;
+                    Fsm.ChangeAction(FUN_1005bf7c);
+                    return;
+                }
+
+                if (Speed.Y > 1 && field4_0x78?.Type != (int)ActorType.Plum)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                PlaySoundEvent(Rayman3SoundEvent.Stop__Charge_Mix05);
+                PlaySoundEvent(Rayman3SoundEvent.Stop__Charge2_Mix04);
+
+                if (IsLocalPlayer && Engine.Settings.Platform == Platform.NGage)
+                {
+                    CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+                    if (MultiplayerManager.IsInMultiplayer)
+                    {
+                        cam.HorizontalOffset = 95;
+                    }
+                    else
+                    {
+                        cam.HorizontalOffset = 25;
+                        Flag1_D = true;
+                        field16_0x91 = 0;
+                    }
+                }
+                break;
+        }
+    }
+
     // TODO: There's a bug where if you jump up you can go through solid collision. See Rock and Lava 3.
     private void Fsm_Climb(FsmAction action)
     {
@@ -1697,9 +2072,9 @@ public partial class Rayman
                 }
 
                 // Punch
-                if (CheckSingleReleasedInput(GbaInput.B) && CanAttackWithFist(1))
+                if (CheckInput2(GbaInput.B) && CanAttackWithFist(1))
                 {
-                    ActionId = IsFacingRight ? Action.Climb_BeginAttack_Right : Action.Climb_BeginAttack_Left;
+                    ActionId = IsFacingRight ? Action.Climb_BeginChargeFist_Right : Action.Climb_BeginChargeFist_Left;
                     Fsm.ChangeAction(Fsm_ChargeAttack);
                     return;
                 }
@@ -2009,7 +2384,8 @@ public partial class Rayman
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void Fsm_ChargeAttack(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
+    private void FUN_080224f4(FsmAction action) { }
+    private void FUN_1005bf7c(FsmAction action) { }
 }

@@ -246,7 +246,7 @@ public static class GameInfo
             Powers |= Power.BodyShot;
 
         if (mapId >= MapId.BossScaleMan)
-            Powers |= Power.ChargeShot;
+            Powers |= Power.SuperFist;
     }
 
     public static MapId GetNextLevelId()

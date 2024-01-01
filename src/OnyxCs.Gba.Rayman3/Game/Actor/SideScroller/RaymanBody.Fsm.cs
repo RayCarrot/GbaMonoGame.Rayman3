@@ -11,12 +11,12 @@ public partial class RaymanBody
                 break;
 
             case FsmAction.Step:
-                if (BodyPartType == 4)
+                if (BodyPartType == RaymanBodyPartType.HitEffect)
                 {
                     // TODO: Implement
                     // Fsm.ChangeAction(FUN_08034458);
                 }
-                else if (BodyPartType != 0)
+                else if (BodyPartType != RaymanBodyPartType.Fist)
                 {
                     // TODO: Implement
                     // Fsm.ChangeAction(FUN_08034010);

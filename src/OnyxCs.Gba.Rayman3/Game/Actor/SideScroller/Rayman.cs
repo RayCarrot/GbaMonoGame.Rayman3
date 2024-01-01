@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Onyx.Gba;
 using BinarySerializer.Onyx.Gba.Rayman3;
@@ -41,11 +42,13 @@ public sealed partial class Rayman : MovableActor
         Fsm.ChangeAction(Fsm_LevelStart);
     }
 
+    // TODO: Make properties private?
     public ActorResource Resource { get; }
     private Action? NextActionId { get; set; }
-    public BaseActor[] BodyParts { get; } = new BaseActor[4];
+    public Dictionary<RaymanBody.RaymanBodyPartType, BaseActor> BodyParts { get; } = new(4); // Array with 4 entries in the game
+    public BaseActor field4_0x78 { get; set; } // TODO: Name
     public byte Charge { get; set; }
-    public byte HangDelay { get; set; }
+    public byte HangOnEdgeDelay { get; set; }
     public uint Timer { get; set; }
     public float MechSpeedX { get; set; } // TODO: SlidingSpeed?
     public byte PhysicalType { get; set; }
@@ -107,6 +110,18 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private bool CheckInput2(GbaInput input)
+    {
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            return JoyPad.Check(input);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     private bool CheckSingleInput(GbaInput input)
     {
         if (!MultiplayerManager.IsInMultiplayer)
@@ -155,6 +170,18 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private bool CheckReleasedInput2(GbaInput input)
+    {
+        if (!MultiplayerManager.IsInMultiplayer)
+        {
+            return !JoyPad.Check(input);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     private void PlaySoundEvent(Rayman3SoundEvent soundEventId)
     {
         if (Scene.Camera.LinkedObject == this)
@@ -177,26 +204,38 @@ public sealed partial class Rayman : MovableActor
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
 
-        if (BodyParts[0] == null)
+        if (!BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.Fist))
             return true;
 
-        if (BodyParts[1] == null && punchCount == 2 && (GameInfo.Powers & Power.DoubleFist) != 0)
+        if (!BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.SecondFist) && punchCount == 2 && HasPower(Power.DoubleFist))
             return true;
 
         return true;
     }
 
-    private bool CanAttackWithFeet()
+    private bool CanAttackWithFoot()
     {
         if (MultiplayerManager.IsInMultiplayer)
         {
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
 
-        return BodyParts[2] == null;
+        return !BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.Foot);
     }
 
-    private void Attack(int charge, byte type, Vector2 offset, byte param5)
+    private bool HasPower(Power power)
+    {
+        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+        {
+            throw new NotImplementedException();
+        }
+        else
+        {
+            return (GameInfo.Powers & power) != 0;
+        }
+    }
+
+    private void Attack(uint chargePower, RaymanBody.RaymanBodyPartType type, Vector2 offset, bool hasCharged)
     {
         RaymanBody bodyPart = (RaymanBody)Scene.GameObjects.SpawnActor(ActorType.RaymanBody);
 
@@ -213,30 +252,30 @@ public sealed partial class Rayman : MovableActor
 
         switch (type)
         {
-            case 0:
+            case RaymanBody.RaymanBodyPartType.Fist:
                 // TODO: Hide sprites 3 and 2
                 break;
 
-            case 1:
+            case RaymanBody.RaymanBodyPartType.SecondFist:
                 // TODO: Hide sprites 16 and 15
                 break;
 
-            case 2:
+            case RaymanBody.RaymanBodyPartType.Foot:
                 // TODO: Hide sprites 5 and 4
                 bodyPart.field4_0x66 = 6;
                 break;
 
-            case 3:
+            case RaymanBody.RaymanBodyPartType.Torso:
                 // TODO: Hide sprites 12 and 11
                 bodyPart.field4_0x66 = 12;
                 break;
 
-            case 5:
+            case RaymanBody.RaymanBodyPartType.SuperFist:
                 // TODO: Hide sprites 3 and 2
                 bodyPart.field4_0x66 = 18;
                 break;
 
-            case 6:
+            case RaymanBody.RaymanBodyPartType.SecondSuperFist:
                 // TODO: Hide sprites 16 and 15
                 bodyPart.field4_0x66 = 18;
                 break;
@@ -244,31 +283,31 @@ public sealed partial class Rayman : MovableActor
 
         bodyPart.BodyPartType = type;
 
-        if (type == 5)
+        if (type == RaymanBody.RaymanBodyPartType.SuperFist)
         {
-            BodyParts[0] = bodyPart;
+            BodyParts[RaymanBody.RaymanBodyPartType.Fist] = bodyPart;
             PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
-        else if (type == 6)
+        else if (type == RaymanBody.RaymanBodyPartType.SecondSuperFist)
         {
-            BodyParts[1] = bodyPart;
+            BodyParts[RaymanBody.RaymanBodyPartType.SecondFist] = bodyPart;
             PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
         else
         {
             BodyParts[type] = bodyPart;
 
-            if (type != 3)
+            if (type != RaymanBody.RaymanBodyPartType.Torso)
             {
-                if (ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left or Action.ChargeFistVariant_Right or Action.ChargeFistVariant_Left)
+                if (ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left or Action.ChargeSecondFist_Right or Action.ChargeSecondFist_Left)
                     PlaySoundEvent(Rayman3SoundEvent.Play__RayFist_Mix02);
                 else
                     PlaySoundEvent(Rayman3SoundEvent.Play__RayFist2_Mix01);
             }
         }
 
-        bodyPart.Charge = charge;
-        bodyPart.field2_0x64 = param5; // TODO: A boolean?
+        bodyPart.ChargePower = chargePower;
+        bodyPart.HasCharged = hasCharged;
 
         if (IsFacingLeft)
             offset *= new Vector2(-1, 1); // Flip x
@@ -570,9 +609,9 @@ public sealed partial class Rayman : MovableActor
 
     private bool IsNearHangableEdge()
     {
-        if (HangDelay != 0)
+        if (HangOnEdgeDelay != 0)
         {
-            HangDelay--;
+            HangOnEdgeDelay--;
             return false;
         }
 
@@ -731,6 +770,12 @@ public sealed partial class Rayman : MovableActor
             return 5;
 
         return 0;
+    }
+
+    private bool IsOnHangable()
+    {
+        // TODO: Implement
+        return false;
     }
 
     private void FUN_0802a65c()
@@ -917,7 +962,7 @@ public sealed partial class Rayman : MovableActor
         //field10_0x84 = 0;
         //field11_0x88 = 0;
         NextActionId = null;
-        Array.Clear(BodyParts);
+        BodyParts.Clear();
         Flag1_0 = false;
         Flag1_1 = false;
         Flag1_2 = false;
@@ -938,13 +983,13 @@ public sealed partial class Rayman : MovableActor
         PrevSpeedY = 0;
         MechSpeedX = 0;
         PhysicalType = 32;
-        //field7_0x78 = 0;
+        field4_0x78 = null;
         field18_0x93 = 0;
         //field13_0x8c = 0;
         //field14_0x8e = 0;
         //field25_0x9a = HitPoints;
         field23_0x98 = 0;
-        HangDelay = 0;
+        HangOnEdgeDelay = 0;
         //field_0x99 = 0;
         Charge = 0;
         field22_0x97 = 0;

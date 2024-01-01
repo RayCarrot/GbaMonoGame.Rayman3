@@ -19,6 +19,7 @@ public enum ActorType
     Butterfly = 37,
 
     MovingWoodenPlatform = 53,
+    Plum = 54, // TODO: Implement
 
     FlowerFire = 61,
 

@@ -1,5 +1,4 @@
-﻿using ImGuiNET;
-using OnyxCs.Gba.Engine2d;
+﻿using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
@@ -13,9 +12,9 @@ public sealed partial class RaymanBody : MovableActor
     }
 
     public MovableActor Rayman { get; set; }
-    public int BodyPartType { get; set; }
-    public int Charge { get; set; }
-    public byte field2_0x64 { get; set; }
+    public RaymanBodyPartType BodyPartType { get; set; }
+    public uint ChargePower { get; set; }
+    public bool HasCharged { get; set; }
     public byte field4_0x66 { get; set; }
     public int field7_0x6c { get; set; }
 
@@ -33,5 +32,16 @@ public sealed partial class RaymanBody : MovableActor
             default:
                 return false;
         }
+    }
+
+    public enum RaymanBodyPartType
+    {
+        Fist = 0,
+        SecondFist = 1,
+        Foot = 2,
+        Torso = 3,
+        HitEffect = 4,
+        SuperFist = 5,
+        SecondSuperFist = 6,
     }
 }

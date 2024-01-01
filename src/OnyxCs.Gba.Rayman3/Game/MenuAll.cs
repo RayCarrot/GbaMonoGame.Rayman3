@@ -41,7 +41,7 @@ public class MenuAll : Frame, IHasPlayfield
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
     
-    private int InitGameTime { get; set; }
+    private uint InitGameTime { get; set; }
 
     private bool HasLoadedGameInfo { get; set; }
     private Page InitialPage { get; set; }
