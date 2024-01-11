@@ -435,7 +435,7 @@ public sealed partial class Rayman : MovableActor
                 speedX = 3;
         }
 
-        Speed = new Vector2(speedX, MechModel.Speed.Y);
+        MechModel.Speed = new Vector2(speedX, MechModel.Speed.Y);
     }
 
     private bool HasLanded()
@@ -857,7 +857,7 @@ public sealed partial class Rayman : MovableActor
             {
                 ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                 ChangeAction();
-                Speed = Vector2.Zero;
+                MechModel.Speed = Vector2.Zero;
             }
             else
             {
