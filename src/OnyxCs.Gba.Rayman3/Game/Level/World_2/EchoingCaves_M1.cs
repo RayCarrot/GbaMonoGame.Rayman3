@@ -17,7 +17,7 @@ public class EchoingCaves_M1 : FrameSideScroller
     {
         base.UnInit();
 
-        SoundManager.Play(Rayman3SoundEvent.Stop__barrel);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__barrel);
     }
 
     public override void Step()

@@ -240,7 +240,7 @@ public sealed partial class MovingPlatform : MovableActor
 
     public void Destroy()
     {
-        SoundManager.Play(Rayman3SoundEvent.Stop__LumTimer_Mix02);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumTimer_Mix02);
 
         if (ResurrectsImmediately)
             Fsm.ChangeAction(Fsm_Respawn);

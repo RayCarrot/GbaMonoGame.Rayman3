@@ -156,14 +156,14 @@ public class LumsBar : Bar
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;
 
-            animationPlayer.AddObject(LumsIcon);
+            animationPlayer.PlayFront(LumsIcon);
 
             if (CollectedLumsDigitValue1 != 0)
-                animationPlayer.AddObject(CollectedLumsDigit1);
+                animationPlayer.PlayFront(CollectedLumsDigit1);
 
-            animationPlayer.AddObject(CollectedLumsDigit2);
-            animationPlayer.AddObject(TotalLumsDigit1);
-            animationPlayer.AddObject(TotalLumsDigit2);
+            animationPlayer.PlayFront(CollectedLumsDigit2);
+            animationPlayer.PlayFront(TotalLumsDigit1);
+            animationPlayer.PlayFront(TotalLumsDigit2);
         }
     }
 

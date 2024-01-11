@@ -11,7 +11,7 @@ public class SoundDebugWindow : DebugWindow
         ImGui.SeparatorText("Songs");
 
         if (ImGui.Button("Stop all"))
-            SoundManager.StopAll();
+            SoundEventsManager.StopAll();
 
         if (ImGui.BeginTable("_songs", 5))
         {
@@ -22,7 +22,7 @@ public class SoundDebugWindow : DebugWindow
             ImGui.TableSetupColumn("Next");
             ImGui.TableHeadersRow();
 
-            foreach (SoundManager.PlayingSong playingSong in SoundManager._playingSongs)
+            foreach (SoundEventsManager.PlayingSong playingSong in SoundEventsManager._playingSongs)
             {
                 ImGui.TableNextRow();
 

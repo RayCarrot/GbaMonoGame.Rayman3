@@ -32,14 +32,14 @@ public readonly struct PhysicalType
         {
             PhysicalTypeValue.SolidAngle90Right => subTileX,
             PhysicalTypeValue.SolidAngle90Left => Constants.TileSize - subTileX - 1,
-            PhysicalTypeValue.SolidAngle30Right1 => subTileX / 2,
-            PhysicalTypeValue.SlipperyAngle30Right1 => subTileX / 2,
-            PhysicalTypeValue.SolidAngle30Right2 => subTileX / 2 + Constants.TileSize / 2,
-            PhysicalTypeValue.SlipperyAngle30Right2 => subTileX / 2 + Constants.TileSize / 2,
-            PhysicalTypeValue.SolidAngle30Left2 => Constants.TileSize - subTileX / 2,
-            PhysicalTypeValue.SlipperyAngle30Left2 => Constants.TileSize - subTileX / 2,
-            PhysicalTypeValue.SolidAngle30Left1 => Constants.TileSize - (subTileX / 2 + Constants.TileSize / 2),
-            PhysicalTypeValue.SlipperyAngle30Left1 => Constants.TileSize - (subTileX / 2 + Constants.TileSize / 2),
+            PhysicalTypeValue.SolidAngle30Left1 => subTileX / 2,
+            PhysicalTypeValue.SlideAngle30Left1 => subTileX / 2,
+            PhysicalTypeValue.SolidAngle30Left2 => subTileX / 2 + Constants.TileSize / 2,
+            PhysicalTypeValue.SlideAngle30Left2 => subTileX / 2 + Constants.TileSize / 2,
+            PhysicalTypeValue.SolidAngle30Right1 => Constants.TileSize - subTileX / 2,
+            PhysicalTypeValue.SlideAngle30Right1 => Constants.TileSize - subTileX / 2,
+            PhysicalTypeValue.SolidAngle30Right2 => Constants.TileSize - (subTileX / 2 + Constants.TileSize / 2),
+            PhysicalTypeValue.SlideAngle30Right2 => Constants.TileSize - (subTileX / 2 + Constants.TileSize / 2),
             _ => throw new Exception($"The physical value {this} is not angled")
         };
     }

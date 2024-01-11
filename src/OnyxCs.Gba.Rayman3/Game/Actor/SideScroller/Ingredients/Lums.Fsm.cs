@@ -77,7 +77,7 @@ public partial class Lums
                         return;
 
                     BossDespawnTimer = 0;
-                    SoundManager.Play(Rayman3SoundEvent.Play__LumBleu_Mix02);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumBleu_Mix02);
                 }
                 else
                 {
@@ -85,13 +85,13 @@ public partial class Lums
                     {
                         case Action.YellowLum:
                             GameInfo.SetYellowLumAsCollected(LumId);
-                            SoundManager.Play(Rayman3SoundEvent.Stop__LumOrag_Mix06);
-                            SoundManager.Play(Rayman3SoundEvent.Play__LumOrag_Mix06);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumOrag_Mix06);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumOrag_Mix06);
                             break;
 
                         case Action.RedLum:
-                            SoundManager.Play(Rayman3SoundEvent.Stop__LumRed_Mix03);
-                            SoundManager.Play(Rayman3SoundEvent.Play__LumRed_Mix03);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumRed_Mix03);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumRed_Mix03);
                             break;
                         
                         case Action.GreenLum:

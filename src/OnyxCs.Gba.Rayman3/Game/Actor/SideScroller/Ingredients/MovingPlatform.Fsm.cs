@@ -70,7 +70,7 @@ public partial class MovingPlatform
                         ActionAfterImpact = ActionId;
                         ActionId = Action.Impact;
                         ChangeAction();
-                        SoundManager.Play(Rayman3SoundEvent.Play__VibraFLW_Mix02);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__VibraFLW_Mix02);
                     }
                 }
                 // Unlink from main actor if no longer colliding
@@ -122,7 +122,7 @@ public partial class MovingPlatform
                 {
                     Fire = (FlowerFire)Scene.GameObjects.SpawnActor(ActorType.FlowerFire);
                     AnimatedObject.CurrentAnimation = 5;
-                    SoundManager.Play(Rayman3SoundEvent.Play__BBQ_Mix10);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BBQ_Mix10);
                     Fire?.AttachPlatform(this);
                 }
 
@@ -217,7 +217,7 @@ public partial class MovingPlatform
                         ActionAfterImpact = ActionId;
                         ActionId = Action.Impact;
                         ChangeAction();
-                        SoundManager.Play(Rayman3SoundEvent.Play__VibraFLW_Mix02);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__VibraFLW_Mix02);
                     }
                 }
                 // Unlink from main actor if no longer colliding
@@ -306,7 +306,7 @@ public partial class MovingPlatform
                         ActionAfterImpact = ActionId;
                         ActionId = Action.Impact;
                         ChangeAction();
-                        SoundManager.Play(Rayman3SoundEvent.Play__VibraFLW_Mix02);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__VibraFLW_Mix02);
                     }
                 }
                 // Unlink from main actor if no longer colliding
@@ -345,7 +345,7 @@ public partial class MovingPlatform
 
                 if (CurrentDirectionalType == PhysicalTypeValue.MovingPlatform_FullStop)
                 {
-                    Mechanic.Speed = Vector2.Zero;
+                    MechModel.Speed = Vector2.Zero;
                 }
                 else if (IsDirectionalType(CurrentDirectionalType))
                 {
@@ -411,7 +411,7 @@ public partial class MovingPlatform
                 else if (Timer == 121)
                 {
                     // TODO: If anim is framed! Implement frame bool and use like game does.
-                    SoundManager.Play(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
                 }
 
                 if (IsActionFinished && ActionId == Action.MoveAccelerated_Left)
@@ -461,9 +461,9 @@ public partial class MovingPlatform
                 Action currentActionId = ActionId == Action.Impact ? ActionAfterImpact : ActionId;
 
                 if (currentActionId is Action.MoveAccelerated_Left or Action.MoveAccelerated_Right)
-                    Mechanic.Speed = new Vector2(PlatformSpeed, Mechanic.Speed.Y);
+                    MechModel.Speed = new Vector2(PlatformSpeed, MechModel.Speed.Y);
                 else
-                    Mechanic.Speed = new Vector2(Mechanic.Speed.X, PlatformSpeed);
+                    MechModel.Speed = new Vector2(MechModel.Speed.X, PlatformSpeed);
 
                 if (ActionId == Action.Impact && IsActionFinished)
                 {
@@ -484,7 +484,7 @@ public partial class MovingPlatform
                         ActionAfterImpact = ActionId;
                         ActionId = Action.Impact;
                         ChangeAction();
-                        SoundManager.Play(Rayman3SoundEvent.Play__VibraFLW_Mix02);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__VibraFLW_Mix02);
                     }
                 }
                 // Unlink from main actor if no longer colliding

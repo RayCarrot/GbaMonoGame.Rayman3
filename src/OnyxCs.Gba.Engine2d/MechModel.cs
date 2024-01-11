@@ -2,9 +2,9 @@
 
 namespace OnyxCs.Gba.Engine2d;
 
-public class Mechanic
+public class MechModel
 {
-    public Mechanic()
+    public MechModel()
     {
         InitActions = new[] 
         {

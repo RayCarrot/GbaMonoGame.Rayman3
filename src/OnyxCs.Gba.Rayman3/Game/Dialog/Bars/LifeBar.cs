@@ -33,8 +33,8 @@ public class LifeBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        animationPlayer.AddObject(HitPoints);
-        animationPlayer.AddObject(LifeDigit1);
-        animationPlayer.AddObject(LifeDigit2);
+        animationPlayer.PlayFront(HitPoints);
+        animationPlayer.PlayFront(LifeDigit1);
+        animationPlayer.PlayFront(LifeDigit2);
     }
 }

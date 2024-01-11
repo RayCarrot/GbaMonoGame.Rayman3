@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;
 
+// TODO: The game saves if the animated object is "framed" (on screen). We should implement that too.
+
 // The game has different types of AnimatedObject. They however all act the same, just with some different properties
 // depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
 
@@ -201,7 +203,7 @@ public class AnimatedObject : AObject
 
     public void Rewind() => CurrentFrame = 0;
 
-    public void ExecuteUnframed()
+    public void ComputeNextFrame()
     {
         EndOfAnimation = false;
         PlayChannelBox();

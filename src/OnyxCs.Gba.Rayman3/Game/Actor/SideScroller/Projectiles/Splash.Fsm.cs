@@ -17,8 +17,8 @@ public partial class Splash
             case FsmAction.Step:
                 if (ActionId == 1)
                 {
-                    if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__SplshGen_Mix04))
-                        SoundManager.Play(Rayman3SoundEvent.Play__SplshGen_Mix04);
+                    if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SplshGen_Mix04))
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SplshGen_Mix04);
 
                     ActionId = 0;
                 }

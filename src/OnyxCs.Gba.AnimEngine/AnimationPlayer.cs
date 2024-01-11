@@ -22,15 +22,16 @@ public class AnimationPlayer
 
     private void SoundEventRequest(ushort soundId)
     {
-        SoundManager.Play(soundId);
+        SoundEventsManager.ProcessEvent(soundId);
     }
 
-    public void AddObject(AObject obj)
+    // NOTE: A bit unsure what to name this. Same as the normal Play function, but without sorting and drawn first.
+    public void PlayFront(AObject obj)
     {
         UnsortedObjects.Add(obj);
     }
 
-    public void AddSortedObject(AObject obj)
+    public void Play(AObject obj)
     {
         for (int i = 0; i < SortedObjects.Count; i++)
         {

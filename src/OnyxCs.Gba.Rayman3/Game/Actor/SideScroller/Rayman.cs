@@ -9,6 +9,7 @@ using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;
 
+// TODO: Move values, such as different speeds, to constants
 public sealed partial class Rayman : MovableActor
 {
     public Rayman(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
@@ -50,9 +51,9 @@ public sealed partial class Rayman : MovableActor
     public byte Charge { get; set; }
     public byte HangOnEdgeDelay { get; set; }
     public uint Timer { get; set; }
-    public float MechSpeedX { get; set; } // TODO: SlidingSpeed?
-    public byte PhysicalType { get; set; }
-    public bool IsSliding => PhysicalType != 32 && Math.Abs(MechSpeedX) > 1.5f;
+    public float PreviousXSpeed { get; set; }
+    public PhysicalType? SlideType { get; set; } // Game uses 0x20 for null (first not solid type)
+    public bool IsSliding => SlideType != null && Math.Abs(PreviousXSpeed) > 1.5f;
     public float PrevSpeedY { get; set; }
 
     public bool Debug_NoClip { get; set; } // Custom no-clip mode
@@ -80,7 +81,7 @@ public sealed partial class Rayman : MovableActor
     public bool Flag2_1 { get; set; }
     public bool Flag2_2 { get; set; }
     public bool IsLocalPlayer { get; set; }
-    public bool CanCoyoteJump { get; set; }
+    public bool CanSafetyJump { get; set; } // Coyote jump
     public bool Flag2_5 { get; set; }
     public bool Flag2_6 { get; set; }
     public bool Flag2_7 { get; set; }
@@ -182,16 +183,16 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private void PlaySoundEvent(Rayman3SoundEvent soundEventId)
+    private void PlaySound(Rayman3SoundEvent soundEventId)
     {
         if (Scene.Camera.LinkedObject == this)
-            SoundManager.Play(soundEventId);
+            SoundEventsManager.ProcessEvent(soundEventId);
     }
 
     private bool IsBossFight()
     {
         // This condition is probably a leftover from earlier versions of the game
-        if (SoundManager.IsPlaying(Rayman3SoundEvent.Play__lyfree))
+        if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__lyfree))
             return false;
 
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
@@ -286,12 +287,12 @@ public sealed partial class Rayman : MovableActor
         if (type == RaymanBody.RaymanBodyPartType.SuperFist)
         {
             BodyParts[RaymanBody.RaymanBodyPartType.Fist] = bodyPart;
-            PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
+            PlaySound(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
         else if (type == RaymanBody.RaymanBodyPartType.SecondSuperFist)
         {
             BodyParts[RaymanBody.RaymanBodyPartType.SecondFist] = bodyPart;
-            PlaySoundEvent(Rayman3SoundEvent.Play__SuprFist_Mix01);
+            PlaySound(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
         else
         {
@@ -300,9 +301,9 @@ public sealed partial class Rayman : MovableActor
             if (type != RaymanBody.RaymanBodyPartType.Torso)
             {
                 if (ActionId is Action.ChargeFist_Right or Action.ChargeFist_Left or Action.ChargeSecondFist_Right or Action.ChargeSecondFist_Left)
-                    PlaySoundEvent(Rayman3SoundEvent.Play__RayFist_Mix02);
+                    PlaySound(Rayman3SoundEvent.Play__RayFist_Mix02);
                 else
-                    PlaySoundEvent(Rayman3SoundEvent.Play__RayFist2_Mix01);
+                    PlaySound(Rayman3SoundEvent.Play__RayFist2_Mix01);
             }
         }
 
@@ -322,84 +323,92 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private void UpdatePhysicalType()
+    private void CheckSlide()
     {
-        PhysicalType type = Scene.GetPhysicalType(Position);
+        Vector2 pos = Position;
+        PhysicalType type = Scene.GetPhysicalType(pos);
 
-        if (type.Value is PhysicalTypeValue.Slippery or PhysicalTypeValue.SlipperyLedge)
+        if (type.Value is 
+            PhysicalTypeValue.Slide or PhysicalTypeValue.GrabSlide or 
+            PhysicalTypeValue.SlideAngle30Left1 or PhysicalTypeValue.SlideAngle30Left2 or 
+            PhysicalTypeValue.SlideAngle30Right1 or PhysicalTypeValue.SlideAngle30Right2)
         {
-            PhysicalType otherType = Scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize));
+            if (type.Value is PhysicalTypeValue.Slide or PhysicalTypeValue.GrabSlide)
+            {
+                pos -= new Vector2(0, Constants.TileSize);
+                PhysicalType type2 = Scene.GetPhysicalType(pos);
 
-            if (otherType.Value is PhysicalTypeValue.Solid or PhysicalTypeValue.Slippery or PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
-                type = otherType;
-        }
-        else if (type.Value is not (PhysicalTypeValue.SlipperyAngle30Right1 or PhysicalTypeValue.SlipperyAngle30Right2 or PhysicalTypeValue.SlipperyAngle30Left2 or PhysicalTypeValue.SlipperyAngle30Left1))
-        {
-            PhysicalType = 32;
-            PlaySoundEvent(Rayman3SoundEvent.Stop__SkiLoop1);
-            return;
-        }
+                if (type2.Value is 
+                    PhysicalTypeValue.SlideAngle30Left1 or PhysicalTypeValue.SlideAngle30Left2 or
+                    PhysicalTypeValue.SlideAngle30Right1 or PhysicalTypeValue.SlideAngle30Right2)
+                    type = type2;
+            }
 
-        if (PhysicalType == 32)
-        {
-            float speedX = Speed.X;
+            if (SlideType == null)
+            {
+                if (Speed.X == 0)
+                    PreviousXSpeed = IsFacingRight ? 1 : -1;
+                else
+                    PreviousXSpeed = Speed.X;
+            }
 
-            if (speedX == 0)
-                speedX = IsFacingRight ? 1 : -1;
-
-            MechSpeedX = speedX;
-        }
-
-        PhysicalType = type;
-    }
-
-    private void HorizontalMovement()
-    {
-        if (PhysicalType == 32)
-            return;
-
-        Mechanic.Speed = new Vector2(MechSpeedX, 5.62501525879f);
-
-        if (CheckInput(GbaInput.Left))
-        {
-            if (MechSpeedX > -3)
-                MechSpeedX -= 0.12109375f;
-        }
-        else if (CheckInput(GbaInput.Right))
-        {
-            if (MechSpeedX < 3)
-                MechSpeedX += 0.12109375f;
+            SlideType = type;
         }
         else
         {
-            if (MechSpeedX >= 0.05859375f)
+            SlideType = null;
+            PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
+        }
+
+    }
+
+    private void ManageSlide()
+    {
+        if (SlideType == null)
+            return;
+
+        MechModel.Speed = new Vector2(PreviousXSpeed, 5.62501525879f);
+
+        if (CheckInput(GbaInput.Left))
+        {
+            if (PreviousXSpeed > -3)
+                PreviousXSpeed -= 0.12109375f;
+        }
+        else if (CheckInput(GbaInput.Right))
+        {
+            if (PreviousXSpeed < 3)
+                PreviousXSpeed += 0.12109375f;
+        }
+        else
+        {
+            if (PreviousXSpeed >= 0.05859375f)
             {
-                MechSpeedX -= 0.015625f;
+                PreviousXSpeed -= 0.015625f;
             }
-            else if (MechSpeedX <= -0.05859375f)
+            else if (PreviousXSpeed <= -0.05859375f)
             {
-                MechSpeedX += 0.015625f;
+                PreviousXSpeed += 0.015625f;
             }
             else
             {
-                MechSpeedX = 0;
+                PreviousXSpeed = 0;
             }
         }
 
         // Slippery
-        if (PhysicalType is 22 or 23)
+        if (SlideType?.Value is PhysicalTypeValue.SlideAngle30Left1 or PhysicalTypeValue.SlideAngle30Left2)
         {
-            MechSpeedX -= 0.12109375f;
+            PreviousXSpeed -= 0.12109375f;
 
             if (CheckInput(GbaInput.Right))
-                MechSpeedX -= 0.015625f;
+                PreviousXSpeed -= 0.015625f;
         }
-        else if (PhysicalType is 24 or 25)
+        else if (SlideType?.Value is PhysicalTypeValue.SlideAngle30Right1 or PhysicalTypeValue.SlideAngle30Right2)
         {
-            MechSpeedX += 0.12109375f;
+            PreviousXSpeed += 0.12109375f;
 
             if (CheckInput(GbaInput.Left))
-                MechSpeedX += 0.015625f;
+                PreviousXSpeed += 0.015625f;
         }
     }
 
@@ -426,7 +435,7 @@ public sealed partial class Rayman : MovableActor
                 speedX = 3;
         }
 
-        Mechanic.Speed = new Vector2(speedX, Mechanic.Speed.Y);
+        MechModel.Speed = new Vector2(speedX, MechModel.Speed.Y);
     }
 
     private bool HasLanded()
@@ -473,31 +482,27 @@ public sealed partial class Rayman : MovableActor
         return false;
     }
 
-    private void FUN_0802c3c8()
+    private void SlowdownAirSpeed()
     {
-        if ((Speed.X <= 0 || MechSpeedX >= 0) &&
-            (Speed.X >= 0 || MechSpeedX <= 0))
+        if ((Speed.X > 0 && PreviousXSpeed < 0) ||
+            (Speed.X < 0 && PreviousXSpeed > 0))
         {
-            if (MechSpeedX <= 0)
-            {
-                if (MechSpeedX >= 0)
-                    return;
-
-                MechSpeedX += 0.03125f;
-
-                if (MechSpeedX <= 0)
-                    return;
-            }
-            else
-            {
-                MechSpeedX -= 0.03125f;
-
-                if (MechSpeedX >= 0)
-                    return;
-            }
+            PreviousXSpeed = 0;
         }
+        else if (PreviousXSpeed > 0)
+        {
+            PreviousXSpeed -= 0.03125f;
 
-        MechSpeedX = 0;
+            if (PreviousXSpeed < 0)
+                PreviousXSpeed = 0;
+        }
+        else if (PreviousXSpeed < 0)
+        {
+            PreviousXSpeed += 0.03125f;
+
+            if (PreviousXSpeed > 0)
+                PreviousXSpeed = 0;
+        }
     }
 
     private void AttackInTheAir()
@@ -523,12 +528,12 @@ public sealed partial class Rayman : MovableActor
 
     private void SlidingOnSlippery()
     {
-        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__SkiLoop1) && Scene.Camera.LinkedObject == this)
-            SoundManager.Play(Rayman3SoundEvent.Play__SkiLoop1);
+        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SkiLoop1) && Scene.Camera.LinkedObject == this)
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SkiLoop1);
 
-        SoundManager.FUN_080ac468(Rayman3SoundEvent.Play__SkiLoop1, Math.Abs(Speed.X));
+        SoundEventsManager.FUN_080ac468(Rayman3SoundEvent.Play__SkiLoop1, Math.Abs(Speed.X));
 
-        if (MechSpeedX < -1.5f)
+        if (PreviousXSpeed < -1.5f)
         {
             if (IsFacingRight)
             {
@@ -628,7 +633,7 @@ public sealed partial class Rayman : MovableActor
                 {
                     PhysicalType type = Scene.GetPhysicalType(pos);
 
-                    if (type.Value is PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
+                    if (type.Value is PhysicalTypeValue.Grab or PhysicalTypeValue.GrabSlide)
                     {
                         // Get tile to the left of the ledge
                         type = Scene.GetPhysicalType(pos - new Vector2(Constants.TileSize, 0));
@@ -658,7 +663,7 @@ public sealed partial class Rayman : MovableActor
                 {
                     PhysicalType type = Scene.GetPhysicalType(pos);
 
-                    if (type.Value is PhysicalTypeValue.Ledge or PhysicalTypeValue.SlipperyLedge)
+                    if (type.Value is PhysicalTypeValue.Grab or PhysicalTypeValue.GrabSlide)
                     {
                         // Get tile to the right of the ledge
                         type = Scene.GetPhysicalType(pos + new Vector2(Constants.TileSize, 0));
@@ -852,7 +857,7 @@ public sealed partial class Rayman : MovableActor
             {
                 ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                 ChangeAction();
-                Mechanic.Speed = Vector2.Zero;
+                MechModel.Speed = Vector2.Zero;
             }
             else
             {
@@ -946,7 +951,7 @@ public sealed partial class Rayman : MovableActor
 
             case Message.Main_AllowCoyoteJump:
                 if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(FUN_0802cb38))
-                    CanCoyoteJump = true;
+                    CanSafetyJump = true;
                 return false;
 
             default:
@@ -981,8 +986,8 @@ public sealed partial class Rayman : MovableActor
         Flag1_F = false;
         //field17_0x92 = HitPoints;
         PrevSpeedY = 0;
-        MechSpeedX = 0;
-        PhysicalType = 32;
+        PreviousXSpeed = 0;
+        SlideType = null;
         field4_0x78 = null;
         field18_0x93 = 0;
         //field13_0x8c = 0;
@@ -1034,8 +1039,8 @@ public sealed partial class Rayman : MovableActor
 
         ToggleNoClip();
 
-        if (PhysicalType != 32 && NewAction)
-            Mechanic.Init(1, null);
+        if (SlideType != null && NewAction)
+            MechModel.Init(1, null);
 
         // TODO: Implement
     }
@@ -1061,11 +1066,11 @@ public sealed partial class Rayman : MovableActor
 
         if (draw)
         {
-            animationPlayer.AddSortedObject(AnimatedObject);
+            animationPlayer.Play(AnimatedObject);
         }
         else
         {
-            AnimatedObject.ExecuteUnframed();
+            AnimatedObject.ComputeNextFrame();
         }
     }
 }

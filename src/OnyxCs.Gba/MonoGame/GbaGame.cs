@@ -138,7 +138,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         GameWindow gameWindow = new(Engine.Settings);
         Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
 
-        SoundManager.Load(SoundBankResourceId, SongTable);
+        SoundEventsManager.Load(SoundBankResourceId, SongTable);
         FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // TODO: Save window size in config, as well as if maximized etc.
@@ -321,13 +321,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     public void Pause()
     {
         IsPaused = true;
-        SoundManager.Pause();
+        SoundEventsManager.Pause();
     }
 
     public void Resume()
     {
         IsPaused = false;
-        SoundManager.Resume();
+        SoundEventsManager.Resume();
     }
 
     #endregion

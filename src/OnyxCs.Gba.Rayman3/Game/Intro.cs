@@ -171,13 +171,13 @@ public class Intro : Frame, IHasPlayfield
         IsSkipping = false;
         FadeTime = MaxFadeTime;
 
-        SoundManager.Play(Rayman3SoundEvent.Play__sadslide);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__sadslide);
     }
 
     public override void UnInit()
     {
         Playfield.UnInit();
-        SoundManager.Play(Rayman3SoundEvent.Stop__sadslide);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
     }
 
     public override void Step()
@@ -342,7 +342,7 @@ public class Intro : Frame, IHasPlayfield
                     BlackLumAndLogoObj.ScreenPos += new Vector2(0, -2);
                 }
                 Timer++;
-                AnimationPlayer.AddObject(BlackLumAndLogoObj);
+                AnimationPlayer.PlayFront(BlackLumAndLogoObj);
             }
         }
 
@@ -375,7 +375,7 @@ public class Intro : Frame, IHasPlayfield
             if (BlackLumAndLogoObj.CurrentAnimation == 7)
             {
                 BlackLumAndLogoObj.CurrentAnimation = 8;
-                SoundManager.Play(Rayman3SoundEvent.Play__raytheme__After__sadslide);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme__After__sadslide);
                 CurrentStepAction = Step_6;
             }
             else
@@ -384,18 +384,18 @@ public class Intro : Frame, IHasPlayfield
             }
         }
 
-        AnimationPlayer.AddObject(BlackLumAndLogoObj);
+        AnimationPlayer.PlayFront(BlackLumAndLogoObj);
     }
 
     private void Step_6()
     {
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddObject(PressStartObj);
+            AnimationPlayer.PlayFront(PressStartObj);
 
         if (Engine.Settings.Platform == Platform.NGage)
-            AnimationPlayer.AddObject(GameloftLogoObj);
+            AnimationPlayer.PlayFront(GameloftLogoObj);
 
-        AnimationPlayer.AddObject(BlackLumAndLogoObj);
+        AnimationPlayer.PlayFront(BlackLumAndLogoObj);
 
         // TODO: Check every button input on N-Gage
         if (JoyPad.Check(GbaInput.Start))
@@ -438,7 +438,7 @@ public class Intro : Frame, IHasPlayfield
             }
 
             if (FadeTime == MaxFadeTime)
-                SoundManager.Play(Rayman3SoundEvent.Play__raytheme__After__sadslide);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme__After__sadslide);
 
             if (FadeTime == MaxFadeTime + 1)
                 CurrentStepAction = Step_6;
@@ -452,12 +452,12 @@ public class Intro : Frame, IHasPlayfield
         }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)
-            AnimationPlayer.AddObject(PressStartObj);
+            AnimationPlayer.PlayFront(PressStartObj);
 
         if (Engine.Settings.Platform == Platform.NGage)
-            AnimationPlayer.AddObject(GameloftLogoObj);
+            AnimationPlayer.PlayFront(GameloftLogoObj);
 
-        AnimationPlayer.AddObject(BlackLumAndLogoObj);
+        AnimationPlayer.PlayFront(BlackLumAndLogoObj);
     }
 
     #endregion

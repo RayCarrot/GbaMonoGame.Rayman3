@@ -75,11 +75,11 @@ public class BaseActor : GameObject
     {
         if (Scene.Camera.IsActorFramed(this) || forceDraw)
         {
-            animationPlayer.AddSortedObject(AnimatedObject);
+            animationPlayer.Play(AnimatedObject);
         }
         else
         {
-            AnimatedObject.ExecuteUnframed();
+            AnimatedObject.ComputeNextFrame();
         }
     }
 

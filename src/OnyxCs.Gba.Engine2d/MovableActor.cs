@@ -15,7 +15,7 @@ public class MovableActor : InteractableActor
         HasMoved = false;
     }
 
-    public Mechanic Mechanic { get; } = new();
+    public MechModel MechModel { get; } = new();
     public MovableActor LinkedMovementActor { get; set; }
     public Vector2 Speed { get; set; }
 
@@ -296,7 +296,7 @@ public class MovableActor : InteractableActor
                 typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
                 y += Constants.TileSize;
 
-                if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+                if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Grab && typeX.Value != PhysicalTypeValue.Passthrough)
                     break;
             }
         }
@@ -305,7 +305,7 @@ public class MovableActor : InteractableActor
         {
             typeX = Scene.GetPhysicalType(new Vector2(detectionX, detectionBox.MaxY));
 
-            if (!typeX.IsFullySolid || typeX.Value == PhysicalTypeValue.Ledge || typeX.Value == PhysicalTypeValue.Passthrough)
+            if (!typeX.IsFullySolid || typeX.Value == PhysicalTypeValue.Grab || typeX.Value == PhysicalTypeValue.Passthrough)
             {
                 float y = detectionBox.MinY + Constants.TileSize;
                 int count = (int)(detectionBox.Height / Constants.TileSize) - 1;
@@ -315,13 +315,13 @@ public class MovableActor : InteractableActor
                     typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
                     y += Constants.TileSize;
 
-                    if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+                    if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Grab && typeX.Value != PhysicalTypeValue.Passthrough)
                         break;
                 }
             }
         }
 
-        if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Ledge && typeX.Value != PhysicalTypeValue.Passthrough)
+        if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Grab && typeX.Value != PhysicalTypeValue.Passthrough)
         {
             if (Speed.X > 0)
             {
@@ -343,7 +343,7 @@ public class MovableActor : InteractableActor
             return;
 
         // Update the speed
-        Speed = Mechanic.UpdateSpeedAction();
+        Speed = MechModel.UpdateSpeedAction();
 
         if (LinkedMovementActor != null)
         {

@@ -95,13 +95,13 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         {
             CircleFXTimer = 0;
             CircleFXMode = CircleFXTransitionMode.In;
-            SoundManager.Play(Rayman3SoundEvent.Play__SlideIn_Mix02);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideIn_Mix02);
         }
         else
         {
             CircleFXTimer = 252;
             CircleFXMode = CircleFXTransitionMode.Out;
-            SoundManager.Play(Rayman3SoundEvent.Play__SlideOut_Mix01);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideOut_Mix01);
         }
 
         CircleFXScreen.IsEnabled = true;
@@ -155,7 +155,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     {
         Scene.UnInit();
         GameInfo.StopLevelMusic();
-        SoundManager.StopAll();
+        SoundEventsManager.StopAll();
     }
 
     public override void Step()

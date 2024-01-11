@@ -208,8 +208,8 @@ public static class GameInfo
         // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
         if (GetCollectedYellowLumsInLevel(MapId) == YellowLumsCount && LevelType != LevelType.Race)
         {
-            SoundManager.Play(Rayman3SoundEvent.Play__LumTotal_Mix02);
-            SoundManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
+            SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
         }
     }
 
@@ -225,7 +225,7 @@ public static class GameInfo
 
         // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
         if (GetCollectedCagesInLevel(MapId) == CagesCount)
-            SoundManager.Play(Rayman3SoundEvent.Play__LumTotal_Mix02);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
     }
 
     public static void SetPowerBasedOnMap(MapId mapId)
@@ -444,12 +444,12 @@ public static class GameInfo
 
     public static void PlayLevelMusic()
     {
-        SoundManager.Play(Level.StartMusicSoundEvent);
+        SoundEventsManager.ProcessEvent(Level.StartMusicSoundEvent);
     }
 
     public static void StopLevelMusic()
     {
         if (LevelType != LevelType.GameCube)
-            SoundManager.Play(Level.StopMusicSoundEvent);
+            SoundEventsManager.ProcessEvent(Level.StopMusicSoundEvent);
     }
 }

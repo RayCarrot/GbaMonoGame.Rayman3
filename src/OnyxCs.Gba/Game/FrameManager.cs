@@ -48,7 +48,7 @@ public static class FrameManager
         Gfx.ClearSprites();
 
         // Step the sound manager
-        SoundManager.Step();
+        SoundEventsManager.Step();
 
         // Step the currently active frame
         CurrentFrame?.Step();

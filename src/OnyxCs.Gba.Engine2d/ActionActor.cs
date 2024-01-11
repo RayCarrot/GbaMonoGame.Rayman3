@@ -77,7 +77,7 @@ public class ActionActor : BaseActor
             float[] mechParams = new float[action.MechModel.Params.Length];
             for (int i = 0; i < mechParams.Length; i++)
                 mechParams[i] = action.MechModel.Params[i];
-            movableActor.Mechanic.Init(action.MechModelType.Value, mechParams);
+            movableActor.MechModel.Init(action.MechModelType.Value, mechParams);
         }
 
         NewAction = false;

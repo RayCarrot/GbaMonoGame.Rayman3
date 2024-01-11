@@ -7,7 +7,9 @@ using SoundBank = BinarySerializer.Onyx.Gba.SoundBank;
 
 namespace OnyxCs.Gba;
 
-public static class SoundManager
+// TODO: Implement remaining sound functions. Try and handle sounds like game does. Currently some important ones
+//       are missing like SetVolumeForType which fades in music during intro etc.
+public static class SoundEventsManager
 {
     private static readonly Dictionary<int, SoundEffect> _songs = new();
     private static SoundBank _soundBank;
@@ -49,7 +51,7 @@ public static class SoundManager
                 _playingSongs.Remove(playingSong);
 
                 if (playingSong.NextSoundEventId != null)
-                    Play(playingSong.NextSoundEventId.Value, playingSong.Obj);
+                    ProcessEvent(playingSong.NextSoundEventId.Value, playingSong.Obj);
             }
         }
     }
@@ -75,7 +77,7 @@ public static class SoundManager
 
         if (!foundSong && nextEventId != null)
         {
-            Play(nextEventId.Value, obj);
+            ProcessEvent(nextEventId.Value, obj);
         }
     }
 
@@ -117,8 +119,8 @@ public static class SoundManager
         }
     }
 
-    public static void Play(Enum soundEventId, object obj = null) => Play((ushort)(object)soundEventId, obj);
-    public static void Play(ushort soundEventId, object obj = null)
+    public static void ProcessEvent(Enum soundEventId, object obj = null) => ProcessEvent((ushort)(object)soundEventId, obj);
+    public static void ProcessEvent(ushort soundEventId, object obj = null)
     {
         switch (Engine.Settings.Platform)
         {
@@ -137,7 +139,6 @@ public static class SoundManager
                         SoundEffect song = _songs[res.SongTableIndex];
                         SoundEffectInstance snd = song.CreateInstance();
                         _playingSongs.Add(new PlayingSong(soundEventId, obj, snd, song));
-                        //snd.Volume = evt.Volume / 100f; // TODO: Might be wrong
                         snd.IsLooped = res.Flag0; // TODO: Not 100% sure about this
                         snd.Play();
                         break;

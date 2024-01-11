@@ -256,11 +256,11 @@ public class MenuAll : Frame, IHasPlayfield
             }
         }
 
-        AnimationPlayer.AddSortedObject(Data.Stem);
+        AnimationPlayer.Play(Data.Stem);
 
         // The cursor is usually included in the stem animation, except for animation 1
         if (Data.Stem.CurrentAnimation == 1)
-            AnimationPlayer.AddSortedObject(Data.Cursor);
+            AnimationPlayer.Play(Data.Cursor);
     }
 
     private void TransitionOutCursorAndStem()
@@ -287,7 +287,7 @@ public class MenuAll : Frame, IHasPlayfield
             SelectedOption = selectedOption;
 
             if (playSound)
-                SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
     }
 
@@ -367,7 +367,7 @@ public class MenuAll : Frame, IHasPlayfield
         {
             case Page.SelectLanguage:
                 CurrentStepAction = Step_SelectLanguage;
-                SoundManager.Play(Rayman3SoundEvent.Play__Switch1_Mix03);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);
                 break;
 
             case Page.SelectGameMode:
@@ -388,10 +388,10 @@ public class MenuAll : Frame, IHasPlayfield
                 break;
         }
 
-        if (!SoundManager.IsPlaying(Rayman3SoundEvent.Play__raytheme) &&
-            !SoundManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
+        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__raytheme) &&
+            !SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
         {
-            SoundManager.Play(Rayman3SoundEvent.Play__raytheme);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme);
         }
 
         // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
@@ -412,7 +412,7 @@ public class MenuAll : Frame, IHasPlayfield
     public override void UnInit()
     {
         Playfield.UnInit();
-        SoundManager.Play(Rayman3SoundEvent.Stop__raytheme);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__raytheme);
     }
 
     public override void Step()
@@ -446,16 +446,16 @@ public class MenuAll : Frame, IHasPlayfield
         float cos4 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
         Data.Wheel4.AffineMatrix = new AffineMatrix(cos4, sin4, -sin4, cos4);
 
-        AnimationPlayer.AddSortedObject(Data.Wheel1);
-        AnimationPlayer.AddSortedObject(Data.Wheel2);
-        AnimationPlayer.AddSortedObject(Data.Wheel3);
-        AnimationPlayer.AddSortedObject(Data.Wheel4);
+        AnimationPlayer.Play(Data.Wheel1);
+        AnimationPlayer.Play(Data.Wheel2);
+        AnimationPlayer.Play(Data.Wheel3);
+        AnimationPlayer.Play(Data.Wheel4);
 
         if (SteamTimer == 0)
         {
             if (!Data.Steam.EndOfAnimation)
             {
-                AnimationPlayer.AddSortedObject(Data.Steam);
+                AnimationPlayer.Play(Data.Steam);
             }
             else
             {
@@ -485,7 +485,7 @@ public class MenuAll : Frame, IHasPlayfield
             Data.LanguageList.CurrentAnimation = SelectedOption;
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
-            SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.Down))
         {
@@ -497,14 +497,14 @@ public class MenuAll : Frame, IHasPlayfield
             Data.LanguageList.CurrentAnimation = SelectedOption;
 
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
-            SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
             CurrentStepAction = Step_TransitionFromLanguage;
 
-            SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
-            SoundManager.Play(Rayman3SoundEvent.Play__Switch1_Mix03);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);
 
             Localization.SetLanguage(SelectedOption);
 
@@ -527,7 +527,7 @@ public class MenuAll : Frame, IHasPlayfield
             ResetStem();
         }
 
-        AnimationPlayer.AddSortedObject(Data.LanguageList);
+        AnimationPlayer.Play(Data.LanguageList);
     }
 
     private void Step_TransitionFromLanguage()
@@ -536,12 +536,12 @@ public class MenuAll : Frame, IHasPlayfield
         mainCluster.Position += new Vector2(0, 3);
 
         Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, TransitionValue + 28);
-        AnimationPlayer.AddSortedObject(Data.LanguageList);
+        AnimationPlayer.Play(Data.LanguageList);
 
         MoveGameLogo();
 
-        AnimationPlayer.AddSortedObject(Data.GameLogo);
-        AnimationPlayer.AddSortedObject(Data.GameModeList);
+        AnimationPlayer.Play(Data.GameLogo);
+        AnimationPlayer.Play(Data.GameModeList);
 
         if (TransitionValue < -207)
         {
@@ -589,17 +589,17 @@ public class MenuAll : Frame, IHasPlayfield
             }
 
             CurrentStepAction = Step_TransitionOutOfSelectGameMode;
-            SoundManager.Play(Rayman3SoundEvent.Play__Store01_Mix01);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
             SelectOption(0, false);
             TransitionValue = 0;
-            SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
             TransitionOutCursorAndStem();
         }
 
-        AnimationPlayer.AddSortedObject(Data.GameModeList);
+        AnimationPlayer.Play(Data.GameModeList);
         
         MoveGameLogo();
-        AnimationPlayer.AddSortedObject(Data.GameLogo);
+        AnimationPlayer.Play(Data.GameLogo);
     }
 
     private void Step_TransitionOutOfSelectGameMode()
@@ -618,10 +618,10 @@ public class MenuAll : Frame, IHasPlayfield
             CurrentStepAction = NextStepAction;
         }
 
-        AnimationPlayer.AddSortedObject(Data.GameModeList);
+        AnimationPlayer.Play(Data.GameModeList);
 
         MoveGameLogo();
-        AnimationPlayer.AddSortedObject(Data.GameLogo);
+        AnimationPlayer.Play(Data.GameLogo);
     }
 
     private void Step_TransitionOutOfSinglePlayer()
@@ -643,23 +643,23 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
+            AnimationPlayer.Play(Data.SlotIcons[i]);
 
             if (Slots[i] == null)
             {
-                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
             }
             else
             {
-                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
             }
         }
 
-        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
-        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
     }
 
     private void Step_InitializeTransitionToSinglePlayer()
@@ -688,7 +688,7 @@ public class MenuAll : Frame, IHasPlayfield
         }
 
         CurrentStepAction = Step_TransitionToSinglePlayer;
-        SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         ResetStem();
         SetBackgroundPalette(1);
         StartEraseCursorCurrentIndex = 0;
@@ -719,23 +719,23 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
+            AnimationPlayer.Play(Data.SlotIcons[i]);
 
             if (Slots[i] == null)
             {
-                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
             }
             else
             {
-                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
             }
         }
 
-        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
-        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
     }
 
     private void Step_InitializeTransitionToSelectGameMode()
@@ -759,7 +759,7 @@ public class MenuAll : Frame, IHasPlayfield
         else
         {
             CurrentStepAction = Step_TransitionToSelectGameMode;
-            SoundManager.Play(Rayman3SoundEvent.Play__Store02_Mix02);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         }
 
         Data.GameLogo.ScreenPos = new Vector2(174, Data.GameLogo.ScreenPos.Y);
@@ -790,8 +790,8 @@ public class MenuAll : Frame, IHasPlayfield
 
         MoveGameLogo();
 
-        AnimationPlayer.AddSortedObject(Data.GameLogo);
-        AnimationPlayer.AddSortedObject(Data.GameModeList);
+        AnimationPlayer.Play(Data.GameLogo);
+        AnimationPlayer.Play(Data.GameModeList);
     }
 
     private void Step_SinglePlayer()
@@ -803,7 +803,7 @@ public class MenuAll : Frame, IHasPlayfield
                 {
                     if (!TransitionsFX.IsChangingBrightness)
                     {
-                        SoundManager.StopAll();
+                        SoundEventsManager.StopAll();
 
                         if (Slots[SelectedOption] == null)
                         {
@@ -829,7 +829,7 @@ public class MenuAll : Frame, IHasPlayfield
                     {
                         SetEraseCursorTargetIndex(0);
                         Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
-                        SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
                     }
                 }
                 // Move start/erase to erase
@@ -839,7 +839,7 @@ public class MenuAll : Frame, IHasPlayfield
                     {
                         SetEraseCursorTargetIndex(1);
                         Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
-                        SoundManager.Play(Rayman3SoundEvent.Play__MenuMove);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
                     }
                 }
                 // Move up
@@ -865,17 +865,17 @@ public class MenuAll : Frame, IHasPlayfield
 
                     if (StartEraseCursorTargetIndex != 1)
                     {
-                        SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
                     }
                     else if (Slots[SelectedOption] != null)
                     {
                         EraseSaveStage = 1;
                         TransitionValue = 0;
-                        SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
                     }
                     else
                     {
-                        SoundManager.Play(Rayman3SoundEvent.Play__Back01_Mix01);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
                     }
                 }
                 break;
@@ -926,7 +926,7 @@ public class MenuAll : Frame, IHasPlayfield
             {
                 NextStepAction = Step_InitializeTransitionToSelectGameMode;
                 CurrentStepAction = Step_TransitionOutOfSinglePlayer;
-                SoundManager.Play(Rayman3SoundEvent.Play__Store01_Mix01);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
                 TransitionValue = 0;
                 SelectOption(0, false);
                 TransitionOutCursorAndStem();
@@ -951,23 +951,23 @@ public class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            AnimationPlayer.AddSortedObject(Data.SlotIcons[i]);
+            AnimationPlayer.Play(Data.SlotIcons[i]);
 
             if (Slots[i] == null)
             {
-                AnimationPlayer.AddSortedObject(Data.SlotEmptyTexts[i]);
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
             }
             else
             {
-                AnimationPlayer.AddSortedObject(Data.SlotLumTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageTexts[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotLumIcons[i]);
-                AnimationPlayer.AddSortedObject(Data.SlotCageIcons[i]);
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
             }
         }
 
-        AnimationPlayer.AddSortedObject(Data.StartEraseSelection);
-        AnimationPlayer.AddSortedObject(Data.StartEraseCursor);
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
 
         if (!IsLoadingSlot && Data.Cursor.CurrentAnimation == 16 && Data.Cursor.EndOfAnimation)
         {
@@ -975,7 +975,7 @@ public class MenuAll : Frame, IHasPlayfield
 
             if (StartEraseCursorTargetIndex == 0)
             {
-                SoundManager.FUN_080abe44(Rayman3SoundEvent.None, 1);
+                SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.None, 1);
                 IsLoadingSlot = true;
                 TransitionsFX.FadeOutInit(2 / 16f);
             }

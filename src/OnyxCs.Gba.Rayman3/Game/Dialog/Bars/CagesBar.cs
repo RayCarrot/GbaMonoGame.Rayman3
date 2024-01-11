@@ -34,8 +34,8 @@ public class CagesBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        animationPlayer.AddObject(CageIcon);
-        animationPlayer.AddObject(CollectedCagesDigit);
-        animationPlayer.AddObject(TotalCagesDigit);
+        animationPlayer.PlayFront(CageIcon);
+        animationPlayer.PlayFront(CollectedCagesDigit);
+        animationPlayer.PlayFront(TotalCagesDigit);
     }
 }

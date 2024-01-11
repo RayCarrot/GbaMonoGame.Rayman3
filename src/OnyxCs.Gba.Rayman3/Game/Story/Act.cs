@@ -160,7 +160,7 @@ public abstract class Act : Frame
         ActFrame frame = ActResource.Frames.Value[CurrentFrameIndex];
 
         if (frame.MusicSongEvent != Rayman3SoundEvent.None)
-            SoundManager.Play(frame.MusicSongEvent);
+            SoundEventsManager.ProcessEvent(frame.MusicSongEvent);
 
         if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
         {
@@ -193,7 +193,7 @@ public abstract class Act : Frame
         ActResource = resource;
 
         if (resource.StartMusicSoundEvent != Rayman3SoundEvent.None)
-            SoundManager.Play(resource.StartMusicSoundEvent);
+            SoundEventsManager.ProcessEvent(resource.StartMusicSoundEvent);
 
         AnimationPlayer = new AnimationPlayer(false);
         SpriteTextObject.Color = new RGB555Color(0x8aa).ToColor();
@@ -287,7 +287,7 @@ public abstract class Act : Frame
     public override void UnInit()
     {
         if (ActResource.StopMusicSoundEvent != Rayman3SoundEvent.None)
-            SoundManager.Play(ActResource.StopMusicSoundEvent);
+            SoundEventsManager.ProcessEvent(ActResource.StopMusicSoundEvent);
     }
 
     public override void Step()
@@ -314,8 +314,8 @@ public abstract class Act : Frame
                 CurrentFrameIndex = ActResource.LastFrameIndex;
                 TransitionsFX.FadeOutInit(1 / 16f);
                 IsFadingOut = true;
-                SoundManager.StopAll();
-                SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                SoundEventsManager.StopAll();
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
             }
             else if (IsTransitioningTextOut)
             {
@@ -332,7 +332,7 @@ public abstract class Act : Frame
                 {
                     TransitionsFX.FadeOutInit(1 / 16f);
                     IsFadingOut = true;
-                    SoundManager.Play(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
                 }
                 else
                 {
@@ -344,14 +344,14 @@ public abstract class Act : Frame
         if (!IsAutomatic && (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.LinesCount))
         {
             if ((GameTime.ElapsedFrames & 0x10) != 0)
-                AnimationPlayer.AddObject(NextTextSymbol);
+                AnimationPlayer.PlayFront(NextTextSymbol);
         }
 
         foreach (SpriteTextObject textObj in TextObjects)
-            AnimationPlayer.AddObject(textObj);
+            AnimationPlayer.PlayFront(textObj);
 
         if (!IsAutomatic && Engine.Settings.Platform == Platform.NGage)
-            AnimationPlayer.AddObject(SkipSymbol);
+            AnimationPlayer.PlayFront(SkipSymbol);
 
         AnimationPlayer.Execute();
     }
