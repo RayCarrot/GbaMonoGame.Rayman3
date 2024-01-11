@@ -1,4 +1,4 @@
-﻿using BinarySerializer.Onyx.Gba;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Rayman3;

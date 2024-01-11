@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Game = BinarySerializer.Onyx.Gba.Game;
+using Game = BinarySerializer.Ubisoft.GbaEngine.Game;
 
 namespace OnyxCs.Gba;
 

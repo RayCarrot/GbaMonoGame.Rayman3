@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using OnyxCs.Gba.TgxEngine;
 
 namespace OnyxCs.Gba.Engine2d;

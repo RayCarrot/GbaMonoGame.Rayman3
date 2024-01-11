@@ -4,8 +4,8 @@ global using Captor = OnyxCs.Gba.Engine2d.Captor;
 global using AnimatedObject = OnyxCs.Gba.AnimEngine.AnimatedObject;
 global using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-global using Scene2DResource = BinarySerializer.Onyx.Gba.Scene2D;
-global using GameObjectResource = BinarySerializer.Onyx.Gba.GameObject;
-global using ActorResource = BinarySerializer.Onyx.Gba.Actor;
-global using CaptorResource = BinarySerializer.Onyx.Gba.Captor;
-global using AnimatedObjectResource = BinarySerializer.Onyx.Gba.AnimatedObject;
+global using Scene2DResource = BinarySerializer.Ubisoft.GbaEngine.Scene2D;
+global using GameObjectResource = BinarySerializer.Ubisoft.GbaEngine.GameObject;
+global using ActorResource = BinarySerializer.Ubisoft.GbaEngine.Actor;
+global using CaptorResource = BinarySerializer.Ubisoft.GbaEngine.Captor;
+global using AnimatedObjectResource = BinarySerializer.Ubisoft.GbaEngine.AnimatedObject;

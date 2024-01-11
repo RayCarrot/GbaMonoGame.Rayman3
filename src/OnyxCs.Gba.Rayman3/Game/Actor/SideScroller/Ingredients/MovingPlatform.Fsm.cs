@@ -1,5 +1,5 @@
 ﻿using System;
-using BinarySerializer.Onyx.Gba.Rayman3;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using OnyxCs.Gba.Engine2d;
 
 namespace OnyxCs.Gba.Rayman3;

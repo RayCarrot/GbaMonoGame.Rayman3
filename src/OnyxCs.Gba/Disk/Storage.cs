@@ -1,5 +1,5 @@
 ﻿using BinarySerializer;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 
 namespace OnyxCs.Gba;
 

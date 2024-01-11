@@ -1,7 +1,7 @@
 ﻿using System;
 using BinarySerializer;
-using BinarySerializer.Onyx.Gba;
-using BinarySerializer.Onyx.Gba.Rayman3;
+using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using Microsoft.Xna.Framework.Graphics;
 using OnyxCs.Gba.AnimEngine;
 using OnyxCs.Gba.TgxEngine;

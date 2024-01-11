@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 
 namespace OnyxCs.Gba.TgxEngine;
 

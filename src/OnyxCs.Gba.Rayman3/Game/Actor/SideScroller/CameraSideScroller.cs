@@ -1,5 +1,5 @@
 ﻿using System;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;

@@ -1,12 +1,12 @@
 ﻿using System;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba;
 
 public class GameWindow
 {
-    public GameWindow(OnyxGbaSettings settings)
+    public GameWindow(GbaEngineSettings settings)
     {
         OriginalGameResolution = settings.Platform switch
         {

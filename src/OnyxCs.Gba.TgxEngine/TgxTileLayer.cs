@@ -1,6 +1,6 @@
 ﻿using System;
 using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace OnyxCs.Gba.TgxEngine;

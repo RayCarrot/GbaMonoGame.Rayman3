@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Input;
 using OnyxCs.Gba.Engine2d;
 using OnyxCs.Gba.TgxEngine;
-using Game = BinarySerializer.Onyx.Gba.Game;
+using Game = BinarySerializer.Ubisoft.GbaEngine.Game;
 
 namespace OnyxCs.Gba.Rayman3;
 

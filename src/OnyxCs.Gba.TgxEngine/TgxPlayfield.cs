@@ -1,5 +1,5 @@
 ﻿using System;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 
 namespace OnyxCs.Gba.TgxEngine;

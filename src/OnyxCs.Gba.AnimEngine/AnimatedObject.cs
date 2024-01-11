@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace OnyxCs.Gba.AnimEngine;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Audio;
-using SoundBank = BinarySerializer.Onyx.Gba.SoundBank;
+using SoundBank = BinarySerializer.Ubisoft.GbaEngine.SoundBank;
 
 namespace OnyxCs.Gba;
 

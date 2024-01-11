@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer", "..\sub-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer.Nintendo", "..\sub-modules\BinarySerializer.Nintendo\src\BinarySerializer.Nintendo.csproj", "{DDA45C89-D467-4208-98D7-329B7D2ECF23}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer.Onyx.Gba", "..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Onyx.Gba.csproj", "{C9783119-C0B3-4C8F-B22B-52410E7BCB39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinarySerializer.Ubisoft.GbaEngine", "..\sub-modules\BinarySerializer.Onyx.Gba\src\BinarySerializer.Ubisoft.GbaEngine.csproj", "{C9783119-C0B3-4C8F-B22B-52410E7BCB39}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnyxCs.Gba", "OnyxCs.Gba\OnyxCs.Gba.csproj", "{9E5C1FCD-1C89-409B-9204-BDF159EFBF99}"
 EndProject

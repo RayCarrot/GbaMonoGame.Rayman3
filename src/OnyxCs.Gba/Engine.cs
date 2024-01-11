@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using BinarySerializer;
-using BinarySerializer.Onyx.Gba;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,7 +21,7 @@ public static class Engine
 
     public static Context Context { get; private set; }
     public static Loader Loader { get; private set; }
-    public static OnyxGbaSettings Settings { get; private set; }
+    public static GbaEngineSettings Settings { get; private set; }
 
     #endregion
 
@@ -78,7 +78,7 @@ public static class Engine
 
         // TODO: Add a logger
         Context = new Context(String.Empty, serializerLogger: serializerLogger);
-        Settings = new OnyxGbaSettings { Game = game, Platform = platform };
+        Settings = new GbaEngineSettings { Game = game, Platform = platform };
         Context.AddSettings(Settings);
 
         if (platform == Platform.GBA)
