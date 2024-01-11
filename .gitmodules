@@ -5,5 +5,5 @@
 	path = sub-modules/BinarySerializer.Nintendo
 	url = https://github.com/BinarySerializer/BinarySerializer.Nintendo
 [submodule "sub-modules/BinarySerializer.Onyx.Gba"]
-	path = sub-modules/BinarySerializer.Onyx.Gba
+	path = sub-modules/BinarySerializer.Ubisoft.GbaEngine
 	url = https://github.com/BinarySerializer/BinarySerializer.Onyx.Gba
