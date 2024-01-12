@@ -175,7 +175,7 @@ public sealed partial class MovingPlatform : MovableActor
             }
             else
             {
-                BaseActor explosion = Scene.GameObjects.SpawnActor(ActorType.Explosion);
+                Explosion explosion = Scene.KnotManager.CreateProjectile<Explosion>(ActorType.Explosion);
                 if (explosion != null)
                     explosion.Position = Position;
                 Destroy();
@@ -186,7 +186,7 @@ public sealed partial class MovingPlatform : MovableActor
             Scene.MainActor.ProcessMessage(Message.Main_AllowCoyoteJump);
             Scene.MainActor.ProcessMessage(Message.Main_UnlinkMovement);
 
-            BaseActor explosion = Scene.GameObjects.SpawnActor(ActorType.Explosion);
+            Explosion explosion = Scene.KnotManager.CreateProjectile<Explosion>(ActorType.Explosion);
             if (explosion != null)
                 explosion.Position = Position - new Vector2(0, 8);
             Destroy();

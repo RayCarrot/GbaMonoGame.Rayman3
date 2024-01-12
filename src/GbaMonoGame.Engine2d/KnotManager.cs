@@ -6,9 +6,9 @@ using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Engine2d;
 
-public class GameObjects
+public class KnotManager
 {
-    public GameObjects(Scene2DResource sceneResource)
+    public KnotManager(Scene2DResource sceneResource)
     {
         ObjectsCount = sceneResource.GameObjectCount;
         AlwaysActorsCount = sceneResource.AlwaysActorsCount;
@@ -135,15 +135,15 @@ public class GameObjects
         return true;
     }
 
-    public BaseActor SpawnActor<T>(T actorType)
-        where T : Enum
+    public T CreateProjectile<T>(Enum actorType)
+        where T : BaseActor
     {
-        return SpawnActor((int)(object)actorType);
+        return (T)CreateProjectile((int)(object)actorType);
     }
 
-    public BaseActor SpawnActor(int actorType)
+    public BaseActor CreateProjectile(int actorType)
     {
-        // TODO: Check IsSpawnable flag
+        // TODO: Check IsProjectile flag
         BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
         actor?.ProcessMessage(Message.ResurrectWakeUp);
         return actor;

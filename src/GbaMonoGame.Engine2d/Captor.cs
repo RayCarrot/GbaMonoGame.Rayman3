@@ -62,11 +62,11 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Scene.GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
+                    Scene.KnotManager.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
                     break;
                 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Scene.GameObjects.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
+                    Scene.KnotManager.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
                     break;
             }
 

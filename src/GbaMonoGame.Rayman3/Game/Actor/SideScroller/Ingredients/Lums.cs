@@ -22,7 +22,7 @@ public sealed partial class Lums : BaseActor
             case Action.GreenLum:
                 AnimatedObject.CurrentAnimation = (byte)ActionId * 3;
 
-                if (ActionId == Action.YellowLum && !IsSpawnable && !MultiplayerManager.IsInMultiplayer)
+                if (ActionId == Action.YellowLum && !IsProjectile && !MultiplayerManager.IsInMultiplayer)
                 {
                     LumId = GameInfo.LoadedYellowLums;
                     GameInfo.LoadedYellowLums++;

@@ -1,4 +1,6 @@
-﻿namespace GbaMonoGame.Engine2d;
+﻿using ImGuiNET;
+
+namespace GbaMonoGame.Engine2d;
 
 public abstract class GameObject : Object
 {
@@ -11,7 +13,7 @@ public abstract class GameObject : Object
         IsEnabled = gameObjectResource.IsEnabled;
         IsAwake = gameObjectResource.IsAwake;
         Flag_2 = false;
-        IsSpawnable = gameObjectResource.IsSpawnable;
+        IsProjectile = gameObjectResource.IsProjectile;
         ResurrectsImmediately = gameObjectResource.ResurrectsImmediately;
         ResurrectsLater = gameObjectResource.ResurrectsLater;
         Flag_6 = gameObjectResource.Flag_6;
@@ -26,7 +28,7 @@ public abstract class GameObject : Object
     public bool IsEnabled { get; set; }
     public bool IsAwake { get; set; }
     public bool Flag_2 { get; set; }
-    public bool IsSpawnable { get; set; } // True for all always actors except the main actor(s)
+    public bool IsProjectile { get; set; }
     public bool ResurrectsImmediately { get; set; }
     public bool ResurrectsLater { get; set; }
     public bool Flag_6 { get; set; }
@@ -63,5 +65,11 @@ public abstract class GameObject : Object
             default:
                 return false;
         }
+    }
+
+    public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        ImGui.Text($"Projectile: {IsProjectile}");
+        base.DrawDebugLayout(debugLayout, textureManager);
     }
 }

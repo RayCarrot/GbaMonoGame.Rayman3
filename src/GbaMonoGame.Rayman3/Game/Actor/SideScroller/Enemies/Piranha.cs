@@ -17,7 +17,7 @@ public sealed partial class Piranha : MovableActor
 
     private void SpawnSplash()
     {
-        BaseActor splash = Scene.GameObjects.SpawnActor(ActorType.Splash);
+        Splash splash = Scene.KnotManager.CreateProjectile<Splash>(ActorType.Splash);
         if (splash != null)
             splash.Position = Position;
     }

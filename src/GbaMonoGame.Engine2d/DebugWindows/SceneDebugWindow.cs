@@ -54,7 +54,7 @@ public class SceneDebugWindow : DebugWindow
         
         HighlightedGameObject = null;
 
-        foreach (GameObject obj in scene.GameObjects.EnumerateAllGameObjects(true))
+        foreach (GameObject obj in scene.KnotManager.EnumerateAllGameObjects(true))
         {
             Box box = GetObjBox(obj).Offset(-scene.Playfield.Camera.Position);
 
@@ -83,12 +83,12 @@ public class SceneDebugWindow : DebugWindow
 
         ImGui.SeparatorText("Always actors");
 
-        ImGui.Text($"Count: {scene2D.GameObjects.AlwaysActorsCount}");
+        ImGui.Text($"Count: {scene2D.KnotManager.AlwaysActorsCount}");
 
         if (ImGui.BeginListBox("##_alwaysActors"))
         {
-            foreach (BaseActor actor in scene2D.GameObjects.Objects.
-                         Take(scene2D.GameObjects.AlwaysActorsCount).
+            foreach (BaseActor actor in scene2D.KnotManager.Objects.
+                         Take(scene2D.KnotManager.AlwaysActorsCount).
                          Cast<BaseActor>())
             {
                 bool isSelected = SelectedGameObject == actor;
@@ -103,13 +103,13 @@ public class SceneDebugWindow : DebugWindow
         ImGui.Spacing();
         ImGui.SeparatorText("Actors");
 
-        ImGui.Text($"Count: {scene2D.GameObjects.ActorsCount}");
+        ImGui.Text($"Count: {scene2D.KnotManager.ActorsCount}");
 
         if (ImGui.BeginListBox("##_actors"))
         {
-            foreach (BaseActor actor in scene2D.GameObjects.Objects.
-                         Skip(scene2D.GameObjects.AlwaysActorsCount).
-                         Take(scene2D.GameObjects.ActorsCount).
+            foreach (BaseActor actor in scene2D.KnotManager.Objects.
+                         Skip(scene2D.KnotManager.AlwaysActorsCount).
+                         Take(scene2D.KnotManager.ActorsCount).
                          Cast<BaseActor>())
             {
                 bool isSelected = SelectedGameObject == actor;
@@ -124,13 +124,13 @@ public class SceneDebugWindow : DebugWindow
         ImGui.Spacing();
         ImGui.SeparatorText("Captors");
 
-        ImGui.Text($"Count: {scene2D.GameObjects.CaptorsCount}");
+        ImGui.Text($"Count: {scene2D.KnotManager.CaptorsCount}");
 
-        if (scene2D.GameObjects.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
+        if (scene2D.KnotManager.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
         {
-            foreach (Captor captor in scene2D.GameObjects.Objects.
-                         Skip(scene2D.GameObjects.AlwaysActorsCount + scene2D.GameObjects.ActorsCount).
-                         Take(scene2D.GameObjects.CaptorsCount).
+            foreach (Captor captor in scene2D.KnotManager.Objects.
+                         Skip(scene2D.KnotManager.AlwaysActorsCount + scene2D.KnotManager.ActorsCount).
+                         Take(scene2D.KnotManager.CaptorsCount).
                          Cast<Captor>())
             {
                 bool isSelected = SelectedGameObject == captor;
@@ -176,7 +176,7 @@ public class SceneDebugWindow : DebugWindow
 
         renderer.BeginRender(new RenderOptions(false, scene2D.Playfield.Camera));
 
-        foreach (BaseActor actor in scene2D.GameObjects.EnumerateAllActors(isEnabled: true))
+        foreach (BaseActor actor in scene2D.KnotManager.EnumerateAllActors(isEnabled: true))
         {
             if (_showViewBoxes)
                 DrawBox(renderer, scene2D.Playfield, actor.GetViewBox(), Color.Lime);
@@ -202,7 +202,7 @@ public class SceneDebugWindow : DebugWindow
 
         if (_showCaptorBoxes)
         {
-            foreach (Captor captor in scene2D.GameObjects.EnumerateCaptors(isEnabled: true))
+            foreach (Captor captor in scene2D.KnotManager.EnumerateCaptors(isEnabled: true))
             {
                 DrawBox(renderer, scene2D.Playfield, captor.GetCaptorBox(), Color.DeepPink);
             }

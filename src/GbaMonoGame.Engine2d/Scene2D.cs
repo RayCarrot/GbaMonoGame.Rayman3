@@ -20,8 +20,8 @@ public class Scene2D
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
-        GameObjects = new GameObjects(scene);
-        GameObjects.Load(this, scene);
+        KnotManager = new KnotManager(scene);
+        KnotManager.Load(this, scene);
 
         Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();
@@ -32,10 +32,10 @@ public class Scene2D
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield2D Playfield { get; }
     public int LayersCount { get; }
-    public GameObjects GameObjects { get; }
+    public KnotManager KnotManager { get; }
 
     // TODO: In multiplayer we get the actor from the machine id
-    public MovableActor MainActor => (MovableActor)GameObjects.Objects[0];
+    public MovableActor MainActor => (MovableActor)KnotManager.Objects[0];
 
     public void Init()
     {
@@ -80,7 +80,7 @@ public class Scene2D
 
     public void RunActors()
     {
-        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+        foreach (BaseActor actor in KnotManager.EnumerateAllActors(isEnabled: true))
         {
             actor.DoBehavior();
         }
@@ -89,19 +89,19 @@ public class Scene2D
     public void ResurrectActors()
     {
         Vector2 camPos = Playfield.Camera.Position;
-        bool newKnot = GameObjects.UpdateCurrentKnot(Playfield, camPos);
+        bool newKnot = KnotManager.UpdateCurrentKnot(Playfield, camPos);
 
-        foreach (GameObject obj in GameObjects.EnumerateAllGameObjects(isEnabled: false))
+        foreach (GameObject obj in KnotManager.EnumerateAllGameObjects(isEnabled: false))
         {
             if (obj.ResurrectsImmediately)
                 obj.ProcessMessage(Message.Resurrect);
         }
 
-        if (newKnot && GameObjects.PreviousKnot != null)
+        if (newKnot && KnotManager.PreviousKnot != null)
         {
-            foreach (GameObject obj in GameObjects.EnumerateActorsAndCaptors(isEnabled: false, knot: GameObjects.PreviousKnot))
+            foreach (GameObject obj in KnotManager.EnumerateActorsAndCaptors(isEnabled: false, knot: KnotManager.PreviousKnot))
             {
-                if (obj.ResurrectsLater && GameObjects.CurrentKnot.ActorIds.Concat(GameObjects.CurrentKnot.CaptorIds).All(x => x != obj.Id))
+                if (obj.ResurrectsLater && KnotManager.CurrentKnot.ActorIds.Concat(KnotManager.CurrentKnot.CaptorIds).All(x => x != obj.Id))
                 {
                     obj.ProcessMessage(Message.Resurrect);
                 }
@@ -111,7 +111,7 @@ public class Scene2D
 
     public void StepActors()
     {
-        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+        foreach (BaseActor actor in KnotManager.EnumerateAllActors(isEnabled: true))
         {
             actor.Step();
         }
@@ -119,7 +119,7 @@ public class Scene2D
 
     public void MoveActors()
     {
-        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+        foreach (BaseActor actor in KnotManager.EnumerateAllActors(isEnabled: true))
         {
             if (actor is MovableActor movableActor)
                 movableActor.Move();
@@ -128,7 +128,7 @@ public class Scene2D
 
     public void RunCaptors()
     {
-        foreach (Captor captor in GameObjects.EnumerateCaptors(isEnabled: true))
+        foreach (Captor captor in KnotManager.EnumerateCaptors(isEnabled: true))
         {
             if (captor.TriggerOnMainActorDetection)
             {
@@ -138,7 +138,7 @@ public class Scene2D
             {
                 if (!captor.IsTriggering)
                 {
-                    foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+                    foreach (BaseActor actor in KnotManager.EnumerateAllActors(isEnabled: true))
                     {
                         if (actor.IsAgainstCaptor && actor is ActionActor actionActor)
                         {
@@ -155,7 +155,7 @@ public class Scene2D
 
     public void DrawActors()
     {
-        foreach (BaseActor actor in GameObjects.EnumerateAllActors(isEnabled: true))
+        foreach (BaseActor actor in KnotManager.EnumerateAllActors(isEnabled: true))
         {
             actor.Draw(AnimationPlayer, false);
         }

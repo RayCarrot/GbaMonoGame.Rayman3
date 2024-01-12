@@ -39,7 +39,11 @@ An actor is a game object which has an animated object and a finite-state machin
 
 Additionally, actors are grouped based on their life-time. `Normal actors` have defined activation zones, which in the game is determined by the knots, which act as sectors, defining which objects are active where in the level.
 
-`Always actors` are actors which remain active until manually disabled. This includes the `main actors` (in most levels this is Rayman) and `projectile actors` (objects which are spawned by other objects, such as a water splash from the piranhas).
+`Always actors` are actors which remain active until manually disabled.
+
+Besides this there are also special types of actors. The `main actors` are always defined as the first actors in the level (as always objects). In this game it is usually Rayman, unless the level has a different play style.
+
+`Projectile actors` are actors which are spawned by other actors. An example is the water splash from the piranhas. These are usually defined as always objects, but not always.
 
 #### Captor
 A captor is an object which defines a collision box. When an actor collides with the box it triggers events, which usually involve enabling another object or playing a sound.

@@ -366,7 +366,7 @@ public class MovableActor : InteractableActor
 
                 Box detectionBox = GetDetectionBox();
 
-                foreach (BaseActor actor in Scene.GameObjects.EnumerateAllActors(isEnabled: true))
+                foreach (BaseActor actor in Scene.KnotManager.EnumerateAllActors(isEnabled: true))
                 {
                     if (actor != this && actor.ActorFlag_6 && actor is ActionActor actionActor)
                     {

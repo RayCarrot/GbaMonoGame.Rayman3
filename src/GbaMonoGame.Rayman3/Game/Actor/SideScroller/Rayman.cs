@@ -238,7 +238,7 @@ public sealed partial class Rayman : MovableActor
 
     private void Attack(uint chargePower, RaymanBody.RaymanBodyPartType type, Vector2 offset, bool hasCharged)
     {
-        RaymanBody bodyPart = (RaymanBody)Scene.GameObjects.SpawnActor(ActorType.RaymanBody);
+        RaymanBody bodyPart = Scene.KnotManager.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
 
         if (bodyPart == null)
             return;
