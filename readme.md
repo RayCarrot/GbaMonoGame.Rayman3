@@ -20,7 +20,7 @@ This is the structure of the original engine, as seen in the version of it used 
 #### GbaSpecific
 - **Rayman2** - game project
 
-A mockup of the source code file structure has been made under [gbaengine/structure](gbaengine/structure). It uses file names from the preview prototype of Rayman 3 GBA. Additional file names exist in prototypes from the 2024 leak, although they are not included.
+A mockup of the source code file structure has been made under [gbaengine/structure](gbaengine/structure). It uses file names from all of the known prototype builds of the game. Since the paths are from different versions this might not be accurate to how it is structured in the final game. For example, `ProjectileIterator` is not used in the final game since projectiles are merged with always actors.
 
 ### ROM
 The majority of the game data in the ROM is stored as resource blocks in a data table. Each resource has a list of dependencies, which are additional resources that it links to. [BinarySerializer.Ubisoft.GbaEngine](https://github.com/BinarySerializer/BinarySerializer.Ubisoft.GbaEngine) is being used to deserialize this data from the ROM.
@@ -34,13 +34,15 @@ A `playfield` is a collection of different game layers. These can be tile graphi
 ### Scene
 Each level in the game consists of a scene. A scene mainly consists of a playfield, a `camera actor`, a collection of `game objects` and `dialogs`. A dialog is a some form of UI element that renders to the screen, such as the HUD and pause menu.
 
-These are the following types of game objects used in Rayman 3:
+#### Actor
+An actor is a game object which has an animated object and a finite-state machine (FSM) to execute code for its current state. Actors can inherit from different base classes which give it different properties. For example, an actor inheriting from `ActionActor` can use actions defined in the game data, which in turn indicate which animation is to be played and optionally has movement data. The movement data is however only used if the actor inherits from `MovableActor`.
 
-- **Actor** - an object which has an animated object and code to execute each frame. These are the objects you see in a level, such as enemies, moving platforms and butterflies.
-- **Always actor** - actor which stays enabled until manually disabled. These are usually disabled at the start and then loaded in when used by other actors, such as a water splash from the water. Rayman is also an always actor since he should always remain enabled. This is considered the "main actor" and is always the first one defined.
-- **Captor** - objects which trigger events when an actor collides with its box. This usually involves enabling other objects or playing a sound.
+Additionally, actors are grouped based on their life-time. `Normal actors` have defined activation zones, which in the game is determined by the knots, which act as sectors, defining which objects are active where in the level.
 
-The game also supports waypoint objects, although they remain unused in Rayman 3.
+`Always actors` are actors which remain active until manually disabled. This includes the `main actors` (in most levels this is Rayman) and `projectile actors` (objects which are spawned by other objects, such as a water splash from the piranhas).
+
+#### Captor
+A captor is an object which defines a collision box. When an actor collides with the box it triggers events, which usually involve enabling another object or playing a sound.
 
 ### States and messages
 Most objects in the game communicate by having a `ProcessMessage` function. This allows it to retrieve a specific type of message, identified by an id, and optional parameters. Most objects also contain a finite-state machine (FSM) which runs each frame. This determines the current state the object is in and which behavior it should perform.
