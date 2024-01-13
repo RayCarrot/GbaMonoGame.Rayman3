@@ -21,7 +21,7 @@ public class Scene2D
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
 
         KnotManager = new KnotManager(scene);
-        KnotManager.Load(this, scene);
+        KnotManager.LoadGameObjects(this, scene);
 
         Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();
@@ -35,7 +35,7 @@ public class Scene2D
     public KnotManager KnotManager { get; }
 
     // TODO: In multiplayer we get the actor from the machine id
-    public MovableActor MainActor => (MovableActor)KnotManager.Objects[0];
+    public MovableActor MainActor => (MovableActor)KnotManager.GameObjects[0];
 
     public void Init()
     {
@@ -99,9 +99,17 @@ public class Scene2D
 
         if (newKnot && KnotManager.PreviousKnot != null)
         {
-            foreach (GameObject obj in KnotManager.EnumerateActorsAndCaptors(isEnabled: false, knot: KnotManager.PreviousKnot))
+            foreach (BaseActor obj in KnotManager.EnumerateActors(isEnabled: false, knot: KnotManager.PreviousKnot))
             {
-                if (obj.ResurrectsLater && KnotManager.CurrentKnot.ActorIds.Concat(KnotManager.CurrentKnot.CaptorIds).All(x => x != obj.Id))
+                if (obj.ResurrectsLater && KnotManager.CurrentKnot.ActorIds.All(x => x != obj.InstanceId))
+                {
+                    obj.ProcessMessage(Message.Resurrect);
+                }
+            }
+
+            foreach (Captor obj in KnotManager.EnumerateCaptors(isEnabled: false, knot: KnotManager.PreviousKnot))
+            {
+                if (obj.ResurrectsLater && KnotManager.CurrentKnot.CaptorIds.All(x => x != obj.InstanceId))
                 {
                     obj.ProcessMessage(Message.Resurrect);
                 }

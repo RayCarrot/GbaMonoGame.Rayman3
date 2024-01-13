@@ -12,7 +12,7 @@ namespace GbaMonoGame.Rayman3;
 // TODO: Move values, such as different speeds, to constants
 public sealed partial class Rayman : MovableActor
 {
-    public Rayman(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Rayman(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Resource = actorResource;
 
@@ -20,13 +20,13 @@ public sealed partial class Rayman : MovableActor
 
         if (MultiplayerManager.IsInMultiplayer)
         {
-            if (id >= MultiplayerManager.Data.Count)
+            if (instanceId >= MultiplayerManager.Data.Count)
             {
                 ProcessMessage(Message.Destroy);
             }
             else
             {
-                if (id != MultiplayerManager.Data.MachineId)
+                if (instanceId != MultiplayerManager.Data.MachineId)
                 {
                     IsLocalPlayer = false;
                     AnimatedObject.IsSoundEnabled = false;

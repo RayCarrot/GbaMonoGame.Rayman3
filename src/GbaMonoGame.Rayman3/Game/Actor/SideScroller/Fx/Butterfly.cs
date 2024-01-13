@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed class Butterfly : BaseActor
 {
-    public Butterfly(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Butterfly(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.CurrentAnimation = actorResource.FirstActionId;
         AnimatedObject.YPriority = 60;

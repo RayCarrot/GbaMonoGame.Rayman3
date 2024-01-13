@@ -4,7 +4,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class InteractableActor : ActionActor
 {
-    public InteractableActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public InteractableActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimationBoxTable = new BoxTable();
         AnimatedObject.BoxTable = AnimationBoxTable;

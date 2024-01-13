@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class RaymanBody : MovableActor
 {
-    public RaymanBody(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public RaymanBody(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Rayman = Scene.MainActor;
         AnimatedObject.YPriority = 18;

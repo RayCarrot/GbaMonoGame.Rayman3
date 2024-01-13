@@ -4,7 +4,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class ActionActor : BaseActor
 {
-    public ActionActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public ActionActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         HitPoints = actorResource.Model.HitPoints;
         AttackPoints = actorResource.Model.AttackPoints;

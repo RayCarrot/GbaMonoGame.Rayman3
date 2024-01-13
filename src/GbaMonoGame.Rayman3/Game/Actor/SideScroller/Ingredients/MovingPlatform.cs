@@ -8,7 +8,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class MovingPlatform : MovableActor
 {
-    public MovingPlatform(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public MovingPlatform(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Resource = actorResource;
         

@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class FlowerFire : BaseActor
 {
-    public FlowerFire(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public FlowerFire(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.CurrentAnimation = 0;
         AnimatedObject.YPriority = 15;

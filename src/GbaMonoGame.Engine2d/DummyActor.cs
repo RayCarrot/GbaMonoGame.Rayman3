@@ -3,5 +3,5 @@
 // Temporary class
 public class DummyActor : BaseActor
 {
-    public DummyActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource) { }
+    public DummyActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource) { }
 }

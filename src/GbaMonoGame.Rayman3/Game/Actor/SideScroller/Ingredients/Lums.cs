@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class Lums : BaseActor
 {
-    public Lums(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Lums(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         // NOTE: In the game it creates a special version of the AnimatedObject for this class called AObjectLum.
         //       That allows a palette to be defined, and doesn't handle things like sound events, boxes etc. We

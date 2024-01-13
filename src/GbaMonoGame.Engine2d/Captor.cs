@@ -4,7 +4,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class Captor : GameObject
 {
-    public Captor(int id, Scene2D scene, CaptorResource captorResource) : base(id, scene, captorResource)
+    public Captor(int instanceId, Scene2D scene, CaptorResource captorResource) : base(instanceId, scene, captorResource)
     {
         TriggerOnMainActorDetection = captorResource.TriggerOnMainActorDetection;
         IsTriggering = captorResource.IsTriggering;
@@ -62,11 +62,11 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Scene.KnotManager.Objects[evt.Param & 0xFF].ProcessMessage(msg, evt.Param >> 8);
+                    Scene.KnotManager.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, evt.Param >> 8);
                     break;
                 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Scene.KnotManager.Objects[evt.Param & 0xFF].ProcessMessage(msg, this);
+                    Scene.KnotManager.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, this);
                     break;
             }
 

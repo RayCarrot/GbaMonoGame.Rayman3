@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class Piranha : MovableActor
 {
-    public Piranha(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Piranha(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         InitPos = Position;
         Fsm.ChangeAction(Fsm_Wait);

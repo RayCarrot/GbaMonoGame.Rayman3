@@ -87,12 +87,12 @@ public class SceneDebugWindow : DebugWindow
 
         if (ImGui.BeginListBox("##_alwaysActors"))
         {
-            foreach (BaseActor actor in scene2D.KnotManager.Objects.
+            foreach (BaseActor actor in scene2D.KnotManager.GameObjects.
                          Take(scene2D.KnotManager.AlwaysActorsCount).
                          Cast<BaseActor>())
             {
                 bool isSelected = SelectedGameObject == actor;
-                if (ImGui.Selectable($"{actor.Id}. {ObjectFactory.GetActorTypeName(actor.Type)}", isSelected))
+                if (ImGui.Selectable($"{actor.InstanceId}. {ObjectFactory.GetActorTypeName(actor.Type)}", isSelected))
                     SelectedGameObject = actor;
             }
 
@@ -107,13 +107,13 @@ public class SceneDebugWindow : DebugWindow
 
         if (ImGui.BeginListBox("##_actors"))
         {
-            foreach (BaseActor actor in scene2D.KnotManager.Objects.
+            foreach (BaseActor actor in scene2D.KnotManager.GameObjects.
                          Skip(scene2D.KnotManager.AlwaysActorsCount).
                          Take(scene2D.KnotManager.ActorsCount).
                          Cast<BaseActor>())
             {
                 bool isSelected = SelectedGameObject == actor;
-                if (ImGui.Selectable($"{actor.Id}. {ObjectFactory.GetActorTypeName(actor.Type)}", isSelected))
+                if (ImGui.Selectable($"{actor.InstanceId}. {ObjectFactory.GetActorTypeName(actor.Type)}", isSelected))
                     SelectedGameObject = actor;
             }
 
@@ -128,13 +128,13 @@ public class SceneDebugWindow : DebugWindow
 
         if (scene2D.KnotManager.CaptorsCount > 0 && ImGui.BeginListBox("##_captors"))
         {
-            foreach (Captor captor in scene2D.KnotManager.Objects.
+            foreach (Captor captor in scene2D.KnotManager.GameObjects.
                          Skip(scene2D.KnotManager.AlwaysActorsCount + scene2D.KnotManager.ActorsCount).
                          Take(scene2D.KnotManager.CaptorsCount).
                          Cast<Captor>())
             {
                 bool isSelected = SelectedGameObject == captor;
-                if (ImGui.Selectable($"{captor.Id}. Captor", isSelected))
+                if (ImGui.Selectable($"{captor.InstanceId}. Captor", isSelected))
                     SelectedGameObject = captor;
             }
 

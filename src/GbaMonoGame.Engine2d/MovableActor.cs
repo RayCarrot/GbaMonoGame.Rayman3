@@ -6,7 +6,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class MovableActor : InteractableActor
 {
-    public MovableActor(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public MovableActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         MapCollisionType = actorResource.Model.MapCollisionType;
         HasMapCollision = actorResource.Model.HasMapCollision;

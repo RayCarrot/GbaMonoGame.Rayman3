@@ -4,9 +4,9 @@ namespace GbaMonoGame.Engine2d;
 
 public abstract class GameObject : Object
 {
-    protected GameObject(int id, Scene2D scene, GameObjectResource gameObjectResource)
+    protected GameObject(int instanceId, Scene2D scene, GameObjectResource gameObjectResource)
     {
-        Id = id;
+        InstanceId = instanceId;
         Scene = scene;
         Position = gameObjectResource.Pos.ToVector2();
 
@@ -20,7 +20,7 @@ public abstract class GameObject : Object
         Flag_7 = gameObjectResource.Flag_7;
     }
 
-    public int Id { get; }
+    public int InstanceId { get; }
     public Scene2D Scene { get; }
     public Vector2 Position { get; set; }
 

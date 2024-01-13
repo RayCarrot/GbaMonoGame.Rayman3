@@ -6,7 +6,7 @@ namespace GbaMonoGame.Engine2d;
 
 public static class ObjectFactory
 {
-    public delegate BaseActor CreateActor(int id, Scene2D scene, ActorResource actorResource);
+    public delegate BaseActor CreateActor(int instanceId, Scene2D scene, ActorResource actorResource);
 
     private static Dictionary<int, CreateActor> ActorCreations { get; set; }
     private static Func<int, string> GetActorTypeNameFunc { get; set; }
@@ -24,12 +24,12 @@ public static class ObjectFactory
         GetActorTypeNameFunc = getActorTypeNameFunc;
     }
 
-    public static BaseActor Create(int id, Scene2D scene, ActorResource actorResource)
+    public static BaseActor Create(int instanceId, Scene2D scene, ActorResource actorResource)
     {
         if (!ActorCreations.TryGetValue(actorResource.Type, out CreateActor create))
-            return new DummyActor(id, scene, actorResource);
+            return new DummyActor(instanceId, scene, actorResource);
 
-        return create(id, scene, actorResource);
+        return create(instanceId, scene, actorResource);
     }
 
     public static string GetActorTypeName(int actorType) => GetActorTypeNameFunc(actorType);

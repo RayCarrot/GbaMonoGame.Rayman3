@@ -300,51 +300,51 @@ public class Rayman3 : GbaGame
         // TODO: Implement the rest
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
-            { ActorType.Rayman, (id, scene, resource) => new Rayman(id, scene, resource) },
-            { ActorType.RaymanBody, (id, scene, resource) => new RaymanBody(id, scene, resource) },
+            { ActorType.Rayman, (instanceId, scene, resource) => new Rayman(instanceId, scene, resource) },
+            { ActorType.RaymanBody, (instanceId, scene, resource) => new RaymanBody(instanceId, scene, resource) },
 
-            { ActorType.Piranha, (id, scene, resource) => new Piranha(id, scene, resource) },
-            { ActorType.Splash, (id, scene, resource) => new Splash(id, scene, resource) },
-            { ActorType.Explosion, (id, scene, resource) => new Explosion(id, scene, resource) },
+            { ActorType.Piranha, (instanceId, scene, resource) => new Piranha(instanceId, scene, resource) },
+            { ActorType.Splash, (instanceId, scene, resource) => new Splash(instanceId, scene, resource) },
+            { ActorType.Explosion, (instanceId, scene, resource) => new Explosion(instanceId, scene, resource) },
 
-            { ActorType.MovingFlowerPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
+            { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
 
-            { ActorType.Lums, (id, scene, resource) => new Lums(id, scene, resource) },
-            { ActorType.Cage, (id, scene, resource) => new Cage(id, scene, resource) },
+            { ActorType.Lums, (instanceId, scene, resource) => new Lums(instanceId, scene, resource) },
+            { ActorType.Cage, (instanceId, scene, resource) => new Cage(instanceId, scene, resource) },
 
-            { ActorType.Depart, (id, scene, resource) => new Depart(id, scene, resource) },
+            { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
 
-            { ActorType.Butterfly, (id, scene, resource) => new Butterfly(id, scene, resource) },
+            { ActorType.Butterfly, (instanceId, scene, resource) => new Butterfly(instanceId, scene, resource) },
 
-            { ActorType.MovingWoodenPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
+            { ActorType.MovingWoodenPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
 
-            { ActorType.FlowerFire, (id, scene, resource) => new FlowerFire(id, scene, resource) },
+            { ActorType.FlowerFire, (instanceId, scene, resource) => new FlowerFire(instanceId, scene, resource) },
 
-            { ActorType.Arrive, (id, scene, resource) => new Arrive(id, scene, resource) },
+            { ActorType.Arrive, (instanceId, scene, resource) => new Arrive(instanceId, scene, resource) },
 
-            { ActorType.MovingUnusedPlatform, (id, scene, resource) => new MovingPlatform(id, scene, resource) },
+            { ActorType.MovingUnusedPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
         }, x => ((ActorType)x).ToString());
         LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
         {
             // World 1
-            { MapId.WoodLight_M1, id => new WoodLight_M1(id) },
-            { MapId.WoodLight_M2, id => new WoodLight_M2(id) },
-            { MapId.FairyGlade_M1, id => new FairyGlade_M1(id) },
-            { MapId.FairyGlade_M2, id => new FairyGlade_M2(id) },
+            { MapId.WoodLight_M1, mapId => new WoodLight_M1(mapId) },
+            { MapId.WoodLight_M2, mapId => new WoodLight_M2(mapId) },
+            { MapId.FairyGlade_M1, mapId => new FairyGlade_M1(mapId) },
+            { MapId.FairyGlade_M2, mapId => new FairyGlade_M2(mapId) },
             // TODO: MarshAwakening1 - different on N-Gage
-            { MapId.BossMachine, id => new BossMachine(id) },
-            { MapId.SanctuaryOfBigTree_M1, id => new SanctuaryOfBigTree(id) },
-            { MapId.SanctuaryOfBigTree_M2, id => new SanctuaryOfBigTree(id) },
+            { MapId.BossMachine, mapId => new BossMachine(mapId) },
+            { MapId.SanctuaryOfBigTree_M1, mapId => new SanctuaryOfBigTree(mapId) },
+            { MapId.SanctuaryOfBigTree_M2, mapId => new SanctuaryOfBigTree(mapId) },
 
             // World 2
             // TODO: MissileSurPattes1 - different on N-Gage
-            { MapId.EchoingCaves_M1, id => new EchoingCaves_M1(id) },
-            { MapId.EchoingCaves_M2, id => new EchoingCaves_M2(id) },
-            { MapId.CavesOfBadDreams_M1, id => new CavesOfBadDreams(id) },
-            { MapId.CavesOfBadDreams_M2, id => new CavesOfBadDreams(id) },
-            { MapId.BossBadDreams, id => new BossBadDreams(id) },
-            { MapId.MenhirHills_M1, id => new MenhirHills_M1(id) },
-            { MapId.MenhirHills_M2, id => new FrameSideScroller(id) },
+            { MapId.EchoingCaves_M1, mapId => new EchoingCaves_M1(mapId) },
+            { MapId.EchoingCaves_M2, mapId => new EchoingCaves_M2(mapId) },
+            { MapId.CavesOfBadDreams_M1, mapId => new CavesOfBadDreams(mapId) },
+            { MapId.CavesOfBadDreams_M2, mapId => new CavesOfBadDreams(mapId) },
+            { MapId.BossBadDreams, mapId => new BossBadDreams(mapId) },
+            { MapId.MenhirHills_M1, mapId => new MenhirHills_M1(mapId) },
+            { MapId.MenhirHills_M2, mapId => new FrameSideScroller(mapId) },
             // TODO: MarshAwakening2 - different on N-Gage
 
             // TODO: Implement the rest

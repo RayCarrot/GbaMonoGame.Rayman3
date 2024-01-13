@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public sealed partial class Arrive : ActionActor
 {
-    public Arrive(int id, Scene2D scene, ActorResource actorResource) : base(id, scene, actorResource)
+    public Arrive(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         LinkedActor = -1;
 
