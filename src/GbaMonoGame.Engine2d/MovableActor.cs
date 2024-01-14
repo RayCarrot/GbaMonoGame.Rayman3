@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Nintendo.GBA;
+﻿using System;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using ImGuiNET;
 
@@ -125,33 +126,84 @@ public class MovableActor : InteractableActor
             return false;
 
         // TODO: Modify position and speed
+        throw new NotImplementedException();
 
         return true;
     }
 
     private void CheckMapCollisionX()
     {
-        // TODO: Implement
+        throw new NotImplementedException();
     }
 
     private void CheckMapCollisionY()
     {
-        // TODO: Implement
+        throw new NotImplementedException();
     }
 
     private void CheckMapCollisionXY()
     {
-        // TODO: Implement
+        Box detectionBox = GetDetectionBox();
+
+        if (Speed.Y < 0)
+        {
+            // Get the top-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MinY));
+
+            if (type.IsFullySolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed += new Vector2(0, Constants.TileSize - MathHelpers.Mod(detectionBox.MinY, Constants.TileSize));
+                Position += new Vector2(0, Constants.TileSize - MathHelpers.Mod(detectionBox.MinY, Constants.TileSize));
+                IsTouchingMap = true;
+            }
+        }
+        else
+        {
+            // Get the bottom-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY));
+
+            if (type.IsSolid)
+            {
+                Speed -= new Vector2(0, MathHelpers.Mod(detectionBox.MaxY, Constants.TileSize));
+                Position -= new Vector2(0, MathHelpers.Mod(detectionBox.MaxY, Constants.TileSize));
+                IsTouchingMap = true;
+            }
+        }
+
+        if (Speed.X < 0)
+        {
+            // Get the left-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.Center.Y));
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
+                Position += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
+                IsTouchingMap = true;
+            }
+        }
+        else
+        {
+            // Get the right-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.Center.Y));
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
+                Position -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
+                IsTouchingMap = true;
+            }
+        }
     }
 
     private void CheckMapCollisionExtendedX()
     {
-        // TODO: Implement
+        throw new NotImplementedException();
     }
 
     private void CheckMapCollisionExtendedY()
     {
-        // TODO: Implement
+        throw new NotImplementedException();
     }
 
     private void CheckMapCollisionExtendedXY()
