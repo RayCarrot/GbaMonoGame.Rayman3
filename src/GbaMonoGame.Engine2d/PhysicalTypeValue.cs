@@ -39,6 +39,7 @@ public enum PhysicalTypeValue : byte
     MovingPlatform_UpLeft = 45,
 
     Climb = 47,
+    Water = 48,
 
     ClimbSpider1 = 51,
     ClimbSpider2 = 52,

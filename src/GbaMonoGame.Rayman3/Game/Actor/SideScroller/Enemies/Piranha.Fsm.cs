@@ -70,7 +70,13 @@ public partial class Piranha
                 break;
 
             case FsmAction.Step:
-                // TODO: Implement
+                if (IsActionFinished && ActionId is Action.Dying1_Right or Action.Dying1_Left)
+                    ActionId = IsFacingRight ? Action.Dying2_Right : Action.Dying2_Left;
+
+                PhysicalType type = Scene.GetPhysicalType(Position);
+
+                if (type == PhysicalTypeValue.Water)
+                    Fsm.ChangeAction(Fsm_Wait);
                 break;
 
             case FsmAction.UnInit:
