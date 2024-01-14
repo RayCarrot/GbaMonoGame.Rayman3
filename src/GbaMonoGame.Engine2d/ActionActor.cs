@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine;
+using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -89,5 +90,14 @@ public class ActionActor : BaseActor
             HitPoints -= damage;
         else
             HitPoints = 0;
+    }
+
+    public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
+    {
+        base.DrawDebugLayout(debugLayout, textureManager);
+
+        int hp = HitPoints;
+        if (ImGui.InputInt("HitPoints", ref hp))
+            HitPoints = hp;
     }
 }
