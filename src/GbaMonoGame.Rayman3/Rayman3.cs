@@ -360,6 +360,7 @@ public class Rayman3 : GbaGame
         debugLayout.AddWindow(new GameObjectDebugWindow());
         debugLayout.AddWindow(new PlayfieldDebugWindow());
         debugLayout.AddMenu(new FramesDebugMenu());
+        debugLayout.AddMenu(new GenerateDebugMenu());
     }
 
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
