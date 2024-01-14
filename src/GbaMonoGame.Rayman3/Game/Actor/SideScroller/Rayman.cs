@@ -211,7 +211,7 @@ public sealed partial class Rayman : MovableActor
         if (!BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.SecondFist) && punchCount == 2 && HasPower(Power.DoubleFist))
             return true;
 
-        return true;
+        return false;
     }
 
     private bool CanAttackWithFoot()
@@ -249,7 +249,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         bodyPart.Rayman = this;
-        bodyPart.field4_0x66 = 0;
+        bodyPart.BaseActionId = 0;
 
         switch (type)
         {
@@ -263,22 +263,22 @@ public sealed partial class Rayman : MovableActor
 
             case RaymanBody.RaymanBodyPartType.Foot:
                 // TODO: Hide sprites 5 and 4
-                bodyPart.field4_0x66 = 6;
+                bodyPart.BaseActionId = 6;
                 break;
 
             case RaymanBody.RaymanBodyPartType.Torso:
                 // TODO: Hide sprites 12 and 11
-                bodyPart.field4_0x66 = 12;
+                bodyPart.BaseActionId = 12;
                 break;
 
             case RaymanBody.RaymanBodyPartType.SuperFist:
                 // TODO: Hide sprites 3 and 2
-                bodyPart.field4_0x66 = 18;
+                bodyPart.BaseActionId = 18;
                 break;
 
             case RaymanBody.RaymanBodyPartType.SecondSuperFist:
                 // TODO: Hide sprites 16 and 15
-                bodyPart.field4_0x66 = 18;
+                bodyPart.BaseActionId = 18;
                 break;
         }
 
@@ -315,7 +315,7 @@ public sealed partial class Rayman : MovableActor
 
         bodyPart.Position = Position + offset;
 
-        bodyPart.ActionId = bodyPart.field4_0x66 + (IsFacingRight ? 1 : 2);
+        bodyPart.ActionId = bodyPart.BaseActionId + (IsFacingRight ? 1 : 2);
 
         if (MultiplayerManager.IsInMultiplayer && Engine.Settings.Platform == Platform.NGage)
         {
@@ -891,6 +891,12 @@ public sealed partial class Rayman : MovableActor
         // TODO: Implement remaining messages
         switch (message)
         {
+            case Message.RaymanBody_FinishedAttack:
+                RaymanBody.RaymanBodyPartType bodyPartType = (RaymanBody.RaymanBodyPartType)param;
+                BodyParts.Remove(bodyPartType);
+                // TODO: Set channels to visible again
+                return false;
+
             case Message.Main_LinkMovement:
                 if (!Fsm.EqualsAction(FUN_08032650))
                 {

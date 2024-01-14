@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.Engine2d;
+﻿using System;
+using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -15,8 +16,22 @@ public sealed partial class RaymanBody : MovableActor
     public RaymanBodyPartType BodyPartType { get; set; }
     public uint ChargePower { get; set; }
     public bool HasCharged { get; set; }
-    public byte field4_0x66 { get; set; }
-    public int field7_0x6c { get; set; }
+    public byte BaseActionId { get; set; }
+    public InteractableActor HitActor { get; set; }
+
+    private void SpawnHitEffect()
+    {
+        RaymanBody hitEffectActor = Scene.KnotManager.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
+        if (hitEffectActor != null)
+        {
+            hitEffectActor.BodyPartType = RaymanBodyPartType.HitEffect;
+            hitEffectActor.Position = Position;
+            hitEffectActor.HasMapCollision = false;
+            hitEffectActor.ActionId = 25;
+            hitEffectActor.AnimatedObject.YPriority = 1;
+            hitEffectActor.ChangeAction();
+        }
+    }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -25,8 +40,8 @@ public sealed partial class RaymanBody : MovableActor
 
         switch (message)
         {
-            case (Message)1002: // TODO: Name message
-                // TODO: Implement
+            case Message.RaymanBody_FinishedAttack:
+                throw new NotImplementedException();
                 return false;
 
             default:

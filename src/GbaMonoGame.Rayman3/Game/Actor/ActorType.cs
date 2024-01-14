@@ -18,6 +18,8 @@ public enum ActorType
 
     Butterfly = 37,
 
+    BreakableGround = 50, // TODO: Implement
+
     MovingWoodenPlatform = 53,
     Plum = 54, // TODO: Implement
 

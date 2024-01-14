@@ -191,6 +191,26 @@ public class Scene2D
         return false;
     }
 
+    public InteractableActor IsHitActor(InteractableActor actor)
+    {
+        Box attackBox = actor.GetAttackBox();
+
+        foreach (BaseActor actorToCheck in KnotManager.EnumerateAllActors(isEnabled: true))
+        {
+            // Ignore main actor if not in multiplayer
+            if (!MultiplayerManager.IsInMultiplayer && actorToCheck.InstanceId == 0)
+                continue;
+
+            // Check for collision
+            if (actorToCheck.ReceivesDamage && 
+                actorToCheck is InteractableActor interactableActor && 
+                interactableActor.GetVulnerabilityBox().Intersects(attackBox))
+                return interactableActor;
+        }
+
+        return null;
+    }
+
     public PhysicalType GetPhysicalType(Vector2 position)
     {
         return new PhysicalType(Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint()));

@@ -20,6 +20,7 @@ public enum Message
     Captor_Trigger_SendMessageWithCaptorParam = 204,
     
     // Rayman 3
+    RaymanBody_FinishedAttack = 1002,
     Main_LinkMovement = 1003,
     Main_UnlinkMovement = 1004,
 
@@ -45,4 +46,5 @@ public enum Message
 
     Main_AllowCoyoteJump = 1048,
     Murphy_NewMultiplayerLevel = 1049,
+    Hit = 1050,
 }
