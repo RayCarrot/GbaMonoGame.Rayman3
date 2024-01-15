@@ -17,16 +17,27 @@ public sealed partial class FlowerFire : BaseActor
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
-        if (message == Message.ResurrectWakeUp)
-            Timer = 180;
+        // Intercept messages
+        switch (message)
+        {
+            case Message.ResurrectWakeUp:
+                Timer = 180;
+                break;
+        }
 
         if (base.ProcessMessageImpl(message, param))
             return false;
 
-        if (message == Message.FlowerFire_End)
-            Fsm.ChangeAction(Fsm_End);
+        // Handle messages
+        switch (message)
+        {
+            case Message.FlowerFire_End:
+                Fsm.ChangeAction(Fsm_End);
+                return false;
 
-        return false;
+            default:
+                return false;
+        }
     }
 
     public void AttachPlatform(MovingPlatform platform) => Platform = platform;

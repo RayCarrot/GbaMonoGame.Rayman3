@@ -13,6 +13,7 @@ public static class SoundEventsManager
 {
     private static readonly Dictionary<int, SoundEffect> _songs = new();
     private static SoundBank _soundBank;
+    private static readonly int[] _volumePerType = Enumerable.Repeat(MidiInterface.MaxVolume, 8).ToArray(); // TODO: Use this on GBA
 
     internal static readonly List<PlayingSong> _playingSongs = new();
 
@@ -38,20 +39,6 @@ public static class SoundEventsManager
                 snd.Name = song.Value;
                 loadedSounds[song.Value] = snd;
                 _songs[song.Key] = snd;
-            }
-        }
-    }
-
-    internal static void Step()
-    {
-        foreach (PlayingSong playingSong in _playingSongs.ToArray())
-        {
-            if (playingSong.SoundInstance.State == SoundState.Stopped)
-            {
-                _playingSongs.Remove(playingSong);
-
-                if (playingSong.NextSoundEventId != null)
-                    ProcessEvent(playingSong.NextSoundEventId.Value, playingSong.Obj);
             }
         }
     }
@@ -119,8 +106,26 @@ public static class SoundEventsManager
         }
     }
 
-    public static void ProcessEvent(Enum soundEventId, object obj = null) => ProcessEvent((ushort)(object)soundEventId, obj);
-    public static void ProcessEvent(ushort soundEventId, object obj = null)
+    public static void RefreshEventSet()
+    {
+        // TODO: Implement the rest of the things the game does here
+
+        foreach (PlayingSong playingSong in _playingSongs.ToArray())
+        {
+            if (playingSong.SoundInstance.State == SoundState.Stopped)
+            {
+                _playingSongs.Remove(playingSong);
+
+                if (playingSong.NextSoundEventId != null)
+                    ProcessEvent(playingSong.NextSoundEventId.Value, playingSong.Obj);
+            }
+        }
+    }
+
+    public static void ProcessEvent(Enum soundEventId) => ProcessEvent(soundEventId, null);
+    public static void ProcessEvent(ushort soundEventId) => ProcessEvent(soundEventId, null);
+    public static void ProcessEvent(Enum soundEventId, object obj) => ProcessEvent((ushort)(object)soundEventId, obj);
+    public static void ProcessEvent(ushort soundEventId, object obj)
     {
         switch (Engine.Settings.Platform)
         {
@@ -161,6 +166,21 @@ public static class SoundEventsManager
             default:
                 throw new UnsupportedPlatformException();
         }
+    }
+
+    public static void SetVolumeForType(int type, int newVolume)
+    {
+        // Only implemented on GBA
+        if (Engine.Settings.Platform != Platform.GBA)
+            return;
+
+        if (type is < 0 or > 7)
+            throw new ArgumentOutOfRangeException(nameof(type), type, "Type must be a value between 0-7");
+
+        if (newVolume is < 0 or > MidiInterface.MaxVolume)
+            throw new ArgumentOutOfRangeException(nameof(newVolume), newVolume, "Volume must be a value between 0-128");
+
+        _volumePerType[type] = newVolume;
     }
 
     public static bool IsPlaying(Enum soundEventId) => IsPlaying((ushort)(object)soundEventId);

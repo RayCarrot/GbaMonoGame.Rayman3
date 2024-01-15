@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
@@ -14,7 +14,7 @@ public class Scene2D
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
 
-        AnimationPlayer = new AnimationPlayer(false);
+        AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
         Dialogs = new List<Dialog>(layersCount);
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);

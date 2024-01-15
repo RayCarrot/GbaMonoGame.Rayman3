@@ -42,23 +42,13 @@ public class Intro : Frame, IHasPlayfield
 
     #region Private Methods
 
-    private void PreLoadMenu()
-    {
-        Menu = new MenuAll(Engine.Settings.Platform switch
-        {
-            Platform.GBA => MenuAll.Page.SelectLanguage,
-            Platform.NGage => MenuAll.Page.NGage,
-            _ => throw new UnsupportedPlatformException(),
-        });
-        Menu.LoadGameInfo();
-    }
-
     private void LoadAnimations()
     {
         AnimatedObjectResource introAnimResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.IntroAnimations);
 
         PressStartObj = new AnimatedObject(introAnimResource, false)
         {
+            IsFramed = true,
             SpritePriority = 0,
             YPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
@@ -74,6 +64,7 @@ public class Intro : Frame, IHasPlayfield
         {
             GameloftLogoObj = new AnimatedObject(introAnimResource, false)
             {
+                IsFramed = true,
                 SpritePriority = 0,
                 YPriority = 0,
                 ScreenPos = new Vector2(88, 208),
@@ -83,6 +74,7 @@ public class Intro : Frame, IHasPlayfield
 
         BlackLumAndLogoObj = new AnimatedObject(introAnimResource, false)
         {
+            IsFramed = true,
             SpritePriority = 0,
             YPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
@@ -99,6 +91,7 @@ public class Intro : Frame, IHasPlayfield
     {
         PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(GameResource.IntroPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
+        Playfield.Camera.Position = Vector2.Zero;
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
@@ -156,9 +149,18 @@ public class Intro : Frame, IHasPlayfield
 
     public override void Init()
     {
-        PreLoadMenu();
+        MidiInterface.SetNbVoices(10);
 
-        AnimationPlayer = new AnimationPlayer(true);
+        // Pre-load the menu
+        Menu = new MenuAll(Engine.Settings.Platform switch
+        {
+            Platform.GBA => MenuAll.Page.SelectLanguage,
+            Platform.NGage => MenuAll.Page.NGage,
+            _ => throw new UnsupportedPlatformException(),
+        });
+        Menu.LoadGameInfo();
+
+        AnimationPlayer = new AnimationPlayer(true, SoundEventsManager.ProcessEvent);
 
         LoadAnimations();
         LoadPlayfield();
@@ -171,6 +173,7 @@ public class Intro : Frame, IHasPlayfield
         IsSkipping = false;
         FadeTime = MaxFadeTime;
 
+        SoundEventsManager.SetVolumeForType(0, 0);
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__sadslide);
     }
 
@@ -178,12 +181,18 @@ public class Intro : Frame, IHasPlayfield
     {
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
+        Gfx.Fade = 1;
+        SoundEventsManager.SetVolumeForType(0, MidiInterface.MaxVolume);
     }
 
     public override void Step()
     {
         // TODO: Update animated tiles
         AnimationPlayer.Execute();
+
+        // Fade in music
+        if (GameTime.ElapsedFrames <= 64)
+            SoundEventsManager.SetVolumeForType(0, (int)(GameTime.ElapsedFrames * 2));
 
         CurrentStepAction();
     }
@@ -342,6 +351,8 @@ public class Intro : Frame, IHasPlayfield
                     BlackLumAndLogoObj.ScreenPos += new Vector2(0, -2);
                 }
                 Timer++;
+
+                BlackLumAndLogoObj.FrameChannelSprite();
                 AnimationPlayer.PlayFront(BlackLumAndLogoObj);
             }
         }
@@ -384,6 +395,7 @@ public class Intro : Frame, IHasPlayfield
             }
         }
 
+        BlackLumAndLogoObj.FrameChannelSprite();
         AnimationPlayer.PlayFront(BlackLumAndLogoObj);
     }
 
@@ -395,6 +407,7 @@ public class Intro : Frame, IHasPlayfield
         if (Engine.Settings.Platform == Platform.NGage)
             AnimationPlayer.PlayFront(GameloftLogoObj);
 
+        BlackLumAndLogoObj.FrameChannelSprite();
         AnimationPlayer.PlayFront(BlackLumAndLogoObj);
 
         // TODO: Check every button input on N-Gage
@@ -457,6 +470,7 @@ public class Intro : Frame, IHasPlayfield
         if (Engine.Settings.Platform == Platform.NGage)
             AnimationPlayer.PlayFront(GameloftLogoObj);
 
+        BlackLumAndLogoObj.FrameChannelSprite();
         AnimationPlayer.PlayFront(BlackLumAndLogoObj);
     }
 

@@ -13,17 +13,33 @@ public class LifeBar : Bar
     public override void Init()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
-        HitPoints = new AnimatedObject(resource, false);
-        LifeDigit1 = new AnimatedObject(resource, false);
-        LifeDigit2 = new AnimatedObject(resource, false);
-
-        HitPoints.CurrentAnimation = 15;
-        LifeDigit1.CurrentAnimation = 0;
-        LifeDigit2.CurrentAnimation = 0;
-
-        HitPoints.ScreenPos = new Vector2(-4, 0);
-        LifeDigit1.ScreenPos = new Vector2(49, 20);
-        LifeDigit2.ScreenPos = new Vector2(61, 20);
+        
+        HitPoints = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 15,
+            ScreenPos = new Vector2(-4, 0),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+        
+        LifeDigit1 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(49, 20),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+        
+        LifeDigit2 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(61, 20),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
     }
 
     public override void Load()

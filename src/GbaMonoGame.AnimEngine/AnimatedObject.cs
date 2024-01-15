@@ -6,8 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.AnimEngine;
 
-// TODO: The game saves if the animated object is "framed" (on screen). We should implement that too.
-
 // The game has different types of AnimatedObject. They however all act the same, just with some different properties
 // depending on the class type. Doing that here would be a mess, so better we handle it using properties in this class.
 
@@ -23,6 +21,7 @@ public class AnimatedObject : AObject
         IsSoundEnabled = true;
         IsDynamic = isDynamic;
         Resource = resource;
+        VisibleSpriteChannels = UInt32.MaxValue;
     }
 
     #endregion
@@ -47,10 +46,14 @@ public class AnimatedObject : AObject
     public bool HasExecutedFrame { get; set; }
     public bool IsPaused { get; set; }
 
+    public uint VisibleSpriteChannels { get; set; }
+
     public Vector2 ScreenPos { get; set; }
 
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
+
+    public bool IsFramed { get; set; }
 
     public int CurrentAnimation
     {
@@ -123,31 +126,28 @@ public class AnimatedObject : AObject
             yield return anim.Channels[i + ChannelIndex];
     }
 
-    private void PlayChannelBox()
+    private bool IsChannelVisible(int channel)
     {
-        if (HasExecutedFrame || BoxTable == null)
-            return;
-
-        BoxTable.AttackBox = new Box();
-        BoxTable.VulnerabilityBox = new Box();
-
-        foreach (AnimationChannel channel in EnumerateCurrentChannels())
-        {
-            switch (channel.ChannelType)
-            {
-                case AnimationChannelType.AttackBox:
-                    BoxTable.AttackBox = new Box(channel.Box);
-                    break;
-
-                case AnimationChannelType.VulnerabilityBox:
-                    BoxTable.VulnerabilityBox = new Box(channel.Box);
-                    break;
-            }
-        }
+        return (VisibleSpriteChannels & (1 << channel)) != 0;
     }
 
-    private void StepTimer()
+    #endregion
+
+    #region Public Methods
+
+    public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
+
+    public void Rewind() => CurrentFrame = 0;
+
+    public void Pause() => IsPaused = true;
+    public void Resume() => IsPaused = false;
+
+    public void ComputeNextFrame()
     {
+        EndOfAnimation = false;
+
+        PlayChannelBox();
+
         Animation anim = GetAnimation();
 
         EndOfAnimation = false;
@@ -195,19 +195,44 @@ public class AnimatedObject : AObject
         }
     }
 
-    #endregion
-
-    #region Public Methods
-
-    public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
-
-    public void Rewind() => CurrentFrame = 0;
-
-    public void ComputeNextFrame()
+    public void PlayChannelBox()
     {
-        EndOfAnimation = false;
-        PlayChannelBox();
-        StepTimer();
+        if (HasExecutedFrame || BoxTable == null)
+            return;
+
+        BoxTable.AttackBox = new Box();
+        BoxTable.VulnerabilityBox = new Box();
+
+        foreach (AnimationChannel channel in EnumerateCurrentChannels())
+        {
+            switch (channel.ChannelType)
+            {
+                case AnimationChannelType.AttackBox:
+                    BoxTable.AttackBox = new Box(channel.Box);
+                    break;
+
+                case AnimationChannelType.VulnerabilityBox:
+                    BoxTable.VulnerabilityBox = new Box(channel.Box);
+                    break;
+            }
+        }
+    }
+
+    public void PlayChannelSound(AnimationPlayer animationPlayer)
+    {
+        if (HasExecutedFrame)
+            return;
+
+        foreach (AnimationChannel channel in EnumerateCurrentChannels())
+        {
+            if (channel.ChannelType == AnimationChannelType.Sound)
+                animationPlayer.SoundEventRequest(channel.SoundId);
+        }
+    }
+
+    public void FrameChannelSprite()
+    {
+        // TODO: Implement
     }
 
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
@@ -228,6 +253,7 @@ public class AnimatedObject : AObject
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
+        int channelIndex = 0;
         foreach (AnimationChannel channel in EnumerateCurrentChannels())
         {
             // Play the channel based on the type
@@ -235,8 +261,8 @@ public class AnimatedObject : AObject
             {
                 case AnimationChannelType.Sprite:
 
-                    if (channel.ObjectMode == OBJ_ATTR_ObjectMode.HIDE)
-                        continue;
+                    if (channel.ObjectMode == OBJ_ATTR_ObjectMode.HIDE || !IsChannelVisible(channelIndex))
+                        break;
 
                     // On GBA the size of a sprite is determined based on
                     // the shape and size values. We use these to get the
@@ -319,10 +345,11 @@ public class AnimatedObject : AObject
                         BoxTable.VulnerabilityBox = new Box(channel.Box);
                     break;
             }
+
+            channelIndex++;
         }
 
-        PlayChannelBox();
-        StepTimer();
+        ComputeNextFrame();
     }
 
     #endregion

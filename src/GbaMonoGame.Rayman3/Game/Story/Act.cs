@@ -195,7 +195,7 @@ public abstract class Act : Frame
         if (resource.StartMusicSoundEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(resource.StartMusicSoundEvent);
 
-        AnimationPlayer = new AnimationPlayer(false);
+        AnimationPlayer = new AnimationPlayer(false, null);
         SpriteTextObject.Color = new RGB555Color(0x8aa).ToColor();
 
         if (Engine.Settings.Platform == Platform.GBA)
@@ -249,6 +249,7 @@ public abstract class Act : Frame
         AnimatedObjectResource nextSymbolResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.StoryNextTextAnimations);
         NextTextSymbol = new AnimatedObject(nextSymbolResource, false)
         {
+            IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
@@ -263,6 +264,7 @@ public abstract class Act : Frame
             AnimatedObjectResource skipSymbolResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.NGageButtons);
             SkipSymbol = new AnimatedObject(skipSymbolResource, false)
             {
+                IsFramed = true,
                 CurrentAnimation = 10 + Localization.LanguageUiIndex,
                 ScreenPos = new Vector2(-1, 190)
             };

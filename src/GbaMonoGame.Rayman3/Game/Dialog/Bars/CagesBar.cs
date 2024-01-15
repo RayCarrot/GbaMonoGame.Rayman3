@@ -13,17 +13,33 @@ public class CagesBar : Bar
     public override void Init()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
-        CageIcon = new AnimatedObject(resource, false);
-        CollectedCagesDigit = new AnimatedObject(resource, false);
-        TotalCagesDigit = new AnimatedObject(resource, false);
 
-        CageIcon.CurrentAnimation = 22;
-        CollectedCagesDigit.CurrentAnimation = 0;
-        TotalCagesDigit.CurrentAnimation = 0;
+        CageIcon = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 22,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44, 41),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
 
-        CageIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44, 41);
-        CollectedCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 28, 45);
-        TotalCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 45);
+        CollectedCagesDigit = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 28, 45),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+
+        TotalCagesDigit = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 45),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
     }
 
     public override void Load()

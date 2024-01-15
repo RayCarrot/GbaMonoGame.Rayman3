@@ -356,7 +356,7 @@ public class MenuAll : Frame, IHasPlayfield
     {
         LoadGameInfo();
 
-        AnimationPlayer = new AnimationPlayer(false);
+        AnimationPlayer = new AnimationPlayer(false, null);
 
         Data = new MenuData();
         WheelRotation = 0;
@@ -392,6 +392,7 @@ public class MenuAll : Frame, IHasPlayfield
             !SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme);
+            MidiInterface.SetNbVoices(10);
         }
 
         // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
@@ -411,6 +412,7 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
+        MidiInterface.SetNbVoices(7);
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__raytheme);
     }
@@ -501,7 +503,7 @@ public class MenuAll : Frame, IHasPlayfield
         }
         else if (JoyPad.CheckSingle(GbaInput.A))
         {
-            CurrentStepAction = Step_TransitionFromLanguage;
+            CurrentStepAction = Step_TransitionOutOfLanguage;
 
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);
@@ -530,17 +532,20 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.Play(Data.LanguageList);
     }
 
-    private void Step_TransitionFromLanguage()
+    private void Step_TransitionOutOfLanguage()
     {
         TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
         mainCluster.Position += new Vector2(0, 3);
 
         Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, TransitionValue + 28);
+        Data.LanguageList.FrameChannelSprite();
         AnimationPlayer.Play(Data.LanguageList);
 
         MoveGameLogo();
 
+        Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
+
         AnimationPlayer.Play(Data.GameModeList);
 
         if (TransitionValue < -207)
@@ -599,6 +604,7 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.Play(Data.GameModeList);
         
         MoveGameLogo();
+        Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
     }
 
@@ -621,6 +627,7 @@ public class MenuAll : Frame, IHasPlayfield
         AnimationPlayer.Play(Data.GameModeList);
 
         MoveGameLogo();
+        Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
     }
 
@@ -790,7 +797,9 @@ public class MenuAll : Frame, IHasPlayfield
 
         MoveGameLogo();
 
+        Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
+
         AnimationPlayer.Play(Data.GameModeList);
     }
 

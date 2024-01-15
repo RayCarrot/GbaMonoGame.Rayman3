@@ -51,23 +51,51 @@ public class LumsBar : Bar
     public override void Init()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
-        LumsIcon = new AnimatedObject(resource, false);
-        CollectedLumsDigit1 = new AnimatedObject(resource, false);
-        CollectedLumsDigit2 = new AnimatedObject(resource, false);
-        TotalLumsDigit1 = new AnimatedObject(resource, false);
-        TotalLumsDigit2 = new AnimatedObject(resource, false);
 
-        LumsIcon.CurrentAnimation = 24;
-        CollectedLumsDigit1.CurrentAnimation = 0;
-        CollectedLumsDigit2.CurrentAnimation = 0;
-        TotalLumsDigit1.CurrentAnimation = 0;
-        TotalLumsDigit2.CurrentAnimation = 0;
+        LumsIcon = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 24,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
 
-        LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8);
-        CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24);
-        CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 40, 24);
-        TotalLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 22, 24);
-        TotalLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 24);
+        CollectedLumsDigit1 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+
+        CollectedLumsDigit2 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 40, 24),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+
+        TotalLumsDigit1 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 22, 24),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
+
+        TotalLumsDigit2 = new AnimatedObject(resource, false)
+        {
+            IsFramed = true,
+            CurrentAnimation = 0,
+            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 24),
+            SpritePriority = 0,
+            YPriority = 0,
+        };
     }
 
     public override void Load()

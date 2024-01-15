@@ -18,6 +18,7 @@ public class MenuData
 
         Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 32,
             ScreenPos = new Vector2(7, 110),
@@ -27,6 +28,7 @@ public class MenuData
 
         Wheel2 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 32,
             ScreenPos = new Vector2(136, 110),
@@ -36,6 +38,7 @@ public class MenuData
 
         Wheel3 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 33,
             ScreenPos = new Vector2(172, 110),
@@ -45,6 +48,7 @@ public class MenuData
 
         Wheel4 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 32,
             ScreenPos = new Vector2(66, 144),
@@ -54,6 +58,7 @@ public class MenuData
 
         Cursor = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(33, 67),
@@ -62,6 +67,7 @@ public class MenuData
 
         Stem = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(47, 160),
@@ -70,6 +76,7 @@ public class MenuData
 
         Steam = new AnimatedObject(steamAnimations, steamAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(27, 20),
@@ -78,6 +85,7 @@ public class MenuData
 
         LanguageList = new AnimatedObject(languageListAnimations, languageListAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 0,
             YPriority = 0,
             ScreenPos = new Vector2(120, 28),
@@ -86,6 +94,7 @@ public class MenuData
 
         GameModeList = new AnimatedObject(gameModeAnimations, gameModeAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 3,
             YPriority = 0,
             ScreenPos = new Vector2(73, 52),
@@ -94,6 +103,7 @@ public class MenuData
 
         GameLogo = new AnimatedObject(gameLogoAnimations, gameLogoAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(174, 16),
@@ -114,6 +124,7 @@ public class MenuData
         {
             SlotLumIcons[i] = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
             {
+                IsFramed = true,
                 SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(107, 55 + i * 18),
@@ -121,6 +132,7 @@ public class MenuData
             };
             SlotCageIcons[i] = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
             {
+                IsFramed = true,
                 SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(165, 51 + i * 18),
@@ -128,6 +140,7 @@ public class MenuData
             };
             SlotIcons[i] = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
             {
+                IsFramed = true,
                 SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(84, 54 + i * 18),
@@ -151,6 +164,7 @@ public class MenuData
             };
             SlotEmptyTexts[i] = new AnimatedObject(slotEmptyAnimations, slotEmptyAnimations.IsDynamic)
             {
+                IsFramed = true,
                 SpritePriority = 3,
                 YPriority = 0,
                 ScreenPos = new Vector2(126, 54 + i * 18),
@@ -164,6 +178,7 @@ public class MenuData
 
         StartEraseSelection = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(80, 30),
@@ -172,6 +187,7 @@ public class MenuData
 
         StartEraseCursor = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
         {
+            IsFramed = true,
             SpritePriority = 1,
             YPriority = 0,
             ScreenPos = new Vector2(106, 12),

@@ -72,38 +72,33 @@ public class GfxRenderer
 
     #region Draw
 
+    // NOTE: Previously each Draw call started by checking CurrentCamera.IsVisible to avoid drawing sprites off-screen. However, the
+    //       engine itself handles it by "framing" objects and thus avoiding drawing anything off screen, making this redundant.
+
     public void Draw(Texture2D texture, Vector2 position, Color? color = null)
     {
-        if (CurrentCamera.IsVisible(position, texture.Bounds.Size))
-            SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White);
+        SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, Color? color = null)
     {
-        if (CurrentCamera.IsVisible(position, sourceRectangle.Size))
-            SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White);
+        SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White);
     }
 
     public void Draw(Texture2D texture, Vector2 position, SpriteEffects effects, Color? color = null)
     {
-        if (CurrentCamera.IsVisible(position, texture.Bounds.Size))
-            SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
+        SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, SpriteEffects effects, Color? color = null)
     {
-        if (CurrentCamera.IsVisible(position, sourceRectangle.Size))
-            SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
+        SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, 0, Vector2.Zero, Vector2.One, effects, 0);
     }
 
     public void Draw(Texture2D texture, Vector2 position, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
     {
-        // TODO: Check camera for visibility
-
         SpriteBatch.Draw(texture, position, texture.Bounds, color ?? Color.White, rotation, origin, scale, effects, 0);
     }
     public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, Color? color = null)
     {
-        // TODO: Check camera for visibility
-
         SpriteBatch.Draw(texture, position, sourceRectangle, color ?? Color.White, rotation, origin, scale, effects, 0);
     }
 

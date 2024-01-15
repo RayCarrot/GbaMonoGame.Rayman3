@@ -8,7 +8,7 @@ public class BaseActor : GameObject
 {
     // NOTE: The game allows actors to pass in "user-defined" AObject classes. However the game handles this in a rather
     //       ugly way where it will by default assume it's of type AnimatedObject, so the class then has to override all
-    //       of this behavior. We will however try and only have a single AnimatedObject in here.
+    //       of this behavior. We however only use a single AnimatedObject in the engine, thus making this cleaner.
     public BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         ActorModel = actorResource.Model;
@@ -59,7 +59,7 @@ public class BaseActor : GameObject
 
     public void RewindAction()
     {
-        AnimatedObject.CurrentFrame = 0;
+        AnimatedObject.Rewind();
     }
 
     public virtual void Init() { }
@@ -75,10 +75,12 @@ public class BaseActor : GameObject
     {
         if (Scene.Camera.IsActorFramed(this) || forceDraw)
         {
+            AnimatedObject.IsFramed = true;
             animationPlayer.Play(AnimatedObject);
         }
         else
         {
+            AnimatedObject.IsFramed = false;
             AnimatedObject.ComputeNextFrame();
         }
     }

@@ -1,18 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GbaMonoGame.AnimEngine;
 
 public class AnimationPlayer
 {
-    public AnimationPlayer(bool is8Bit)
+    public AnimationPlayer(bool is8Bit, Action<ushort> soundEventCallback)
     {
         Is8Bit = is8Bit;
+        SoundEventCallback = soundEventCallback;
 
         AnimationSpriteManager = new AnimationSpriteManager();
         UnsortedObjects = new List<AObject>();
         SortedObjects = new List<AObject>();
     }
 
+    private Action<ushort> SoundEventCallback { get; }
     private AnimationSpriteManager AnimationSpriteManager { get; }
 
     private List<AObject> UnsortedObjects { get; }
@@ -20,9 +23,9 @@ public class AnimationPlayer
 
     public bool Is8Bit { get; }
 
-    private void SoundEventRequest(ushort soundId)
+    public void SoundEventRequest(ushort soundId)
     {
-        SoundEventsManager.ProcessEvent(soundId);
+        SoundEventCallback?.Invoke(soundId);
     }
 
     // NOTE: A bit unsure what to name this. Same as the normal Play function, but without sorting and drawn first.

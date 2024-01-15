@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Ubisoft.GbaEngine;
@@ -145,6 +145,8 @@ public class KnotManager
 
         PreviousKnot = CurrentKnot;
         CurrentKnot = knot;
+
+        // NOTE: At this point the game loads tiles into VRAM for objects which are set to load dynamically. This is irrelevant here.
 
         return true;
     }

@@ -154,9 +154,22 @@ public sealed partial class Lums : BaseActor
         }
     }
 
-    // TODO: Implement
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        base.Draw(animationPlayer, forceDraw);
+        if (!Fsm.EqualsAction(FUN_0805ed40) && !Fsm.EqualsAction(FUN_0805e6b8) && !Fsm.EqualsAction(FUN_0805e83c))
+        {
+            if (Scene.Camera.IsActorFramed(this))
+            {
+                AnimatedObject.IsFramed = true;
+                animationPlayer.Play(AnimatedObject);
+            }
+            else
+            {
+                AnimatedObject.IsFramed = false;
+
+                if (MultiplayerManager.IsInMultiplayer)
+                    AnimatedObject.ComputeNextFrame();
+            }
+        }
     }
 }

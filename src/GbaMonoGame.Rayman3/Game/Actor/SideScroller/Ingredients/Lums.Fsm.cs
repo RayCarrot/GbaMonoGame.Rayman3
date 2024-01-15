@@ -134,17 +134,17 @@ public partial class Lums
             case FsmAction.Step:
                 if (AnimatedObject.EndOfAnimation)
                 {
-                    if (ActionId != Action.BlueLum || GameInfo.MapId == MapId.BossRockAndLava)
+                    if (ActionId == Action.BlueLum && GameInfo.MapId != MapId.BossRockAndLava)
+                    {
+                        Fsm.ChangeAction(FUN_0805e6b8);
+                    }
+                    else
                     {
                         Fsm.ChangeAction(Fsm_Idle);
 
                         // N-Gage doesn't do this for some reason
                         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId == MapId.BossRockAndLava)
                             BossDespawnTimer = 0;
-                    }
-                    else
-                    {
-                        // TODO: Implement
                     }
                 }
                 break;
@@ -155,4 +155,9 @@ public partial class Lums
                 break;
         }
     }
+
+    // TODO: Implement
+    private void FUN_0805ed40(FsmAction action) { }
+    private void FUN_0805e6b8(FsmAction action) { }
+    private void FUN_0805e83c(FsmAction action) { }
 }

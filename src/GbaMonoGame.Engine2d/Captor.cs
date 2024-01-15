@@ -33,6 +33,7 @@ public class Captor : GameObject
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
+        // Intercept messages
         switch (message)
         {
             case Message.Captor_Trigger:

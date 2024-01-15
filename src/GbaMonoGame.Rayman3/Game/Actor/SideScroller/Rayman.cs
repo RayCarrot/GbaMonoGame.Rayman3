@@ -18,6 +18,8 @@ public sealed partial class Rayman : MovableActor
 
         IsLocalPlayer = true;
 
+        // TODO: On N-Gage it loads a bunch of animated objects here for multiplayer - implement that?
+
         if (MultiplayerManager.IsInMultiplayer)
         {
             if (instanceId >= MultiplayerManager.Data.Count)
@@ -1072,10 +1074,13 @@ public sealed partial class Rayman : MovableActor
 
         if (draw)
         {
+            AnimatedObject.IsFramed = true;
             animationPlayer.Play(AnimatedObject);
         }
         else
         {
+            AnimatedObject.IsFramed = false;
+            AnimatedObject.PlayChannelBox();
             AnimatedObject.ComputeNextFrame();
         }
     }

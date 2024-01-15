@@ -9,4 +9,10 @@ public sealed partial class Explosion : BaseActor
         AnimatedObject.YPriority = 25;
         Fsm.ChangeAction(Fsm_Default);
     }
+
+    protected override bool ProcessMessageImpl(Message message, object param)
+    {
+        base.ProcessMessageImpl(message, param);
+        return false;
+    }
 }

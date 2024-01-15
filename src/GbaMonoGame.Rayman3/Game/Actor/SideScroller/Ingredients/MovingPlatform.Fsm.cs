@@ -410,8 +410,8 @@ public partial class MovingPlatform
                 }
                 else if (Timer == 121)
                 {
-                    // TODO: If anim is framed! Implement frame bool and use like game does.
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
+                    if (AnimatedObject.IsFramed)
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
                 }
 
                 if (IsActionFinished && ActionId == Action.MoveAccelerated_Left)

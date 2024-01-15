@@ -1,4 +1,5 @@
 ﻿using System;
+using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -38,6 +39,7 @@ public sealed partial class RaymanBody : MovableActor
         if (base.ProcessMessageImpl(message, param))
             return false;
 
+        // Handle messages
         switch (message)
         {
             case Message.RaymanBody_FinishedAttack:
@@ -46,6 +48,23 @@ public sealed partial class RaymanBody : MovableActor
 
             default:
                 return false;
+        }
+    }
+
+    // Game overrides this and calls PlayChannelBox even when not on screen. Makes sense since it should
+    // retain its collision. But it seems unnecessary since ComputeNextFrame calls that as well...
+    public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
+    {
+        if (Scene.Camera.IsActorFramed(this) || forceDraw)
+        {
+            AnimatedObject.IsFramed = true;
+            animationPlayer.Play(AnimatedObject);
+        }
+        else
+        {
+            AnimatedObject.IsFramed = false;
+            AnimatedObject.PlayChannelBox();
+            AnimatedObject.ComputeNextFrame();
         }
     }
 
