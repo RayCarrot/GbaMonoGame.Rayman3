@@ -126,16 +126,15 @@ public class AnimatedObject : AObject
             yield return anim.Channels[i + ChannelIndex];
     }
 
-    private bool IsChannelVisible(int channel)
-    {
-        return (VisibleSpriteChannels & (1 << channel)) != 0;
-    }
-
     #endregion
 
     #region Public Methods
 
     public Animation GetAnimation() => Resource.Animations[CurrentAnimation];
+
+    public bool IsChannelVisible(int channel) => (VisibleSpriteChannels & (1 << channel)) != 0;
+    public void SetChannelVisible(int channel) => VisibleSpriteChannels = (uint)((int)VisibleSpriteChannels | (1 << channel));
+    public void SetChannelInvisible(int channel) => VisibleSpriteChannels = (uint)((int)VisibleSpriteChannels & ~(1 << channel));
 
     public void Rewind() => CurrentFrame = 0;
 

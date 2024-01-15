@@ -256,30 +256,36 @@ public sealed partial class Rayman : MovableActor
         switch (type)
         {
             case RaymanBody.RaymanBodyPartType.Fist:
-                // TODO: Hide sprites 3 and 2
+                AnimatedObject.SetChannelInvisible(3);
+                AnimatedObject.SetChannelInvisible(2);
                 break;
 
             case RaymanBody.RaymanBodyPartType.SecondFist:
-                // TODO: Hide sprites 16 and 15
+                AnimatedObject.SetChannelInvisible(16);
+                AnimatedObject.SetChannelInvisible(15);
                 break;
 
             case RaymanBody.RaymanBodyPartType.Foot:
-                // TODO: Hide sprites 5 and 4
+                AnimatedObject.SetChannelInvisible(5);
+                AnimatedObject.SetChannelInvisible(4);
                 bodyPart.BaseActionId = 6;
                 break;
 
             case RaymanBody.RaymanBodyPartType.Torso:
-                // TODO: Hide sprites 12 and 11
+                AnimatedObject.SetChannelInvisible(12);
+                AnimatedObject.SetChannelInvisible(11);
                 bodyPart.BaseActionId = 12;
                 break;
 
             case RaymanBody.RaymanBodyPartType.SuperFist:
-                // TODO: Hide sprites 3 and 2
+                AnimatedObject.SetChannelInvisible(3);
+                AnimatedObject.SetChannelInvisible(2);
                 bodyPart.BaseActionId = 18;
                 break;
 
             case RaymanBody.RaymanBodyPartType.SecondSuperFist:
-                // TODO: Hide sprites 16 and 15
+                AnimatedObject.SetChannelInvisible(16);
+                AnimatedObject.SetChannelInvisible(15);
                 bodyPart.BaseActionId = 18;
                 break;
         }
@@ -896,7 +902,31 @@ public sealed partial class Rayman : MovableActor
             case Message.RaymanBody_FinishedAttack:
                 RaymanBody.RaymanBodyPartType bodyPartType = (RaymanBody.RaymanBodyPartType)param;
                 BodyParts.Remove(bodyPartType);
-                // TODO: Set channels to visible again
+
+                switch (bodyPartType)
+                {
+                    case RaymanBody.RaymanBodyPartType.Fist:
+                    case RaymanBody.RaymanBodyPartType.SuperFist:
+                        AnimatedObject.SetChannelVisible(3);
+                        AnimatedObject.SetChannelVisible(2);
+                        break;
+
+                    case RaymanBody.RaymanBodyPartType.SecondFist:
+                    case RaymanBody.RaymanBodyPartType.SecondSuperFist:
+                        AnimatedObject.SetChannelVisible(16);
+                        AnimatedObject.SetChannelVisible(15);
+                        break;
+
+                    case RaymanBody.RaymanBodyPartType.Foot:
+                        AnimatedObject.SetChannelVisible(5);
+                        AnimatedObject.SetChannelVisible(4);
+                        break;
+
+                    case RaymanBody.RaymanBodyPartType.Torso:
+                        AnimatedObject.SetChannelVisible(12);
+                        AnimatedObject.SetChannelVisible(11);
+                        break;
+                }
                 return false;
 
             case Message.Main_LinkMovement:
