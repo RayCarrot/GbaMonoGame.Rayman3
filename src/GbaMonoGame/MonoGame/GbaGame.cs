@@ -289,6 +289,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         // Draw screen
         Gfx.Draw(_gfxRenderer);
+        if (DebugMode && !IsPaused)
+            _performanceWindow.AddDrawCalls(GraphicsDevice.Metrics.DrawCount);
         if (_showMenu)
             _menu.Draw(_gfxRenderer);
         if (DebugMode)

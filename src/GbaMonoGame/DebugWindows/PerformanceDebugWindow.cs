@@ -10,6 +10,7 @@ public class PerformanceDebugWindow : DebugWindow
     private Graph SkippedDrawsGraph { get; } = new(200);
     private Graph MemoryUsageGraph { get; } = new(200);
     private Graph UpdateTimeGraph { get; } = new(200);
+    private Graph DrawCallsGraph { get; } = new(200);
     
     private int MinorFrameRateDrops { get; set; }
     private int MediumFrameRateDrops { get; set; }
@@ -47,6 +48,11 @@ public class PerformanceDebugWindow : DebugWindow
         UpdateTimeGraph.Add(time);
     }
 
+    public void AddDrawCalls(float drawCalls)
+    {
+        DrawCallsGraph.Add(drawCalls);
+    }
+
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
         FrameRateGraph.Draw("Fps", 0, 60, new System.Numerics.Vector2(800, 80));
@@ -61,6 +67,8 @@ public class PerformanceDebugWindow : DebugWindow
         UpdateTimeGraph.Draw("Update time", 0, 1000 / 60f, new System.Numerics.Vector2(800, 80));
         ImGui.Spacing();
         MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
+        ImGui.Spacing();
+        DrawCallsGraph.Draw("Draw calls", 0, 100, new System.Numerics.Vector2(800, 200));
     }
 
     private class Graph
