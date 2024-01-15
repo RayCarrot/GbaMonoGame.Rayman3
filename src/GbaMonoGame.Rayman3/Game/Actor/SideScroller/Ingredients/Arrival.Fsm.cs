@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.Engine2d;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
+using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -56,8 +57,20 @@ public partial class Arrive
             case FsmAction.Step:
                 if (IsActionFinished && ActionId == Action.EndingLevel)
                 {
-                    if (GameInfo.MapId == MapId.ChallengeLyGCN)
-                        Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        if (GameInfo.MapId == MapId.ChallengeLyGCN)
+                            Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                    }
+                    else if (Engine.Settings.Platform == Platform.NGage)
+                    {
+                        if (GameInfo.MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN)
+                            Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                    }
+                    else
+                    {
+                        throw new UnsupportedPlatformException();
+                    }
 
                     ActionId = Action.EndedLevel;
                 }
