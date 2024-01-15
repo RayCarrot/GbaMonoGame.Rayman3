@@ -123,10 +123,35 @@ public sealed partial class Lums : BaseActor
         return collided;
     }
 
-    // TODO: Implement
     protected override bool ProcessMessageImpl(Message message, object param)
     {
-        return base.ProcessMessageImpl(message, param);
+        // Intercept messages
+        switch (message)
+        {
+            // When is this ever used?
+            case Message.Resurrect:
+                if (ActionId == Action.YellowLum && !GameInfo.HasCollectedYellowLum(LumId, GameInfo.MapId))
+                    return false;
+                break;
+        }
+
+        if (base.ProcessMessageImpl(message, param))
+            return false;
+
+        // Handle messages
+        switch (message)
+        {
+            // TODO: Implement
+            //case 1063:
+            //    return false;
+
+            // TODO: Implement
+            //case 1087:
+            //    return false;
+
+            default:
+                return false;
+        }
     }
 
     // TODO: Implement
