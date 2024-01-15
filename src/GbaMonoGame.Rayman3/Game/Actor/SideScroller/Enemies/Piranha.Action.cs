@@ -12,9 +12,9 @@ public partial class Piranha
     {
         Move_Right = 0,
         Move_Left = 1,
-        Dying1_Right = 2,
-        Dying1_Left = 3,
-        Dying2_Right = 4,
-        Dying2_Left = 5,
+        Dying_Right = 2,
+        Dying_Left = 3,
+        Dead_Right = 4,
+        Dead_Left = 5,
     }
 }

@@ -10,7 +10,7 @@ public partial class Piranha
         {
             case FsmAction.Init:
                 Position = InitPos;
-                ActionId = IsFacingRight ? Action.Dying1_Right : Action.Dying1_Left;
+                ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
                 Timer = 0;
                 ShouldDraw = false;
                 break;
@@ -66,12 +66,12 @@ public partial class Piranha
         switch (action)
         {
             case FsmAction.Init:
-                ActionId = IsFacingRight ? Action.Dying1_Right : Action.Dying1_Left;
+                ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
                 break;
 
             case FsmAction.Step:
-                if (IsActionFinished && ActionId is Action.Dying1_Right or Action.Dying1_Left)
-                    ActionId = IsFacingRight ? Action.Dying2_Right : Action.Dying2_Left;
+                if (IsActionFinished && ActionId is Action.Dying_Right or Action.Dying_Left)
+                    ActionId = IsFacingRight ? Action.Dead_Right : Action.Dead_Left;
 
                 PhysicalType type = Scene.GetPhysicalType(Position);
 
