@@ -37,6 +37,11 @@ public class UserInfoSideScroller : Dialog
         }
     }
 
+    public void AddCages(int count)
+    {
+        CagesBar.AddCages(count);
+    }
+
     public override void ProcessMessage()
     {
         // TODO: Implement

@@ -130,7 +130,7 @@ public sealed partial class Lums : BaseActor
         {
             // When is this ever used?
             case Message.Resurrect:
-                if (ActionId == Action.YellowLum && !GameInfo.HasCollectedYellowLum(LumId, GameInfo.MapId))
+                if (ActionId == Action.YellowLum && GameInfo.HasCollectedYellowLum(LumId, GameInfo.MapId))
                     return false;
                 break;
         }

@@ -19,6 +19,7 @@ public static class GameInfo
     public static LevelType LevelType { get; set; }
     public static int World { get; set; }
     public static int LoadedYellowLums { get; set; }
+    public static int LoadedCages { get; set; }
     public static int YellowLumsCount { get; set; }
     public static int CagesCount { get; set; }
     public static int GreenLums { get; set; }

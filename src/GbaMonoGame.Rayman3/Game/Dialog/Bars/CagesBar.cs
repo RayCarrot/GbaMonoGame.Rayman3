@@ -10,6 +10,11 @@ public class CagesBar : Bar
     public AnimatedObject CollectedCagesDigit { get; set; }
     public AnimatedObject TotalCagesDigit { get; set; }
 
+    public void AddCages(int count)
+    {
+        // TODO: Implement
+    }
+
     public override void Init()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);

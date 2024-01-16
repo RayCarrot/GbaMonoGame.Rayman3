@@ -987,6 +987,10 @@ public sealed partial class Rayman : MovableActor
                 Fsm.ChangeAction(Fsm_EndMap);
                 return false;
 
+            case Message.Main_CollectedCage:
+                ((FrameSideScroller)Frame.Current).UserInfo.AddCages(1);
+                return false;
+
             case Message.Main_AllowCoyoteJump:
                 if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(FUN_0802cb38))
                     CanSafetyJump = true;

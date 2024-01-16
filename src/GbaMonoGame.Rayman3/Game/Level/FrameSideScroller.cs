@@ -113,6 +113,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     public override void Init()
     {
         GameInfo.LoadedYellowLums = 0;
+        GameInfo.LoadedCages = 0;
         GameInfo.GreenLums = 0;
         GameInfo.MapId = GameInfo.NextMapId ?? throw new Exception("No map id set");
         GameInfo.YellowLumsCount = GameInfo.Level.LumsCount;

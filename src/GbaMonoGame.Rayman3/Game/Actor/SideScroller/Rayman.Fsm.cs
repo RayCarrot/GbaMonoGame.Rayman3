@@ -1885,7 +1885,6 @@ public partial class Rayman
         }
     }
 
-    // TODO: There's a bug where if you jump up you can go through solid collision. See Rock and Lava 3.
     private void Fsm_Climb(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;

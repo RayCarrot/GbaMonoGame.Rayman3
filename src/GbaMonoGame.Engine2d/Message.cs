@@ -39,6 +39,7 @@ public enum Message
 
     Main_LevelExit = 1031,
 
+    Main_CollectedCage = 1033,
     FlowerFire_End = 1034,
 
     Cam_1039 = 1039, // TODO: Name
