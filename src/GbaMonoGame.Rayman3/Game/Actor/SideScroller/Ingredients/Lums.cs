@@ -128,7 +128,7 @@ public sealed partial class Lums : BaseActor
         // Intercept messages
         switch (message)
         {
-            // When is this ever used?
+            // Don't resurrect if collected (used when triggered from captors)
             case Message.Resurrect:
                 if (ActionId == Action.YellowLum && GameInfo.HasCollectedYellowLum(LumId, GameInfo.MapId))
                     return false;

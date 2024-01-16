@@ -5,21 +5,6 @@ namespace GbaMonoGame.Rayman3;
 
 public class LumsBar : Bar
 {
-    private static readonly int[] BounceData =
-    {
-        0, -3, -5, -6, -5, -3, 
-        0, 2, 4, 5, 4, 2, 
-        0, -2, -3, -4, -3, -2, 
-        0, 2, 3, 2, 
-        0, -1, -2, -1, 
-        0, 1, 
-        0, -1, 
-        0, 1, 
-        0, -1, 
-        0, 
-        0,
-    };
-
     private LumsBarState State { get; set; } = LumsBarState.Wait;
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
@@ -34,7 +19,7 @@ public class LumsBar : Bar
 
     public void AddLums(int count)
     {
-        State = LumsBarState.MoveDown;
+        State = LumsBarState.MoveIn;
         WaitTimer = 0;
 
         CollectedLumsDigitValue2 += count;
@@ -124,7 +109,7 @@ public class LumsBar : Bar
                 YOffset = 35;
                 break;
                 
-            case LumsBarState.MoveDown:
+            case LumsBarState.MoveIn:
                 if (YOffset > 0)
                 {
                     YOffset -= 2;
@@ -136,11 +121,16 @@ public class LumsBar : Bar
                 }
                 break;
 
-            case LumsBarState.MoveUp:
+            case LumsBarState.MoveOut:
                 if (YOffset < 35)
+                {
                     YOffset++;
+                }
                 else
+                {
                     YOffset = 35;
+                    State = LumsBarState.Hide;
+                }
                 break;
 
             case LumsBarState.Bounce:
@@ -163,7 +153,7 @@ public class LumsBar : Bar
                     if (WaitTimer >= 180)
                     {
                         YOffset = 0;
-                        State = LumsBarState.MoveUp;
+                        State = LumsBarState.MoveOut;
                     }
                     else
                     {
@@ -198,8 +188,8 @@ public class LumsBar : Bar
     private enum LumsBarState
     {
         Hide,
-        MoveDown,
-        MoveUp,
+        MoveIn,
+        MoveOut,
         Bounce,
         Wait,
     }

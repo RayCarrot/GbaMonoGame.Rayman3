@@ -3,16 +3,22 @@ using GbaMonoGame.AnimEngine;
 
 namespace GbaMonoGame.Rayman3;
 
-// TODO: Fully implement
 public class CagesBar : Bar
 {
-    public AnimatedObject CageIcon { get; set; }
-    public AnimatedObject CollectedCagesDigit { get; set; }
-    public AnimatedObject TotalCagesDigit { get; set; }
+    private CagesBarState State { get; set; } = CagesBarState.Wait;
+    private int WaitTimer { get; set; }
+    private int XOffset { get; set; }
+    private int CollectedCagesDigitValue { get; set; }
+
+    private AnimatedObject CageIcon { get; set; }
+    private AnimatedObject CollectedCagesDigit { get; set; }
+    private AnimatedObject TotalCagesDigit { get; set; }
 
     public void AddCages(int count)
     {
-        // TODO: Implement
+        State = CagesBarState.MoveIn;
+        WaitTimer = 0;
+        CollectedCagesDigitValue += count;
     }
 
     public override void Init()
@@ -49,14 +55,97 @@ public class CagesBar : Bar
 
     public override void Load()
     {
-        TotalCagesDigit.CurrentAnimation = GameInfo.Level.CagesCount;
-        CollectedCagesDigit.CurrentAnimation = 0;
+        int cagesCount = GameInfo.LevelType == LevelType.GameCube ? GameInfo.CagesCount : GameInfo.Level.CagesCount;
+        TotalCagesDigit.CurrentAnimation = cagesCount;
+
+        CollectedCagesDigit.CurrentAnimation = GameInfo.GetCollectedCagesInLevel(GameInfo.MapId);
     }
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        animationPlayer.PlayFront(CageIcon);
-        animationPlayer.PlayFront(CollectedCagesDigit);
-        animationPlayer.PlayFront(TotalCagesDigit);
+        if (Mode is 1 or 3)
+            return;
+
+        switch (State)
+        {
+            case CagesBarState.Hide:
+                XOffset = 65;
+                break;
+
+            case CagesBarState.MoveIn:
+                if (XOffset > 0)
+                {
+                    XOffset -= 3;
+                }
+                else
+                {
+                    State = Mode == 2 ? CagesBarState.Wait : CagesBarState.Bounce;
+                    WaitTimer = 0;
+                }
+                break;
+
+            case CagesBarState.MoveOut:
+                if (XOffset < 65)
+                {
+                    XOffset += 2;
+                }
+                else
+                {
+                    XOffset = 65;
+                    State = CagesBarState.Hide;
+                }
+                break;
+
+            case CagesBarState.Bounce:
+                if (WaitTimer < 35)
+                {
+                    XOffset = BounceData[WaitTimer];
+                    WaitTimer++;
+                }
+                else
+                {
+                    XOffset = 0;
+                    State = CagesBarState.Wait;
+                    WaitTimer = 0;
+                }
+                break;
+
+            case CagesBarState.Wait:
+                if (Mode != 2)
+                {
+                    if (WaitTimer >= 180)
+                    {
+                        XOffset = 0;
+                        State = CagesBarState.MoveOut;
+                    }
+                    else
+                    {
+                        WaitTimer++;
+                    }
+                }
+                break;
+        }
+
+        if (State != CagesBarState.Hide)
+        {
+            CageIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
+            CollectedCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);
+            TotalCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10 + XOffset, TotalCagesDigit.ScreenPos.Y);
+
+            CollectedCagesDigit.CurrentAnimation = CollectedCagesDigitValue;
+
+            animationPlayer.PlayFront(CageIcon);
+            animationPlayer.PlayFront(CollectedCagesDigit);
+            animationPlayer.PlayFront(TotalCagesDigit);
+        }
+    }
+
+    private enum CagesBarState
+    {
+        Hide,
+        MoveIn,
+        MoveOut,
+        Bounce,
+        Wait,
     }
 }
