@@ -515,7 +515,27 @@ public sealed partial class Rayman : MovableActor
 
     private void AttackInTheAir()
     {
-        // TODO: Implement
+        if (IsActionFinished && ActionId is 
+                Action.BeginThrowFistInAir_Right or Action.BeginThrowFistInAir_Left or
+                Action.BeginThrowSecondFistInAir_Right or Action.BeginThrowSecondFistInAir_Left or
+                Action.Damage_Knockback_Right or Action.Damage_Knockback_Left)
+        {
+            ActionId = IsFacingRight ? Action.ThrowFistInAir_Right : Action.ThrowFistInAir_Left;
+        }
+
+        if (CheckSingleInput(GbaInput.B))
+        {
+            if (CanAttackWithFist(1))
+            {
+                ActionId = IsFacingRight ? Action.BeginThrowFistInAir_Right : Action.BeginThrowFistInAir_Left;
+                Attack(15, RaymanBody.RaymanBodyPartType.Fist, new Vector2(16, -16), false);
+            }
+            else if (CanAttackWithFist(2))
+            {
+                ActionId = IsFacingRight ? Action.BeginThrowSecondFistInAir_Right : Action.BeginThrowSecondFistInAir_Left;
+                Attack(15, RaymanBody.RaymanBodyPartType.SecondFist, new Vector2(16, -16), false);
+            }
+        }
     }
 
     private bool CheckForDamage()

@@ -31,7 +31,8 @@ public partial class Rayman
         ChargeFist_Left = 17,
         Land_Right = 18,
         Land_Left = 19,
-
+        ThrowFistInAir_Right = 20,
+        ThrowFistInAir_Left = 21,
         HangOnEdge_Begin_Right = 22,
         HangOnEdge_Begin_Left = 23,
         EndChargeFist_Right = 24,
@@ -40,7 +41,10 @@ public partial class Rayman
         BeginChargeFist_Left = 27,
         Helico_Right = 28,
         Helico_Left = 29,
-
+        BeginThrowFistInAir_Right = 30,
+        BeginThrowFistInAir_Left = 31,
+        BeginThrowSecondFistInAir_Right = 32,
+        BeginThrowSecondFistInAir_Left = 33,
         BeginChargeSecondFist_Right = 34,
         BeginChargeSecondFist_Left = 35,
         ChargeSecondFist_Right = 36,
