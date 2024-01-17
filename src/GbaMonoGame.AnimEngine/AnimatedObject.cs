@@ -232,6 +232,7 @@ public class AnimatedObject : AObject
     public void FrameChannelSprite()
     {
         // TODO: Implement
+        Logger.NotImplemented("Not implemented framing channel sprites");
     }
 
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
@@ -329,8 +330,8 @@ public class AnimatedObject : AObject
                 case AnimationChannelType.DisplacementVector:
                     if (!HasExecutedFrame)
                     {
-                        // Unused in Rayman 3, so we can probably ignore this
-                        throw new NotImplementedException("Not implemented displacement vectors");
+                        // Appears mostly unused in Rayman 3. Only used for ship in final boss and Ly, but seems to always be 0 anyway.
+                        Logger.NotImplemented("Not implemented displacement vectors");
                     }
                     break;
 

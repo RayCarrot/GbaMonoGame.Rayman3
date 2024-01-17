@@ -76,8 +76,7 @@ public static class Engine
             ? new FileSerializerLogger(serializerLogFilePath)
             : null;
 
-        // TODO: Add a logger
-        Context = new Context(String.Empty, serializerLogger: serializerLogger);
+        Context = new Context(String.Empty, serializerLogger: serializerLogger, systemLogger: new BinarySerializerSystemLogger());
         Settings = new GbaEngineSettings { Game = game, Platform = platform };
         Context.AddSettings(Settings);
 

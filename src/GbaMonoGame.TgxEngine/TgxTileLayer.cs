@@ -46,6 +46,7 @@ public class TgxTileLayer : TgxGameLayer
         if (tileKit.Idx_AnimatedTileKit != 0xFF)
         {
             // TODO: Load animated tiles
+            Logger.NotImplemented("Not implemented animated tile kits");
         }
 
         byte[] tileSet;

@@ -217,6 +217,7 @@ public class MovableActor : InteractableActor
         if (Speed.Y < 0)
         {
             // TODO: Implement
+            Logger.NotImplemented("Not implemented extended map collision when moving up");
         }
         // Moving down or not moving vertically
         else

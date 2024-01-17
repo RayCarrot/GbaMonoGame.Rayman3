@@ -27,6 +27,7 @@ public class TransitionsFX
         else if (FadeCoefficient == 0)
         {
             // TODO: Implement
+            Logger.NotImplemented("Not implemented transition when fade coefficient is 0");
         }
         else
         {

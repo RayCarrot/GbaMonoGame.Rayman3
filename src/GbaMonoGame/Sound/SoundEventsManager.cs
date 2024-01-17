@@ -52,6 +52,9 @@ public static class SoundEventsManager
             if (playingSong.EventId == soundEventId && playingSong.Obj == obj)
             {
                 // TODO: Fade out
+                if (fadeOut > 0)
+                    Logger.NotImplemented("Not implemented fading out song");
+                
                 playingSong.SoundInstance.Stop();
 
                 if (!foundSong)
