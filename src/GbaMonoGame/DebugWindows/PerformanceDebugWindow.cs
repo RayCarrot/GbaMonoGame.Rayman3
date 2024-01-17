@@ -68,7 +68,7 @@ public class PerformanceDebugWindow : DebugWindow
         ImGui.Spacing();
         MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
         ImGui.Spacing();
-        DrawCallsGraph.Draw("Draw calls", 0, 100, new System.Numerics.Vector2(800, 200));
+        DrawCallsGraph.Draw("Draw calls", 0, 100, new System.Numerics.Vector2(800, 80));
     }
 
     private class Graph
