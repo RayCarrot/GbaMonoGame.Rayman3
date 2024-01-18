@@ -3,7 +3,6 @@ using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
-using MechModel = BinarySerializer.Ubisoft.GbaEngine.MechModel;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -17,9 +16,9 @@ public partial class Rayman
         CheckSlide();
         ManageSlide();
 
-        if (CheckForDamage())
+        if (ManageHit())
         {
-            Fsm.ChangeAction(FUN_08031d24);
+            Fsm.ChangeAction(Fsm_Hit);
             return false;
         }
 
@@ -108,10 +107,10 @@ public partial class Rayman
         if (field23_0x98 != 0)
             field23_0x98--;
 
-        if (IsOnInstaKillType())
+        if (IsDead())
         {
             if (!MultiplayerManager.IsInMultiplayer)
-                Fsm.ChangeAction(FUN_08032650);
+                Fsm.ChangeAction(Fsm_Dying);
             else
                 Fsm.ChangeAction(FUN_08033228);
 
@@ -123,7 +122,7 @@ public partial class Rayman
 
     private bool FsmStep_DoInTheAir()
     {
-        if (CheckForDamage() &&
+        if (ManageHit() &&
             (Fsm.EqualsAction(Fsm_StopHelico) ||
              Fsm.EqualsAction(Fsm_Helico) ||
              Fsm.EqualsAction(Fsm_Jump) ||
@@ -152,11 +151,11 @@ public partial class Rayman
         if (field23_0x98 != 0)
             field23_0x98--;
 
-        CheckForDamage();
+        ManageHit();
 
         if (HitPoints == 0)
         {
-            Fsm.ChangeAction(FUN_08032650);
+            Fsm.ChangeAction(Fsm_Dying);
             return false;
         }
 
@@ -172,9 +171,9 @@ public partial class Rayman
         CheckSlide();
         ManageSlide();
 
-        if (CheckForDamage())
+        if (ManageHit())
         {
-            Fsm.ChangeAction(FUN_08031d24);
+            Fsm.ChangeAction(Fsm_Hit);
             return false;
         }
 
@@ -1618,7 +1617,7 @@ public partial class Rayman
 
             case FsmAction.Step:
                 // Check for damage
-                if (field4_0x78?.Type == (int)ActorType.Plum)
+                if (AttachedObject?.Type == (int)ActorType.Plum)
                 {
                     if (!FsmStep_FUN_08020e8c())
                         return;
@@ -1690,7 +1689,7 @@ public partial class Rayman
                         Timer = GameTime.ElapsedFrames;
                     }
 
-                    if (Engine.Settings.Platform == Platform.NGage && field4_0x78?.Type == (int)ActorType.Plum && IsLocalPlayer)
+                    if (Engine.Settings.Platform == Platform.NGage && AttachedObject?.Type == (int)ActorType.Plum && IsLocalPlayer)
                     {
                         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
                         cam.HorizontalOffset = 45;
@@ -1732,10 +1731,10 @@ public partial class Rayman
                     uint chargePower = GameTime.ElapsedFrames - Timer;
 
                     // Move plum
-                    if (field4_0x78?.Type == (int)ActorType.Plum)
+                    if (AttachedObject?.Type == (int)ActorType.Plum)
                     {
                         // TODO: Implement and handle message to move plum
-                        field4_0x78.ProcessMessage(IsFacingRight ? (Message)0x40c : (Message)0x40d, chargePower);
+                        AttachedObject.ProcessMessage(IsFacingRight ? (Message)0x40c : (Message)0x40d, chargePower);
                     }
 
                     if (ActionId is
@@ -1834,7 +1833,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (type == 1 && field4_0x78?.Type == (int)ActorType.Plum)
+                if (type == 1 && AttachedObject?.Type == (int)ActorType.Plum)
                 {
                     Fsm.ChangeAction(FUN_080224f4);
                     return;
@@ -1850,12 +1849,12 @@ public partial class Rayman
                 if (Engine.Settings.Platform == Platform.NGage &&
                     ActionId is Action.Damage_Shock_Right or Action.Damage_Shock_Left)
                 {
-                    ActionId = IsFacingRight ? Action.Damage_EndShock_Right : Action.Damage_EndShock_Left;
+                    ActionId = IsFacingRight ? Action.Damage_Hit_Right : Action.Damage_Hit_Left;
                     Fsm.ChangeAction(FUN_1005bf7c);
                     return;
                 }
 
-                if (Speed.Y > 1 && field4_0x78?.Type != (int)ActorType.Plum)
+                if (Speed.Y > 1 && AttachedObject?.Type != (int)ActorType.Plum)
                 {
                     Fsm.ChangeAction(Fsm_Fall);
                     return;
@@ -2373,6 +2372,46 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_Hit(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                if (ActionId is not (Action.Damage_Shock_Right or Action.Damage_Shock_Left))
+                    ActionId = IsFacingRight ? Action.Damage_Hit_Right : Action.Damage_Hit_Left;
+                break;
+
+            case FsmAction.Step:
+                if (IsActionFinished)
+                    Fsm.ChangeAction(Fsm_Default);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_Dying(FsmAction action)
+    {
+        // TODO: Implement
+        switch (action)
+        {
+            case FsmAction.Init:
+                
+                break;
+
+            case FsmAction.Step:
+                FrameManager.SetNextFrame(Frame.Current); // Temporary to reload level on dying
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }
@@ -2380,9 +2419,7 @@ public partial class Rayman
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
-    private void FUN_08031d24(FsmAction action) { }
     private void FUN_0802cb38(FsmAction action) { }
-    private void FUN_08032650(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }

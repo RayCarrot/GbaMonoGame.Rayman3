@@ -1,0 +1,47 @@
+﻿using GbaMonoGame.Engine2d;
+
+namespace GbaMonoGame.Rayman3;
+
+public partial class LavaSplash
+{
+    private void Fsm_Default(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                if (ActionId == Action.MainActorDrownSplash)
+                {
+                    if (IsActionFinished)
+                    {
+                        ProcessMessage(Message.Destroy);
+                    }
+                    else
+                    {
+                        if (LinkedMovementActor != null)
+                            LinkedMovementActor = null;
+                    }
+                }
+                else
+                {
+                    if (IsActionFinished && ActionId == Action.PlumLandedSplash)
+                        ActionId = Action.Idle;
+                    else if (Speed.X != 0 && ActionId == Action.Idle)
+                        ActionId = Action.Moving;
+                    else if (Speed.X == 0 && ActionId == Action.Moving)
+                        ActionId = Action.Idle;
+                }
+
+                if (LinkedMovementActor != null)
+                    Position = LinkedMovementActor.Position;
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+}

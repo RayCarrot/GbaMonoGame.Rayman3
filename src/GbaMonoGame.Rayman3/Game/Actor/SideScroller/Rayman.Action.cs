@@ -51,13 +51,14 @@ public partial class Rayman
         ChargeSecondFist_Left = 37,
         EndChargeSecondFist_Right = 38,
         EndChargeSecondFist_Left = 39,
-
+        Drown_Right = 40,
+        Drown_Left = 41,
         NearEdgeBehind_Right = 42,
         NearEdgeBehind_Left = 43,
         NearEdgeFront_Right = 44,
         NearEdgeFront_Left = 45,
-        Damage_EndShock_Right = 46,
-        Damage_EndShock_Left = 47,
+        Damage_Hit_Right = 46,
+        Damage_Hit_Left = 47,
 
         Victory_Right = 50,
         Victory_Left = 51,

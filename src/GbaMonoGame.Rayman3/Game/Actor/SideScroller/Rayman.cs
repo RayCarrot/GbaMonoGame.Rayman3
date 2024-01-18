@@ -49,13 +49,16 @@ public sealed partial class Rayman : MovableActor
     public ActorResource Resource { get; }
     private Action? NextActionId { get; set; }
     public Dictionary<RaymanBody.RaymanBodyPartType, BaseActor> BodyParts { get; } = new(4); // Array with 4 entries in the game
-    public BaseActor field4_0x78 { get; set; } // TODO: Name
+    public BaseActor AttachedObject { get; set; }
     public byte Charge { get; set; }
     public byte HangOnEdgeDelay { get; set; }
     public uint Timer { get; set; }
+    public uint InvulnerabilityStartTime { get; set; }
+    public byte InvulnerabilityDuration { get; set; }
     public float PreviousXSpeed { get; set; }
     public PhysicalType? SlideType { get; set; } // Game uses 0x20 for null (first not solid type)
     public bool IsSliding => SlideType != null && Math.Abs(PreviousXSpeed) > 1.5f;
+    public int PrevHitPoints { get; set; }
     public float PrevSpeedY { get; set; }
 
     public bool Debug_NoClip { get; set; } // Custom no-clip mode
@@ -538,14 +541,64 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckForDamage()
+    private void CheckForTileDamage()
+    {
+        Box box = GetVulnerabilityBox();
+        box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - box.MaxY - Constants.TileSize);
+
+        if (Scene.GetPhysicalType(new Vector2(box.MaxX, box.MaxY)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.MaxX, box.Center.Y)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.MaxX, box.MinY)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.Center.X, box.MinY)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.MinX, box.MinY)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.MinX, box.Center.Y)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.MinX, box.MaxY)) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(new Vector2(box.Center.X, box.MaxY)) == PhysicalTypeValue.Damage)
+        {
+            ReceiveDamage(1);
+        }
+    }
+
+    private bool ManageHit()
     {
         if (MultiplayerManager.IsInMultiplayer || (GameInfo.Cheats & CheatFlags.Invulnerable) != 0)
             return false;
 
-        // TODO: Implement
+        CheckForTileDamage();
 
-        return false;
+        bool takenDamage = false;
+
+        // Check for taken damage
+        if (HitPoints < PrevHitPoints)
+        {
+            IsInvulnerable = true;
+            InvulnerabilityStartTime = GameTime.ElapsedFrames;
+
+            if (InvulnerabilityDuration == 0)
+                InvulnerabilityDuration = 120;
+
+            if (AttachedObject != null)
+            {
+                // TODO: If keg, sphere or caterpillar then send message
+                AttachedObject = null;
+            }
+
+            takenDamage = true;
+
+            if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoRcvH1_Mix04))
+                PlaySound(Rayman3SoundEvent.Play__OnoRcvH1_Mix04);
+        }
+
+        // Check for invulnerability to end
+        if (IsInvulnerable && GameTime.ElapsedFrames - InvulnerabilityStartTime > InvulnerabilityDuration)
+        {
+            IsInvulnerable = false;
+            InvulnerabilityDuration = 0;
+        }
+
+        PrevHitPoints = HitPoints;
+
+        return takenDamage;
     }
 
     private bool FUN_0802a0f8()
@@ -556,8 +609,8 @@ public sealed partial class Rayman : MovableActor
 
     private void SlidingOnSlippery()
     {
-        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SkiLoop1) && Scene.Camera.LinkedObject == this)
-            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SkiLoop1);
+        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SkiLoop1))
+            PlaySound(Rayman3SoundEvent.Play__SkiLoop1);
 
         SoundEventsManager.FUN_080ac468(Rayman3SoundEvent.Play__SkiLoop1, Math.Abs(Speed.X));
 
@@ -816,26 +869,142 @@ public sealed partial class Rayman : MovableActor
         // TODO: Implement
     }
 
-    private bool IsOnInstaKillType()
+    private bool IsLavaInLevel()
+    {
+        return GameInfo.MapId switch
+        {
+            MapId.WoodLight_M1 => false,
+            MapId.WoodLight_M2 => false,
+            MapId.FairyGlade_M1 => false,
+            MapId.FairyGlade_M2 => false,
+            MapId.MarshAwakening1 => false,
+            MapId.BossMachine => false,
+            MapId.SanctuaryOfBigTree_M1 => false,
+            MapId.SanctuaryOfBigTree_M2 => false,
+            MapId.MissileSurPattes1 => false,
+            MapId.EchoingCaves_M1 => false,
+            MapId.EchoingCaves_M2 => false,
+            MapId.CavesOfBadDreams_M1 => false,
+            MapId.CavesOfBadDreams_M2 => false,
+            MapId.BossBadDreams => false,
+            MapId.MenhirHills_M1 => false,
+            MapId.MenhirHills_M2 => false,
+            MapId.MarshAwakening2 => false,
+
+            MapId.SanctuaryOfStoneAndFire_M1 => true,
+            MapId.SanctuaryOfStoneAndFire_M2 => true,
+            MapId.SanctuaryOfStoneAndFire_M3 => true,
+            MapId.BeneathTheSanctuary_M1 => true,
+            MapId.BeneathTheSanctuary_M2 => true,
+
+            MapId.ThePrecipice_M1 => false,
+            MapId.ThePrecipice_M2 => false,
+            MapId.BossRockAndLava => true,
+            MapId.TheCanopy_M1 => false,
+            MapId.TheCanopy_M2 => false,
+
+            MapId.SanctuaryOfRockAndLava_M1 => true,
+            MapId.SanctuaryOfRockAndLava_M2 => true,
+            MapId.SanctuaryOfRockAndLava_M3 => true,
+
+            MapId.TombOfTheAncients_M1 => false,
+            MapId.TombOfTheAncients_M2 => false,
+            MapId.BossScaleMan => false,
+
+            MapId.IronMountains_M1 => true,
+            MapId.IronMountains_M2 => true,
+            MapId.MissileSurPattes2 => true,
+            MapId.PirateShip_M1 => true,
+            MapId.PirateShip_M2 => true,
+            MapId.BossFinal_M1 => true,
+
+            MapId.BossFinal_M2 => false,
+            MapId.Bonus1 => false,
+            MapId.Bonus2 => false,
+
+            MapId.Bonus3 => true,
+
+            MapId.Bonus4 => false,
+
+            MapId._1000Lums => true,
+
+            MapId.ChallengeLy1 => false,
+            MapId.ChallengeLy2 => false,
+            MapId.ChallengeLyGCN => false,
+            MapId.Power1 => false,
+            MapId.Power2 => false,
+            MapId.Power3 => false,
+            MapId.Power4 => false,
+            MapId.Power5 => false,
+            MapId.Power6 => false,
+            MapId.World1 => false,
+            MapId.World2 => false,
+            MapId.World3 => false,
+            MapId.World4 => false,
+            MapId.WorldMap => false,
+
+            // NOTE: Game for some reason does this, but it makes no sense since there is no map 133???
+            // 133 => true,
+
+            _ => false
+        };
+    }
+
+    private bool IsDead()
     {
         Box detectionBox = GetDetectionBox();
 
-        byte type = 0xFF;
+        PhysicalTypeValue type = PhysicalTypeValue.None;
         for (int i = 0; i < 3; i++)
         {
             type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 16 * i, detectionBox.MaxY - 1));
 
-            if (type is 32 or 74 or 48 or 90)
+            if (type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.Lava or PhysicalTypeValue.Water or PhysicalTypeValue.MoltenLava)
                 break;
         }
 
-        if ((HitPoints != 0 && type is not (32 or 74 or 48 or 90)) ||
-            (Fsm.EqualsAction(FUN_080284ac) && (type is 32 or 90)))
+        if (HitPoints == 0 || type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.Lava or PhysicalTypeValue.Water or PhysicalTypeValue.MoltenLava)
+        {
+            if (Fsm.EqualsAction(FUN_080284ac) && type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
+                return false;
+
+            if (AttachedObject != null)
+            {
+                // TODO: If keg, sphere or caterpillar then send message
+                AttachedObject = null;
+            }
+
+            // Handle drowning
+            if (IsLavaInLevel() && type is PhysicalTypeValue.Lava or PhysicalTypeValue.MoltenLava)
+            {
+                LavaSplash lavaSplash = Scene.KnotManager.CreateProjectile<LavaSplash>(ActorType.LavaSplash);
+                if (lavaSplash != null)
+                {
+                    lavaSplash.Position = Position;
+                    lavaSplash.InitMainActorDrown();
+                }
+
+                ActionId = IsFacingRight ? Action.Drown_Right : Action.Drown_Left;
+            }
+            else if (type == PhysicalTypeValue.Water)
+            {
+                WaterSplash waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                if (waterSplash != null)
+                    waterSplash.Position = Position;
+
+                ActionId = IsFacingRight ? Action.Drown_Right : Action.Drown_Left;
+            }
+            else if (type == PhysicalTypeValue.MoltenLava)
+            {
+                ActionId = IsFacingRight ? Action.Drown_Right : Action.Drown_Left;
+            }
+
+            return true;
+        }
+        else
         {
             return false;
         }
-
-        throw new NotImplementedException();
     }
 
     private void UpdateLastCompletedLevel()
@@ -950,7 +1119,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_LinkMovement:
-                if (!Fsm.EqualsAction(FUN_08032650))
+                if (!Fsm.EqualsAction(Fsm_Dying))
                 {
                     if (Fsm.EqualsAction(Fsm_Jump) && Speed.Y < 1)
                         return false;
@@ -1026,7 +1195,7 @@ public sealed partial class Rayman : MovableActor
         AnimatedObject.YPriority = IsLocalPlayer ? 16 : 17;
 
         Timer = 0;
-        //field10_0x84 = 0;
+        InvulnerabilityStartTime = 0;
         //field11_0x88 = 0;
         NextActionId = null;
         BodyParts.Clear();
@@ -1046,18 +1215,18 @@ public sealed partial class Rayman : MovableActor
         Flag1_D = false;
         FinishedMap = false;
         Flag1_F = false;
-        //field17_0x92 = HitPoints;
+        PrevHitPoints = HitPoints;
         PrevSpeedY = 0;
         PreviousXSpeed = 0;
         SlideType = null;
-        field4_0x78 = null;
+        AttachedObject = null;
         field18_0x93 = 0;
         //field13_0x8c = 0;
         //field14_0x8e = 0;
         //field25_0x9a = HitPoints;
         field23_0x98 = 0;
         HangOnEdgeDelay = 0;
-        //field_0x99 = 0;
+        InvulnerabilityDuration = 0;
         Charge = 0;
         field22_0x97 = 0;
 

@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-public partial class Splash
+public partial class WaterSplash
 {
     private void Fsm_Default(FsmAction action)
     {

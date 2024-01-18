@@ -6,7 +6,7 @@ public enum ActorType
     RaymanBody = 1,
 
     Piranha = 3,
-    Splash = 4,
+    WaterSplash = 4,
     Explosion = 5,
 
     MovingFlowerPlatform = 8,
@@ -22,6 +22,7 @@ public enum ActorType
 
     MovingWoodenPlatform = 53,
     Plum = 54, // TODO: Implement
+    LavaSplash = 55,
 
     FlowerFire = 61,
 

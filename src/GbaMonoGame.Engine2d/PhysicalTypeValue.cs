@@ -22,6 +22,8 @@ public enum PhysicalTypeValue : byte
     SlideAngle30Right2 = 25,
 
     // Rayman 3
+    InstaKill = 32, // TODO: Add to collision tile set
+    Damage = 33, // TODO: Add to collision tile set
     Enemy_Left = 34,
     Enemy_Right = 35,
     Enemy_Up = 36,
@@ -46,6 +48,8 @@ public enum PhysicalTypeValue : byte
     ClimbSpider3 = 53,
     ClimbSpider4 = 54,
 
+    Lava = 74, // TODO: Add to collision tile set
+
     MovingPlatform_CounterClockwise45 = 81,
     MovingPlatform_CounterClockwise90 = 82,
     MovingPlatform_CounterClockwise135 = 83, // TODO: Add to collision tile set
@@ -53,6 +57,8 @@ public enum PhysicalTypeValue : byte
     MovingPlatform_CounterClockwise225 = 85, // TODO: Add to collision tile set
     MovingPlatform_CounterClockwise270 = 86,
     MovingPlatform_CounterClockwise315 = 87,
+
+    MoltenLava = 90,
 
     None = 0xFF,
 }

@@ -17,9 +17,9 @@ public sealed partial class Piranha : MovableActor
 
     private void SpawnSplash()
     {
-        Splash splash = Scene.KnotManager.CreateProjectile<Splash>(ActorType.Splash);
-        if (splash != null)
-            splash.Position = Position;
+        WaterSplash waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+        if (waterSplash != null)
+            waterSplash.Position = Position;
     }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)

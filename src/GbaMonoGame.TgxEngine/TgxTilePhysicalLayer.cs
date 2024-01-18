@@ -8,6 +8,8 @@ public class TgxTilePhysicalLayer : TgxGameLayer
     {
         CollisionMap = gameLayerResource.PhysicalLayer.CollisionMap;
 
+        // TODO: Log not implemented if we have undefined collision types
+
         // TODO: Don't do this unless some debug mode is enabled or it'll impact performance
         // Collision map screen for debugging
         DebugScreen = new GfxScreen(-1)

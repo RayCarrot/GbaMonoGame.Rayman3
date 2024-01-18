@@ -87,6 +87,9 @@ public class ActionActor : BaseActor
 
     public void ReceiveDamage(int damage)
     {
+        if (IsInvulnerable)
+            return;
+
         if (damage < HitPoints)
             HitPoints -= damage;
         else

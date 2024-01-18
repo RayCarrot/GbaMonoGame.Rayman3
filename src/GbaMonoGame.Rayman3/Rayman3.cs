@@ -304,7 +304,7 @@ public class Rayman3 : GbaGame
             { ActorType.RaymanBody, (instanceId, scene, resource) => new RaymanBody(instanceId, scene, resource) },
 
             { ActorType.Piranha, (instanceId, scene, resource) => new Piranha(instanceId, scene, resource) },
-            { ActorType.Splash, (instanceId, scene, resource) => new Splash(instanceId, scene, resource) },
+            { ActorType.WaterSplash, (instanceId, scene, resource) => new WaterSplash(instanceId, scene, resource) },
             { ActorType.Explosion, (instanceId, scene, resource) => new Explosion(instanceId, scene, resource) },
 
             { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
@@ -317,6 +317,7 @@ public class Rayman3 : GbaGame
             { ActorType.Butterfly, (instanceId, scene, resource) => new Butterfly(instanceId, scene, resource) },
 
             { ActorType.MovingWoodenPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
+            { ActorType.LavaSplash, (instanceId, scene, resource) => new LavaSplash(instanceId, scene, resource) },
 
             { ActorType.FlowerFire, (instanceId, scene, resource) => new FlowerFire(instanceId, scene, resource) },
 

@@ -186,10 +186,7 @@ public class Scene2D
 
     public bool IsHitMainActor(InteractableActor actor)
     {
-        // TODO: Implement
-        Logger.NotImplemented("Not implemented checking for main actor hit");
-
-        return false;
+        return actor.GetAttackBox().Intersects(MainActor.GetVulnerabilityBox());
     }
 
     public InteractableActor IsHitActor(InteractableActor actor)
