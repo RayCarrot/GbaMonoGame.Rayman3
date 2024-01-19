@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public class LumsBar : Bar
 {
-    private LumsBarState State { get; set; } = LumsBarState.Wait;
+    private BarState State { get; set; } = BarState.Wait;
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
     private int CollectedLumsDigitValue1 { get; set; }
@@ -19,7 +19,7 @@ public class LumsBar : Bar
 
     public void AddLums(int count)
     {
-        State = LumsBarState.MoveIn;
+        State = BarState.MoveIn;
         WaitTimer = 0;
 
         CollectedLumsDigitValue2 += count;
@@ -105,23 +105,23 @@ public class LumsBar : Bar
 
         switch (State)
         {
-            case LumsBarState.Hide:
+            case BarState.Hide:
                 YOffset = 35;
                 break;
                 
-            case LumsBarState.MoveIn:
+            case BarState.MoveIn:
                 if (YOffset > 0)
                 {
                     YOffset -= 2;
                 }
                 else
                 {
-                    State = Mode == 2 ? LumsBarState.Wait : LumsBarState.Bounce;
+                    State = Mode == 2 ? BarState.Wait : BarState.Bounce;
                     WaitTimer = 0;
                 }
                 break;
 
-            case LumsBarState.MoveOut:
+            case BarState.MoveOut:
                 if (YOffset < 35)
                 {
                     YOffset++;
@@ -129,11 +129,11 @@ public class LumsBar : Bar
                 else
                 {
                     YOffset = 35;
-                    State = LumsBarState.Hide;
+                    State = BarState.Hide;
                 }
                 break;
 
-            case LumsBarState.Bounce:
+            case BarState.Bounce:
                 if (WaitTimer < 35)
                 {
                     YOffset = -BounceData[WaitTimer];
@@ -142,18 +142,18 @@ public class LumsBar : Bar
                 else
                 {
                     YOffset = 0;
-                    State = LumsBarState.Wait;
+                    State = BarState.Wait;
                     WaitTimer = 0;
                 }
                 break;
 
-            case LumsBarState.Wait:
+            case BarState.Wait:
                 if (Mode != 2)
                 {
                     if (WaitTimer >= 180)
                     {
                         YOffset = 0;
-                        State = LumsBarState.MoveOut;
+                        State = BarState.MoveOut;
                     }
                     else
                     {
@@ -163,7 +163,7 @@ public class LumsBar : Bar
                 break;
         }
 
-        if (State != LumsBarState.Hide)
+        if (State != BarState.Hide)
         {
             LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8 - YOffset);
             CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24 - YOffset);
@@ -183,14 +183,5 @@ public class LumsBar : Bar
             animationPlayer.PlayFront(TotalLumsDigit1);
             animationPlayer.PlayFront(TotalLumsDigit2);
         }
-    }
-
-    private enum LumsBarState
-    {
-        Hide,
-        MoveIn,
-        MoveOut,
-        Bounce,
-        Wait,
     }
 }

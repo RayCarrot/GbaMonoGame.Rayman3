@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public class CagesBar : Bar
 {
-    private CagesBarState State { get; set; } = CagesBarState.Wait;
+    private BarState State { get; set; } = BarState.Wait;
     private int WaitTimer { get; set; }
     private int XOffset { get; set; }
     private int CollectedCagesDigitValue { get; set; }
@@ -16,7 +16,7 @@ public class CagesBar : Bar
 
     public void AddCages(int count)
     {
-        State = CagesBarState.MoveIn;
+        State = BarState.MoveIn;
         WaitTimer = 0;
         CollectedCagesDigitValue += count;
     }
@@ -68,23 +68,23 @@ public class CagesBar : Bar
 
         switch (State)
         {
-            case CagesBarState.Hide:
+            case BarState.Hide:
                 XOffset = 65;
                 break;
 
-            case CagesBarState.MoveIn:
+            case BarState.MoveIn:
                 if (XOffset > 0)
                 {
                     XOffset -= 3;
                 }
                 else
                 {
-                    State = Mode == 2 ? CagesBarState.Wait : CagesBarState.Bounce;
+                    State = Mode == 2 ? BarState.Wait : BarState.Bounce;
                     WaitTimer = 0;
                 }
                 break;
 
-            case CagesBarState.MoveOut:
+            case BarState.MoveOut:
                 if (XOffset < 65)
                 {
                     XOffset += 2;
@@ -92,11 +92,11 @@ public class CagesBar : Bar
                 else
                 {
                     XOffset = 65;
-                    State = CagesBarState.Hide;
+                    State = BarState.Hide;
                 }
                 break;
 
-            case CagesBarState.Bounce:
+            case BarState.Bounce:
                 if (WaitTimer < 35)
                 {
                     XOffset = BounceData[WaitTimer];
@@ -105,18 +105,18 @@ public class CagesBar : Bar
                 else
                 {
                     XOffset = 0;
-                    State = CagesBarState.Wait;
+                    State = BarState.Wait;
                     WaitTimer = 0;
                 }
                 break;
 
-            case CagesBarState.Wait:
+            case BarState.Wait:
                 if (Mode != 2)
                 {
                     if (WaitTimer >= 180)
                     {
                         XOffset = 0;
-                        State = CagesBarState.MoveOut;
+                        State = BarState.MoveOut;
                     }
                     else
                     {
@@ -126,7 +126,7 @@ public class CagesBar : Bar
                 break;
         }
 
-        if (State != CagesBarState.Hide)
+        if (State != BarState.Hide)
         {
             CageIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
             CollectedCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);
@@ -138,14 +138,5 @@ public class CagesBar : Bar
             animationPlayer.PlayFront(CollectedCagesDigit);
             animationPlayer.PlayFront(TotalCagesDigit);
         }
-    }
-
-    private enum CagesBarState
-    {
-        Hide,
-        MoveIn,
-        MoveOut,
-        Bounce,
-        Wait,
     }
 }

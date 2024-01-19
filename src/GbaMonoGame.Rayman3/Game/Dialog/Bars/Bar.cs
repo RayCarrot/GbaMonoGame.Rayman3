@@ -24,4 +24,13 @@ public abstract class Bar
     public abstract void Init();
     public abstract void Load();
     public abstract void Draw(AnimationPlayer animationPlayer);
+
+    protected enum BarState
+    {
+        Hide,
+        MoveIn,
+        MoveOut,
+        Bounce,
+        Wait,
+    }
 }

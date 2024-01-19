@@ -125,7 +125,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
         // TODO: More setup...
-        UserInfo = new UserInfoSideScroller(GameInfo.Level.HasBlueLum);
+        UserInfo = new UserInfoSideScroller(Scene, GameInfo.Level.HasBlueLum);
         Scene.AddDialog(UserInfo, false, false);
         // TODO: More setup...
         Scene.Init();
