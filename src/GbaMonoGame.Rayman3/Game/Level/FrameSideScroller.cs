@@ -38,6 +38,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     public TransitionsFX TransitionsFX { get; set; }
     public UserInfoSideScroller UserInfo { get; set; }
+    public FogDialog Fog { get; set; }
 
     public bool CanPause { get; set; }
     public bool IsTimed { get; set; }
@@ -121,10 +122,29 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         GameInfo.GameCubeCollectedYellowLumsCount = 0;
         GameInfo.GameCubeCollectedCagesCount = 0;
         GameInfo.LevelType = LevelType.Normal;
-        // TODO: More setup...
+
+        CanPause = true;
         TransitionsFX = new TransitionsFX();
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
+
+        if (GameInfo.MapId is 
+            MapId.SanctuaryOfBigTree_M1 or 
+            MapId.SanctuaryOfBigTree_M2 or 
+            MapId.MenhirHills_M1 or 
+            MapId.MenhirHills_M2 or 
+            MapId.ThePrecipice_M1 or 
+            MapId.TheCanopy_M2 or 
+            MapId.Bonus1)
+        {
+            Fog = new FogDialog(Scene.Playfield);
+            Scene.AddDialog(Fog, false, false);
+        }
+        else
+        {
+            Fog = null;
+        }
+
         // TODO: More setup...
         UserInfo = new UserInfoSideScroller(Scene, GameInfo.Level.HasBlueLum);
         Scene.AddDialog(UserInfo, false, false);
@@ -156,6 +176,13 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     public override void UnInit()
     {
         Scene.UnInit();
+        Scene = null;
+
+        CircleFXTimer = 0;
+        CircleFXMode = CircleFXTransitionMode.None;
+        CircleFXScreen = null;
+        CircleFXRenderer = null;
+
         GameInfo.StopLevelMusic();
         SoundEventsManager.StopAll();
     }
