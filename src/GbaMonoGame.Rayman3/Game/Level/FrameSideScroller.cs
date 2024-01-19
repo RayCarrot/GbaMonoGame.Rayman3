@@ -118,7 +118,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         GameInfo.MapId = GameInfo.NextMapId ?? throw new Exception("No map id set");
         GameInfo.YellowLumsCount = GameInfo.Level.LumsCount;
         GameInfo.CagesCount = GameInfo.Level.CagesCount;
-        // TODO: More setup...
+        GameInfo.GameCubeCollectedYellowLumsCount = 0;
+        GameInfo.GameCubeCollectedCagesCount = 0;
         GameInfo.LevelType = LevelType.Normal;
         // TODO: More setup...
         TransitionsFX = new TransitionsFX();

@@ -22,6 +22,8 @@ public static class GameInfo
     public static int LoadedCages { get; set; }
     public static int YellowLumsCount { get; set; }
     public static int CagesCount { get; set; }
+    public static int GameCubeCollectedYellowLumsCount { get; set; } // Unused since GCN levels don't have lums
+    public static int GameCubeCollectedCagesCount { get; set; } // Unused since GCN levels don't have cages
     public static int GreenLums { get; set; }
     public static int LastGreenLumAlive { get; set; }
     public static Vector2 CheckpointPosition { get; set; }
@@ -122,12 +124,10 @@ public static class GameInfo
     {
         if (LevelType == LevelType.GameCube)
         {
-            throw new NotImplementedException();
+            return GameCubeCollectedYellowLumsCount;
         }
         else
         {
-            // TODO: Different implementation if GCN level
-
             int count = 0;
 
             for (int i = 0; i < Levels[(int)mapId].LumsCount; i++)
@@ -144,7 +144,7 @@ public static class GameInfo
     {
         if (LevelType == LevelType.GameCube)
         {
-            throw new NotImplementedException();
+            return GameCubeCollectedCagesCount;
         }
         else
         {
@@ -200,17 +200,24 @@ public static class GameInfo
     {
         if (LevelType == LevelType.GameCube)
         {
-            // TODO: Implement
-            return;
+            GameCubeCollectedYellowLumsCount++;
+            
+            if (GameCubeCollectedYellowLumsCount == YellowLumsCount)
+            {
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
+                SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+            }
         }
-
-        KillLum(Level.GlobalLumsIndex + lumId);
-
-        // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
-        if (GetCollectedYellowLumsInLevel(MapId) == YellowLumsCount && LevelType != LevelType.Race)
+        else
         {
-            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
-            SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+            KillLum(Level.GlobalLumsIndex + lumId);
+
+            // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
+            if (GetCollectedYellowLumsInLevel(MapId) == YellowLumsCount && LevelType != LevelType.Race)
+            {
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
+                SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+            }
         }
     }
 
@@ -218,15 +225,18 @@ public static class GameInfo
     {
         if (LevelType == LevelType.GameCube)
         {
-            // TODO: Implement
-            return;
+            GameCubeCollectedCagesCount++;
+            if (GameCubeCollectedCagesCount == CagesCount)
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
         }
+        else
+        {
+            KillCage(Level.GlobalLumsIndex + cageId);
 
-        KillCage(Level.GlobalLumsIndex + cageId);
-
-        // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
-        if (GetCollectedCagesInLevel(MapId) == CagesCount)
-            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
+            // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
+            if (GetCollectedCagesInLevel(MapId) == CagesCount)
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
+        }
     }
 
     public static void SetPowerBasedOnMap(MapId mapId)
