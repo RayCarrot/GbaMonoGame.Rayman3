@@ -52,7 +52,13 @@ public class GfxRenderer
             // Begin a new batch
             SpriteBatch.Begin(
                 samplerState: SamplerState.PointClamp,
-                blendState: options.Alpha ? BlendState.NonPremultiplied : null,
+                blendState: options.Alpha ? new BlendState
+                {
+                    ColorSourceBlend = Blend.SourceAlpha,
+                    ColorDestinationBlend = Blend.InverseSourceAlpha,
+                    AlphaSourceBlend = Blend.One,
+                    AlphaDestinationBlend = Blend.InverseSourceAlpha,
+                } : null,
                 transformMatrix: options.Camera.Matrix,
                 rasterizerState: RasterizerState);
         }
