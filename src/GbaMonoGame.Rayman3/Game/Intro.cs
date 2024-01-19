@@ -309,13 +309,10 @@ public class Intro : Frame, IHasPlayfield
             Gfx.GetScreen(3).Offset = new Vector2(0, ScrollY);
         }
 
-        if (ScrollY > 600)
+        if (ScrollY > 600 && AlphaTimer <= 0x80)
         {
-            if (AlphaTimer <= 0x80)
-            {
-                Playfield.TileLayers[3].Screen.GbaAlpha = AlphaTimer / 32f;
-                AlphaTimer++;
-            }
+            Playfield.TileLayers[3].Screen.GbaAlpha = AlphaTimer / 32f;
+            AlphaTimer++;
         }
 
         if (ScrollY > 175)
@@ -422,6 +419,7 @@ public class Intro : Frame, IHasPlayfield
         if (SkippedTimer == 10)
         {
             AlphaTimer = 0x80;
+            Playfield.TileLayers[3].Screen.GbaAlpha = AlphaTimer / 32f;
             BlackLumAndLogoObj.CurrentAnimation = 8;
             BlackLumAndLogoObj.CurrentFrame = 5;
             BlackLumAndLogoObj.ScreenPos = Engine.Settings.Platform switch
