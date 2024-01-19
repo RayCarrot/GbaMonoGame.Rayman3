@@ -49,7 +49,7 @@ public class TgxCluster
 
     public Vector2 MaxPosition => GetMaxPosition(Camera);
 
-    public Vector2 ScrollFactor { get; }
+    public Vector2 ScrollFactor { get; set; }
 
     public bool Stationary { get; }
     public GfxCamera Camera { get; }

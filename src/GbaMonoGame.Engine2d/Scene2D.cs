@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Ubisoft.GbaEngine;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
 
@@ -14,8 +15,10 @@ public class Scene2D
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
 
+        Flag_2 = true;
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
         Dialogs = new List<Dialog>(layersCount);
+        DialogFlags = new List<bool>(layersCount);
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
@@ -24,15 +27,30 @@ public class Scene2D
         KnotManager.LoadGameObjects(this, scene);
 
         Camera.LinkedObject = MainActor;
+
+        // Game does this ugly hack here for some reason to disable background scrolling in Cave of Bad Dreams 1 TODO: Allow this to be be ignored
+        if (id == 11)
+            Playfield.Camera.GetCluster(1).ScrollFactor = Vector2.Zero;
+
         Camera.SetFirstPosition();
     }
 
     public CameraActor Camera { get; }
     public List<Dialog> Dialogs { get; }
+    public List<bool> DialogFlags { get; }
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield2D Playfield { get; }
     public int LayersCount { get; }
     public KnotManager KnotManager { get; }
+    public int DialogIndex { get; set; }
+    
+    // Flags
+    public bool Flag_1 { get; set; }
+    public bool Flag_2 { get; set; }
+    public bool Flag_3 { get; set; }
+    public bool Flag_4 { get; set; }
+    public bool Flag_5 { get; set; }
+    public bool NGage_Flag_6 { get; set; }
 
     // TODO: In multiplayer we get the actor from the machine id
     public MovableActor MainActor => (MovableActor)KnotManager.GameObjects[0];
@@ -52,29 +70,135 @@ public class Scene2D
 
     public void Step()
     {
-        RunActors();
-        ResurrectActors();
-        StepActors();
-        MoveActors();
-        RunCaptors();
-        RunCamera();
-        ProcessDialogs();
-        DrawActors();
+        FUN_0809cfd4();
+
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            if (!Flag_1)
+            {
+                RunActors();
+                ResurrectActors();
+                StepActors();
+                MoveActors();
+                RunCaptors();
+                RunCamera();
+                ProcessDialogs();
+                DrawActors();
+            }
+            else
+            {
+                ProcessDialogs();
+            }
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            if (!Flag_1 && !NGage_Flag_6)
+            {
+                RunActors();
+                ResurrectActors();
+                StepActors();
+                MoveActors();
+                RunCaptors();
+                RunCamera();
+                DrawActors();
+            }
+            
+            ProcessDialogs();
+        }
+        else
+        {
+            throw new UnsupportedPlatformException();
+        }
     }
 
-    public void AddDialog(Dialog dialog, bool param1, bool param2) // TODO: USe the bool params like the game does
+    public bool AddDialog(Dialog dialog, bool param1, bool param2)
     {
-        Dialogs.Add(dialog);
-        dialog.Load();
-        dialog.Init();
+        if (Flag_3)
+            return false;
+
+        if (param1)
+        {
+            if (!Flag_2)
+                return false;
+
+            DialogFlags.Add(true);
+            Dialogs.Add(dialog);
+            DialogIndex = Dialogs.Count - 1;
+
+            Flag_1 = true;
+            Flag_3 = true;
+            Flag_4 = true;
+
+            if (param2)
+                Flag_5 = true;
+        }
+        else
+        {
+            DialogFlags.Add(false);
+            Dialogs.Add(dialog);
+
+            dialog.Load();
+            dialog.Init();
+        }
+
+        return true;
     }
 
     public void ProcessDialogs()
     {
-        foreach (Dialog dialog in Dialogs)
+        if (!Flag_3)
         {
-            dialog.Fsm.Step();
-            dialog.Draw(AnimationPlayer);
+            for (int i = DialogIndex; i < Dialogs.Count; i++)
+            {
+                Dialogs[i].Step();
+                Dialogs[i].Draw(AnimationPlayer);
+            }
+        }
+    }
+
+    public void FUN_0809e1cc()
+    {
+        if (!DialogFlags.Last())
+        {
+            Dialogs.RemoveAt(Dialogs.Count - 1);
+            DialogFlags.RemoveAt(DialogFlags.Count - 1);
+        }
+        else
+        {
+            Dialogs.RemoveAt(Dialogs.Count - 1);
+            DialogFlags.RemoveAt(DialogFlags.Count - 1);
+
+            bool flag = true;
+
+            for (int i = Dialogs.Count - 1; i >= 0; i--)
+            {
+                if (DialogFlags[i])
+                {
+                    Flag_1 = true;
+                    DialogIndex = i;
+                    flag = false;
+                    break;
+                }
+            }
+
+            if (flag)
+            {
+                DialogIndex = 0;
+                Flag_1 = false;
+            }
+
+            Flag_4 = false;
+            Flag_3 = true;
+        }
+    }
+
+    public void FUN_0809cfd4()
+    {
+        if (Flag_3)
+        {
+            // TODO: A lot of weird unloading stuff
+
+            Flag_3 = false;
         }
     }
 
