@@ -112,6 +112,14 @@ public class AnimatedObject : AObject
     public AffineMatrix? AffineMatrix { get; set; }
     public int? PaletteIndex { get; set; }
 
+    public bool IsAlphaBlendEnabled { get; set; }
+    public float Alpha { get; set; }
+    public float GbaAlpha
+    {
+        get => Alpha * 16;
+        set => Alpha = value / 16;
+    }
+
     public BoxTable BoxTable { get; set; }
 
     #endregion
@@ -319,7 +327,9 @@ public class AnimatedObject : AObject
                         flipY: channel.FlipY ^ FlipY,
                         priority: SpritePriority,
                         affineMatrix: affineMatrix,
-                        camera: Camera));
+                        camera: Camera,
+                        color: null,
+                        alpha: IsAlphaBlendEnabled ? Alpha : null));
                     break;
 
                 case AnimationChannelType.Sound:

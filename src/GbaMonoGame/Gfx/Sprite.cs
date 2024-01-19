@@ -6,13 +6,10 @@ namespace GbaMonoGame;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, null) { }
+    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color, float? alpha) 
+        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, color, alpha) { }
 
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, color) { }
-
-    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color)
+    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color, float? alpha)
     {
         Texture = texture;
         TextureRectangle = textureRectangle;
@@ -78,6 +75,7 @@ public class Sprite
         Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
         Origin = new Vector2(TextureRectangle.Width / 2f, TextureRectangle.Height / 2f);
         Color = color ?? Color.White;
+        Alpha = alpha;
         Camera = camera;
     }
 
@@ -94,11 +92,19 @@ public class Sprite
     public SpriteEffects Effects { get; }
     public Color Color { get; }
 
+    // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other.
+    public float? Alpha { get; set; }
+
     public GfxCamera Camera { get; }
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.BeginRender(new RenderOptions(false, Camera));
-        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, Color);
+        renderer.BeginRender(new RenderOptions(Alpha != null, Camera));
+
+        Color color = Color;
+        if (Alpha != null)
+            color = new Color(color, Alpha.Value);
+
+        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, color);
     }
 }
