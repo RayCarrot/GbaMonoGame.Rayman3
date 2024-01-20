@@ -40,6 +40,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     public UserInfoSideScroller UserInfo { get; set; }
     public FogDialog Fog { get; set; }
     public LyTimerDialog LyTimer { get; set; }
+    public PauseDialog PauseDialog { get; set; }
 
     public bool CanPause { get; set; }
     public bool IsTimed { get; set; }
@@ -164,7 +165,10 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, GameInfo.Level.HasBlueLum);
         Scene.AddDialog(UserInfo, false, false);
-        // TODO: More setup...
+
+        // Create pause dialog, but don't add yet
+        PauseDialog = new PauseDialog();
+
         Scene.Init();
 
         // Add the circle FX as a screen. On the GBA this is done using a window.
@@ -218,8 +222,22 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     private void Step_Normal()
     {
         Scene.Step();
+        TransitionsFX.StepAll();
         StepCircleFX();
         Scene.AnimationPlayer.Execute();
+        // FUN_08001850(); // TODO: Implement
+        
+        if (IsTimed)
+        {
+            if (GameInfo.RemainingTime != 0)
+                GameInfo.RemainingTime--;
+        }
+
+        if (JoyPad.CheckSingle(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
+        {
+            GameTime.IsPaused = true;
+            // TODO: Go to pause state
+        }
     }
 
     #endregion
