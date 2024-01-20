@@ -125,6 +125,12 @@ public partial class Rayman
         Idle_Bored_Right = 146,
         Idle_Bored_Left = 147,
 
+        Idle_Yoyo_Right = 152,
+        Idle_Yoyo_Left = 153,
+
+        Idle_ChewingGum_Right = 156,
+        Idle_ChewingGum_Left = 157,
+
         ChargeSuperFist_Right = 167,
         ChargeSuperFist_Left = 168,
         ChargeSecondSuperFist_Right = 169,
@@ -146,9 +152,10 @@ public partial class Rayman
         Hidden_Left = 188,
         UnknownHelico_Right = 189, // TODO: What is this?
         UnknownHelico_Left = 190,
-
-        EnterCurtain_Right = 193,
-        EnterCurtain_Left = 194,
+        EnterCurtain_Right = 191,
+        EnterCurtain_Left = 192,
+        Idle_LookAround_Right = 193,
+        Idle_LookAround_Left = 194,
         Walk_LookAround_Right = 195,
         Walk_LookAround_Left = 196,
         Idle_Shout_Right = 197,

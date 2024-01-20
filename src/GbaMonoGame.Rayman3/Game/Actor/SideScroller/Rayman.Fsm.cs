@@ -344,7 +344,7 @@ public partial class Rayman
                 if (IsActionFinished && 
                     (ActionId == NextActionId && ActionId is not (
                         Action.Idle_Bored_Right or Action.Idle_Bored_Left or
-                        Action.EnterCurtain_Right or Action.EnterCurtain_Left)) &&
+                        Action.Idle_LookAround_Right or Action.Idle_LookAround_Left)) &&
                     (ActionId is not (
                          Action.Idle_BasketBall_Right or Action.Idle_BasketBall_Left or
                          Action.Idle_Grimace_Right or Action.Idle_Grimace_Left) ||
@@ -464,14 +464,14 @@ public partial class Rayman
                 if ((IsActionFinished && ActionId is not (
                          Action.LookUp_Right or Action.LookUp_Left or
                          Action.Idle_Bored_Right or Action.Idle_Bored_Left or
-                         Action.EnterCurtain_Right or Action.EnterCurtain_Left) &&
+                         Action.Idle_LookAround_Right or Action.Idle_LookAround_Left) &&
                      360 < Timer) ||
                     (IsActionFinished && ActionId is
                          Action.Idle_Bored_Right or Action.Idle_Bored_Left or
-                         Action.EnterCurtain_Right or Action.EnterCurtain_Left &&
+                         Action.Idle_LookAround_Right or Action.Idle_LookAround_Left &&
                      720 < Timer))
                 {
-                    FUN_0802a65c();
+                    SetRandomIdleAction();
                     Fsm.ChangeAction(Fsm_Default);
                     return;
                 }

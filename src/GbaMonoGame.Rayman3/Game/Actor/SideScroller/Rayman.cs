@@ -864,9 +864,51 @@ public sealed partial class Rayman : MovableActor
         return false;
     }
 
-    private void FUN_0802a65c()
+    private void SetRandomIdleAction()
     {
-        // TODO: Implement
+        PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
+
+        int rand = Random.Shared.Next(41);
+
+        if (IsBossFight())
+        {
+            NextActionId = IsFacingRight ? Action.Idle_Determined_Right : Action.Idle_Determined_Left;
+        }
+        else if (rand < 5 ||
+                 (GameInfo.MapId == MapId.WoodLight_M1 && rand < 20 && GameInfo.LastGreenLumAlive != 0) ||
+                 (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0))
+        {
+            NextActionId = IsFacingRight ? Action.Idle_LookAround_Right : Action.Idle_LookAround_Left;
+        }
+        else if (rand < 10)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_SpinBody_Right : Action.Idle_SpinBody_Left;
+        }
+        else if (rand < 15)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_Bored_Right : Action.Idle_Bored_Left;
+        }
+        else if (rand < 20)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_Yoyo_Right : Action.Idle_Yoyo_Left;
+        }
+        else if (rand < 25)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_ChewingGum_Right : Action.Idle_ChewingGum_Left;
+        }
+        else if (rand < 30)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_BasketBall_Right : Action.Idle_BasketBall_Left;
+        }
+        else if (rand < 35)
+        {
+            NextActionId = IsFacingRight ? Action.Idle_Grimace_Right : Action.Idle_Grimace_Left;
+            PlaySound(Rayman3SoundEvent.Play__Grimace1_Mix04);
+        }
+        else
+        {
+            NextActionId = IsFacingRight ? Action.Idle_ThrowBody_Right : Action.Idle_ThrowBody_Left;
+        }
     }
 
     private bool IsLavaInLevel()
