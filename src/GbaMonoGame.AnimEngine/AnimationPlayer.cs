@@ -31,7 +31,7 @@ public class AnimationPlayer
     // NOTE: A bit unsure what to name this. Same as the normal Play function, but without sorting and drawn first.
     public void PlayFront(AObject obj)
     {
-        UnsortedObjects.Add(obj);
+        UnsortedObjects.Insert(0, obj);
     }
 
     public void Play(AObject obj)
