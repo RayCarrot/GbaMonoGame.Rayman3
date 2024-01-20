@@ -27,6 +27,7 @@ public static class GameInfo
     public static int GreenLums { get; set; }
     public static int LastGreenLumAlive { get; set; }
     public static Vector2 CheckpointPosition { get; set; }
+    public static int RemainingTime { get; set; }
     public static bool field7_0x7 { get; set; }
     public static byte field12_0xf { get; set; }
     public static bool field22_0x1b { get; set; }

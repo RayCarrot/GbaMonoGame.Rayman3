@@ -13,7 +13,6 @@ public class LifeBar : Bar
 
     private Scene2D Scene { get; }
 
-    private BarState State { get; set; } = BarState.Wait;
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
     private int PreviousLivesCount { get; set; }
@@ -24,7 +23,7 @@ public class LifeBar : Bar
     private AnimatedObject LifeDigit1 { get; set; }
     private AnimatedObject LifeDigit2 { get; set; }
 
-    public override void Init()
+    public override void Load()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
         
@@ -56,7 +55,7 @@ public class LifeBar : Bar
         };
     }
 
-    public override void Load()
+    public override void Set()
     {
         LifeDigit1.CurrentAnimation = GameInfo.PersistentInfo.Lives / 10;
         LifeDigit2.CurrentAnimation = GameInfo.PersistentInfo.Lives % 10;

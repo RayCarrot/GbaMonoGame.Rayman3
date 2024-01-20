@@ -39,6 +39,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     public TransitionsFX TransitionsFX { get; set; }
     public UserInfoSideScroller UserInfo { get; set; }
     public FogDialog Fog { get; set; }
+    public LyTimerDialog LyTimer { get; set; }
 
     public bool CanPause { get; set; }
     public bool IsTimed { get; set; }
@@ -128,6 +129,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
 
+        // Add fog
         if (GameInfo.MapId is 
             MapId.SanctuaryOfBigTree_M1 or 
             MapId.SanctuaryOfBigTree_M2 or 
@@ -145,7 +147,21 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             Fog = null;
         }
 
-        // TODO: More setup...
+        // Add timer
+        if (GameInfo.MapId is 
+            MapId.ChallengeLy1 or 
+            MapId.ChallengeLy2 or 
+            MapId.ChallengeLyGCN)
+        {
+            LyTimer = new LyTimerDialog();
+            Scene.AddDialog(LyTimer, false, false);
+        }
+        else
+        {
+            LyTimer = null;
+        }
+
+        // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, GameInfo.Level.HasBlueLum);
         Scene.AddDialog(UserInfo, false, false);
         // TODO: More setup...

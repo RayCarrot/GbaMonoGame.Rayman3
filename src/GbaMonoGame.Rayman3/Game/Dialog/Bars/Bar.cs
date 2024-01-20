@@ -19,10 +19,11 @@ public abstract class Bar
         0,
     };
 
-    public int Mode { get; set; }
+    protected BarState State { get; set; } = BarState.Wait;
+    protected int Mode { get; set; }
 
-    public abstract void Init();
     public abstract void Load();
+    public abstract void Set();
     public abstract void Draw(AnimationPlayer animationPlayer);
 
     protected enum BarState

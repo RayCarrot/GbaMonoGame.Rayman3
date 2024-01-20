@@ -49,13 +49,13 @@ public class UserInfoSideScroller : Dialog
 
     public override void Load()
     {
-        LifeBar.Init();
-        LumsBar?.Init();
-        CagesBar.Init();
-
         LifeBar.Load();
         LumsBar?.Load();
         CagesBar.Load();
+
+        LifeBar.Set();
+        LumsBar?.Set();
+        CagesBar.Set();
     }
 
     public override void Init() { }

@@ -5,7 +5,6 @@ namespace GbaMonoGame.Rayman3;
 
 public class CagesBar : Bar
 {
-    private BarState State { get; set; } = BarState.Wait;
     private int WaitTimer { get; set; }
     private int XOffset { get; set; }
     private int CollectedCagesDigitValue { get; set; }
@@ -21,7 +20,7 @@ public class CagesBar : Bar
         CollectedCagesDigitValue += count;
     }
 
-    public override void Init()
+    public override void Load()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
 
@@ -53,7 +52,7 @@ public class CagesBar : Bar
         };
     }
 
-    public override void Load()
+    public override void Set()
     {
         int cagesCount = GameInfo.LevelType == LevelType.GameCube ? GameInfo.CagesCount : GameInfo.Level.CagesCount;
         TotalCagesDigit.CurrentAnimation = cagesCount;

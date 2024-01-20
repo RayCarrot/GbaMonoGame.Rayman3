@@ -5,7 +5,6 @@ namespace GbaMonoGame.Rayman3;
 
 public class LumsBar : Bar
 {
-    private BarState State { get; set; } = BarState.Wait;
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
     private int CollectedLumsDigitValue1 { get; set; }
@@ -33,7 +32,7 @@ public class LumsBar : Bar
         LumsIcon.CurrentAnimation = CollectedLumsDigitValue1 == 0 ? 24 : 21;
     }
 
-    public override void Init()
+    public override void Load()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);
 
@@ -83,7 +82,7 @@ public class LumsBar : Bar
         };
     }
 
-    public override void Load()
+    public override void Set()
     {
         int lumsCount = GameInfo.LevelType == LevelType.GameCube ? GameInfo.YellowLumsCount : GameInfo.Level.LumsCount;
 
