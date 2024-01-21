@@ -585,7 +585,7 @@ public sealed partial class Rayman : MovableActor
 
             takenDamage = true;
 
-            if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoRcvH1_Mix04))
+            if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoRcvH1_Mix04))
                 PlaySound(Rayman3SoundEvent.Play__OnoRcvH1_Mix04);
         }
 
