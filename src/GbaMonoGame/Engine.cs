@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;
 using BinarySerializer;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Content;
@@ -10,6 +9,13 @@ namespace GbaMonoGame;
 
 public static class Engine
 {
+    #region Paths
+
+    public static string ConfigFilePath => "Config.json";
+    public static string SerializerLogFilePath => "Config.json";
+
+    #endregion
+
     #region Engine
 
     public static GameConfig Config { get; private set; }
@@ -19,6 +25,7 @@ public static class Engine
 
     #region Rom
 
+    public static GameInstallation GameInstallation { get; private set; }
     public static Context Context { get; private set; }
     public static Loader Loader { get; private set; }
     public static GbaEngineSettings Settings { get; private set; }
@@ -48,43 +55,23 @@ public static class Engine
 
     #endregion
 
-    #region Internal Static Methods
+    #region Private Static Methods
 
-    internal static void LoadConfig(string filePath)
+    private static void LoadRom()
     {
-        if (String.IsNullOrWhiteSpace(filePath))
-            throw new Exception("No config file has not been defined");
-
-        if (!File.Exists(filePath))
-            throw new Exception($"Config file {filePath} does not exist");
-
-        Config = JsonSerializer.Deserialize<GameConfig>(File.ReadAllText(filePath));
-    }
-
-    internal static void LoadRom(string romFilePath, string serializerLogFilePath, Game game)
-    {
-        Platform platform;
-
-        if (romFilePath.EndsWith(".gba", StringComparison.InvariantCultureIgnoreCase))
-            platform = Platform.GBA;
-        else if (romFilePath.EndsWith(".app", StringComparison.InvariantCultureIgnoreCase))
-            platform = Platform.NGage;
-        else
-            throw new Exception($"Could not determine platform from ROM file {romFilePath}");
-
-        ISerializerLogger serializerLogger = serializerLogFilePath != null
-            ? new FileSerializerLogger(serializerLogFilePath)
+        ISerializerLogger serializerLogger = Config.WriteSerializerLog
+            ? new FileSerializerLogger(SerializerLogFilePath)
             : null;
 
         Context = new Context(String.Empty, serializerLogger: serializerLogger, systemLogger: new BinarySerializerSystemLogger());
-        Settings = new GbaEngineSettings { Game = game, Platform = platform };
+        Settings = new GbaEngineSettings { Game = GameInstallation.Game, Platform = GameInstallation.Platform };
         Context.AddSettings(Settings);
 
-        if (platform == Platform.GBA)
+        if (GameInstallation.Platform == Platform.GBA)
         {
             GbaLoader loader = new(Context);
-            loader.LoadFiles(romFilePath, cache: true);
-            loader.LoadRomHeader(romFilePath);
+            loader.LoadFiles(GameInstallation.GameFilePath, cache: true);
+            loader.LoadRomHeader(GameInstallation.GameFilePath);
 
             string gameCode = loader.RomHeader.GameCode;
 
@@ -95,15 +82,15 @@ public static class Engine
                 _ => throw new Exception($"Unsupported game {Settings.Game} and/or code {gameCode}")
             });
 
-            loader.LoadData(romFilePath);
+            loader.LoadData(GameInstallation.GameFilePath);
             Loader = loader;
         }
-        else if (platform == Platform.NGage)
+        else if (GameInstallation.Platform == Platform.NGage)
         {
-            string dataFileName = Path.ChangeExtension(romFilePath, ".dat");
+            string dataFileName = Path.ChangeExtension(GameInstallation.GameFilePath, ".dat");
 
             NGageLoader loader = new(Context);
-            loader.LoadFiles(romFilePath, dataFileName, cache: true);
+            loader.LoadFiles(GameInstallation.GameFilePath, dataFileName, cache: true);
 
             Context.AddPreDefinedPointers(Settings.Game switch
             {
@@ -111,9 +98,24 @@ public static class Engine
                 _ => throw new Exception($"Unsupported game {Settings.Game}")
             });
 
-            loader.LoadData(romFilePath, dataFileName);
+            loader.LoadData(GameInstallation.GameFilePath, dataFileName);
             Loader = loader;
         }
+        else
+        {
+            throw new UnsupportedPlatformException();
+        }
+    }
+
+    #endregion
+
+    #region Internal Static Methods
+
+    internal static void LoadGameInstallation(GameInstallation gameInstallation)
+    {
+        GameInstallation = gameInstallation;
+        Config = GameConfig.Load(ConfigFilePath);
+        LoadRom();
     }
 
     internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera, GameWindow gameWindow)

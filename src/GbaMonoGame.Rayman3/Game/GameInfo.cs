@@ -73,7 +73,7 @@ public static class GameInfo
 
     public static bool Load(int saveSlot)
     {
-        string saveFile = Engine.Config.SaveFile;
+        string saveFile = Engine.GameInstallation.SaveFilePath;
         using Context context = Engine.Context;
 
         if (!context.FileExists(saveFile))

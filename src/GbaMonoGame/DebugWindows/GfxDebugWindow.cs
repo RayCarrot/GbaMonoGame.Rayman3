@@ -18,14 +18,14 @@ public class GfxDebugWindow : DebugWindow
         if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
         {
             Engine.Config.Scale = scale;
-            Engine.Config.OnConfigChanged();
+            Engine.Config.Save(Engine.ConfigFilePath);
         }
 
         ImGui.SameLine();
         if (ImGui.Button("Reset"))
         {
             Engine.Config.Scale = 1;
-            Engine.Config.OnConfigChanged();
+            Engine.Config.Save(Engine.ConfigFilePath);
         }
 
         ImGui.Spacing();

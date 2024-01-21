@@ -293,10 +293,8 @@ public class Rayman3 : GbaGame
         _ => throw new UnsupportedPlatformException()
     };
 
-    protected override void Initialize()
+    protected override void LoadGame()
     {
-        base.Initialize();
-
         // TODO: Implement the rest
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
