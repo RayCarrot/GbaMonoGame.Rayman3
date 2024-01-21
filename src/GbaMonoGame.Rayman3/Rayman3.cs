@@ -12,6 +12,7 @@ public class Rayman3 : GbaGame
     #region Protected Properties
 
     protected override Game Game => Game.Rayman3;
+    protected override string Title => "Rayman 3";
     protected override int SoundBankResourceId => 65;
     protected override Dictionary<int, string> SongTable => new()
     {

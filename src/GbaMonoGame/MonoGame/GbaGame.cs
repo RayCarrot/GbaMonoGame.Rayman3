@@ -59,6 +59,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     #region Protected Properties
 
     protected abstract Game Game { get; }
+    protected abstract string Title { get; }
     protected abstract int SoundBankResourceId { get; }
     protected abstract Dictionary<int, string> SongTable { get; }
 
@@ -192,6 +193,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     protected override void Initialize()
     {
+        Window.Title = Title;
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
