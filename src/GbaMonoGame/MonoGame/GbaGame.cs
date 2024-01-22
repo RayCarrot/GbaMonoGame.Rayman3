@@ -43,7 +43,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private Texture2D _nGageIcon;
     private SpriteFont _font;
     private GfxRenderer _gfxRenderer;
-    private GameMenu _menu;
+    private MenuManager _menu;
     private DebugLayout _debugLayout;
     private GameRenderTarget _debugGameRenderTarget;
     private PerformanceDebugWindow _performanceWindow;
@@ -51,7 +51,6 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private GameInstallation _selectedGameInstallation;
     private int _skippedDraws = -1;
     private float _fps = 60;
-    private bool _isClosingMenu;
     private bool _showMenu;
 
     #endregion
@@ -80,6 +79,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     {
         if (!DebugMode)
             SizeGameToWindow();
+    }
+
+    private void Menu_Closed(object o, EventArgs eventArgs)
+    {
+        _showMenu = false;
+        Resume();
     }
 
     #endregion
@@ -141,7 +146,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
 
         // Load the menu
-        _menu = new GameMenu();
+        _menu = new MenuManager();
+        _menu.Closed += Menu_Closed;
 
         // Load the debug layout
         _debugLayout = new DebugLayout();
@@ -327,26 +333,18 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle menu
-        if (!_isClosingMenu && JoyPad.CheckSingle(Keys.Escape))
+        if (!_menu.IsTransitioningOut && JoyPad.CheckSingle(Keys.Escape))
         {
             if (!_showMenu)
             {
                 Pause();
-                _menu.Open();
+                _menu.Open(new MainMenu());
                 _showMenu = true;
             }
             else
             {
-                _isClosingMenu = true;
                 _menu.Close();
             }
-        }
-
-        if (_isClosingMenu && !_menu.IsTransitioningOut)
-        {
-            _isClosingMenu = false;
-            _showMenu = false;
-            Resume();
         }
 
         // Run one frame
