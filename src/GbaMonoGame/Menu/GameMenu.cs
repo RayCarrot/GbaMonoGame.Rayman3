@@ -44,8 +44,8 @@ public class GameMenu
         if (menu.Button("Debug"))
             menu.ChangeMenu(Menu_Debug);
 
-        if (menu.Button("Exit"))
-            menu.ChangeMenu(Menu_Exit);
+        if (menu.Button("Quit game"))
+            menu.ChangeMenu(Menu_Quit);
     }
 
     private static void Menu_GeneralOptions(MenuRenderer menu)
@@ -80,9 +80,9 @@ public class GameMenu
             menu.GoBackFromMenu();
     }
 
-    private static void Menu_Exit(MenuRenderer menu)
+    private static void Menu_Quit(MenuRenderer menu)
     {
-        menu.Text("Are you sure you want to exit the game? Any unsaved progress will be lost!");
+        menu.Text("Are you sure you want to quit the game? Any unsaved progress will be lost!");
 
         if (menu.Button("No"))
             menu.GoBackFromMenu();
