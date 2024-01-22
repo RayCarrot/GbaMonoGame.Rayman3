@@ -7,13 +7,6 @@ namespace GbaMonoGame.Rayman3;
 
 public static class GameInfo
 {
-    static GameInfo()
-    {
-        field7_0x7 = true;
-        PersistentInfo = new SaveGameSlot();
-        ResetPersistentInfo();
-    }
-
     public static MapId? NextMapId { get; set; }
     public static MapId MapId { get; set; }
     public static LevelType LevelType { get; set; }
@@ -39,6 +32,21 @@ public static class GameInfo
 
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
+
+    public static void Reset()
+    {
+        NextMapId = null;
+        MapId = MapId.WoodLight_M1;
+        LoadedYellowLums = 0;
+        LoadedCages = 0;
+        Powers = Power.None;
+        Cheats = CheatFlags.None;
+        field22_0x1b = field7_0x7;
+        field7_0x7 = true;
+        field12_0xf = 0;
+        PersistentInfo = new SaveGameSlot();
+        ResetPersistentInfo();
+    }
 
     public static void ResetPersistentInfo()
     {

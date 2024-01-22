@@ -354,6 +354,9 @@ public class MenuAll : Frame, IHasPlayfield
 
     public override void Init()
     {
+        if (!HasLoadedGameInfo)
+            GameInfo.Reset();
+
         LoadGameInfo();
 
         AnimationPlayer = new AnimationPlayer(false, null);
