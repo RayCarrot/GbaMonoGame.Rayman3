@@ -53,7 +53,7 @@ public class GameMenu
         // TODO: Implement
 
         if (menu.Button("Back"))
-            menu.ChangeMenu(Menu_Main);
+            menu.GoBackFromMenu();
     }
 
     private static void Menu_DisplayOptions(MenuRenderer menu)
@@ -61,7 +61,7 @@ public class GameMenu
         // TODO: Implement
 
         if (menu.Button("Back"))
-            menu.ChangeMenu(Menu_Main);
+            menu.GoBackFromMenu();
     }
 
     private static void Menu_ControlOptions(MenuRenderer menu)
@@ -69,7 +69,7 @@ public class GameMenu
         // TODO: Implement
 
         if (menu.Button("Back"))
-            menu.ChangeMenu(Menu_Main);
+            menu.GoBackFromMenu();
     }
 
     private static void Menu_Debug(MenuRenderer menu)
@@ -77,7 +77,7 @@ public class GameMenu
         // TODO: Implement
 
         if (menu.Button("Back"))
-            menu.ChangeMenu(Menu_Main);
+            menu.GoBackFromMenu();
     }
 
     private static void Menu_Exit(MenuRenderer menu)
@@ -85,7 +85,7 @@ public class GameMenu
         menu.Text("Are you sure you want to exit the game? Any unsaved progress will be lost!");
 
         if (menu.Button("No"))
-            menu.ChangeMenu(Menu_Main);
+            menu.GoBackFromMenu();
 
         if (menu.Button("Yes"))
             Environment.Exit(0);

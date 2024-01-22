@@ -15,8 +15,8 @@ public class MenuRenderer
     private Color Color { get; } = Color.White;
     private Color HighlightColor { get; } = new(218, 168, 9);
 
-    private Action<MenuRenderer> CurrentMenu { get; set; }
-    private Action<MenuRenderer> NextMenu { get; set; }
+    private MenuFunction CurrentMenu { get; set; }
+    private MenuState NextMenuState { get; set; }
     private bool NewMenu { get; set; }
 
     private Box RenderBox { get; set; }
@@ -26,6 +26,8 @@ public class MenuRenderer
 
     private byte TransitionTextOutDelay { get; set; }
     private float TextTransitionValue { get; set; } = 1;
+
+    private Stack<MenuState> MenuStack { get; } = new();
 
     #endregion
 
@@ -104,11 +106,11 @@ public class MenuRenderer
             if (TextTransitionValue > 8)
             {
                 IsTransitioningTextOut = false;
-                CurrentMenu = NextMenu;
+                CurrentMenu = NextMenuState?.Menu;
 
                 if (CurrentMenu != null)
                 {
-                    IsTransitioningTextIn = NextMenu != null;
+                    IsTransitioningTextIn = NextMenuState != null;
                     TransitionTextOutDelay = 2;
                     NewMenu = true;
                 }
@@ -135,7 +137,7 @@ public class MenuRenderer
 
         if (NewMenu)
         {
-            CurrentVerticalIndex = 0;
+            CurrentVerticalIndex = NextMenuState?.CurrentVerticalIndex ?? 0;
             NewMenu = false;
         }
 
@@ -171,7 +173,7 @@ public class MenuRenderer
             animate: false);
     }
 
-    public void Init(Action<MenuRenderer> mainMenu)
+    public void Init(MenuFunction mainMenu)
     {
         if (IsTransitioning)
             return;
@@ -190,21 +192,33 @@ public class MenuRenderer
         if (IsTransitioning)
             return;
 
-        NextMenu = null;
+        NextMenuState = null;
         IsTransitioningTextOut = true;
         IsTransitioningTextIn = false;
         TextTransitionValue = 1;
     }
 
-    public void ChangeMenu(Action<MenuRenderer> newMenu)
+    public void GoBackFromMenu()
     {
         if (IsTransitioning)
             return;
 
-        NextMenu = newMenu;
+        NextMenuState = MenuStack.Pop();
         IsTransitioningTextOut = true;
         IsTransitioningTextIn = true;
         TextTransitionValue = 1;
+    }
+
+    public void ChangeMenu(MenuFunction newMenu)
+    {
+        if (IsTransitioning)
+            return;
+
+        NextMenuState = new MenuState(newMenu, 0);
+        IsTransitioningTextOut = true;
+        IsTransitioningTextIn = true;
+        TextTransitionValue = 1;
+        MenuStack.Push(new MenuState(CurrentMenu, CurrentVerticalIndex));
     }
 
     public void Text(string text)
@@ -249,6 +263,8 @@ public class MenuRenderer
 
     #region Data Types
 
+    public delegate void MenuFunction(MenuRenderer renderer);
+
     public enum HorizontalAlignment
     {
         Left,
@@ -265,6 +281,18 @@ public class MenuRenderer
             // Scale by 3 to fit more text on screen
             return gameWindow.GameResolution * 3;
         }
+    }
+
+    private class MenuState
+    {
+        public MenuState(MenuFunction menu, int currentVerticalIndex)
+        {
+            Menu = menu;
+            CurrentVerticalIndex = currentVerticalIndex;
+        }
+
+        public MenuFunction Menu { get; }
+        public int CurrentVerticalIndex { get; }
     }
 
     #endregion
