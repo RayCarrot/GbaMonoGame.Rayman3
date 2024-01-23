@@ -80,6 +80,13 @@ public class GameWindow
         OnResized();
     }
 
+    public void SetResolution(Vector2? resolution)
+    {
+        GameResolution = resolution ?? OriginalGameResolution;
+        OnGameResolutionChanged();
+        Resize(ScreenSize);
+    }
+
     public void SetAspectRatio(float aspectRatio, bool crop)
     {
         if ((crop && aspectRatio < 1) || (!crop && aspectRatio > 1))

@@ -24,6 +24,25 @@ public class DisplayOptionsMenu : Menu
         IsFullscreen = OriginalIsFullscreen;
 
         WindowResolutionScale = OriginalWindowResolutionScale;
+
+        AvailableInternalResolutionNames = new[]
+        {
+            "Original",
+            "GBA (240x160)",
+            "N-Gage (176x208)",
+            "Widescreen (288x162)",
+        };
+        AvailableInternalResolutions = new Point?[]
+        {
+            null,
+            new(240, 160),
+            new(176, 208),
+            new(288, 162),
+        };
+        OriginalInternalResolutionSelectedIndex = Array.IndexOf(AvailableInternalResolutions, Engine.Config.InternalResolution);
+        InternalResolutionSelectedIndex = OriginalInternalResolutionSelectedIndex == -1
+            ? AvailableInternalResolutions.Length - 1
+            : OriginalInternalResolutionSelectedIndex;
     }
 
     private GbaGame Game { get; }
@@ -61,6 +80,11 @@ public class DisplayOptionsMenu : Menu
     }
     private int WindowResolutionScale { get; set; }
 
+    private string[] AvailableInternalResolutionNames { get; }
+    private Point?[] AvailableInternalResolutions { get; }
+    private int OriginalInternalResolutionSelectedIndex { get; set; }
+    private int InternalResolutionSelectedIndex { get; set; }
+
     public override void Update(MenuManager menu)
     {
         menu.SetColumns(1);
@@ -82,8 +106,6 @@ public class DisplayOptionsMenu : Menu
             "Fullscreen",
         }, IsFullscreen ? 1 : 0) == 1;
 
-        // TODO: Add: Internal resolution    Original GBA N-Gage Widescreen
-
         menu.Text("Window resolution");
         WindowResolutionScale = menu.Selection(new[]
         {
@@ -98,17 +120,24 @@ public class DisplayOptionsMenu : Menu
             "8x",
         }, WindowResolutionScale);
 
+        menu.Text("Internal resolution");
+        InternalResolutionSelectedIndex = menu.Selection(AvailableInternalResolutionNames, InternalResolutionSelectedIndex);
+
         menu.SetColumns(1);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
 
         bool hasChanges = FullscreenResolutionSelectedIndex != OriginalFullscreenResolutionSelectedIndex ||
                           IsFullscreen != OriginalIsFullscreen ||
-                          WindowResolutionScale != OriginalWindowResolutionScale;
+                          WindowResolutionScale != OriginalWindowResolutionScale||
+                          InternalResolutionSelectedIndex != OriginalInternalResolutionSelectedIndex;
 
         if (menu.Button("Apply changes", hasChanges))
         {
             Engine.Config.FullscreenResolution = AvailableFullscreenResolutions[FullscreenResolutionSelectedIndex];
             Engine.Config.IsFullscreen = IsFullscreen;
+
+            Engine.Config.InternalResolution = AvailableInternalResolutions[InternalResolutionSelectedIndex];
+            Engine.GameWindow.SetResolution(Engine.Config.InternalResolution?.ToVector2());
 
             if (WindowResolutionScale != 0)
             {
@@ -133,6 +162,7 @@ public class DisplayOptionsMenu : Menu
             Game.ApplyDisplayConfig();
 
             OriginalFullscreenResolutionSelectedIndex = FullscreenResolutionSelectedIndex;
+            OriginalInternalResolutionSelectedIndex = InternalResolutionSelectedIndex;
         }
 
         if (menu.Button(hasChanges ? "Back & discard changes" : "Back"))

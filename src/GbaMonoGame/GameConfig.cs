@@ -24,6 +24,7 @@ public class GameConfig
         NGageWindowResolution = new Point(176 * 4, 208 * 4);
         GbaWindowPosition = null;
         NGageWindowPosition = null;
+        InternalResolution = null;
     }
 
     #endregion
@@ -44,6 +45,7 @@ public class GameConfig
     [JsonPropertyName("nGageWindowResolution")] public Point NGageWindowResolution { get; set; }
     [JsonPropertyName("gbaWindowPosition")] public Point? GbaWindowPosition { get; set; }
     [JsonPropertyName("nGageWindowPosition")] public Point? NGageWindowPosition { get; set; }
+    [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
 
     #endregion
 
