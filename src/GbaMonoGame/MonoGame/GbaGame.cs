@@ -149,6 +149,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             return;
 
         Engine.GameWindow.Resize(GetResolution(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x, false));
+        SaveWindowState();
+        Engine.SaveConfig();
     }
 
     private void LoadEngine(GameInstallation gameInstallation)
@@ -169,7 +171,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // Load window
-        UpdateResolutionAndWindowState();
+        ApplyDisplayConfig();
 
         // Load the initial engine frame
         FrameManager.SetNextFrame(CreateInitialFrame());
@@ -243,7 +245,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         Engine.LoadConfig();
 
-        UpdateResolutionAndWindowState();
+        ApplyDisplayConfig();
 
         // Find all installed games
         foreach (string gameDir in Directory.EnumerateDirectories(InstalledGamesDirName))
@@ -293,7 +295,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             Engine.Config.IsFullscreen = !_graphics.IsFullScreen;
             SaveWindowState();
             Engine.SaveConfig();
-            UpdateResolutionAndWindowState();
+            ApplyDisplayConfig();
         }
 
         // Update mouse visibility
@@ -519,7 +521,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
     }
 
-    public void UpdateResolutionAndWindowState()
+    public void ApplyDisplayConfig()
     {
         if (Engine.Config.IsFullscreen)
         {
