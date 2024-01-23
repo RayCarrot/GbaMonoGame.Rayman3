@@ -28,7 +28,7 @@ public static class GameInfo
     public static CheatFlags Cheats { get; set; }
 
     public static int CurrentSlot { get; set; }
-    public static SaveGameSlot PersistentInfo { get; set; }
+    public static SaveGameSlot PersistentInfo { get; set; } = new();
 
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
@@ -44,7 +44,6 @@ public static class GameInfo
         field22_0x1b = field7_0x7;
         field7_0x7 = true;
         field12_0xf = 0;
-        PersistentInfo = new SaveGameSlot();
         ResetPersistentInfo();
     }
 
