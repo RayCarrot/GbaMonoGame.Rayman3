@@ -2,6 +2,13 @@
 
 public class MainMenu : Menu
 {
+    public MainMenu(GbaGame game)
+    {
+        Game = game;
+    }
+
+    private GbaGame Game { get; }
+
     public override void Update(MenuManager menu)
     {
         menu.SetColumns(1);
@@ -14,7 +21,7 @@ public class MainMenu : Menu
             menu.ChangeMenu(new GeneralOptionsMenu());
 
         if (menu.Button("Display options"))
-            menu.ChangeMenu(new DisplayOptionsMenu());
+            menu.ChangeMenu(new DisplayOptionsMenu(Game));
 
         if (menu.Button("Control options"))
             menu.ChangeMenu(new ControlOptionsMenu());

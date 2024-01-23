@@ -52,6 +52,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private int _skippedDraws = -1;
     private float _fps = 60;
     private bool _showMenu;
+    private bool _isChangingResolution;
 
     #endregion
 
@@ -81,10 +82,25 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             SizeGameToWindow();
     }
 
-    private void Menu_Closed(object o, EventArgs eventArgs)
+    private void Menu_Closed(object sender, EventArgs e)
     {
         _showMenu = false;
         Resume();
+    }
+
+    private void GbaGame_Exiting(object sender, EventArgs e)
+    {
+        if (!HasLoadedGameInstallation)
+            return;
+
+        // Save window state
+        SaveWindowState();
+
+        // Save config
+        Engine.SaveConfig();
+
+        // Unload the engine
+        Engine.Unload();
     }
 
     #endregion
@@ -97,11 +113,34 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         TargetElapsedTime = TimeSpan.FromSeconds(1 / fps);
     }
 
-    private void SetWindowSize(Point size)
+    private void SetResolution(Point size, bool isFullscreen)
     {
+        // A bit convoluted code for setting if it's fullscreen or not. But this seems to reduce flickering.
+
+        _isChangingResolution = true;
+
+        if (!isFullscreen && _graphics.IsFullScreen)
+            _graphics.IsFullScreen = false;
+
         _graphics.PreferredBackBufferWidth = size.X;
         _graphics.PreferredBackBufferHeight = size.Y;
         _graphics.ApplyChanges();
+
+        if (isFullscreen && !_graphics.IsFullScreen)
+        {
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
+        }
+
+        if (HasLoadedGameInstallation)
+            Engine.GameWindow.Resize(size);
+
+        _isChangingResolution = false;
+    }
+
+    private Point GetResolution()
+    {
+        return new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
     }
 
     private void SizeGameToWindow()
@@ -109,7 +148,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameWindow.Resize(Window.ClientBounds.Size, JoyPad.Check(Keys.LeftShift), changeScreenSizeCallback: SetWindowSize);
+        Engine.GameWindow.Resize(GetResolution(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x, false));
     }
 
     private void LoadEngine(GameInstallation gameInstallation)
@@ -130,10 +169,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
         // Load window
-        // TODO: Save window size in config, as well as if maximized etc.
-        Point windowSize = new((int)(Engine.GameWindow.GameResolution.X * 4), (int)(Engine.GameWindow.GameResolution.Y * 4));
-        Engine.GameWindow.Resize(windowSize);
-        SetWindowSize(windowSize);
+        UpdateResolutionAndWindowState();
 
         // Load the initial engine frame
         FrameManager.SetNextFrame(CreateInitialFrame());
@@ -203,7 +239,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += Window_ClientSizeChanged;
 
-        // TODO: Load config at this point? Restore window size and position.
+        Exiting += GbaGame_Exiting;
+
+        Engine.LoadConfig();
+
+        UpdateResolutionAndWindowState();
 
         // Find all installed games
         foreach (string gameDir in Directory.EnumerateDirectories(InstalledGamesDirName))
@@ -247,6 +287,18 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         JoyPad.Scan();
 
+        // Toggle full-screen
+        if (JoyPad.Check(Keys.LeftAlt) && JoyPad.CheckSingle(Keys.Enter))
+        {
+            Engine.Config.IsFullscreen = !_graphics.IsFullScreen;
+            SaveWindowState();
+            Engine.SaveConfig();
+            UpdateResolutionAndWindowState();
+        }
+
+        // Update mouse visibility
+        IsMouseVisible = !_graphics.IsFullScreen || DebugMode;
+
         // Select game installation if not loaded yet
         if (!HasLoadedGameInstallation)
         {
@@ -267,8 +319,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
                     _selectedGameInstallationIndex = 0;
             }
 
-            // Select with space or enter
-            if (JoyPad.CheckSingle(Keys.Space) || JoyPad.CheckSingle(Keys.Enter))
+            // Select with space or enter (but not when alt is pressed due to fullscreen toggle)
+            if (!JoyPad.Check(Keys.LeftAlt) && (JoyPad.CheckSingle(Keys.Space) || JoyPad.CheckSingle(Keys.Enter)))
                 LoadEngine(_gameInstallations[_selectedGameInstallationIndex]);
 
             return;
@@ -338,7 +390,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             if (!_showMenu)
             {
                 Pause();
-                _menu.Open(new MainMenu());
+                _menu.Open(new MainMenu(this));
                 _showMenu = true;
             }
             else
@@ -444,6 +496,68 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     #endregion
 
     #region Public Methods
+
+    public void SaveWindowState()
+    {
+        if (!HasLoadedGameInstallation || _graphics.IsFullScreen)
+            return;
+
+        switch (Engine.Settings.Platform)
+        {
+            case Platform.GBA:
+                Engine.Config.GbaWindowPosition = Window.Position;
+                Engine.Config.GbaWindowResolution = GetResolution();
+                break;
+
+            case Platform.NGage:
+                Engine.Config.NGageWindowPosition = Window.Position;
+                Engine.Config.NGageWindowResolution = GetResolution();
+                break;
+
+            default:
+                throw new UnsupportedPlatformException();
+        }
+    }
+
+    public void UpdateResolutionAndWindowState()
+    {
+        if (Engine.Config.IsFullscreen)
+        {
+            SetResolution(Engine.Config.FullscreenResolution, true);
+        }
+        else
+        {
+            Point? pos;
+            Point res;
+
+            if (HasLoadedGameInstallation)
+            {
+                pos = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => Engine.Config.GbaWindowPosition,
+                    Platform.NGage => Engine.Config.NGageWindowPosition,
+                    _ => throw new UnsupportedPlatformException()
+                };
+                res = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => Engine.Config.GbaWindowResolution,
+                    Platform.NGage => Engine.Config.NGageWindowResolution,
+                    _ => throw new UnsupportedPlatformException()
+                };
+            }
+            else
+            {
+                // We don't know the platform yet, so default to the gba position and resolution since it'll be the most common one
+                pos = Engine.Config.GbaWindowPosition;
+                res = Engine.Config.GbaWindowResolution;
+            }
+
+            if (pos != null)
+                Window.Position = pos.Value;
+
+            SetResolution(res, false);
+        }
+    }
 
     public void Pause()
     {

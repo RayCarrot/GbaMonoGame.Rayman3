@@ -18,7 +18,7 @@ public class MenuManager
 
     private MenuCamera Camera { get; } = new(Engine.GameWindow);
     private List<Sprite> Sprites { get; } = new();
-    private int Margin => 70;
+    private int Margin => 60;
     private int LineHeight => 40;
     private Color DisabledColor { get; } = new(0.4f, 0.4f, 0.4f);
     private Color Color { get; } = Color.White;
@@ -449,8 +449,8 @@ public class MenuManager
 
         protected override Vector2 GetResolution(GameWindow gameWindow)
         {
-            // Scale by 3 to fit more text on screen
-            return gameWindow.GameResolution * 3;
+            // Scale by 3.5 to fit more text on screen
+            return gameWindow.GameResolution * 3.5f;
         }
     }
 

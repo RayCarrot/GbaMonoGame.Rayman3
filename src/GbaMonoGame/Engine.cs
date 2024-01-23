@@ -111,10 +111,19 @@ public static class Engine
 
     #region Internal Static Methods
 
+    internal static void LoadConfig()
+    {
+        Config = GameConfig.Load(ConfigFilePath);
+    }
+
+    internal static void SaveConfig()
+    {
+        Config.Save(ConfigFilePath);
+    }
+
     internal static void LoadGameInstallation(GameInstallation gameInstallation)
     {
         GameInstallation = gameInstallation;
-        Config = GameConfig.Load(ConfigFilePath);
         LoadRom();
     }
 
