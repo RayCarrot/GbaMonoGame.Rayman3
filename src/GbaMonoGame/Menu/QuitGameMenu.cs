@@ -1,9 +1,14 @@
-﻿using System;
-
-namespace GbaMonoGame;
+﻿namespace GbaMonoGame;
 
 public class QuitGameMenu : Menu
 {
+    public QuitGameMenu(GbaGame game)
+    {
+        Game = game;
+    }
+
+    private GbaGame Game { get; }
+
     public override void Update(MenuManager menu)
     {
         menu.SetColumns(1);
@@ -15,6 +20,6 @@ public class QuitGameMenu : Menu
             menu.GoBack();
 
         if (menu.Button("Yes"))
-            Environment.Exit(0);
+            Game.Exit();
     }
 }

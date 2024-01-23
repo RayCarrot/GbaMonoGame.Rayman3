@@ -30,6 +30,6 @@ public class MainMenu : Menu
             menu.ChangeMenu(new DebugOptionsMenu());
 
         if (menu.Button("Quit game"))
-            menu.ChangeMenu(new QuitGameMenu());
+            menu.ChangeMenu(new QuitGameMenu(Game));
     }
 }
