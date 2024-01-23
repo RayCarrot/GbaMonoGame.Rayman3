@@ -74,9 +74,19 @@ The engine is being recreated thanks to Ghidra allowing the original game's code
 Various prototypes of games on this engine were compiled with assertions in the code, which contain debug strings for if the assertions fail. These are incredibly useful as they contain function names, variable names, source file paths and more. Thanks to this information we have a very good idea of how the engine was structured and how things were named.
 
 ## Playing
-Currently the project isn't set up for general playing of the game, although parts of it can be run and played. In order to do so you currently need a .json file for configuration, something that will be made easier to manage in the future.
+In order to play the game you will need to place your game ROMs in the `Games` folder, inside a sub-folder for each game. The name of the ROM file doesn't matter, as long as it has the correct file extension (.gba for GBA and .app for N-Gage). Additionally the N-Gage version requires a .dat file with the same name as the .app file.
 
-*TODO: Add guide for setting up .json*
+This is an example of a folder structure which will allow you to play both the GBA and N-Gage versions:
+
+```
+├───GBA
+│   ├── ROM.gba
+└───N-Gage
+    ├── rayman3.app
+    └── rayman3.dat
+```
+
+The game saves are stored in .sav files with the same name as the ROM. The format is identical to that used by GBA emulators, and save files can thus be interchanged.
 
 ### Button mapping
 The button mapping will be made customizable in the future, along with controller support. As of now this is the current mapping:
@@ -98,7 +108,7 @@ The button mapping will be made customizable in the future, along with controlle
 | Toggle no-clip           | Z                  |
 | Increase no-clip speed   | Space              |
 | Scroll camera            | Right mouse button |
-| Zoom camera              | Mouse scroll wheel |
+| Toggle fullscreen        | Alt+Enter          |
 
 Besides these you can also hold down `left shift` while resizing the window to maintain the aspect ratio.
 
