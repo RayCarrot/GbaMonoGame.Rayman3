@@ -461,6 +461,28 @@ public static class GameInfo
         // TODO: Implement
     }
 
+    public static void UpdateLastCompletedLevel()
+    {
+        if (MapId < MapId.Bonus1 && MapId > (MapId)PersistentInfo.LastCompletedLevel)
+            PersistentInfo.LastCompletedLevel = (byte)MapId;
+    }
+
+    public static void ModifyLives(int change)
+    {
+        if ((Cheats & CheatFlags.InfiniteLives) != 0)
+        {
+            PersistentInfo.Lives = 99;
+            return;
+        }
+
+        int newCount = PersistentInfo.Lives + change;
+
+        if (newCount < 0)
+            PersistentInfo.Lives = 0;
+        else if (newCount < 100)
+            PersistentInfo.Lives = (byte)newCount;
+    }
+
     public static void PlayLevelMusic()
     {
         SoundEventsManager.ProcessEvent(Level.StartMusicSoundEvent);

@@ -130,6 +130,8 @@ public partial class Rayman
 
         Idle_ChewingGum_Right = 156,
         Idle_ChewingGum_Left = 157,
+        Dying_Right = 158,
+        Dying_Left = 159,
 
         ChargeSuperFist_Right = 167,
         ChargeSuperFist_Left = 168,

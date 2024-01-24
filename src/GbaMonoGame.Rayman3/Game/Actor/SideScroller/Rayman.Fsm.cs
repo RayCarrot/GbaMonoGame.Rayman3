@@ -2338,7 +2338,7 @@ public partial class Rayman
 
                             default:
                                 Frame.Current.EndOfFrame = true;
-                                UpdateLastCompletedLevel();
+                                GameInfo.UpdateLastCompletedLevel();
                                 break;
                         }
                     }
@@ -2395,15 +2395,61 @@ public partial class Rayman
 
     private void Fsm_Dying(FsmAction action)
     {
-        // TODO: Implement
         switch (action)
         {
             case FsmAction.Init:
+                ((FrameSideScroller)Frame.Current).CanPause = false;
                 
+                if (GameInfo.MapId is not (MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN) &&
+                    GameInfo.LevelType != LevelType.GameCube)
+                {
+                    GameInfo.ModifyLives(-1);
+                }
+
+                PlaySound(Rayman3SoundEvent.Play__RaDeath_Mix03);
+                Timer = GameTime.ElapsedFrames;
+                ReceiveDamage(5);
+
+                if (ActionId is not (Action.Drown_Right or Action.Drown_Left))
+                    ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
+
+                NextActionId = null;
+
+                if (GameInfo.LevelType == LevelType.GameCube)
+                {
+                    throw new NotImplementedException();
+                }
+
+                if (GameInfo.MapId is MapId.SanctuaryOfRockAndLava_M1 or MapId.SanctuaryOfRockAndLava_M2 or MapId.SanctuaryOfRockAndLava_M3)
+                {
+                    // TODO: Implement
+                }
+                else
+                {
+                    ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
+                }
+
+                if (AttachedObject != null)
+                {
+                    AttachedObject.ProcessMessage((Message)0x400); // TODO: Implement
+                    AttachedObject = null;
+                }
                 break;
 
             case FsmAction.Step:
-                FrameManager.SetNextFrame(Frame.Current); // Temporary to reload level on dying
+                if (IsActionFinished && GameTime.ElapsedFrames - Timer > 120)
+                {
+                    if (GameInfo.PersistentInfo.Lives == 0)
+                    {
+                        // Game over
+                        FrameManager.SetNextFrame(new GameOver());
+                    }
+                    else
+                    {
+                        // Reload current map
+                        FrameManager.SetNextFrame(Frame.Current);
+                    }
+                }
                 break;
 
             case FsmAction.UnInit:

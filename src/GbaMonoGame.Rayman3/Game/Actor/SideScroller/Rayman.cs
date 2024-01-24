@@ -1049,12 +1049,6 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private void UpdateLastCompletedLevel()
-    {
-        if (GameInfo.MapId < MapId.Bonus1 && GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
-            GameInfo.PersistentInfo.LastCompletedLevel = (byte)GameInfo.MapId;
-    }
-
     private void AutoSave()
     {
         switch (GameInfo.MapId)
