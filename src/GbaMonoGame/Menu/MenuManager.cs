@@ -381,6 +381,7 @@ public class MenuManager
         IsTransitioningOut = false;
         IsTransitioningIn = true;
         TransitionValue = 0;
+        MenuStack.Clear();
     }
 
     public void Close()
