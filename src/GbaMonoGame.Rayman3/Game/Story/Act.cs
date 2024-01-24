@@ -185,6 +185,8 @@ public abstract class Act : Frame
 
     protected void Init(ActResource resource)
     {
+        Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
+
         TransitionsFX = new TransitionsFX();
         TransitionsFX.FadeInInit(1 / 16f);
         

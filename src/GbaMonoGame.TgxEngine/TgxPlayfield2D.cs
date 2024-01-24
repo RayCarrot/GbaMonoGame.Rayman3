@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace GbaMonoGame.TgxEngine;
 
@@ -43,5 +44,6 @@ public class TgxPlayfield2D : TgxPlayfield
     }
 
     public new TgxCamera2D Camera => (TgxCamera2D)base.Camera;
+    public Vector2 Size => Camera.GetMainCluster().Size;
     public IReadOnlyList<TgxTileLayer> TileLayers { get; }
 }

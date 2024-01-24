@@ -164,7 +164,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         // Load the MonoGame part of the engine
         GameWindow gameWindow = new(Engine.Settings);
-        gameWindow.SetResolution(Engine.Config.InternalResolution?.ToVector2());
+        gameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
         Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
 
         // Load engine sounds and fonts

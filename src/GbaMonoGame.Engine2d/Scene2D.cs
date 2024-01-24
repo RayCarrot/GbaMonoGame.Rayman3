@@ -22,6 +22,7 @@ public class Scene2D
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
+        Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
 
         KnotManager = new KnotManager(scene);
         KnotManager.LoadGameObjects(this, scene);

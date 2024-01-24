@@ -66,7 +66,7 @@ public class DisplayOptionsMenu : Menu
                 _ => throw new UnsupportedPlatformException()
             };
 
-            float scale = windowRes.ToVector2().X / Engine.GameWindow.GameResolution.X;
+            float scale = windowRes.ToVector2().X / Engine.GameWindow.RequestedGameResolution.X;
 
             for (int i = 0; i < 8; i++)
             {
@@ -137,18 +137,18 @@ public class DisplayOptionsMenu : Menu
             Engine.Config.IsFullscreen = IsFullscreen;
 
             Engine.Config.InternalResolution = AvailableInternalResolutions[InternalResolutionSelectedIndex];
-            Engine.GameWindow.SetResolution(Engine.Config.InternalResolution?.ToVector2());
+            Engine.GameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
 
             if (WindowResolutionScale != 0)
             {
                 switch (Engine.Settings.Platform)
                 {
                     case Platform.GBA:
-                        Engine.Config.GbaWindowResolution = (Engine.GameWindow.GameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.GbaWindowResolution = (Engine.GameWindow.RequestedGameResolution * WindowResolutionScale).ToPoint();
                         break;
 
                     case Platform.NGage:
-                        Engine.Config.NGageWindowResolution = (Engine.GameWindow.GameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.NGageWindowResolution = (Engine.GameWindow.RequestedGameResolution * WindowResolutionScale).ToPoint();
                         break;
 
                     default:
