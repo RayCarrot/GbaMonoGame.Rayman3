@@ -12,7 +12,7 @@ public abstract class Act : Frame
 {
     #region Private Properties
 
-    private Dictionary<ActBitmap, IScreenRenderer> CachedTextureRenderers { get; } = new();
+    private Dictionary<Bitmap, IScreenRenderer> CachedTextureRenderers { get; } = new();
 
     private TransitionsFX TransitionsFX { get; set; }
     private ActResource ActResource { get; set; }

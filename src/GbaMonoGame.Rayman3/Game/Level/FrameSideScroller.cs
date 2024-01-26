@@ -195,6 +195,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     
     public override void UnInit()
     {
+        Gfx.Fade = 1;
+
         Scene.UnInit();
         Scene = null;
 
