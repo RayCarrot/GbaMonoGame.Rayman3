@@ -923,6 +923,13 @@ public partial class Rayman
 
                 // TODO: Implement
 
+                if (IsOnHangable())
+                {
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
+
                 if (GameTime.ElapsedFrames - Timer > 10 && IsOnClimbableVertical() == 1)
                 {
                     Fsm.ChangeAction(Fsm_Climb);
@@ -1054,13 +1061,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (IsOnHangable())
-                //{
-                //    FUN_08029c84();
-                //    Fsm.ChangeAction(FUN_0802ee60);
-                //    return;
-                //}
+                if (IsOnHangable())
+                {
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
 
                 if (IsOnClimbableVertical() == 1)
                 {
@@ -1133,13 +1139,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (IsOnHangable())
-                //{
-                //    FUN_08029c84();
-                //    Fsm.ChangeAction(FUN_0802ee60);
-                //    return;
-                //}
+                if (IsOnHangable())
+                {
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
 
                 if (IsOnClimbableVertical() == 1)
                 {
@@ -1270,13 +1275,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (IsOnHangable())
-                //{
-                //    FUN_08029c84();
-                //    Fsm.ChangeAction(FUN_0802ee60);
-                //    return;
-                //}
+                if (IsOnHangable())
+                {
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
 
                 if (IsOnClimbableVertical() == 1)
                 {
@@ -1581,7 +1585,7 @@ public partial class Rayman
                          Action.Hang_Move_Right or Action.Hang_Move_Left or
                          Action.Hang_Idle_Right or Action.Hang_Idle_Left or
                          Action.Hang_Attack_Right or Action.Hang_Attack_Left or
-                         Action.Hang_BeginIdle_Right or Action.Hang_BeginIdle_Left)
+                         Action.Hang_EndMove_Right or Action.Hang_EndMove_Left)
                 {
                     // Probably a bug in the GBA code since this causes the sound to play twice. This was fixed for N-Gage.
                     if (Engine.Settings.Platform == Platform.GBA)
@@ -1809,7 +1813,7 @@ public partial class Rayman
 
                 if (ActionId is Action.Hang_ChargeAttack_Right or Action.Hang_ChargeAttack_Left && !IsOnHangable())
                 {
-                    Flag1_2 = false;
+                    IsHanging = false;
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                     Fsm.ChangeAction(Fsm_StopHelico);
                     return;
@@ -1817,7 +1821,7 @@ public partial class Rayman
 
                 if (type == 2)
                 {
-                    Fsm.ChangeAction(FUN_0802ee60);
+                    Fsm.ChangeAction(Fsm_Hang);
                     return;
                 }
 
@@ -2127,6 +2131,173 @@ public partial class Rayman
                 if (!CheckSingleInput(GbaInput.B) && IsLocalPlayer)
                     cam.ProcessMessage(Message.Cam_1027);
 
+                if (ActionId == NextActionId)
+                    NextActionId = null;
+                break;
+        }
+    }
+
+    private void Fsm_Hang(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (NextActionId != null)
+                    ActionId = NextActionId.Value;
+                else
+                    ActionId = IsFacingRight ? Action.Hang_Idle_Right : Action.Hang_Idle_Left;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (IsActionFinished && ActionId == NextActionId)
+                {
+                    ActionId = IsFacingRight ? Action.Hang_Idle_Right : Action.Hang_Idle_Left;
+                    NextActionId = null;
+                }
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.Hang_Move_Left;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.Hang_Move_Right;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                // Move
+                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                {
+                    Fsm.ChangeAction(Fsm_HangMove);
+                    return;
+                }
+
+                // Move down
+                if (CheckInput(GbaInput.Down))
+                {
+                    Position += new Vector2(0, Constants.TileSize);
+                    IsHanging = false;
+                    PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // No longer hanging
+                if (!IsOnHangable())
+                {
+                    IsHanging = false;
+                    PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Attack
+                if (CheckSingleInput(GbaInput.B) && CanAttackWithFoot())
+                {
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                if (ActionId == NextActionId || ActionId is Action.Hang_Move_Right or Action.Hang_Move_Left)
+                    NextActionId = null;
+                break;
+        }
+    }
+
+    private void Fsm_HangMove(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.Hang_Move_Right : Action.Hang_Move_Left;
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (IsActionFinished && ActionId == NextActionId)
+                {
+                    ActionId = IsFacingRight ? Action.Hang_Move_Right : Action.Hang_Move_Left;
+                    NextActionId = null;
+                }
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.Hang_Move_Left;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.Hang_Move_Right;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                // Stop moving
+                if (!CheckInput(GbaInput.Left) && !CheckInput(GbaInput.Right))
+                {
+                    NextActionId = IsFacingRight ? Action.Hang_EndMove_Right : Action.Hang_EndMove_Left;
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
+
+                // Move down
+                if (CheckInput(GbaInput.Down))
+                {
+                    Position += new Vector2(0, Constants.TileSize);
+                    IsHanging = false;
+                    PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // No longer hanging
+                if (!IsOnHangable())
+                {
+                    IsHanging = false;
+                    PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Attack
+                if (CheckSingleInput(GbaInput.B) && CanAttackWithFoot())
+                {
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
                 if (ActionId == NextActionId)
                     NextActionId = null;
                 break;
@@ -2467,7 +2638,6 @@ public partial class Rayman
     private void FUN_0803283c(FsmAction action) { }
     private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void FUN_0802ee60(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }
     private void FUN_1005bf7c(FsmAction action) { }

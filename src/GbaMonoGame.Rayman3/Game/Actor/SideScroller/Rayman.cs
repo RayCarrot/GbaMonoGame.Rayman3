@@ -66,7 +66,7 @@ public sealed partial class Rayman : MovableActor
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
     public bool Flag1_1 { get; set; }
-    public bool Flag1_2 { get; set; }
+    public bool IsHanging { get; set; }
     public bool Flag1_3 { get; set; }
     public bool Flag1_4 { get; set; }
     public bool Flag1_5 { get; set; }
@@ -860,8 +860,29 @@ public sealed partial class Rayman : MovableActor
 
     private bool IsOnHangable()
     {
-        // TODO: Implement
-        return false;
+        if (IsHanging)
+            return true;
+
+        if (Position.Y <= 48)
+            return false;
+
+        PhysicalType type = Scene.GetPhysicalType(Position - new Vector2(0, 56));
+
+        return type == PhysicalTypeValue.Hang;
+    }
+
+    private void BeginHang()
+    {
+        if (IsHanging && AttachedObject != null)
+        {
+            Position = new Vector2(Position.X, AttachedObject.Position.Y + 58);
+            AttachedObject = null;
+        }
+        else
+        {
+            Position = new Vector2(Position.X, Position.Y + Constants.TileSize - MathHelpers.Mod(Position.Y, Constants.TileSize) - 1);
+            PlaySound(Rayman3SoundEvent.Play__HandTap1_Mix04);
+        }
     }
 
     private void SetRandomIdleAction()
@@ -1237,7 +1258,7 @@ public sealed partial class Rayman : MovableActor
         BodyParts.Clear();
         Flag1_0 = false;
         Flag1_1 = false;
-        Flag1_2 = false;
+        IsHanging = false;
         Flag1_3 = false;
         Flag1_4 = false;
         Flag1_5 = false;
