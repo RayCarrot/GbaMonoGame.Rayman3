@@ -13,6 +13,14 @@ public readonly struct AffineMatrix
         Pd = pd;
     }
 
+    public AffineMatrix(float rotation256, float scaleX, float scaleY)
+    {
+        Pa = scaleX * MathHelpers.Cos256(rotation256);
+        Pb = scaleX * MathHelpers.Sin256(rotation256);
+        Pc = scaleY * -MathHelpers.Sin256(rotation256);
+        Pd = scaleY * MathHelpers.Cos256(rotation256);
+    }
+
     public float Pa { get; }
     public float Pb { get; }
     public float Pc { get; }

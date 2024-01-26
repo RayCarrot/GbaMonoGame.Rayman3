@@ -436,21 +436,10 @@ public class MenuAll : Frame, IHasPlayfield
         if (WheelRotation > 2047)
             WheelRotation = 0;
 
-        float sin1 = MathF.Sin(2 * MathF.PI * ((byte)WheelRotation / 256f));
-        float cos1 = MathF.Cos(2 * MathF.PI * ((byte)WheelRotation / 256f));
-        Data.Wheel1.AffineMatrix = new AffineMatrix(cos1, sin1, -sin1, cos1);
-
-        float sin2 = MathF.Sin(2 * MathF.PI * ((255 - (byte)(WheelRotation >> 1)) / 256f));
-        float cos2 = MathF.Cos(2 * MathF.PI * ((255 - (byte)(WheelRotation >> 1)) / 256f));
-        Data.Wheel2.AffineMatrix = new AffineMatrix(cos2, sin2, -sin2, cos2);
-
-        float sin3 = MathF.Sin(2 * MathF.PI * ((byte)(WheelRotation >> 2) / 256f));
-        float cos3 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 2) / 256f));
-        Data.Wheel3.AffineMatrix = new AffineMatrix(cos3, sin3, -sin3, cos3);
-
-        float sin4 = MathF.Sin(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
-        float cos4 = MathF.Cos(2 * MathF.PI * ((byte)(WheelRotation >> 3) / 256f));
-        Data.Wheel4.AffineMatrix = new AffineMatrix(cos4, sin4, -sin4, cos4);
+        Data.Wheel1.AffineMatrix = new AffineMatrix((byte)WheelRotation, 1, 1);
+        Data.Wheel2.AffineMatrix = new AffineMatrix(255 - (byte)(WheelRotation >> 1), 1, 1);
+        Data.Wheel3.AffineMatrix = new AffineMatrix((byte)(WheelRotation >> 2), 1, 1);
+        Data.Wheel4.AffineMatrix = new AffineMatrix((byte)(WheelRotation >> 3), 1, 1);
 
         AnimationPlayer.Play(Data.Wheel1);
         AnimationPlayer.Play(Data.Wheel2);
