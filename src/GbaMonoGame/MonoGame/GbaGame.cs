@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -53,6 +54,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private float _fps = 60;
     private bool _showMenu;
     private bool _isChangingResolution;
+    private Task _loadingGameInstallationTask;
 
     #endregion
 
@@ -67,7 +69,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     #region Public Properties
 
-    public bool HasLoadedGameInstallation => _selectedGameInstallation != null;
+    public bool HasLoadedGameInstallation => _selectedGameInstallation != null && _loadingGameInstallationTask == null;
     public bool RunSingleFrame { get; set; }
     public bool IsPaused { get; set; }
     public bool DebugMode { get; set; }
@@ -155,49 +157,55 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     private void LoadEngine(GameInstallation gameInstallation)
     {
-        // TODO: Loading screen?
+        if (_loadingGameInstallationTask == null)
+        {
+            _selectedGameInstallation = gameInstallation;
 
-        _selectedGameInstallation = gameInstallation;
+            // TODO: If this throws the exception might get swallowed
+            // Load the selected game installation
+            _loadingGameInstallationTask = Task.Run(() => Engine.LoadGameInstallation(_selectedGameInstallation));
+        }
+        else if (_loadingGameInstallationTask.IsCompleted)
+        {
+            _loadingGameInstallationTask = null;
 
-        // Load the selected game installation
-        Engine.LoadGameInstallation(_selectedGameInstallation);
+            // Load the MonoGame part of the engine
+            GameWindow gameWindow = new(Engine.Settings);
+            gameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
+            Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
 
-        // Load the MonoGame part of the engine
-        GameWindow gameWindow = new(Engine.Settings);
-        gameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
-        Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
+            // Load engine sounds and fonts
+            SoundEventsManager.Load(SoundBankResourceId, SongTable);
+            FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
-        // Load engine sounds and fonts
-        SoundEventsManager.Load(SoundBankResourceId, SongTable);
-        FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
+            // Load window
+            ApplyDisplayConfig();
 
-        // Load window
-        ApplyDisplayConfig();
+            // Load the initial engine frame
+            FrameManager.SetNextFrame(CreateInitialFrame());
 
-        // Load the initial engine frame
-        FrameManager.SetNextFrame(CreateInitialFrame());
+            // Load the game
+            LoadGame();
 
-        // Load the game
-        LoadGame();
+            // Load the renderer
+            _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameWindow);
+            _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
 
-        // Load the renderer
-        _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameWindow);
-        _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
+            // Load the menu
+            _menu = new MenuManager();
+            _menu.Closed += Menu_Closed;
 
-        // Load the menu
-        _menu = new MenuManager();
-        _menu.Closed += Menu_Closed;
-
-        // Load the debug layout
-        _debugLayout = new DebugLayout();
-        _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
-        _debugLayout.AddWindow(_performanceWindow = new PerformanceDebugWindow());
-        _debugLayout.AddWindow(new LoggerDebugWindow());
-        _debugLayout.AddWindow(new GfxDebugWindow());
-        _debugLayout.AddWindow(new SoundDebugWindow());
-        _debugLayout.AddMenu(new WindowsDebugMenu());
-        AddDebugWindowsAndMenus(_debugLayout);
-        _debugLayout.LoadContent(this);
+            // Load the debug layout
+            _debugLayout = new DebugLayout();
+            _debugLayout.AddWindow(new GameDebugWindow(_debugGameRenderTarget));
+            _debugLayout.AddWindow(_performanceWindow = new PerformanceDebugWindow());
+            _debugLayout.AddWindow(new LoggerDebugWindow());
+            _debugLayout.AddWindow(new GfxDebugWindow());
+            _debugLayout.AddWindow(new SoundDebugWindow());
+            _debugLayout.AddMenu(new WindowsDebugMenu());
+            AddDebugWindowsAndMenus(_debugLayout);
+            _debugLayout.LoadContent(this);
+        }
     }
 
     private void StepEngine()
@@ -308,24 +316,32 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             if (_gameInstallations.Count == 0)
                 return;
 
-            // Use arrow keys to select game
-            if (JoyPad.CheckSingle(Keys.Up))
+            // If loading, keep calling LoadEngine until done
+            if (_loadingGameInstallationTask != null)
             {
-                _selectedGameInstallationIndex--;
-                if (_selectedGameInstallationIndex < 0)
-                    _selectedGameInstallationIndex = _gameInstallations.Count - 1;
+                LoadEngine(_selectedGameInstallation);
             }
-            else if (JoyPad.CheckSingle(Keys.Down))
+            else
             {
-                _selectedGameInstallationIndex++;
-                if (_selectedGameInstallationIndex > _gameInstallations.Count - 1)
-                    _selectedGameInstallationIndex = 0;
+                // Use arrow keys to select game
+                if (JoyPad.CheckSingle(Keys.Up))
+                {
+                    _selectedGameInstallationIndex--;
+                    if (_selectedGameInstallationIndex < 0)
+                        _selectedGameInstallationIndex = _gameInstallations.Count - 1;
+                }
+                else if (JoyPad.CheckSingle(Keys.Down))
+                {
+                    _selectedGameInstallationIndex++;
+                    if (_selectedGameInstallationIndex > _gameInstallations.Count - 1)
+                        _selectedGameInstallationIndex = 0;
+                }
+
+                // Select with space or enter (but not when alt is pressed due to fullscreen toggle)
+                if (!JoyPad.Check(Keys.LeftAlt) && (JoyPad.CheckSingle(Keys.Space) || JoyPad.CheckSingle(Keys.Enter)))
+                    LoadEngine(_gameInstallations[_selectedGameInstallationIndex]);
             }
-
-            // Select with space or enter (but not when alt is pressed due to fullscreen toggle)
-            if (!JoyPad.Check(Keys.LeftAlt) && (JoyPad.CheckSingle(Keys.Space) || JoyPad.CheckSingle(Keys.Enter)))
-                LoadEngine(_gameInstallations[_selectedGameInstallationIndex]);
-
+            
             return;
         }
 
@@ -433,6 +449,10 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             if (_gameInstallations.Count == 0)
             {
                 _spriteBatch.DrawString(_font, "No games were found", new Vector2(xPos, yPos), Color.White);
+            }
+            else if (_loadingGameInstallationTask != null)
+            {
+                _spriteBatch.DrawString(_font, "Loading...", new Vector2(xPos, yPos), Color.White);
             }
             else
             {
