@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame;
 
+// TODO: Handle wrapping when multiple columns (see display page on N-Gage resolution)
+// TODO: Tooltip when having button selected - appears at bottom of screen as text
+// TODO: Implement scrolling if too tall
 public class MenuManager
 {
     #region Events
