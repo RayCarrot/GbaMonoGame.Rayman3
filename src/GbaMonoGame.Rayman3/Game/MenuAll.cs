@@ -968,15 +968,65 @@ public class MenuAll : Frame, IHasPlayfield
                 break;
 
             case 3:
-                // TODO: Implement
+                // Move left
+                if (JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L))
+                {
+                    if (StartEraseCursorTargetIndex != 0)
+                    {
+                        SetEraseCursorTargetIndex(0);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 20;
+                        // TODO: Game passes in 0 as obj here, but that's probably a mistake
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move right
+                else if (JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R))
+                {
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SetEraseCursorTargetIndex(1);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 21;
+                        // TODO: Game passes in 0 as obj here, but that's probably a mistake
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Erase slot
+                else if (JoyPad.CheckSingle(GbaInput.A))
+                {
+                    EraseSaveStage = 4;
+                    TransitionValue = 0;
+                    if (StartEraseCursorTargetIndex == 0 && Slots[SelectedOption] != null)
+                    {
+                        // TODO: Implement erase save slot
+                    }
+                }
                 break;
 
             case 4:
-                // TODO: Implement
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, -TransitionValue);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 42 - TransitionValue);
+
+                if (TransitionValue >= 80)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 5;
+                    Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
+                    Data.StartEraseSelection.ScreenPos = new Vector2(80, -50);
+                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -68);
+                }
                 break;
 
             case 5:
-                // TODO: Implement
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 34);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 52);
+
+                if (TransitionValue >= 64)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 0;
+                }
                 break;
         }
 
