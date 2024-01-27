@@ -10,7 +10,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class Scene2D
 {
-    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
+    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, CachedTileKit cachedTileKit = null)
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
@@ -21,7 +21,8 @@ public class Scene2D
         DialogFlags = new List<bool>(layersCount);
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
-        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield);
+
+        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield, cachedTileKit);
         Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
 
         KnotManager = new KnotManager(scene);

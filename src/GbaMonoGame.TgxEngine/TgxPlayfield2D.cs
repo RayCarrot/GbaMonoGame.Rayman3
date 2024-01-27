@@ -6,7 +6,7 @@ namespace GbaMonoGame.TgxEngine;
 
 public class TgxPlayfield2D : TgxPlayfield
 {
-    public TgxPlayfield2D(Playfield2DResource playfieldResource) : base(new TgxCamera2D(Engine.GameWindow))
+    public TgxPlayfield2D(Playfield2DResource playfieldResource, CachedTileKit cachedTileKit) : base(new TgxCamera2D(Engine.GameWindow))
     {
         List<TgxTileLayer> tileLayers = new();
 
@@ -22,7 +22,10 @@ public class TgxPlayfield2D : TgxPlayfield
                 TgxTileLayer layer = new(gameLayerResource);
                 tileLayers.Add(layer);
 
-                layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
+                if (cachedTileKit != null)
+                    layer.LoadCachedTileKit(cachedTileKit);
+                else
+                    layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
                 
                 // The game does this in the layer constructor, but it's easier here since we have access to the camera
                 Camera.AddLayer(gameLayerResource.TileLayer.ClusterIndex, layer);

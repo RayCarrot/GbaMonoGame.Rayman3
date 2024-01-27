@@ -25,6 +25,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     private int CircleFXTimer { get; set; }
     private CircleFXTransitionMode CircleFXMode { get; set; }
 
+    private CachedTileKit CachedTileKit { get; set; } // Cache so we can quickly reload when dying
+
     #endregion
 
     #region Protected Properties
@@ -128,7 +130,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CanPause = true;
         TransitionsFX = new TransitionsFX();
         BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, CachedTileKit);
+        CachedTileKit = CachedTileKit.FromPlayfield(Scene.Playfield);
 
         // Add fog
         if (GameInfo.MapId is 

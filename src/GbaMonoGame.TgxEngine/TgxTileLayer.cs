@@ -100,4 +100,9 @@ public class TgxTileLayer : TgxGameLayer
         Palette pal = new(tileKit.Palettes[defaultPalette].Palette);
         Screen.Renderer = new TiledTextureScreenRenderer(Width, Height, tileSet, TileMap, pal, Is8Bit);
     }
+
+    public void LoadCachedTileKit(CachedTileKit cachedTileKit)
+    {
+        Screen.Renderer = cachedTileKit.GetRenderer(Screen.Id);
+    }
 }
