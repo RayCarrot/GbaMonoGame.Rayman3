@@ -38,6 +38,11 @@ public class MenuAll : Frame, IHasPlayfield
     private int TransitionValue { get; set; }
     private int GameLogoYOffset { get; set; }
     private int OtherGameLogoValue { get; set; }
+    private int GameLogoSinValue { get; set; }
+    private int GameLogoMovementXOffset { get; set; } = 3;
+    private int GameLogoMovementWidth { get; set; } = 6;
+    private int GameLogoMovementXCountdown { get; set; } = 6;
+    private uint PrevGameTime { get; set; }
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
     
@@ -131,26 +136,74 @@ public class MenuAll : Frame, IHasPlayfield
 
     private void MoveGameLogo()
     {
-        // TODO: Implement
-        //if (GameLogoYOffset < 56)
-        //{
-        //    Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, GameLogoYOffset * 2 - 54);
-        //    GameLogoYOffset += 4;
-        //}
-        //else
-        //{
-        //    if (OtherGameLogoValue == 12)
-        //    {
-        //        if (Data.GameLogo.ScreenPos.Y > 16)
-        //        {
-        //            Data.GameLogo.ScreenPos -= new Vector2(0, 1);
-        //        }
-        //    }
-        //    else
-        //    {
-                
-        //    }
-        //}
+        // Move Y
+        if (GameLogoYOffset < 56)
+        {
+            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, GameLogoYOffset * 2 - 54);
+            GameLogoYOffset += 4;
+        }
+        else if (OtherGameLogoValue != 12)
+        {
+            GameLogoSinValue = (GameLogoSinValue + 16) % 256;
+
+            float y = 56 + MathHelpers.Sin256(GameLogoSinValue) * OtherGameLogoValue;
+            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, y);
+
+            if (OtherGameLogoValue == 20 && GameLogoSinValue == 96)
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Pannel_BigFoot1_Mix02);
+
+            if (GameLogoSinValue == 0)
+                OtherGameLogoValue -= 4;
+        }
+        else if (Data.GameLogo.ScreenPos.Y > 16)
+        {
+            Data.GameLogo.ScreenPos -= new Vector2(0, 1);
+        }
+
+        // TODO: Rewrite with floats to move in 60fps, same in other parts of the game
+        // Move X (back and forth from a width of 10 to 0)
+        uint time = GameTime.ElapsedFrames - PrevGameTime;
+        if (time > 4 && GameLogoMovementWidth == 10 ||
+            time > 6 && GameLogoMovementWidth == 9 ||
+            time > 8 && GameLogoMovementWidth == 8 ||
+            time > 10 && GameLogoMovementWidth == 7 ||
+            time > 12 && GameLogoMovementWidth == 6 ||
+            time > 14 && GameLogoMovementWidth == 5 ||
+            time > 16 && GameLogoMovementWidth == 4 ||
+            time > 18 && GameLogoMovementWidth == 3 ||
+            time > 20 && GameLogoMovementWidth == 2 ||
+            time > 22 && GameLogoMovementWidth == 1)
+        {
+            int x;
+
+            if (GameLogoMovementXOffset < GameLogoMovementWidth * 2)
+            {
+                x = GameLogoMovementXOffset - GameLogoMovementWidth;
+            }
+            else if (GameLogoMovementXOffset < GameLogoMovementWidth * 4)
+            {
+                x = GameLogoMovementWidth * 3 - GameLogoMovementXOffset;
+            }
+            else
+            {
+                GameLogoMovementXOffset = 0;
+                if (GameLogoMovementXCountdown == 2)
+                {
+                    GameLogoMovementWidth--;
+                    GameLogoMovementXCountdown = 0;
+                }
+                else
+                {
+                    GameLogoMovementXCountdown++;
+                }
+
+                x = -GameLogoMovementWidth;
+            }
+
+            GameLogoMovementXOffset++;
+            PrevGameTime = GameTime.ElapsedFrames;
+            Data.GameLogo.ScreenPos = new Vector2(174 + x, Data.GameLogo.ScreenPos.Y);
+        }
     }
 
     private void ResetStem()
@@ -762,8 +815,13 @@ public class MenuAll : Frame, IHasPlayfield
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         }
 
+        PrevGameTime = 0;
+        GameLogoMovementXOffset = 10;
+        GameLogoMovementWidth = 10;
+        GameLogoMovementXCountdown = 0;
         Data.GameLogo.ScreenPos = new Vector2(174, Data.GameLogo.ScreenPos.Y);
         OtherGameLogoValue = 0x14;
+        GameLogoSinValue = 0;
         GameLogoYOffset = 0;
 
         ResetStem();
