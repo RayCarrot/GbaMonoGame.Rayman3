@@ -1,0 +1,442 @@
+﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+using BinarySerializer;
+using GbaMonoGame.AnimEngine;
+using GbaMonoGame.TgxEngine;
+
+namespace GbaMonoGame.Rayman3;
+
+public partial class MenuAll
+{
+    #region Private Properties
+
+    private bool HasLoadedGameInfo { get; set; }
+    private Slot[] Slots { get; } = new Slot[3];
+    private bool IsLoadingSlot { get; set; }
+
+    private byte StartEraseCursorTargetIndex { get; set; }
+    private byte StartEraseCursorCurrentIndex { get; set; }
+    private byte EraseSaveStage { get; set; }
+
+    #endregion
+
+    #region Private Methods
+
+    private void SetEraseCursorTargetIndex(byte targetIndex)
+    {
+        StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+        StartEraseCursorTargetIndex = targetIndex;
+    }
+
+    private void MoveStartEraseCursor()
+    {
+        if (StartEraseCursorTargetIndex != StartEraseCursorCurrentIndex)
+        {
+            int targetXPos = StartEraseCursorTargetIndex * 72 + 106;
+
+            if (StartEraseCursorTargetIndex < StartEraseCursorCurrentIndex)
+            {
+                if (Data.StartEraseCursor.ScreenPos.X > targetXPos)
+                {
+                    Data.StartEraseCursor.ScreenPos -= new Vector2(4, 0);
+                }
+                else
+                {
+                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+                }
+            }
+            else
+            {
+                if (Data.StartEraseCursor.ScreenPos.X < targetXPos)
+                {
+                    Data.StartEraseCursor.ScreenPos += new Vector2(4, 0);
+                }
+                else
+                {
+                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public void LoadGameInfo()
+    {
+        if (HasLoadedGameInfo)
+            return;
+
+        HasLoadedGameInfo = true;
+
+        for (int i = 0; i < 3; i++)
+        {
+            bool loaded = GameInfo.Load(i);
+
+            if (GameInfo.PersistentInfo.Lives != 0 && loaded)
+                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedCages(), GameInfo.PersistentInfo.Lives);
+            else
+                Slots[i] = null;
+        }
+    }
+
+    #endregion
+
+    #region Steps
+
+    private void Step_InitializeTransitionToSinglePlayer()
+    {
+        foreach (SpriteTextObject slotLumText in Data.SlotLumTexts)
+            slotLumText.Text = "1000";
+
+        foreach (SpriteTextObject slotCageText in Data.SlotCageTexts)
+            slotCageText.Text = "50";
+
+        foreach (AnimatedObject slotEmptyText in Data.SlotEmptyTexts)
+            slotEmptyText.CurrentAnimation = Localization.LanguageUiIndex;
+
+        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
+        Data.StartEraseCursor.CurrentAnimation = 40;
+
+        SpriteTextObject.Color = new RGB555Color(0x2fd).ToColor();
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (Slots[i] != null)
+            {
+                Data.SlotLumTexts[i].Text = Slots[i].LumsCount.ToString();
+                Data.SlotCageTexts[i].Text = Slots[i].CagesCount.ToString();
+            }
+        }
+
+        CurrentStepAction = Step_TransitionToSinglePlayer;
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
+        ResetStem();
+        SetBackgroundPalette(1);
+        StartEraseCursorCurrentIndex = 0;
+        StartEraseCursorTargetIndex = 0;
+        EraseSaveStage = 0;
+        Data.StartEraseSelection.ScreenPos = new Vector2(80, 30);
+        Data.StartEraseCursor.ScreenPos = new Vector2(106, 12);
+    }
+
+    private void Step_TransitionToSinglePlayer()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 80)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position += new Vector2(0, 8);
+        }
+
+        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, (TransitionValue >> 1) - 50);
+        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, (TransitionValue >> 1) - 68);
+
+        if (TransitionValue >= 160)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = Step_SinglePlayer;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            AnimationPlayer.Play(Data.SlotIcons[i]);
+
+            if (Slots[i] == null)
+            {
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
+            }
+        }
+
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
+    }
+
+    private void Step_SinglePlayer()
+    {
+        switch (EraseSaveStage)
+        {
+            case 0:
+                if (IsLoadingSlot)
+                {
+                    if (!TransitionsFX.IsChangingBrightness)
+                    {
+                        SoundEventsManager.StopAll();
+
+                        if (Slots[SelectedOption] == null)
+                        {
+                            // Create a new game
+                            FrameManager.SetNextFrame(new Act1());
+                            GameInfo.ResetPersistentInfo();
+                        }
+                        else
+                        {
+                            // Load an existing game
+                            GameInfo.Load(SelectedOption);
+                            GameInfo.LoadLastWorld();
+                        }
+
+                        GameInfo.CurrentSlot = SelectedOption;
+                        IsLoadingSlot = false;
+                    }
+                }
+                // Move start/erase to start
+                else if ((JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L)) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (StartEraseCursorTargetIndex != 0)
+                    {
+                        SetEraseCursorTargetIndex(0);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move start/erase to erase
+                else if ((JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R)) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SetEraseCursorTargetIndex(1);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move up
+                else if (JoyPad.CheckSingle(GbaInput.Up) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (SelectedOption == 0)
+                        SelectOption(2, true);
+                    else
+                        SelectOption(SelectedOption - 1, true);
+                }
+                // Move down
+                else if (JoyPad.CheckSingle(GbaInput.Down) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    if (SelectedOption == 2)
+                        SelectOption(0, true);
+                    else
+                        SelectOption(SelectedOption + 1, true);
+                }
+                // Select slot
+                else if (JoyPad.CheckSingle(GbaInput.A) && Data.Cursor.CurrentAnimation != 16)
+                {
+                    Data.Cursor.CurrentAnimation = 16;
+
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    }
+                    else if (Slots[SelectedOption] != null)
+                    {
+                        EraseSaveStage = 1;
+                        TransitionValue = 0;
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    }
+                    else
+                    {
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
+                    }
+                }
+                break;
+
+            case 1:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue);
+
+                if (TransitionValue >= 64)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 2;
+                    Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 21;
+                    Data.StartEraseSelection.ScreenPos = new Vector2(144, -80);
+                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -38);
+                }
+                break;
+
+            case 2:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 80);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 38);
+
+                if (TransitionValue >= 80)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 3;
+                }
+                break;
+
+            case 3:
+                // Move left
+                if (JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L))
+                {
+                    if (StartEraseCursorTargetIndex != 0)
+                    {
+                        SetEraseCursorTargetIndex(0);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 20;
+                        // TODO: Game passes in 0 as obj here, but that's probably a mistake
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Move right
+                else if (JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R))
+                {
+                    if (StartEraseCursorTargetIndex != 1)
+                    {
+                        SetEraseCursorTargetIndex(1);
+                        Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 21;
+                        // TODO: Game passes in 0 as obj here, but that's probably a mistake
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    }
+                }
+                // Erase slot
+                else if (JoyPad.CheckSingle(GbaInput.A))
+                {
+                    EraseSaveStage = 4;
+                    TransitionValue = 0;
+                    if (StartEraseCursorTargetIndex == 0 && Slots[SelectedOption] != null)
+                    {
+                        // TODO: Implement erase save slot
+                    }
+                }
+                break;
+
+            case 4:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, -TransitionValue);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 42 - TransitionValue);
+
+                if (TransitionValue >= 80)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 5;
+                    Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
+                    Data.StartEraseSelection.ScreenPos = new Vector2(80, -50);
+                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -68);
+                }
+                break;
+
+            case 5:
+                TransitionValue += 4;
+                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 34);
+                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 52);
+
+                if (TransitionValue >= 64)
+                {
+                    TransitionValue = 0;
+                    EraseSaveStage = 0;
+                }
+                break;
+        }
+
+        if (JoyPad.CheckSingle(GbaInput.B) && !TransitionsFX.IsChangingBrightness && !IsLoadingSlot)
+        {
+            if (EraseSaveStage == 0)
+            {
+                NextStepAction = Step_InitializeTransitionToSelectGameMode;
+                CurrentStepAction = Step_TransitionOutOfSinglePlayer;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+                TransitionValue = 0;
+                SelectOption(0, false);
+                TransitionOutCursorAndStem();
+            }
+            else if (EraseSaveStage == 1)
+            {
+                EraseSaveStage = 5;
+            }
+            else if (EraseSaveStage == 2)
+            {
+                EraseSaveStage = 4;
+                TransitionValue = 80 - TransitionValue;
+            }
+            else if (EraseSaveStage == 3)
+            {
+                EraseSaveStage = 4;
+                TransitionValue = 0;
+            }
+        }
+
+        MoveStartEraseCursor();
+
+        for (int i = 0; i < 3; i++)
+        {
+            AnimationPlayer.Play(Data.SlotIcons[i]);
+
+            if (Slots[i] == null)
+            {
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
+            }
+        }
+
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
+
+        if (!IsLoadingSlot && Data.Cursor.CurrentAnimation == 16 && Data.Cursor.EndOfAnimation)
+        {
+            Data.Cursor.CurrentAnimation = 0;
+
+            if (StartEraseCursorTargetIndex == 0)
+            {
+                SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.None, 1);
+                IsLoadingSlot = true;
+                TransitionsFX.FadeOutInit(2 / 16f);
+            }
+        }
+    }
+
+    private void Step_TransitionOutOfSinglePlayer()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 160)
+        {
+            TgxCluster cluster = Playfield.Camera.GetCluster(1);
+            cluster.Position -= new Vector2(0, 4);
+            Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue / 2f);
+            Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue / 2f);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = NextStepAction;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            AnimationPlayer.Play(Data.SlotIcons[i]);
+
+            if (Slots[i] == null)
+            {
+                AnimationPlayer.Play(Data.SlotEmptyTexts[i]);
+            }
+            else
+            {
+                AnimationPlayer.Play(Data.SlotLumTexts[i]);
+                AnimationPlayer.Play(Data.SlotCageTexts[i]);
+                AnimationPlayer.Play(Data.SlotLumIcons[i]);
+                AnimationPlayer.Play(Data.SlotCageIcons[i]);
+            }
+        }
+
+        AnimationPlayer.Play(Data.StartEraseSelection);
+        AnimationPlayer.Play(Data.StartEraseCursor);
+    }
+
+    #endregion
+}
