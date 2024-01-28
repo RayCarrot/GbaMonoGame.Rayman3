@@ -12,7 +12,7 @@ public static class Engine
     #region Paths
 
     public static string ConfigFilePath => "Config.json";
-    public static string SerializerLogFilePath => "Config.json";
+    public static string SerializerLogFilePath => "SerializerLog.txt";
 
     #endregion
 
