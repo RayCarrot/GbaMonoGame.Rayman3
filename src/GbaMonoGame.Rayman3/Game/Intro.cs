@@ -175,7 +175,7 @@ public class Intro : Frame, IHasPlayfield
         IsSkipping = false;
         FadeTime = MaxFadeTime;
 
-        SoundEventsManager.SetVolumeForType(0, 0);
+        SoundEventsManager.SetVolumeForType(SoundType.Music, 0);
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__sadslide);
     }
 
@@ -184,7 +184,7 @@ public class Intro : Frame, IHasPlayfield
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
         Gfx.Fade = 1;
-        SoundEventsManager.SetVolumeForType(0, MidiInterface.MaxVolume);
+        SoundEventsManager.SetVolumeForType(SoundType.Music, MidiInterface.MaxVolume);
     }
 
     public override void Step()
@@ -194,7 +194,7 @@ public class Intro : Frame, IHasPlayfield
 
         // Fade in music
         if (GameTime.ElapsedFrames <= 64)
-            SoundEventsManager.SetVolumeForType(0, (int)(GameTime.ElapsedFrames * 2));
+            SoundEventsManager.SetVolumeForType(SoundType.Music, (int)(GameTime.ElapsedFrames * 2));
 
         CurrentStepAction();
     }

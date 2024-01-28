@@ -171,19 +171,31 @@ public static class SoundEventsManager
         }
     }
 
-    public static void SetVolumeForType(int type, int newVolume)
+    public static void SetVolumeForType(SoundType type, int newVolume)
     {
         // Only implemented on GBA
         if (Engine.Settings.Platform != Platform.GBA)
             return;
 
-        if (type is < 0 or > 7)
+        if ((byte)type > 7)
             throw new ArgumentOutOfRangeException(nameof(type), type, "Type must be a value between 0-7");
 
         if (newVolume is < 0 or > MidiInterface.MaxVolume)
             throw new ArgumentOutOfRangeException(nameof(newVolume), newVolume, "Volume must be a value between 0-128");
 
-        _volumePerType[type] = newVolume;
+        _volumePerType[(byte)type] = newVolume;
+    }
+
+    public static int GetVolumeForType(SoundType type)
+    {
+        // Only implemented on GBA
+        if (Engine.Settings.Platform != Platform.GBA)
+            return MidiInterface.MaxVolume;
+
+        if ((byte)type > 7)
+            throw new ArgumentOutOfRangeException(nameof(type), type, "Type must be a value between 0-7");
+
+        return _volumePerType[(byte)type];
     }
 
     public static bool IsPlaying(Enum soundEventId) => IsPlaying((ushort)(object)soundEventId);

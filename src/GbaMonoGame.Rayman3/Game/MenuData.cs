@@ -13,7 +13,8 @@ public class MenuData
         AnimatedObjectResource gameLogoAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuGameLogoAnimations);
         AnimatedObjectResource gameModeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuGameModeAnimations);
         AnimatedObjectResource languageListAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuLanguageListAnimations);
-        AnimatedObjectResource slotEmptyAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.SlotEmptyAnimations);
+        AnimatedObjectResource optionsAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuOptionsAnimations);
+        AnimatedObjectResource slotEmptyAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSlotEmptyAnimations);
         AnimatedObjectResource steamAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSteamAnimations);
 
         Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
@@ -110,9 +111,32 @@ public class MenuData
             CurrentAnimation = 0,
         };
 
-        // field8_0x148
-        // field17_0x170
-        // field18_0x190
+        SoundsOnOffBase = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 1,
+            YPriority = 0,
+            ScreenPos = new Vector2(210, 65),
+            CurrentAnimation = 7,
+        };
+
+        MusicOnOff = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 1,
+            YPriority = 0,
+            ScreenPos = new Vector2(210, 65),
+            CurrentAnimation = 5,
+        };
+
+        SfxOnOff = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 1,
+            YPriority = 0,
+            ScreenPos = new Vector2(210, 89),
+            CurrentAnimation = 5,
+        };
 
         SlotLumIcons = new AnimatedObject[3];
         SlotCageIcons = new AnimatedObject[3];
@@ -172,8 +196,16 @@ public class MenuData
             };
         }
 
+        OptionsSelection = new AnimatedObject(optionsAnimations, optionsAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 3,
+            YPriority = 0,
+            ScreenPos = new Vector2(73, 52),
+            CurrentAnimation = 0,
+        };
+
         // TODO: Load data
-        // field44_0x6e0
         // field29_0x448
 
         StartEraseSelection = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
@@ -221,12 +253,16 @@ public class MenuData
     public AnimatedObject LanguageList { get; }
     public AnimatedObject GameModeList { get; }
     public AnimatedObject GameLogo { get; }
+    public AnimatedObject SoundsOnOffBase { get; }
+    public AnimatedObject MusicOnOff { get; }
+    public AnimatedObject SfxOnOff { get; }
     public AnimatedObject[] SlotLumIcons { get; }
     public AnimatedObject[] SlotCageIcons { get; }
     public AnimatedObject[] SlotIcons { get; }
     public SpriteTextObject[] SlotLumTexts { get; }
     public SpriteTextObject[] SlotCageTexts { get; }
     public AnimatedObject[] SlotEmptyTexts { get; }
+    public AnimatedObject OptionsSelection { get; }
     public AnimatedObject StartEraseSelection { get; }
     public AnimatedObject StartEraseCursor { get; }
 }
