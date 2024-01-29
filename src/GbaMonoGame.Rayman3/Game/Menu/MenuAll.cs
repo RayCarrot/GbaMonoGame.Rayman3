@@ -290,7 +290,8 @@ public partial class MenuAll : Frame, IHasPlayfield
                 break;
 
             case Page.Options:
-                throw new NotImplementedException();
+                Playfield.TileLayers[3].Screen.IsEnabled = false;
+                CurrentStepAction = Step_InitializeTransitionToOptions;
                 break;
 
             case Page.MultiPak:
@@ -306,7 +307,7 @@ public partial class MenuAll : Frame, IHasPlayfield
             !SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme);
-            MidiInterface.SetNbVoices(10);
+            SoundEngineInterface.SetNbVoices(10);
         }
 
         // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
@@ -326,8 +327,9 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
-        MidiInterface.SetNbVoices(7);
+        SoundEngineInterface.SetNbVoices(7);
         Playfield.UnInit();
+        // TODO: Implement
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__raytheme);
     }
 

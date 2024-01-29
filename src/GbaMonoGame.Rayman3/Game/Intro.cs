@@ -151,7 +151,7 @@ public class Intro : Frame, IHasPlayfield
 
     public override void Init()
     {
-        MidiInterface.SetNbVoices(10);
+        SoundEngineInterface.SetNbVoices(10);
 
         // Pre-load the menu
         Menu = new MenuAll(Engine.Settings.Platform switch
@@ -184,7 +184,7 @@ public class Intro : Frame, IHasPlayfield
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
         Gfx.Fade = 1;
-        SoundEventsManager.SetVolumeForType(SoundType.Music, MidiInterface.MaxVolume);
+        SoundEventsManager.SetVolumeForType(SoundType.Music, SoundEngineInterface.MaxVolume);
     }
 
     public override void Step()

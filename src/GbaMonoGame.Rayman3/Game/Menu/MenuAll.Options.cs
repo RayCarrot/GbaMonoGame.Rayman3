@@ -156,7 +156,7 @@ public partial class MenuAll
     private void ToggleMusicOnOff()
     {
         if (SoundEventsManager.GetVolumeForType(SoundType.Music) == 0)
-            SoundEventsManager.SetVolumeForType(SoundType.Music, MidiInterface.MaxVolume);
+            SoundEventsManager.SetVolumeForType(SoundType.Music, SoundEngineInterface.MaxVolume);
         else
             SoundEventsManager.SetVolumeForType(SoundType.Music, 0);
     }
@@ -164,19 +164,19 @@ public partial class MenuAll
     private void ToggleSfxOnOff()
     {
         if (SoundEventsManager.GetVolumeForType(SoundType.Sfx) == 0)
-            SoundEventsManager.SetVolumeForType(SoundType.Sfx, MidiInterface.MaxVolume);
+            SoundEventsManager.SetVolumeForType(SoundType.Sfx, SoundEngineInterface.MaxVolume);
         else
             SoundEventsManager.SetVolumeForType(SoundType.Sfx, 0);
     }
 
     private bool IsMusicOn()
     {
-        return SoundEventsManager.GetVolumeForType(SoundType.Music) == MidiInterface.MaxVolume;
+        return SoundEventsManager.GetVolumeForType(SoundType.Music) == SoundEngineInterface.MaxVolume;
     }
 
     private bool IsSfxOn()
     {
-        return SoundEventsManager.GetVolumeForType(SoundType.Sfx) == MidiInterface.MaxVolume;
+        return SoundEventsManager.GetVolumeForType(SoundType.Sfx) == SoundEngineInterface.MaxVolume;
     }
 
     #endregion

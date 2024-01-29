@@ -3,16 +3,16 @@
 namespace GbaMonoGame;
 
 // NOTE: This is only implemented on GBA
-public static class MidiInterface
+public static class SoundEngineInterface
 {
-    static MidiInterface()
+    static SoundEngineInterface()
     {
         _midiParams = new MidiParams
         {
             ReverbValue = 0,
             NbOfVoices = 7,
             MasterVolume = MaxVolume,
-            Uint_04 = 0x70000,
+            Freq = 0x70000,
         };
         SetMidiParams();
     }
@@ -41,6 +41,6 @@ public static class MidiInterface
         public byte ReverbValue { get; set; }
         public byte NbOfVoices { get; set; }
         public byte MasterVolume { get; set; }
-        public uint Uint_04 { get; set; }
+        public uint Freq { get; set; }
     }
 }

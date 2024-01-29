@@ -13,7 +13,7 @@ public static class SoundEventsManager
 {
     private static readonly Dictionary<int, SoundEffect> _songs = new();
     private static SoundBank _soundBank;
-    private static readonly int[] _volumePerType = Enumerable.Repeat(MidiInterface.MaxVolume, 8).ToArray(); // TODO: Use this on GBA
+    private static readonly int[] _volumePerType = Enumerable.Repeat(SoundEngineInterface.MaxVolume, 8).ToArray(); // TODO: Use this on GBA
 
     internal static readonly List<PlayingSong> _playingSongs = new();
 
@@ -147,7 +147,7 @@ public static class SoundEventsManager
                         SoundEffect song = _songs[res.SongTableIndex];
                         SoundEffectInstance snd = song.CreateInstance();
                         _playingSongs.Add(new PlayingSong(soundEventId, obj, snd, song));
-                        snd.IsLooped = res.Flag0; // TODO: Not 100% sure about this
+                        snd.IsLooped = res.Loop && res.IsMusic;
                         snd.Play();
                         break;
                 
@@ -180,7 +180,7 @@ public static class SoundEventsManager
         if ((byte)type > 7)
             throw new ArgumentOutOfRangeException(nameof(type), type, "Type must be a value between 0-7");
 
-        if (newVolume is < 0 or > MidiInterface.MaxVolume)
+        if (newVolume is < 0 or > SoundEngineInterface.MaxVolume)
             throw new ArgumentOutOfRangeException(nameof(newVolume), newVolume, "Volume must be a value between 0-128");
 
         _volumePerType[(byte)type] = newVolume;
@@ -190,7 +190,7 @@ public static class SoundEventsManager
     {
         // Only implemented on GBA
         if (Engine.Settings.Platform != Platform.GBA)
-            return MidiInterface.MaxVolume;
+            return SoundEngineInterface.MaxVolume;
 
         if ((byte)type > 7)
             throw new ArgumentOutOfRangeException(nameof(type), type, "Type must be a value between 0-7");
@@ -204,10 +204,10 @@ public static class SoundEventsManager
         return _playingSongs.Any(x => x.EventId == soundEventId);
     }
 
-    public static void FUN_080ac468(Enum soundEventId, float unknown) => FUN_080ac468((ushort)(object)soundEventId, unknown);
-    public static void FUN_080ac468(ushort soundEventId, float unknown)
+    public static void SetSoundPitch(Enum soundEventId, float pitch) => SetSoundPitch((ushort)(object)soundEventId, pitch);
+    public static void SetSoundPitch(ushort soundEventId, float pitch)
     {
-        // TODO: Implement. Sound speed or pitch?
+        // TODO: Implement
     }
 
     public static void FUN_080abe44(Enum soundEventId, float fadeOut) => FUN_080abe44((ushort)(object)soundEventId, fadeOut);
@@ -216,6 +216,7 @@ public static class SoundEventsManager
         // TODO: Implement. Implement flags in Ghidra to understand this.
     }
 
+    // FUN_100b7cb0
     public static void FUN_08001954(Enum soundEventId) => FUN_08001954((ushort)(object)soundEventId);
     public static void FUN_08001954(ushort soundEventId)
     {
