@@ -22,7 +22,7 @@ public sealed partial class Lums : BaseActor
             case Action.GreenLum:
                 AnimatedObject.CurrentAnimation = (byte)ActionId * 3;
 
-                if (ActionId == Action.YellowLum && !IsProjectile && !MultiplayerManager.IsInMultiplayer)
+                if (ActionId == Action.YellowLum && !IsProjectile && !RSMultiplayer.IsActive)
                 {
                     LumId = GameInfo.LoadedYellowLums;
                     GameInfo.LoadedYellowLums++;
@@ -33,14 +33,14 @@ public sealed partial class Lums : BaseActor
                 break;
 
             case Action.BlueLum:
-                if (!MultiplayerManager.IsInMultiplayer)
+                if (!RSMultiplayer.IsActive)
                     AnimatedObject.PaletteIndex = 1;
 
                 AnimatedObject.CurrentAnimation = 0;
                 break;
 
             case Action.WhiteLum:
-                if (!MultiplayerManager.IsInMultiplayer)
+                if (!RSMultiplayer.IsActive)
                 {
                     AnimatedObject.PaletteIndex = 1;
 
@@ -56,7 +56,7 @@ public sealed partial class Lums : BaseActor
                 break;
 
             case Action.BigBlueLum:
-                if (!MultiplayerManager.IsInMultiplayer)
+                if (!RSMultiplayer.IsActive)
                     AnimatedObject.PaletteIndex = 1;
 
                 AnimatedObject.CurrentAnimation = 10;
@@ -66,7 +66,7 @@ public sealed partial class Lums : BaseActor
                 throw new Exception($"Unknown lum state {ActionId}");
         }
 
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             Fsm.ChangeAction(Fsm_Idle);
 
@@ -170,7 +170,7 @@ public sealed partial class Lums : BaseActor
             {
                 AnimatedObject.IsFramed = false;
 
-                if (MultiplayerManager.IsInMultiplayer)
+                if (RSMultiplayer.IsActive)
                     AnimatedObject.ComputeNextFrame();
             }
         }

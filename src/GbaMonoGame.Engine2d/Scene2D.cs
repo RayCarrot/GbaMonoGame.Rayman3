@@ -322,7 +322,7 @@ public class Scene2D
         foreach (BaseActor actorToCheck in KnotManager.EnumerateAllActors(isEnabled: true))
         {
             // Ignore main actor if not in multiplayer
-            if (!MultiplayerManager.IsInMultiplayer && actorToCheck.InstanceId == 0)
+            if (!RSMultiplayer.IsActive && actorToCheck.InstanceId == 0)
                 continue;
 
             // Check for collision

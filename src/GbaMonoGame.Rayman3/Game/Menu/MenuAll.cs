@@ -44,6 +44,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     private Page InitialPage { get; set; }
 
+    private bool IsLoadingMultiplayerMap { get; set; }
 
     #endregion
 
@@ -307,12 +308,11 @@ public partial class MenuAll : Frame, IHasPlayfield
             SoundEngineInterface.SetNbVoices(10);
         }
 
-        // TODO: Reset multiplayer data in FUN_080ade7c and FUN_080ade28
-
+        RSMultiplayer.UnInit();
+        RSMultiplayer.Init();
         InitGameTime = GameTime.ElapsedFrames;
-
-        MultiplayerInfo.Reset();
-        // TODO: MultiplayerManager::Ctor();
+        MultiplayerInfo.Init();
+        MultiplayerManager.Init();
 
         GameTime.IsPaused = false;
 
@@ -326,7 +326,13 @@ public partial class MenuAll : Frame, IHasPlayfield
     {
         SoundEngineInterface.SetNbVoices(7);
         Playfield.UnInit();
-        // TODO: Implement
+
+        if (!IsLoadingMultiplayerMap)
+        {
+            RSMultiplayer.UnInit();
+            GameTime.IsPaused = false;
+        }
+
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__raytheme);
     }
 

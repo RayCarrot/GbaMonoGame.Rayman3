@@ -1,7 +1,10 @@
 ﻿namespace GbaMonoGame;
 
+// TODO: Implement. This handles managing the RSMultiplayer and joypad.
 public static class MultiplayerManager
 {
-    public static bool IsInMultiplayer { get; set; }
-    public static MultiplayerData Data { get; set; }
+    public static void Init()
+    {
+
+    }
 }

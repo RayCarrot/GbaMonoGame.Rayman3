@@ -85,7 +85,7 @@ public partial class RaymanBody
                 else
                     ChargePower = Math.Clamp(ChargePower / 3, 4, 16);
 
-                if (MultiplayerManager.IsInMultiplayer)
+                if (RSMultiplayer.IsActive)
                 {
                     throw new NotImplementedException();
                 }

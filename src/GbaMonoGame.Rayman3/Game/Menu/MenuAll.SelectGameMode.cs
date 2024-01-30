@@ -118,6 +118,7 @@ public partial class MenuAll
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         }
 
+        IsLoadingMultiplayerMap = false;
         PrevGameTime = 0;
         GameLogoMovementXOffset = 10;
         GameLogoMovementWidth = 10;

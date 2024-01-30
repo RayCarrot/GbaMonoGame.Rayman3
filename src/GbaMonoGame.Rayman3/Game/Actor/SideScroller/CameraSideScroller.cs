@@ -16,7 +16,7 @@ public class CameraSideScroller : CameraActor2D
         TargetY = 120;
         field20_0x32 = 1;
 
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             HorizontalOffset = Engine.Settings.Platform switch
             {

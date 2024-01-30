@@ -20,15 +20,15 @@ public sealed partial class Rayman : MovableActor
 
         // TODO: On N-Gage it loads a bunch of animated objects here for multiplayer - implement that?
 
-        if (MultiplayerManager.IsInMultiplayer)
+        if (RSMultiplayer.IsActive)
         {
-            if (instanceId >= MultiplayerManager.Data.Count)
+            if (instanceId >= RSMultiplayer.PlayersCount)
             {
                 ProcessMessage(Message.Destroy);
             }
             else
             {
-                if (instanceId != MultiplayerManager.Data.MachineId)
+                if (instanceId != RSMultiplayer.MachineId)
                 {
                     IsLocalPlayer = false;
                     AnimatedObject.IsSoundEnabled = false;
@@ -106,7 +106,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckInput(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.Check(input);
         }
@@ -118,7 +118,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckInput2(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.Check(input);
         }
@@ -130,7 +130,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckSingleInput(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.CheckSingle(input);
         }
@@ -142,7 +142,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckSingleInput2(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.CheckSingle(input);
         }
@@ -154,7 +154,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckSingleReleasedInput(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.CheckSingleReleased(input);
         }
@@ -166,7 +166,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckReleasedInput(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return !JoyPad.Check(input);
         }
@@ -178,7 +178,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CheckReleasedInput2(GbaInput input)
     {
-        if (!MultiplayerManager.IsInMultiplayer)
+        if (!RSMultiplayer.IsActive)
         {
             return !JoyPad.Check(input);
         }
@@ -205,7 +205,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CanAttackWithFist(int punchCount)
     {
-        if (MultiplayerManager.IsInMultiplayer)
+        if (RSMultiplayer.IsActive)
         {
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
@@ -221,7 +221,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool CanAttackWithFoot()
     {
-        if (MultiplayerManager.IsInMultiplayer)
+        if (RSMultiplayer.IsActive)
         {
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
@@ -231,7 +231,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool HasPower(Power power)
     {
-        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
         {
             throw new NotImplementedException();
         }
@@ -248,7 +248,7 @@ public sealed partial class Rayman : MovableActor
         if (bodyPart == null)
             return;
 
-        if (MultiplayerManager.IsInMultiplayer)
+        if (RSMultiplayer.IsActive)
         {
             // TODO: Implement
         }
@@ -328,7 +328,7 @@ public sealed partial class Rayman : MovableActor
 
         bodyPart.ActionId = bodyPart.BaseActionId + (IsFacingRight ? 1 : 2);
 
-        if (MultiplayerManager.IsInMultiplayer && Engine.Settings.Platform == Platform.NGage)
+        if (RSMultiplayer.IsActive && Engine.Settings.Platform == Platform.NGage)
         {
             // TODO: Implement
         }
@@ -561,7 +561,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool ManageHit()
     {
-        if (MultiplayerManager.IsInMultiplayer || (GameInfo.Cheats & CheatFlags.Invulnerable) != 0)
+        if (RSMultiplayer.IsActive || (GameInfo.Cheats & CheatFlags.Invulnerable) != 0)
             return false;
 
         CheckForTileDamage();
@@ -1345,7 +1345,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (IsInvulnerable && 
                 (GameInfo.Cheats & CheatFlags.Invulnerable) == 0 && 
-                !MultiplayerManager.IsInMultiplayer && 
+                !RSMultiplayer.IsActive && 
                 HitPoints != 0 && 
                 (GameTime.ElapsedFrames & 1) == 0)
             {

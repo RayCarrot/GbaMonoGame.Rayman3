@@ -9,7 +9,7 @@ public static class MultiplayerInfo
     public static uint InitialGameTime { get; set; }
     public static TagInfo TagInfo { get; set; }
 
-    public static void Reset()
+    public static void Init()
     {
         GameType = default;
         MapId = null;

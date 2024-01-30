@@ -109,7 +109,7 @@ public partial class Rayman
 
         if (IsDead())
         {
-            if (!MultiplayerManager.IsInMultiplayer)
+            if (!RSMultiplayer.IsActive)
                 Fsm.ChangeAction(Fsm_Dying);
             else
                 Fsm.ChangeAction(FUN_08033228);
@@ -216,7 +216,7 @@ public partial class Rayman
                 }
                 else
                 {
-                    if (!MultiplayerManager.IsInMultiplayer)
+                    if (!RSMultiplayer.IsActive)
                         cam.HorizontalOffset = Engine.Settings.Platform switch
                         {
                             Platform.GBA => 40,
@@ -263,7 +263,7 @@ public partial class Rayman
                 if (!IsActionFinished)
                     return;
 
-                if (!MultiplayerManager.IsInMultiplayer || Timer >= 210)
+                if (!RSMultiplayer.IsActive || Timer >= 210)
                     Fsm.ChangeAction(Fsm_Default);
                 break;
 
@@ -390,7 +390,7 @@ public partial class Rayman
                     ActionId = Action.Walk_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -398,7 +398,7 @@ public partial class Rayman
                     ActionId = Action.Walk_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
 
@@ -551,7 +551,7 @@ public partial class Rayman
                     ActionId = Action.Walk_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -559,7 +559,7 @@ public partial class Rayman
                     ActionId = Action.Walk_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
 
@@ -628,7 +628,7 @@ public partial class Rayman
                     if (SlideType == null)
                         PreviousXSpeed = 0;
 
-                    if (!MultiplayerManager.IsInMultiplayer)
+                    if (!RSMultiplayer.IsActive)
                     {
                         // Randomly look around for Globox in the first level
                         if (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0)
@@ -695,7 +695,7 @@ public partial class Rayman
                         ActionId = Action.Walk_LookAround_Left;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
                     else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -703,7 +703,7 @@ public partial class Rayman
                         ActionId = Action.Walk_LookAround_Right;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
                 }
@@ -714,7 +714,7 @@ public partial class Rayman
                         ActionId = Action.Walk_Left;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
                     else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -722,7 +722,7 @@ public partial class Rayman
                         ActionId = Action.Walk_Right;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
                 }
@@ -767,7 +767,7 @@ public partial class Rayman
 
                     PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
 
-                    if (!MultiplayerManager.IsInMultiplayer)
+                    if (!RSMultiplayer.IsActive)
                     {
                         if (ActionId is not (
                             Action.Walk_Right or Action.Walk_Left or
@@ -1400,7 +1400,7 @@ public partial class Rayman
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -1408,7 +1408,7 @@ public partial class Rayman
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
 
@@ -1500,7 +1500,7 @@ public partial class Rayman
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
                 else if (CheckInput(GbaInput.Right) && IsFacingLeft)
@@ -1508,7 +1508,7 @@ public partial class Rayman
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
 
@@ -1873,7 +1873,7 @@ public partial class Rayman
                 {
                     CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
-                    if (MultiplayerManager.IsInMultiplayer)
+                    if (RSMultiplayer.IsActive)
                     {
                         cam.HorizontalOffset = 95;
                     }
@@ -1929,7 +1929,7 @@ public partial class Rayman
 
                     if (climbHoriontal is 4 or 6)
                     {
-                        if (!MultiplayerManager.IsInMultiplayer)
+                        if (!RSMultiplayer.IsActive)
                         {
                             MechModel.Speed = new Vector2(-1.5f, MechModel.Speed.Y);
 
@@ -1941,7 +1941,7 @@ public partial class Rayman
                             throw new NotImplementedException();
                         }
                     }
-                    else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                    else if (Timer > 50 && !RSMultiplayer.IsActive)
                     {
                         cam.HorizontalOffset = Engine.Settings.Platform switch
                         {
@@ -1959,7 +1959,7 @@ public partial class Rayman
 
                     if (climbHoriontal is 4 or 5)
                     {
-                        if (!MultiplayerManager.IsInMultiplayer)
+                        if (!RSMultiplayer.IsActive)
                         {
                             MechModel.Speed = new Vector2(1.5f, MechModel.Speed.Y);
 
@@ -1971,7 +1971,7 @@ public partial class Rayman
                             throw new NotImplementedException();
                         }
                     }
-                    else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                    else if (Timer > 50 && !RSMultiplayer.IsActive)
                     {
                         cam.HorizontalOffset = Engine.Settings.Platform switch
                         {
@@ -1982,7 +1982,7 @@ public partial class Rayman
                         Timer = 0;
                     }
                 }
-                else if (Timer > 50 && !MultiplayerManager.IsInMultiplayer)
+                else if (Timer > 50 && !RSMultiplayer.IsActive)
                 {
                     // Center camera, only on GBA
                     if (Engine.Settings.Platform == Platform.GBA)
@@ -1993,7 +1993,7 @@ public partial class Rayman
 
                 if (CheckInput(GbaInput.Up) && climbVertical is 1 or 2)
                 {
-                    if (!MultiplayerManager.IsInMultiplayer)
+                    if (!RSMultiplayer.IsActive)
                     {
                         MechModel.Speed = new Vector2(MechModel.Speed.X, -1.5f);
                     }
@@ -2010,7 +2010,7 @@ public partial class Rayman
                 }
                 else if (CheckInput(GbaInput.Down) && climbVertical is 1 or 3)
                 {
-                    if (!MultiplayerManager.IsInMultiplayer)
+                    if (!RSMultiplayer.IsActive)
                     {
                         MechModel.Speed = new Vector2(MechModel.Speed.X, 1.5f);
                     }
@@ -2120,7 +2120,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.UnInit:
-                if (!MultiplayerManager.IsInMultiplayer)
+                if (!RSMultiplayer.IsActive)
                     cam.HorizontalOffset = Engine.Settings.Platform switch
                     {
                         Platform.GBA => 40,
@@ -2164,7 +2164,7 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                     {
                         throw new NotImplementedException();
                     }
@@ -2174,7 +2174,7 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                     {
                         throw new NotImplementedException();
                     }
@@ -2246,7 +2246,7 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                     {
                         throw new NotImplementedException();
                     }
@@ -2256,7 +2256,7 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && MultiplayerManager.IsInMultiplayer)
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                     {
                         throw new NotImplementedException();
                     }

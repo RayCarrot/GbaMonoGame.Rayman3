@@ -33,7 +33,7 @@ public static class GameInfo
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
 
-    public static void Reset()
+    public static void Init()
     {
         NextMapId = null;
         MapId = MapId.WoodLight_M1;
