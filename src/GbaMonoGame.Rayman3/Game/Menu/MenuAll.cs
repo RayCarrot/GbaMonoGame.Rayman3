@@ -265,9 +265,6 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public override void Init()
     {
-        if (!HasLoadedGameInfo)
-            GameInfo.Reset();
-
         LoadGameInfo();
 
         AnimationPlayer = new AnimationPlayer(false, null);
@@ -314,7 +311,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         InitGameTime = GameTime.ElapsedFrames;
 
-        // TODO: MultiplayerInfo::Ctor();
+        MultiplayerInfo.Reset();
         // TODO: MultiplayerManager::Ctor();
 
         GameTime.IsPaused = false;

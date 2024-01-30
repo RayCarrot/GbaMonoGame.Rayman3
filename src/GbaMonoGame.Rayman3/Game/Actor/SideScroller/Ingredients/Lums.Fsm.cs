@@ -160,4 +160,5 @@ public partial class Lums
     private void FUN_0805ed40(FsmAction action) { }
     private void FUN_0805e6b8(FsmAction action) { }
     private void FUN_0805e83c(FsmAction action) { }
+    private void FUN_0805e844(FsmAction action) { }
 }

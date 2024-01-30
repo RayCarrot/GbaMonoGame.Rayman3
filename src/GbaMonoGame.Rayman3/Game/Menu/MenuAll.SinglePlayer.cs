@@ -69,6 +69,7 @@ public partial class MenuAll
         if (HasLoadedGameInfo)
             return;
 
+        GameInfo.Reset();
         HasLoadedGameInfo = true;
 
         for (int i = 0; i < 3; i++)

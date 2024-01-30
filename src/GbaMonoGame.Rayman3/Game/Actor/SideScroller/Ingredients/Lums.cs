@@ -81,7 +81,10 @@ public sealed partial class Lums : BaseActor
         }
         else
         {
-            // TODO: Implement
+            Fsm.ChangeAction(FUN_0805e844);
+            BossDespawnTimer = -1;
+            LumId = instanceId;
+            MultiplayerInfo.TagInfo.SaveLumPosition(instanceId, actorResource);
         }
     }
 

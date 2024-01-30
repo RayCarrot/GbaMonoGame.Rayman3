@@ -111,6 +111,7 @@ public class KnotManager
     }
 
     public GameObject GetGameObject(int instanceId) => GameObjects[instanceId];
+    public T GetGameObject<T>(int instanceId) where T : GameObject => (T)GameObjects[instanceId];
 
     public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos)
     {
