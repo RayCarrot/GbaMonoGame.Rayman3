@@ -27,6 +27,8 @@ public class SpriteTextObject : AObject
     public Vector2 ScreenPos { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
 
+    public int GetStringWidth() => FontManager.GetStringWidth(FontSize, TextBytes);
+
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
     {
         if (TextBytes == null)

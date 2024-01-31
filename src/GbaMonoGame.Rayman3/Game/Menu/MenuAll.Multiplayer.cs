@@ -22,11 +22,20 @@ public partial class MenuAll
     {
         ShouldMultiplayerTextBlink = blink;
 
-        // TODO: Implement like game does for centering text etc.
         Text text = Localization.TextBanks[11].Texts[textId];
+
+        int unusedLines = Data.MultiplayerTexts.Length - text.LinesCount;
         for (int i = 0; i < Data.MultiplayerTexts.Length; i++)
         {
-            Data.MultiplayerTexts[i].Text = i < text.LinesCount ? text.Lines.Value[i] : "";
+            if (i < unusedLines)
+            {
+                Data.MultiplayerTexts[i].Text = "";
+            }
+            else
+            {
+                Data.MultiplayerTexts[i].Text = text.Lines.Value[i - unusedLines];
+                Data.MultiplayerTexts[i].ScreenPos = new Vector2(140 - Data.MultiplayerTexts[i].GetStringWidth() / 2f, 32 + i * 16);
+            }
         }
     }
 

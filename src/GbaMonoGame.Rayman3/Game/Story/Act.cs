@@ -77,10 +77,8 @@ public abstract class Act : Frame
             {
                 string line = CurrentText.Lines.Value![CurrentTextLine];
 
-                int textWidth = FontManager.GetStringWidth(textObj.FontSize, line);
-
                 textObj.Text = line;
-                textObj.ScreenPos = new Vector2(centerX - textWidth / 2f, baseY + lineHeight * i);
+                textObj.ScreenPos = new Vector2(centerX - textObj.GetStringWidth() / 2f, baseY + lineHeight * i);
 
                 CurrentTextLine++;
             }
