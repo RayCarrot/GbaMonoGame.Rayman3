@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Rayman3;
@@ -176,21 +177,13 @@ public partial class MenuAll
         {
             Data.Cursor.CurrentAnimation = 16;
 
-            switch (SelectedOption)
+            NextStepAction = SelectedOption switch
             {
-                // Single player
-                case 0:
-                    NextStepAction = Step_InitializeTransitionToSinglePlayer;
-                    break;
-
-                case 1:
-                    // TODO: Multiplayer
-                    break;
-
-                case 2:
-                    NextStepAction = Step_InitializeTransitionToOptions;
-                    break;
-            }
+                0 => Step_InitializeTransitionToSinglePlayer,
+                1 => Step_InitializeTransitionToMultiplayer,
+                2 => Step_InitializeTransitionToOptions,
+                _ => throw new Exception("Invalid game mode")
+            };
 
             CurrentStepAction = Step_TransitionOutOfSelectGameMode;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);

@@ -29,6 +29,9 @@ public class SpriteTextObject : AObject
 
     public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
     {
+        if (TextBytes == null)
+            return;
+
         Vector2 pos = ScreenPos;
 
         foreach (byte c in TextBytes)

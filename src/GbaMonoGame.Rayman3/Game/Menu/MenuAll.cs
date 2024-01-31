@@ -40,7 +40,7 @@ public partial class MenuAll : Frame, IHasPlayfield
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
     
-    private uint InitGameTime { get; set; }
+    private uint InititialGameTime { get; set; }
 
     private Page InitialPage { get; set; }
 
@@ -270,7 +270,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         AnimationPlayer = new AnimationPlayer(false, null);
 
-        Data = new MenuData();
+        Data = new MenuData(MultiplayerSinglePakPlayersOffsetY);
         WheelRotation = 0;
 
         LoadPlayfield();
@@ -310,7 +310,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         RSMultiplayer.UnInit();
         RSMultiplayer.Init();
-        InitGameTime = GameTime.ElapsedFrames;
+        InititialGameTime = GameTime.ElapsedFrames;
         MultiplayerInfo.Init();
         MultiplayerManager.Init();
 

@@ -61,4 +61,22 @@ public enum MapId
     World3 = 56,
     World4 = 57,
     WorldMap = 58,
+
+    GbaMulti_MissileRace = 59,
+    GbaMulti_MissileArena = 60,
+    GbaMulti_RayTag1 = 61,
+    GbaMulti_RayTag2 = 62,
+    GbaMulti_CatAndMouse1 = 63,
+    GbaMulti_CatAndMouse2 = 64,
+
+    NGageMulti_CaptureTheFlag1 = 59,
+    NGageMulti_CaptureTheFlag2 = 60,
+    NGageMulti_CaptureTheFlag3 = 61,
+    NGageMulti_CaptureTheFlag4 = 62,
+    NGageMulti_CaptureTheFlag5 = 63,
+    NGageMulti_CaptureTheFlag6 = 64,
+    NGageMulti_RayTag1 = 65,
+    NGageMulti_RayTag2 = 66,
+    NGageMulti_CatAndMouse1 = 67,
+    NGageMulti_CatAndMouse2 = 68,
 }

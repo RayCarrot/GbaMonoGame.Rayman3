@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 // TODO: Add N-Gage support
 public class MenuData
 {
-    public MenuData()
+    public MenuData(int multiplayerSinglePakPlayersOffsetY)
     {
         AnimatedObjectResource propsAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuPropAnimations);
         AnimatedObjectResource startEraseAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuStartEraseAnimations);
@@ -15,6 +15,8 @@ public class MenuData
         AnimatedObjectResource languageListAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuLanguageListAnimations);
         AnimatedObjectResource optionsAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuOptionsAnimations);
         AnimatedObjectResource slotEmptyAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSlotEmptyAnimations);
+        AnimatedObjectResource multiplayerModeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerModeAnimations);
+        AnimatedObjectResource multiplayerPlayersAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerPlayersAnimations);
         AnimatedObjectResource steamAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSteamAnimations);
 
         Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
@@ -205,8 +207,14 @@ public class MenuData
             CurrentAnimation = 0,
         };
 
-        // TODO: Load data
-        // field29_0x448
+        MultiplayerModeSelection = new AnimatedObject(multiplayerModeAnimations, multiplayerModeAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 3,
+            YPriority = 0,
+            ScreenPos = new Vector2(73, 52),
+            CurrentAnimation = 0,
+        };
 
         StartEraseSelection = new AnimatedObject(startEraseAnimations, startEraseAnimations.IsDynamic)
         {
@@ -226,8 +234,21 @@ public class MenuData
             CurrentAnimation = 40
         };
 
+        // x:  0xfe00U
+        // y:  0xff00
+        MultiplayerTexts = new SpriteTextObject[5];
+        for (int i = 0; i < MultiplayerTexts.Length; i++)
+        {
+            MultiplayerTexts[i] = new SpriteTextObject()
+            {
+                SpritePriority = 3,
+                YPriority = 0,
+                ScreenPos = new Vector2(70, 32 + i * 16),
+                FontSize = FontSize.Font16,
+            };
+        }
+
         // TODO: Load data
-        // field34_0x548
         // field30_0x468
         // field31_0x488
         // field33_0x4c8
@@ -240,7 +261,15 @@ public class MenuData
         // field40_0x668
         // field41_0x690
         // field42_0x6a8
-        // field43_0x6c0
+
+        MultiplayerSinglePakPlayers = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            SpritePriority = 1,
+            YPriority = 0,
+            ScreenPos = new Vector2(168, 40 - multiplayerSinglePakPlayersOffsetY),
+            CurrentAnimation = 11
+        };
     }
 
     public AnimatedObject Wheel1 { get; }
@@ -263,6 +292,9 @@ public class MenuData
     public SpriteTextObject[] SlotCageTexts { get; }
     public AnimatedObject[] SlotEmptyTexts { get; }
     public AnimatedObject OptionsSelection { get; }
+    public AnimatedObject MultiplayerModeSelection { get; }
     public AnimatedObject StartEraseSelection { get; }
     public AnimatedObject StartEraseCursor { get; }
+    public SpriteTextObject[] MultiplayerTexts { get; }
+    public AnimatedObject MultiplayerSinglePakPlayers { get; }
 }
