@@ -234,8 +234,6 @@ public class MenuData
             CurrentAnimation = 40
         };
 
-        // x:  0xfe00U
-        // y:  0xff00
         MultiplayerTexts = new SpriteTextObject[5];
         for (int i = 0; i < MultiplayerTexts.Length; i++)
         {
