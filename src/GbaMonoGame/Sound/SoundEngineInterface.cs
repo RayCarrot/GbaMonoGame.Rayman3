@@ -2,6 +2,10 @@
 
 namespace GbaMonoGame;
 
+// Useful links for reverse engineering the GBA MP2k sound engine:
+// https://loveemu.github.io/vgmdocs/Summary_of_GBA_Standard_Sound_Driver_MusicPlayer2000.html
+// https://github.dev/pret/pokeruby/blob/master/include/gba/m4a_internal.h
+
 // NOTE: This is only implemented on GBA
 public static class SoundEngineInterface
 {
