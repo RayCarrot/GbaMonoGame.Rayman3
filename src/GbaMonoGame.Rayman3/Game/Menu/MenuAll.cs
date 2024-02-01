@@ -292,12 +292,16 @@ public partial class MenuAll : Frame, IHasPlayfield
                 CurrentStepAction = Step_InitializeTransitionToOptions;
                 break;
 
-            case Page.MultiPak:
-                throw new NotImplementedException();
+            case Page.MultiPak1:
+                IsLoadingMultiplayerMap = true;
+                Playfield.TileLayers[3].Screen.IsEnabled = false;
+                // CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPak; // TODO: Implement
                 break;
 
-            case Page.SinglePak:
-                throw new NotImplementedException();
+            case Page.MultiPak2:
+                IsLoadingMultiplayerMap = true;
+                Playfield.TileLayers[3].Screen.IsEnabled = false;
+                // CurrentStepAction = FUN_08008248; // TODO: Implement
                 break;
         }
 
@@ -388,8 +392,8 @@ public partial class MenuAll : Frame, IHasPlayfield
         SelectLanguage,
         SelectGameMode,
         Options,
-        MultiPak,
-        SinglePak,
+        MultiPak1,
+        MultiPak2,
         NGage, // TODO: What is this? N-Gage loads this first
     }
 
