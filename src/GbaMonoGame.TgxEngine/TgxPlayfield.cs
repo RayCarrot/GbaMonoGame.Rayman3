@@ -44,7 +44,7 @@ public abstract class TgxPlayfield
         int index = mapPoint.Y * PhysicalLayer.Width + mapPoint.X;
 
         // Safety check to avoid out of bounds
-        if (index > PhysicalLayer.CollisionMap.Length)
+        if (index >= PhysicalLayer.CollisionMap.Length || index < 0)
             return 0xFF;
 
         return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
