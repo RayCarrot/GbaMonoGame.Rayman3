@@ -16,10 +16,25 @@ public class FrameSideScrollerGCN : FrameSideScroller
 
     private GameCubeMapInfo MapInfo { get; }
     private GameCubeMap Map { get; }
-    private int GcnMapId { get; }
 
     private MapId PreviousMapId { get; set; }
     private Power PreviousPowers { get; set; }
+
+    public int GcnMapId { get; }
+
+    public void RestoreMapAndPowers()
+    {
+        GameInfo.MapId = PreviousMapId;
+        GameInfo.Powers = PreviousPowers;
+    }
+
+    public void FUN_0808a9f4()
+    {
+        if (GcnMapId == 3)
+        {
+            // TODO: Implement
+        }
+    }
 
     public override void Init()
     {

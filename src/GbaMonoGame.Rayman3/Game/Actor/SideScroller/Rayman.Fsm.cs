@@ -2437,9 +2437,7 @@ public partial class Rayman
                     Flag2_1 = true;
 
                     if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
-                    {
-                        // TODO: Call function in GameCube frame class
-                    }
+                        ((FrameSideScrollerGCN)Frame.Current).FUN_0808a9f4();
 
                     switch (GameInfo.MapId)
                     {
@@ -2477,7 +2475,14 @@ public partial class Rayman
                 {
                     if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
-                        // TODO: Load GCN menu
+                        ((FrameSideScrollerGCN)Frame.Current).RestoreMapAndPowers();
+                        int gcnMapId = ((FrameSideScrollerGCN)Frame.Current).GcnMapId;
+
+                        if (GameInfo.PersistentInfo.CompletedGCNBonusLevels < gcnMapId + 1)
+                            GameInfo.PersistentInfo.CompletedGCNBonusLevels = (byte)(gcnMapId + 1);
+
+                        FrameManager.SetNextFrame(new GameCubeMenu());
+                        GameInfo.Save(GameInfo.CurrentSlot);
                     }
                     else if (GameInfo.MapId > (MapId)GameInfo.PersistentInfo.LastCompletedLevel)
                     {
@@ -2522,7 +2527,8 @@ public partial class Rayman
                 {
                     if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
-                        // TODO: Load GCN menu
+                        ((FrameSideScrollerGCN)Frame.Current).RestoreMapAndPowers();
+                        FrameManager.SetNextFrame(new GameCubeMenu());
                     }
                     else if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     {
@@ -2587,9 +2593,7 @@ public partial class Rayman
                 NextActionId = null;
 
                 if (GameInfo.LevelType == LevelType.GameCube)
-                {
-                    throw new NotImplementedException();
-                }
+                    ((FrameSideScrollerGCN)Frame.Current).FUN_0808a9f4();
 
                 if (GameInfo.MapId is MapId.SanctuaryOfRockAndLava_M1 or MapId.SanctuaryOfRockAndLava_M2 or MapId.SanctuaryOfRockAndLava_M3)
                 {
