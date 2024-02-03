@@ -10,6 +10,7 @@ public class FramesDebugMenu : DebugMenu
     {
         new("Intro", () => new Intro()),
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
+        new("GameCubeMenu", () => new GameCubeMenu()),
         new("Game Over", () => new GameOver()),
         new("Story", null, new FrameMenuItem[]
         {

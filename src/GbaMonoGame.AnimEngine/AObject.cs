@@ -2,6 +2,7 @@
 
 namespace GbaMonoGame.AnimEngine;
 
+// On GBA setting the priority is inlined. Sprite is set using the mask 0x3fff and Y is set using the mask 0xc0ff.
 public abstract class AObject
 {
     public byte Priority { get; private set; }

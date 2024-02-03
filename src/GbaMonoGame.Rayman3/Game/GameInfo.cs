@@ -75,7 +75,7 @@ public static class GameInfo
         PersistentInfo.PlayedMurphyWorldHelp = false;
         PersistentInfo.UnlockedFinalBoss = false;
         PersistentInfo.UnlockedLyChallengeGCN = false;
-        PersistentInfo.LastCompletedGCNBonus = 0;
+        PersistentInfo.CompletedGCNBonusLevels = 0;
     }
 
     public static bool Load(int saveSlot)
@@ -192,6 +192,16 @@ public static class GameInfo
         }
 
         return count;
+    }
+
+    public static bool HasCollectedAllYellowLums()
+    {
+        return GetTotalCollectedYellowLums() == 1000;
+    }
+
+    public static bool HasCollectedAllCages()
+    {
+        return GetTotalCollectedCages() == 50;
     }
 
     public static bool HasCollectedYellowLum(int lumId, MapId mapId)
