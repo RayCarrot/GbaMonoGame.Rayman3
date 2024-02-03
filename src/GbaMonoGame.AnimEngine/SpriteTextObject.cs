@@ -8,11 +8,7 @@ public class SpriteTextObject : AObject
 {
     private string _text;
 
-    // The game has a global variable for the current color. But maybe it'd be better if we did it per object instead?
-    public static Color Color { get; set; }
-
     private byte[] TextBytes { get; set; }
-
     public string Text
     {
         get => _text;
@@ -23,6 +19,7 @@ public class SpriteTextObject : AObject
         }
     }
 
+    public Color Color { get; set; }
     public FontSize FontSize { get; set; }
 
     public Vector2 ScreenPos { get; set; }

@@ -179,6 +179,7 @@ public class MenuData
                 ScreenPos = new Vector2(129, 55 + i * 18),
                 Text = "1000",
                 FontSize = FontSize.Font16,
+                Color = TextColor.Menu,
             };
             SlotCageTexts[i] = new SpriteTextObject()
             {
@@ -187,6 +188,7 @@ public class MenuData
                 ScreenPos = new Vector2(190, 55 + i * 18),
                 Text = "50",
                 FontSize = FontSize.Font16,
+                Color = TextColor.Menu,
             };
             SlotEmptyTexts[i] = new AnimatedObject(slotEmptyAnimations, slotEmptyAnimations.IsDynamic)
             {
@@ -243,6 +245,7 @@ public class MenuData
                 YPriority = 0,
                 ScreenPos = new Vector2(70, 32 + i * 16),
                 FontSize = FontSize.Font16,
+                Color = TextColor.Menu,
             };
         }
 

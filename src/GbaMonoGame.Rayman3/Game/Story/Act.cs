@@ -196,7 +196,6 @@ public abstract class Act : Frame
             SoundEventsManager.ProcessEvent(resource.StartMusicSoundEvent);
 
         AnimationPlayer = new AnimationPlayer(false, null);
-        SpriteTextObject.Color = new RGB555Color(0x8aa).ToColor();
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
@@ -207,12 +206,14 @@ public abstract class Act : Frame
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(4, 129),
                     FontSize = FontSize.Font16,
+                    Color = TextColor.Story,
                 },
                 new SpriteTextObject()
                 {
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(4, 143),
                     FontSize = FontSize.Font16,
+                    Color = TextColor.Story,
                 }
             };
         }
@@ -226,18 +227,21 @@ public abstract class Act : Frame
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(4, 135),
                     FontSize = FontSize.Font16,
+                    Color = TextColor.Story,
                 },
                 new SpriteTextObject()
                 {
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(4, 149),
                     FontSize = FontSize.Font16,
+                    Color = TextColor.Story,
                 },
                 new SpriteTextObject()
                 {
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(4, 163),
                     FontSize = FontSize.Font16,
+                    Color = TextColor.Story,
                 }
             };
         }

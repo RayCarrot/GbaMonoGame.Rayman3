@@ -101,8 +101,6 @@ public partial class MenuAll
         Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 1;
         Data.StartEraseCursor.CurrentAnimation = 40;
 
-        SpriteTextObject.Color = new RGB555Color(0x2fd).ToColor();
-
         for (int i = 0; i < 3; i++)
         {
             if (Slots[i] != null)

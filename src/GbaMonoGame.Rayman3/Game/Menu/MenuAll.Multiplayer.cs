@@ -143,8 +143,6 @@ public partial class MenuAll
 
     private void Step_InitializeTransitionToMultiplayerSinglePak()
     {
-        SpriteTextObject.Color = new RGB555Color(0x2fd).ToColor();
-
         SetMultiplayerText(3, false);
 
         MultiplayerSinglePakConnectionTimer = 125;
