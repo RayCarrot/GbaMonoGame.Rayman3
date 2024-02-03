@@ -22,9 +22,9 @@ public partial class MenuAll
     {
         ShouldMultiplayerTextBlink = blink;
 
-        Text text = Localization.TextBanks[11].Texts[textId];
+        string[] text = Localization.GetText(11, textId);
 
-        int unusedLines = Data.MultiplayerTexts.Length - text.LinesCount;
+        int unusedLines = Data.MultiplayerTexts.Length - text.Length;
         for (int i = 0; i < Data.MultiplayerTexts.Length; i++)
         {
             if (i < unusedLines)
@@ -33,7 +33,7 @@ public partial class MenuAll
             }
             else
             {
-                Data.MultiplayerTexts[i].Text = text.Lines.Value[i - unusedLines];
+                Data.MultiplayerTexts[i].Text = text[i - unusedLines];
                 Data.MultiplayerTexts[i].ScreenPos = new Vector2(140 - Data.MultiplayerTexts[i].GetStringWidth() / 2f, 32 + i * 16);
             }
         }

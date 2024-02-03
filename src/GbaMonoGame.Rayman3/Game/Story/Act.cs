@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BinarySerializer;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
@@ -25,7 +24,7 @@ public abstract class Act : Frame
 
     private ushort CurrentFrameIndex { get; set; }
     private ushort CurrentTextLine { get; set; }
-    private Text CurrentText { get; set; }
+    private string[] CurrentText { get; set; }
 
     private bool IsFadingOut { get; set; }
 
@@ -58,7 +57,7 @@ public abstract class Act : Frame
         if (textId == -1)
             return;
 
-        CurrentText = Localization.TextBanks[ActResource.TextBankId].Texts[textId];
+        CurrentText = Localization.GetText(ActResource.TextBankId, textId);
 
         float centerX = Engine.GameWindow.GameResolution.X / 2f;
         float baseY = Engine.Settings.Platform switch
@@ -73,9 +72,9 @@ public abstract class Act : Frame
         {
             SpriteTextObject textObj = TextObjects[i];
 
-            if (CurrentTextLine < CurrentText.LinesCount)
+            if (CurrentTextLine < CurrentText.Length)
             {
-                string line = CurrentText.Lines.Value![CurrentTextLine];
+                string line = CurrentText[CurrentTextLine];
 
                 textObj.Text = line;
                 textObj.ScreenPos = new Vector2(centerX - textObj.GetStringWidth() / 2f, baseY + lineHeight * i);
@@ -334,7 +333,7 @@ public abstract class Act : Frame
             else if (!IsAutomatic && JoyPad.CheckSingle(GbaInput.A)) // TODO: N-Gage allows a lot more buttons here
             {
                 if (ActResource.Frames.Value[CurrentFrameIndex].TextId == -1 ||
-                    CurrentTextLine >= CurrentText.LinesCount)
+                    CurrentTextLine >= CurrentText.Length)
                 {
                     TransitionsFX.FadeOutInit(1 / 16f);
                     IsFadingOut = true;
@@ -347,7 +346,7 @@ public abstract class Act : Frame
             }
         }
 
-        if (!IsAutomatic && (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.LinesCount))
+        if (!IsAutomatic && (CurrentFrameIndex != ActResource.LastFrameIndex || CurrentTextLine < CurrentText.Length))
         {
             if ((GameTime.ElapsedFrames & 0x10) != 0)
                 AnimationPlayer.PlayFront(NextTextSymbol);
