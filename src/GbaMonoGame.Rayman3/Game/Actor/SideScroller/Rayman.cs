@@ -544,7 +544,7 @@ public sealed partial class Rayman : MovableActor
     private void CheckForTileDamage()
     {
         Box box = GetVulnerabilityBox();
-        box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - box.MaxY - Constants.TileSize);
+        box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - Constants.TileSize);
 
         if (Scene.GetPhysicalType(new Vector2(box.MaxX, box.MaxY)) == PhysicalTypeValue.Damage ||
             Scene.GetPhysicalType(new Vector2(box.MaxX, box.Center.Y)) == PhysicalTypeValue.Damage ||
