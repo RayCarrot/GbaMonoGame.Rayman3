@@ -1007,8 +1007,7 @@ public sealed partial class Rayman : MovableActor
             MapId.World4 => false,
             MapId.WorldMap => false,
 
-            // NOTE: Game for some reason does this, but it makes no sense since there is no map 133???
-            // 133 => true,
+            MapId.GameCube_Bonus6 => true,
 
             _ => false
         };

@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.AnimEngine;
+﻿using System;
+using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -16,9 +17,9 @@ public class TextBoxDialog : Dialog
 
     }
 
-    public override void ProcessMessage()
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
-        
+        throw new NotImplementedException();
     }
 
     public override void Load()

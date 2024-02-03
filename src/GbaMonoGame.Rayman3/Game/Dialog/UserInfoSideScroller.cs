@@ -42,9 +42,10 @@ public class UserInfoSideScroller : Dialog
         CagesBar.AddCages(count);
     }
 
-    public override void ProcessMessage()
+    protected override bool ProcessMessageImpl(Message message, object param)
     {
         // TODO: Implement
+        return false;
     }
 
     public override void Load()

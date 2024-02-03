@@ -1,4 +1,6 @@
-﻿using BinarySerializer;
+﻿using System.IO;
+using BinarySerializer;
+using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
@@ -15,7 +17,7 @@ public class GameCubeMenu : Frame
 
         // Use filesystem for now. In the future we can allow JoyBus mode and perhaps connect to
         // Dolphin through TCP (see https://github.dev/mgba-emu/mgba/tree/master/src/gba/sio).
-        Mode = DownloadMode.FileSystem;
+        UseJoyBus = false;
     }
 
     #endregion
@@ -27,7 +29,7 @@ public class GameCubeMenu : Frame
     private GameCubeMenuData Data { get; set; }
     public FiniteStateMachine Fsm { get; } = new();
 
-    private DownloadMode Mode { get; set; }
+    private bool UseJoyBus { get; set; }
     private JoyBus JoyBus { get; set; }
     private bool IsJoyBusActive { get; set; }
     private bool WaitingForConnection { get; set; }
@@ -43,6 +45,7 @@ public class GameCubeMenu : Frame
 
     // Downloaded
     private GameCubeMapInfos MapInfos { get; set; }
+    private GameCubeMap Map { get; set; }
 
     #endregion
 
@@ -148,6 +151,24 @@ public class GameCubeMenu : Frame
                 break;
 
             case FsmAction.Step:
+                // If not set to use the JoyBus then we read from the file system
+                if (!UseJoyBus)
+                {
+                    Engine.BeginLoad();
+
+                    string filePath = Path.Combine(Engine.GameInstallation.Directory, "gba.nfo");
+
+                    if (!Engine.Context.FileExists(filePath))
+                        Engine.Context.AddFile(new LinearFile(Engine.Context, filePath));
+
+                    // TODO: Handle exception
+                    // TODO: Handle file not existing
+                    MapInfos = FileFactory.Read<GameCubeMapInfos>(Engine.Context, filePath);
+
+                    Fsm.ChangeAction(Fsm_SelectMap);
+                    return;
+                }
+
                 JoyBus.CheckForLostConnection();
                 if (Timer < 10)
                 {
@@ -436,6 +457,7 @@ public class GameCubeMenu : Frame
                 SelectedMap = 0;
                 MapScroll = 0;
 
+                // TODO: Have some way of unlocking the Ly challenge without connection - by completing all 10 levels?
                 if ((GbaUnlockFlags & 1) != 0 && !GameInfo.PersistentInfo.UnlockedLyChallengeGCN)
                 {
                     GameInfo.PersistentInfo.UnlockedLyChallengeGCN = true;
@@ -460,7 +482,7 @@ public class GameCubeMenu : Frame
 
             case FsmAction.Step:
                 // Lost connection
-                if (JoyBus.CheckForLostConnection())
+                if (UseJoyBus && JoyBus.CheckForLostConnection())
                 {
                     Fsm.ChangeAction(Fsm_ConnectionLost);
                     return;
@@ -486,9 +508,28 @@ public class GameCubeMenu : Frame
                         // Make sure map is unlocked
                         if (IsMapUnlocked(SelectedMap))
                         {
-                            JoyBus.NewTransfer(MapInfos.Maps[SelectedMap].FileSize);
-                            JoyBus.SendValue(3);
-                            hasSelectedMap = true;
+                            if (UseJoyBus)
+                            {
+                                JoyBus.NewTransfer(MapInfos.Maps[SelectedMap].FileSize);
+                                JoyBus.SendValue(3);
+                                hasSelectedMap = true;
+                            }
+                            else
+                            {
+                                Engine.BeginLoad();
+
+                                string filePath = Path.Combine(Engine.GameInstallation.Directory, $"map.{SelectedMap:000}");
+
+                                if (!Engine.Context.FileExists(filePath))
+                                    Engine.Context.AddFile(new LinearFile(Engine.Context, filePath));
+
+                                // TODO: Handle exception
+                                // TODO: Handle file not existing
+                                Map = FileFactory.Read<GameCubeMap>(Engine.Context, filePath);
+                                
+                                FrameManager.SetNextFrame(new FrameSideScrollerGCN(MapInfos.Maps[SelectedMap], Map, SelectedMap));
+                            }
+
                             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
                         }
                         else
@@ -537,7 +578,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Disconnected
-                if (!JoyBus.IsConnected)
+                if (UseJoyBus && !JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
                     Fsm.ChangeAction(Fsm_WaitForConnection);
@@ -641,7 +682,7 @@ public class GameCubeMenu : Frame
             case FsmAction.Step:
                 if (JoyBus.HasReceivedData)
                 {
-                    FrameManager.SetNextFrame(new FrameSideScrollerGCN(MapInfos.Maps[SelectedMap], SelectedMap));
+                    FrameManager.SetNextFrame(new FrameSideScrollerGCN(MapInfos.Maps[SelectedMap], Map, SelectedMap));
 
                     if (JoyBus.ReceivedData == 0x22222222)
                     {

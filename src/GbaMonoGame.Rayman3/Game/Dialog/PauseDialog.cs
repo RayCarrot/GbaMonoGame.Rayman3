@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public class PauseDialog : Dialog
 {
-    public override void ProcessMessage() { }
+    protected override bool ProcessMessageImpl(Message message, object param) => false;
 
     public override void Load()
     {

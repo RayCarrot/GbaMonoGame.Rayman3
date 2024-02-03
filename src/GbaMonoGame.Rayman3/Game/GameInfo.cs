@@ -471,6 +471,19 @@ public static class GameInfo
         // TODO: Implement
     }
 
+    public static void InitLevel(LevelType type)
+    {
+        LoadedYellowLums = 0;
+        LoadedCages = 0;
+        GreenLums = 0;
+        MapId = NextMapId ?? throw new Exception("No map id set");
+        YellowLumsCount = Level.LumsCount;
+        CagesCount = Level.CagesCount;
+        GameCubeCollectedYellowLumsCount = 0;
+        GameCubeCollectedCagesCount = 0;
+        LevelType = type;
+    }
+
     public static void UpdateLastCompletedLevel()
     {
         if (MapId < MapId.Bonus1 && MapId > (MapId)PersistentInfo.LastCompletedLevel)

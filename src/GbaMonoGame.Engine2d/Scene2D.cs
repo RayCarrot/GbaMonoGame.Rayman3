@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
 
@@ -34,6 +35,27 @@ public class Scene2D
         if (id == 11)
             Playfield.Camera.GetCluster(1).ScrollFactor = Vector2.Zero;
 
+        Camera.SetFirstPosition();
+    }
+
+    // Scene2DGameCube
+    public Scene2D(GameCubeMap map, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, CachedTileKit cachedTileKit = null)
+    {
+        LayersCount = layersCount;
+        Camera = createCameraFunc(this);
+
+        Flag_2 = true;
+        AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
+        Dialogs = new List<Dialog>(layersCount);
+        DialogFlags = new List<bool>(layersCount);
+
+        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield, cachedTileKit);
+        Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
+
+        KnotManager = new KnotManager(map.Scene);
+        KnotManager.LoadGameObjects(this, map.Scene);
+
+        Camera.LinkedObject = MainActor;
         Camera.SetFirstPosition();
     }
 

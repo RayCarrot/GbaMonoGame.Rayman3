@@ -1,5 +1,4 @@
-﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
@@ -25,14 +24,14 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     private int CircleFXTimer { get; set; }
     private CircleFXTransitionMode CircleFXMode { get; set; }
 
-    private CachedTileKit CachedTileKit { get; set; } // Cache so we can quickly reload when dying
-
     #endregion
 
     #region Protected Properties
 
     protected Scene2D Scene { get; set; }
     protected Action CurrentStepAction { get; set; }
+
+    protected CachedTileKit CachedTileKit { get; set; } // Cache so we can quickly reload when dying
 
     #endregion
 
@@ -92,6 +91,27 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
+    #region Protected Methods
+
+    protected void CreateCircleFXTransition()
+    {
+        // Add the circle FX as a screen. On the GBA this is done using a window.
+        CircleFXRenderer = new CircleFXScreenRenderer();
+        CircleFXScreen = new GfxScreen(4)
+        {
+            Priority = -1,
+            IsEnabled = false,
+            Camera = Engine.ScreenCamera, // If we use the tgx camera then it won't fill the entire screen, so use the screen camera for now
+            Renderer = CircleFXRenderer,
+        };
+
+        // TODO: N-Gage seems to only have a transition when enter the hub, and it's a slight fade
+        if (Engine.Settings.Platform == Platform.GBA)
+            Gfx.AddScreen(CircleFXScreen);
+    }
+
+    #endregion
+
     #region Pubic Methods
 
     public void InitNewCircleFXTransition(bool transitionIn)
@@ -116,15 +136,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     public override void Init()
     {
-        GameInfo.LoadedYellowLums = 0;
-        GameInfo.LoadedCages = 0;
-        GameInfo.GreenLums = 0;
-        GameInfo.MapId = GameInfo.NextMapId ?? throw new Exception("No map id set");
-        GameInfo.YellowLumsCount = GameInfo.Level.LumsCount;
-        GameInfo.CagesCount = GameInfo.Level.CagesCount;
-        GameInfo.GameCubeCollectedYellowLumsCount = 0;
-        GameInfo.GameCubeCollectedCagesCount = 0;
-        GameInfo.LevelType = LevelType.Normal;
+        GameInfo.InitLevel(LevelType.Normal);
 
         CanPause = true;
         TransitionsFX = new TransitionsFX(true);
@@ -173,20 +185,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         Scene.Init();
 
-        // Add the circle FX as a screen. On the GBA this is done using a window.
-        CircleFXRenderer = new CircleFXScreenRenderer();
-        CircleFXScreen = new GfxScreen(4)
-        {
-            Priority = -1,
-            IsEnabled = false,
-            Camera = Engine.ScreenCamera, // If we use the tgx camera then it won't fill the entire screen, so use the screen camera for now
-            Renderer = CircleFXRenderer,
-        };
-
-        // TODO: N-Gage seems to only have a transition when enter the hub, and it's a slight fade
-        if (Engine.Settings.Platform == Platform.GBA)
-            Gfx.AddScreen(CircleFXScreen);
-
+        CreateCircleFXTransition();
         InitNewCircleFXTransition(true);
 
         Scene.AnimationPlayer.Execute();
@@ -223,7 +222,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Steps
 
-    private void Step_Normal()
+    protected void Step_Normal()
     {
         Scene.Step();
         TransitionsFX.StepAll();
@@ -248,7 +247,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Enums
 
-    private enum CircleFXTransitionMode
+    protected enum CircleFXTransitionMode
     {
         None = 0,
         FinishedIn = 1,

@@ -7,7 +7,7 @@ public class LyTimerDialog : Dialog
 {
     private TimerBar TimerBar { get; set; }
 
-    public override void ProcessMessage() { }
+    protected override bool ProcessMessageImpl(Message message, object param) => false;
 
     public override void Load()
     {

@@ -79,4 +79,15 @@ public enum MapId
     NGageMulti_RayTag2 = 66,
     NGageMulti_CatAndMouse1 = 67,
     NGageMulti_CatAndMouse2 = 68,
+
+    GameCube_Bonus1 = 128,
+    GameCube_Bonus2 = 129,
+    GameCube_Bonus3 = 130,
+    GameCube_Bonus4 = 131,
+    GameCube_Bonus5 = 132,
+    GameCube_Bonus6 = 133,
+    GameCube_Bonus7 = 134,
+    GameCube_Bonus8 = 135,
+    GameCube_Bonus9 = 136,
+    GameCube_Bonus10 = 137,
 }

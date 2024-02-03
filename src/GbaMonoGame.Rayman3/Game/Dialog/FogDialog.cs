@@ -22,7 +22,7 @@ public class FogDialog : Dialog
     private int ScrollX { get; set; }
     private int ScrollSpeed { get; set; }
 
-    public override void ProcessMessage() { }
+    protected override bool ProcessMessageImpl(Message message, object param) => false;
 
     public override void Load()
     {
