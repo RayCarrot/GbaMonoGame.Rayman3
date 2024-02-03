@@ -320,7 +320,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         GameTime.IsPaused = false;
 
-        TransitionsFX = new TransitionsFX();
+        TransitionsFX = new TransitionsFX(false);
         TransitionsFX.FadeInInit(1 / 16f);
 
         SteamTimer = 0;
@@ -352,7 +352,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         WheelRotation += 4;
 
-        if (WheelRotation > 2047)
+        if (WheelRotation >= 2048)
             WheelRotation = 0;
 
         Data.Wheel1.AffineMatrix = new AffineMatrix((byte)WheelRotation, 1, 1);

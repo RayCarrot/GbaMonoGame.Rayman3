@@ -112,7 +112,6 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CircleFXScreen.IsEnabled = true;
         CircleFXRenderer.Radius = CircleFXTimer;
         CircleFXRenderer.CirclePosition = Scene.MainActor.ScreenPosition - new Vector2(0, 32);
-        Gfx.Fade = 0; // We might have a leftover fade making the screen black, but now we show the circle FX screen instead
     }
 
     public override void Init()
@@ -128,7 +127,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         GameInfo.LevelType = LevelType.Normal;
 
         CanPause = true;
-        TransitionsFX = new TransitionsFX();
+        TransitionsFX = new TransitionsFX(true);
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, CachedTileKit);
         CachedTileKit = CachedTileKit.FromPlayfield(Scene.Playfield);

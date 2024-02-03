@@ -2,6 +2,12 @@
 
 public class TransitionsFX
 {
+    public TransitionsFX(bool clear)
+    {
+        if (clear)
+            Gfx.Fade = 0;
+    }
+
     public float FadeCoefficient { get; set; }
     public float BrightnessCoefficient { get; set; } = 1;
 

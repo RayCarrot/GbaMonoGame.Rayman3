@@ -111,7 +111,7 @@ public class GameOver : Frame
     {
         Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
 
-        TransitionsFX = new TransitionsFX();
+        TransitionsFX = new TransitionsFX(true);
 
         Gfx.AddScreen(new GfxScreen(2)
         {
@@ -202,7 +202,6 @@ public class GameOver : Frame
 
         Mode = GameOverMode.Intro;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__tizetre_Swing);
-        Gfx.Fade = 0;
         IsCountdownFacingRight = true;
         Timer = 0x3c;
     }

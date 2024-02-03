@@ -411,7 +411,10 @@ public class Intro : Frame, IHasPlayfield
 
         // TODO: Check every button input on N-Gage
         if (JoyPad.Check(GbaInput.Start))
+        {
+            Gfx.Fade = 1;
             FrameManager.SetNextFrame(Menu);
+        }
     }
 
     private void Step_Skip_1()

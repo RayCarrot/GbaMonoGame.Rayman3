@@ -184,7 +184,7 @@ public abstract class Act : Frame
     {
         Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
 
-        TransitionsFX = new TransitionsFX();
+        TransitionsFX = new TransitionsFX(false);
         TransitionsFX.FadeInInit(1 / 16f);
         
         IsFadingOut = false;
