@@ -1238,7 +1238,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_AllowCoyoteJump:
-                if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(FUN_0802cb38))
+                if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(Fsm_JumpSlide))
                     CanSafetyJump = true;
                 return false;
 

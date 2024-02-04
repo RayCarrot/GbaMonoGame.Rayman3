@@ -24,14 +24,14 @@ public partial class Rayman
 
         if (CheckSingleInput(GbaInput.A) && SlideType != null)
         {
-            Fsm.ChangeAction(FUN_0802cb38);
+            Fsm.ChangeAction(Fsm_JumpSlide);
             return false;
         }
         else if (FUN_0802a0f8())
         {
             PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
 
-            Fsm.ChangeAction(FUN_0802cb38);
+            Fsm.ChangeAction(Fsm_JumpSlide);
             return false;
         }
 
@@ -126,7 +126,7 @@ public partial class Rayman
             (Fsm.EqualsAction(Fsm_StopHelico) ||
              Fsm.EqualsAction(Fsm_Helico) ||
              Fsm.EqualsAction(Fsm_Jump) ||
-             Fsm.EqualsAction(FUN_0802cb38)) &&
+             Fsm.EqualsAction(Fsm_JumpSlide)) &&
             ActionId is not (
                 Action.Damage_Knockback_Right or
                 Action.Damage_Knockback_Left or
@@ -179,14 +179,14 @@ public partial class Rayman
 
         if (CheckSingleInput(GbaInput.A) && SlideType != null)
         {
-            Fsm.ChangeAction(FUN_0802cb38);
+            Fsm.ChangeAction(Fsm_JumpSlide);
             return false;
         }
 
         if (FUN_0802a0f8())
         {
             PlaySound(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
-            Fsm.ChangeAction(FUN_0802cb38);
+            Fsm.ChangeAction(Fsm_JumpSlide);
             return false;
         }
 
@@ -937,6 +937,88 @@ public partial class Rayman
                 }
 
                 // TODO: Implement
+                break;
+
+            case FsmAction.UnInit:
+                Flag2_0 = false;
+                break;
+        }
+    }
+
+    private void Fsm_JumpSlide(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
+                ActionId = IsFacingRight ? Action.Sliding_Jump_Right : Action.Sliding_Jump_Left;
+                NextActionId = null;
+                Flag2_0 = false;
+                Timer = GameTime.ElapsedFrames;
+                SlideType = null;
+                PreviousXSpeed /= 2;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                float speedY = Speed.Y;
+
+                AttackInTheAir();
+                MoveInTheAir(PreviousXSpeed);
+
+                // Land
+                if (HasLanded())
+                {
+                    PreviousXSpeed = 0;
+                    NextActionId = IsFacingRight ? Action.Sliding_Land_Right : Action.Sliding_Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                // Fall
+                if (speedY > 3.4375)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                // Hang on edge
+                if (IsNearHangableEdge())
+                {
+                    PreviousXSpeed = 0;
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                // Helico
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0 && GameTime.ElapsedFrames - Timer >= 6)
+                {
+                    Fsm.ChangeAction(Fsm_Helico);
+                    return;
+                }
+
+                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0 && GameTime.ElapsedFrames - Timer >= 6)
+                {
+                    Fsm.ChangeAction(FUN_0802ddac);
+                    return;
+                }
+
+                // Hang
+                if (GameTime.ElapsedFrames - Timer >= 11 && IsOnHangable())
+                {
+                    PreviousXSpeed = 0;
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                }
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    PreviousXSpeed = 0;
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -2640,7 +2722,6 @@ public partial class Rayman
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_0803283c(FsmAction action) { }
-    private void FUN_0802cb38(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }
