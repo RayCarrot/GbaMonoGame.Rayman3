@@ -170,7 +170,7 @@ public partial class MenuAll
                 {
                     if (!TransitionsFX.IsChangingBrightness)
                     {
-                        SoundEventsManager.StopAll();
+                        SoundEventsManager.StopAllSongs();
 
                         if (Slots[SelectedOption] == null)
                         {
@@ -393,7 +393,7 @@ public partial class MenuAll
 
             if (StartEraseCursorTargetIndex == 0)
             {
-                SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.None, 1);
+                SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.None, 1);
                 IsLoadingSlot = true;
                 TransitionsFX.FadeOutInit(2 / 16f);
             }

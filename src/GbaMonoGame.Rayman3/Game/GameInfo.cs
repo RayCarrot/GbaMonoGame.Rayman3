@@ -72,7 +72,7 @@ public static class GameInfo
         PersistentInfo.PlayedWorld3Unlock = false;
         PersistentInfo.PlayedWorld4Unlock = false;
         PersistentInfo.PlayedWorld4Act = false;
-        PersistentInfo.PlayedMurphyWorldHelp = false;
+        PersistentInfo.PlayedMurfyWorldHelp = false;
         PersistentInfo.UnlockedFinalBoss = false;
         PersistentInfo.UnlockedLyChallengeGCN = false;
         PersistentInfo.CompletedGCNBonusLevels = 0;
@@ -223,7 +223,7 @@ public static class GameInfo
             if (GameCubeCollectedYellowLumsCount == YellowLumsCount)
             {
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
-                SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+                LevelMusicManager.OverrideLevelMusic(Rayman3SoundEvent.Play__win2);
             }
         }
         else
@@ -234,7 +234,7 @@ public static class GameInfo
             if (GetCollectedYellowLumsInLevel(MapId) == YellowLumsCount && LevelType != LevelType.Race)
             {
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumTotal_Mix02);
-                SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__win2);
+                LevelMusicManager.OverrideLevelMusic(Rayman3SoundEvent.Play__win2);
             }
         }
     }
@@ -515,5 +515,21 @@ public static class GameInfo
     {
         if (LevelType != LevelType.GameCube)
             SoundEventsManager.ProcessEvent(Level.StopMusicSoundEvent);
+    }
+
+    public static Rayman3SoundEvent GetLevelMusicSoundEvent()
+    {
+        if (LevelType == LevelType.GameCube)
+            return ((FrameSideScrollerGCN)Frame.Current).MapInfo.StartMusicSoundEvent;
+        else
+            return Level.StartMusicSoundEvent;
+    }
+
+    public static Rayman3SoundEvent GetSpecialLevelMusicSoundEvent()
+    {
+        if (LevelType == LevelType.GameCube)
+            return ((FrameSideScrollerGCN)Frame.Current).MapInfo.StartSpecialMusicSoundEvent;
+        else
+            return Level.StartSpecialMusicSoundEvent;
     }
 }

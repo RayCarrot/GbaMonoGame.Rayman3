@@ -197,7 +197,7 @@ public sealed partial class Rayman : MovableActor
     private bool IsBossFight()
     {
         // This condition is probably a leftover from earlier versions of the game
-        if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__lyfree))
+        if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__lyfree))
             return false;
 
         return GameInfo.MapId is MapId.BossMachine or MapId.BossBadDreams or MapId.BossRockAndLava or MapId.BossScaleMan or MapId.BossFinal_M1;
@@ -585,7 +585,7 @@ public sealed partial class Rayman : MovableActor
 
             takenDamage = true;
 
-            if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoRcvH1_Mix04))
+            if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__OnoRcvH1_Mix04))
                 PlaySound(Rayman3SoundEvent.Play__OnoRcvH1_Mix04);
         }
 
@@ -609,7 +609,7 @@ public sealed partial class Rayman : MovableActor
 
     private void SlidingOnSlippery()
     {
-        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SkiLoop1))
+        if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__SkiLoop1))
             PlaySound(Rayman3SoundEvent.Play__SkiLoop1);
 
         // TODO: Not on N-Gage

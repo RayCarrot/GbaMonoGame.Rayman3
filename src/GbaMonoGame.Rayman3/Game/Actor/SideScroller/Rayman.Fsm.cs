@@ -515,7 +515,7 @@ public partial class Rayman
         switch (action)
         {
             case FsmAction.Init:
-                if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
+                if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
                     PlaySound(Rayman3SoundEvent.Play__OnoEquil_Mix03);
 
                 Timer = 120;
@@ -541,7 +541,7 @@ public partial class Rayman
                 {
                     Timer = 120;
 
-                    if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
+                    if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__OnoEquil_Mix03))
                         PlaySound(Rayman3SoundEvent.Play__OnoEquil_Mix03);
                 }
 
@@ -2410,11 +2410,11 @@ public partial class Rayman
                             GameInfo.MapId != MapId.BossMachine &&
                             GameInfo.MapId != MapId.BossRockAndLava)
                         {
-                            SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.Play__win3, 0);
+                            SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__win3, 0);
                         }
                         else
                         {
-                            SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__Win_BOSS);
+                            LevelMusicManager.OverrideLevelMusic(Rayman3SoundEvent.Play__Win_BOSS);
                         }
                     }
                     else
@@ -2432,7 +2432,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__win3))
+                if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__win3))
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__canopy);
 
                 // Don't allow horizontal movement while falling
@@ -2462,11 +2462,11 @@ public partial class Rayman
                             GameInfo.MapId != MapId.BossMachine &&
                             GameInfo.MapId != MapId.BossRockAndLava)
                         {
-                            SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.Play__win3, 0);
+                            SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__win3, 0);
                         }
                         else
                         {
-                            SoundEventsManager.FUN_08001954(Rayman3SoundEvent.Play__Win_BOSS);
+                            LevelMusicManager.OverrideLevelMusic(Rayman3SoundEvent.Play__Win_BOSS);
                         }
                     }
                     else
@@ -2482,7 +2482,7 @@ public partial class Rayman
                 if (ActionId is Action.Idle_Right or Action.Idle_Left or Action.ReturnFromLevel_Right or Action.ReturnFromLevel_Left &&
                     ((!FinishedMap && Timer == 150) || (FinishedMap && Timer == 100)))
                 {
-                    if (SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__Win_BOSS))
+                    if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__Win_BOSS))
                     {
                         Timer -= 2;
                         return;
@@ -2492,10 +2492,10 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.GBA)
                     {
                         if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                            SoundEventsManager.StopAll();
+                            SoundEventsManager.StopAllSongs();
 
                         if (FinishedMap)
-                            SoundEventsManager.StopAll();
+                            SoundEventsManager.StopAllSongs();
                     }
 
                     return;

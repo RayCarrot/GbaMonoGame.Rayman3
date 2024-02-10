@@ -54,7 +54,7 @@ public class Captor : GameObject
             switch (msg)
             {
                 case Message.Captor_Trigger_Sound:
-                    SoundEventsManager.ProcessEvent(evt.Param);
+                    SoundEventsManager.ProcessEvent((short)evt.Param);
                     Logger.Info("Triggering captor event with sound event {0}", evt.Param);
                     break;
 

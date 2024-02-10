@@ -23,7 +23,7 @@ public static class SoundEngineInterface
 
     private static readonly MidiParams _midiParams;
 
-    public const int MaxVolume = 128;
+    public const float MaxVolume = 128;
 
     public static void SetNbVoices(byte newNbOfVoices)
     {
@@ -44,7 +44,7 @@ public static class SoundEngineInterface
     {
         public byte ReverbValue { get; set; }
         public byte NbOfVoices { get; set; }
-        public byte MasterVolume { get; set; }
+        public float MasterVolume { get; set; }
         public uint Freq { get; set; }
     }
 }

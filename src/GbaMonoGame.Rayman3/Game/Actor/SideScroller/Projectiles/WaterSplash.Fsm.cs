@@ -17,7 +17,7 @@ public partial class WaterSplash
             case FsmAction.Step:
                 if (ActionId == 1)
                 {
-                    if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__SplshGen_Mix04))
+                    if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__SplshGen_Mix04))
                         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SplshGen_Mix04);
 
                     ActionId = 0;

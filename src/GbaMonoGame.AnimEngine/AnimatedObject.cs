@@ -243,7 +243,7 @@ public class AnimatedObject : AObject
         Logger.NotImplemented("Not implemented framing channel sprites");
     }
 
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
+    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback)
     {
         Animation anim = GetAnimation();
 

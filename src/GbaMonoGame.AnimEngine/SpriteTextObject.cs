@@ -27,7 +27,7 @@ public class SpriteTextObject : AObject
 
     public int GetStringWidth() => FontManager.GetStringWidth(FontSize, TextBytes);
 
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback)
+    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback)
     {
         if (TextBytes == null)
             return;

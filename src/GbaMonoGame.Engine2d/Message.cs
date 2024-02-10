@@ -46,6 +46,6 @@ public enum Message
     Cam_1040 = 1040, // TODO: Name
 
     Main_AllowCoyoteJump = 1048,
-    Murphy_NewMultiplayerLevel = 1049,
+    Murfy_NewMultiplayerLevel = 1049,
     Hit = 1050,
 }

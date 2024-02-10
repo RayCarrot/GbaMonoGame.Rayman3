@@ -14,13 +14,13 @@ public class FrameSideScrollerGCN : FrameSideScroller
         GcnMapId = gcnMapId;
     }
 
-    private GameCubeMapInfo MapInfo { get; }
     private GameCubeMap Map { get; }
 
     private MapId PreviousMapId { get; set; }
     private Power PreviousPowers { get; set; }
 
     public int GcnMapId { get; }
+    public GameCubeMapInfo MapInfo { get; }
 
     public void RestoreMapAndPowers()
     {
@@ -39,6 +39,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
     public override void Init()
     {
         GameInfo.InitLevel(LevelType.GameCube);
+        LevelMusicManager.Init();
 
         PreviousMapId = GameInfo.MapId;
         GameInfo.MapId = MapId.GameCube_Bonus1 + GcnMapId;

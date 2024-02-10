@@ -27,5 +27,5 @@ public abstract class AObject
         }
     }
 
-    public abstract void Execute(AnimationSpriteManager animationSpriteManager, Action<ushort> soundEventCallback);
+    public abstract void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback);
 }

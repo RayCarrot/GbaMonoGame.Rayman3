@@ -319,7 +319,7 @@ public abstract class Act : Frame
                 CurrentFrameIndex = ActResource.LastFrameIndex;
                 TransitionsFX.FadeOutInit(1 / 16f);
                 IsFadingOut = true;
-                SoundEventsManager.StopAll();
+                SoundEventsManager.StopAllSongs();
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
             }
             else if (IsTransitioningTextOut)

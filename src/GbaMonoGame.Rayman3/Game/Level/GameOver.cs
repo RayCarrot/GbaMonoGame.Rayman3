@@ -268,7 +268,7 @@ public class GameOver : Frame
                     if (IsPlayingIdleRaymanAnimation())
                     {
                         Rayman.CurrentAnimation = 8;
-                        SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.Play__win3, 0);
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__win3, 0);
                     }
                     else if (Rayman.CurrentAnimation != 9)
                     {
@@ -300,12 +300,12 @@ public class GameOver : Frame
 
                         // Why doesn't N-Gage do this?
                         if (Engine.Settings.Platform == Platform.GBA)
-                            SoundEventsManager.StopAll();
+                            SoundEventsManager.StopAllSongs();
                     }
                 }
                 else if (Rayman.CurrentAnimation == 7 && Rayman.CurrentFrame == 25 && !Rayman.HasExecutedFrame)
                 {
-                    SoundEventsManager.FUN_080abe44(Rayman3SoundEvent.Play__death, 0);
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__death, 0);
                 }
                 break;
 

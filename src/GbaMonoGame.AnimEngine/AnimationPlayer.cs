@@ -5,7 +5,7 @@ namespace GbaMonoGame.AnimEngine;
 
 public class AnimationPlayer
 {
-    public AnimationPlayer(bool is8Bit, Action<ushort> soundEventCallback)
+    public AnimationPlayer(bool is8Bit, Action<short> soundEventCallback)
     {
         Is8Bit = is8Bit;
         SoundEventCallback = soundEventCallback;
@@ -15,7 +15,7 @@ public class AnimationPlayer
         SortedObjects = new List<AObject>();
     }
 
-    private Action<ushort> SoundEventCallback { get; }
+    private Action<short> SoundEventCallback { get; }
     private AnimationSpriteManager AnimationSpriteManager { get; }
 
     private List<AObject> UnsortedObjects { get; }
@@ -23,7 +23,7 @@ public class AnimationPlayer
 
     public bool Is8Bit { get; }
 
-    public void SoundEventRequest(ushort soundId)
+    public void SoundEventRequest(short soundId)
     {
         SoundEventCallback?.Invoke(soundId);
     }

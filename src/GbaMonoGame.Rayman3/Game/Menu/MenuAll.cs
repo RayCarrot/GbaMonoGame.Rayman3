@@ -305,8 +305,8 @@ public partial class MenuAll : Frame, IHasPlayfield
                 break;
         }
 
-        if (!SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__raytheme) &&
-            !SoundEventsManager.IsPlaying(Rayman3SoundEvent.Play__sadslide))
+        if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__raytheme) &&
+            !SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__sadslide))
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme);
             SoundEngineInterface.SetNbVoices(10);

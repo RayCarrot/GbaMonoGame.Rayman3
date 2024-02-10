@@ -139,6 +139,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         GameInfo.InitLevel(LevelType.Normal);
 
         CanPause = true;
+        LevelMusicManager.Init();
         TransitionsFX = new TransitionsFX(true);
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, CachedTileKit);
@@ -207,7 +208,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CircleFXRenderer = null;
 
         GameInfo.StopLevelMusic();
-        SoundEventsManager.StopAll();
+        SoundEventsManager.StopAllSongs();
     }
 
     public override void Step()
@@ -228,7 +229,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         TransitionsFX.StepAll();
         StepCircleFX();
         Scene.AnimationPlayer.Execute();
-        // FUN_08001850(); // TODO: Implement
+        LevelMusicManager.Step();
         
         if (IsTimed)
         {

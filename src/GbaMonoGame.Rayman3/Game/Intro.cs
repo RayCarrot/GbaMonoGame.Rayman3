@@ -194,7 +194,7 @@ public class Intro : Frame, IHasPlayfield
 
         // Fade in music
         if (GameTime.ElapsedFrames <= 64)
-            SoundEventsManager.SetVolumeForType(SoundType.Music, (int)(GameTime.ElapsedFrames * 2));
+            SoundEventsManager.SetVolumeForType(SoundType.Music, GameTime.ElapsedFrames * 2);
 
         CurrentStepAction();
     }
