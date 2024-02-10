@@ -25,8 +25,10 @@ public class GameWindow
     public Vector2 GameResolution { get; private set; }
     public float AspectRatio => GameResolution.X / GameResolution.Y;
 
+    public Box ScreenBox { get; private set; }
     public Rectangle ScreenRectangle { get; private set; }
-    public Point ScreenSize { get; private set; }
+    public Vector2 ScreenSizeVector { get; private set; }
+    public Point ScreenSizePoint { get; private set; }
 
     private void UpdateGameResolution()
     {
@@ -53,7 +55,7 @@ public class GameWindow
         if (GameResolution != originalGameResolution)
         {
             OnGameResolutionChanged();
-            Resize(ScreenSize);
+            Resize(ScreenSizeVector);
         }
     }
 
@@ -67,48 +69,54 @@ public class GameWindow
     }
 
     public void Resize(
-        Point newScreenSize,
+        Vector2 newScreenSize,
         bool maintainScreenRatio = false,
         bool centerGame = true,
-        Action<Point> changeScreenSizeCallback = null)
+        Action<Vector2> changeScreenSizeCallback = null)
     {
-        float screenRatio = newScreenSize.X / (float)newScreenSize.Y;
+        float screenRatio = newScreenSize.X / newScreenSize.Y;
         float gameRatio = GameResolution.X / GameResolution.Y;
 
         float screenScale;
-        Point screenPos = Point.Zero;
-        Point screenSize;
+        Vector2 screenPos = Vector2.Zero;
+        Vector2 screenSize;
 
         if (screenRatio > gameRatio)
         {
             screenScale = newScreenSize.Y / GameResolution.Y;
 
             if (maintainScreenRatio)
-                newScreenSize = new Point((int)Math.Round(GameResolution.X * screenScale), (int)Math.Round(GameResolution.Y * screenScale));
+                newScreenSize = new Vector2(GameResolution.X * screenScale, GameResolution.Y * screenScale);
 
             if (centerGame)
-                screenPos = new Point((int)Math.Round((newScreenSize.X - GameResolution.X * screenScale) / 2), 0);
+                screenPos = new Vector2((newScreenSize.X - GameResolution.X * screenScale) / 2, 0);
 
-            screenSize = new Point((int)Math.Round(GameResolution.X * screenScale), newScreenSize.Y);
+            screenSize = new Vector2(GameResolution.X * screenScale, newScreenSize.Y);
         }
         else
         {
             screenScale = newScreenSize.X / GameResolution.X;
 
             if (maintainScreenRatio)
-                newScreenSize = new Point((int)Math.Round(GameResolution.X * screenScale), (int)Math.Round(GameResolution.Y * screenScale));
+                newScreenSize = new Vector2(GameResolution.X * screenScale, GameResolution.Y * screenScale);
 
             if (centerGame)
-                screenPos = new Point(0, (int)Math.Round((newScreenSize.Y - GameResolution.Y * screenScale) / 2));
+                screenPos = new Vector2(0, (newScreenSize.Y - GameResolution.Y * screenScale) / 2);
 
-            screenSize = new Point(newScreenSize.X, (int)Math.Round(GameResolution.Y * screenScale));
+            screenSize = new Vector2(newScreenSize.X, GameResolution.Y * screenScale);
         }
 
         if (maintainScreenRatio)
             changeScreenSizeCallback?.Invoke(newScreenSize);
 
-        ScreenSize = newScreenSize;
-        ScreenRectangle = new Rectangle(screenPos, screenSize);
+        ScreenSizeVector = newScreenSize;
+        ScreenSizePoint = newScreenSize.ToRoundedPoint();
+        ScreenBox = new Box(screenPos, screenSize);
+        ScreenRectangle = new Rectangle(
+            (int)MathF.Ceiling(ScreenBox.MinX), 
+            (int)MathF.Ceiling(ScreenBox.MinY), 
+            (int)MathF.Floor(ScreenBox.MaxX) - (int)MathF.Ceiling(ScreenBox.MinX), 
+            (int)MathF.Floor(ScreenBox.MaxY) - (int)MathF.Ceiling(ScreenBox.MinY));
 
         OnResized();
     }
@@ -149,7 +157,7 @@ public class GameWindow
         }
 
         OnGameResolutionChanged();
-        Resize(ScreenSize);
+        Resize(ScreenSizeVector);
     }
 
     public event EventHandler Resized;

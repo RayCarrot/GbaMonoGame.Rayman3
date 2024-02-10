@@ -28,7 +28,7 @@ public class GameRenderTarget
     {
         if (PendingResize != null)
         {
-            GameWindow.Resize(PendingResize.Value);
+            GameWindow.Resize(PendingResize.Value.ToVector2());
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,

@@ -49,27 +49,27 @@ public abstract class GfxCamera
 
     private Matrix CreateRenderMatrix(Vector2 resolution)
     {
-        float screenRatio = GameWindow.ScreenSize.X / (float)GameWindow.ScreenSize.Y;
+        float screenRatio = GameWindow.ScreenSizeVector.X / GameWindow.ScreenSizeVector.Y;
         float gameRatio = GameWindow.GameResolution.X / GameWindow.GameResolution.Y;
 
         float worldScale;
 
         if (screenRatio > gameRatio)
-            worldScale = GameWindow.ScreenSize.Y / resolution.Y;
+            worldScale = GameWindow.ScreenSizeVector.Y / resolution.Y;
         else
-            worldScale = GameWindow.ScreenSize.X / resolution.X;
+            worldScale = GameWindow.ScreenSizeVector.X / resolution.X;
 
         return Matrix.CreateScale(worldScale) *
-               Matrix.CreateTranslation(GameWindow.ScreenRectangle.X, GameWindow.ScreenRectangle.Y, 0);
+               Matrix.CreateTranslation(GameWindow.ScreenBox.MinX, GameWindow.ScreenBox.MinY, 0);
     }
 
     private Box GetVisibleArea(Matrix matrix)
     {
         Matrix inverseViewMatrix = Matrix.Invert(matrix);
         Vector2 tl = Vector2.Transform(Vector2.Zero, inverseViewMatrix);
-        Vector2 tr = Vector2.Transform(new Vector2(GameWindow.ScreenRectangle.Width, 0), inverseViewMatrix);
-        Vector2 bl = Vector2.Transform(new Vector2(0, GameWindow.ScreenRectangle.Height), inverseViewMatrix);
-        Vector2 br = Vector2.Transform(GameWindow.ScreenRectangle.Size.ToVector2(), inverseViewMatrix);
+        Vector2 tr = Vector2.Transform(new Vector2(GameWindow.ScreenBox.Width, 0), inverseViewMatrix);
+        Vector2 bl = Vector2.Transform(new Vector2(0, GameWindow.ScreenBox.Height), inverseViewMatrix);
+        Vector2 br = Vector2.Transform(GameWindow.ScreenBox.Size, inverseViewMatrix);
         Vector2 min = new(
             MathHelper.Min(tl.X, MathHelper.Min(tr.X, MathHelper.Min(bl.X, br.X))),
             MathHelper.Min(tl.Y, MathHelper.Min(tr.Y, MathHelper.Min(bl.Y, br.Y))));

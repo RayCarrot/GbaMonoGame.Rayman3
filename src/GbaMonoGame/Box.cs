@@ -48,6 +48,8 @@ public readonly struct Box
     public float Height => MaxY - MinY;
 
     public Vector2 Center => new(Width / 2 + MinX, Height / 2 + MinY);
+    public Vector2 Position => new(MinX, MinY);
+    public Vector2 Size => new(Width, Height);
 
     public Box Offset(Vector2 offset) => new(MinX + offset.X, MinY + offset.Y, MaxX + offset.X, MaxY + offset.Y);
     public Box FlipX() => new(MaxX * -1, MinY, MinX * -1, MaxY);

@@ -135,7 +135,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         if (HasLoadedGameInstallation)
-            Engine.GameWindow.Resize(size);
+            Engine.GameWindow.Resize(size.ToVector2());
 
         _isChangingResolution = false;
     }
@@ -150,7 +150,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameWindow.Resize(GetResolution(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x, false));
+        Engine.GameWindow.Resize(GetResolution().ToVector2(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
         SaveWindowState();
         Engine.SaveConfig();
     }
