@@ -39,6 +39,7 @@ public class GenerateDebugMenu : DebugMenu
         addValue("Receives damage");
         addValue("Map Collision");
         addValue("Object Collision");
+        addValue("Is Solid");
         addValue("Is Against Captor");
         addValue("Actions");
         addValue("Animations");
@@ -56,8 +57,9 @@ public class GenerateDebugMenu : DebugMenu
             addValue(model.HitPoints != 0 ? model.HitPoints.ToString() : "");
             addValue(model.AttackPoints != 0 ? model.AttackPoints.ToString() : "");
             addValue(model.ReceivesDamage ? "✔️" : "");
-            addValue(model.HasMapCollision ? $"{model.MapCollisionType}" : "");
-            addValue(model.HasObjectCollision ? "✔️" : "");
+            addValue(model.CheckAgainstMapCollision ? $"{model.MapCollisionType}" : "");
+            addValue(model.CheckAgainstObjectCollision ? "✔️" : "");
+            addValue(model.IsSolid ? "✔️" : "");
             addValue(model.IsAgainstCaptor ? "✔️" : "");
             addValue($"{model.Actions.Length}");
             addValue($"{model.AnimatedObject.Animations.Length}");

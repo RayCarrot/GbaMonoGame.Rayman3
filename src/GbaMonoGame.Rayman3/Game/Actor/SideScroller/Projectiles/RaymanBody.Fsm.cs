@@ -137,7 +137,7 @@ public partial class RaymanBody
         switch (action)
         {
             case FsmAction.Init:
-                HasMapCollision = false;
+                CheckAgainstMapCollision = false;
                 break;
             
             case FsmAction.Step:
@@ -225,7 +225,7 @@ public partial class RaymanBody
                 Rayman.ProcessMessage(Message.RaymanBody_FinishedAttack, BodyPartType);
 
                 HitActor = null;
-                HasMapCollision = true;
+                CheckAgainstMapCollision = true;
 
                 ProcessMessage(Message.Destroy);
                 break;
@@ -247,7 +247,7 @@ public partial class RaymanBody
 
             case FsmAction.UnInit:
                 HitActor = null;
-                HasMapCollision = true;
+                CheckAgainstMapCollision = true;
                 ProcessMessage(Message.Destroy);
                 AnimatedObject.YPriority = 32;
                 break;

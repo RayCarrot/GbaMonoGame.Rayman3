@@ -12,7 +12,7 @@ public class BaseActor : GameObject
     public BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         ActorModel = actorResource.Model;
-        ActorFlag_6 = ActorModel.Flag_06;
+        IsSolid = ActorModel.IsSolid;
         IsAgainstCaptor = ActorModel.IsAgainstCaptor;
         ReceivesDamage = ActorModel.ReceivesDamage;
         Type = actorResource.Type;
@@ -46,7 +46,7 @@ public class BaseActor : GameObject
     public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
 
     // Flags
-    public bool ActorFlag_6 { get; set; }
+    public bool IsSolid { get; set; }
     public bool IsAgainstCaptor { get; set; }
     public bool ReceivesDamage { get; set; }
     public bool IsInvulnerable { get; set; }

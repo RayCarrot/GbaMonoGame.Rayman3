@@ -10,8 +10,8 @@ public class MovableActor : InteractableActor
     public MovableActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         MapCollisionType = actorResource.Model.MapCollisionType;
-        HasMapCollision = actorResource.Model.HasMapCollision;
-        HasObjectCollision = actorResource.Model.HasObjectCollision;
+        CheckAgainstMapCollision = actorResource.Model.CheckAgainstMapCollision;
+        CheckAgainstObjectCollision = actorResource.Model.CheckAgainstObjectCollision;
 
         HasMoved = false;
     }
@@ -22,8 +22,8 @@ public class MovableActor : InteractableActor
 
     // Flags
     public ActorMapCollisionType MapCollisionType { get; }
-    public bool HasMapCollision { get; set; }
-    public bool HasObjectCollision { get; set; }
+    public bool CheckAgainstMapCollision { get; set; }
+    public bool CheckAgainstObjectCollision { get; set; }
 
     private bool CheckObjectCollision1(Box actorDetectionBox, Box otherDetectionBox)
     {
@@ -413,7 +413,7 @@ public class MovableActor : InteractableActor
         {
             Position += Speed;
 
-            if (HasObjectCollision)
+            if (CheckAgainstObjectCollision)
             {
                 IsTouchingActor = false;
 
@@ -421,7 +421,7 @@ public class MovableActor : InteractableActor
 
                 foreach (BaseActor actor in Scene.KnotManager.EnumerateAllActors(isEnabled: true))
                 {
-                    if (actor != this && actor.ActorFlag_6 && actor is ActionActor actionActor)
+                    if (actor != this && actor.IsSolid && actor is ActionActor actionActor)
                     {
                         Box otherDetectionBox = actionActor.GetDetectionBox();
 
@@ -445,7 +445,7 @@ public class MovableActor : InteractableActor
                 }
             }
 
-            if (HasMapCollision)
+            if (CheckAgainstMapCollision)
             {
                 IsTouchingMap = false;
 

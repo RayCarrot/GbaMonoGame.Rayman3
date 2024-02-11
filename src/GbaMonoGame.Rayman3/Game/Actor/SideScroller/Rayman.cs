@@ -1292,8 +1292,8 @@ public sealed partial class Rayman : MovableActor
         Flag2_1 = false;
         Flag2_2 = true;
 
-        HasMapCollision = true;
-        HasObjectCollision = true;
+        CheckAgainstMapCollision = true;
+        CheckAgainstObjectCollision = true;
 
         ActionId = (Action)Resource.FirstActionId;
         ChangeAction();

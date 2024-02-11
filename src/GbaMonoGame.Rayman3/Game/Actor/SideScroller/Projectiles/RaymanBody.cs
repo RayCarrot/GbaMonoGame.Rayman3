@@ -27,7 +27,7 @@ public sealed partial class RaymanBody : MovableActor
         {
             hitEffectActor.BodyPartType = RaymanBodyPartType.HitEffect;
             hitEffectActor.Position = Position;
-            hitEffectActor.HasMapCollision = false;
+            hitEffectActor.CheckAgainstMapCollision = false;
             hitEffectActor.ActionId = 25;
             hitEffectActor.AnimatedObject.YPriority = 1;
             hitEffectActor.ChangeAction();
