@@ -168,6 +168,18 @@ public class Scene2D
         return true;
     }
 
+    public T GetRequiredDialog<T>()
+        where T : Dialog
+    {
+        foreach (Dialog dialog in Dialogs)
+        {
+            if (dialog is T dlg)
+                return dlg;
+        }
+
+        throw new Exception($"Dialog of type {typeof(T)} has not been added to the scene");
+    }
+
     public void ProcessDialogs()
     {
         if (!Flag_3)
