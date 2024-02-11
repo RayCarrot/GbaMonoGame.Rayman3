@@ -26,6 +26,8 @@ public enum ActorType
 
     FlowerFire = 61,
 
+    Teensies = 95,
+
     Arrive = 101,
 
     MovingUnusedPlatform = 106, // Unused
