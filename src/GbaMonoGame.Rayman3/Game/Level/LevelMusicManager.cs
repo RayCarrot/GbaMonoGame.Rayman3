@@ -13,6 +13,27 @@ public static class LevelMusicManager
     private static bool ShouldPlaySpecialMusic { get; set; }
     private static bool HasOverridenLevelMusic { get; set; }
 
+    private static void PlaySpecialMusic()
+    {
+        if (Flag_0 || Flag_1)
+            return;
+
+        if (GameInfo.MapId is MapId.TombOfTheAncients_M1 or MapId.TombOfTheAncients_M2)
+        {
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__ancients);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__spiderchase);
+        }
+        else
+        {
+            SoundEventsManager.ReplaceAllSongs(GameInfo.GetSpecialLevelMusicSoundEvent(), 3);
+        }
+
+        // TODO: N-Gage has a lot of additional code here
+
+        Flag_0 = true;
+        Flag_1 = true;
+    }
+
     public static void Init()
     {
         Timer = 0;
@@ -56,25 +77,27 @@ public static class LevelMusicManager
         ShouldPlaySpecialMusic = false;
     }
 
-    public static void PlaySpecialMusic()
+    public static void PlaySpecialMusicIfDetected(GameObject obj)
     {
-        if (Flag_0 || Flag_1) 
-            return;
-        
-        if (GameInfo.MapId is MapId.TombOfTheAncients_M1 or MapId.TombOfTheAncients_M2)
+        Box objBox = new(
+            minX: obj.Position.X - Engine.ScreenCamera.Resolution.X,
+            minY: obj.Position.Y - Engine.ScreenCamera.Resolution.Y / 2,
+            maxX: obj.Position.X + Engine.ScreenCamera.Resolution.X,
+            maxY: obj.Position.Y + 5);
+
+        if (Flag_0)
         {
-            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__ancients);
-            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__spiderchase);
-        }
-        else
-        {
-            SoundEventsManager.ReplaceAllSongs(GameInfo.GetSpecialLevelMusicSoundEvent(), 3);
+            objBox = new Box(
+                minX: objBox.MinX - 64,
+                minY: objBox.MinY - 64,
+                maxX: objBox.MaxX + 64,
+                maxY: objBox.MaxY + 64);
         }
 
-        // TODO: N-Gage has a lot of additional code here
+        Box mainActorDetectionBox = obj.Scene.MainActor.GetDetectionBox();
 
-        Flag_0 = true;
-        Flag_1 = true;
+        if (mainActorDetectionBox.Intersects(objBox))
+            ShouldPlaySpecialMusic = true;
     }
 
     public static void OverrideLevelMusic(Enum soundEventId) => OverrideLevelMusic((short)(object)soundEventId);
