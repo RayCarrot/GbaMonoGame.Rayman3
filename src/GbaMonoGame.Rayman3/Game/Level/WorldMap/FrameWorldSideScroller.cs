@@ -71,12 +71,6 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
             Vector2 startPos = Scene.KnotManager.GetGameObject(startActorId).Position;
             startPos -= new Vector2(32, 0);
 
-            // What's the point of this?
-            if (startPos.X < 0)
-                startPos += new Vector2(1, 0);
-            if (startPos.Y < 0)
-                startPos += new Vector2(0, 1);
-
             while (Scene.GetPhysicalType(startPos) == PhysicalTypeValue.None)
                 startPos += new Vector2(0, Constants.TileSize);
 
