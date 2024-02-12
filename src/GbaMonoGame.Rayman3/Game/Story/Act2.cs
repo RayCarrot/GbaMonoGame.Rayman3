@@ -11,10 +11,8 @@ public class Act2 : Act
     {
         base.Step();
 
+        // TODO: This cutscene doesn't play on N-Gage. What they did was to remove the condition here and have it directly move on to the level.
         if (IsFinished)
-        {
-            // TODO: Load the actual level class once we create it
-            FrameManager.SetNextFrame(new DummyLevel(MapId.MarshAwakening1));
-        }
+            FrameManager.SetNextFrame(LevelFactory.Create(MapId.MarshAwakening1));
     }
 }

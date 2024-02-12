@@ -945,7 +945,7 @@ public sealed partial class Rayman : MovableActor
             MapId.BossMachine => false,
             MapId.SanctuaryOfBigTree_M1 => false,
             MapId.SanctuaryOfBigTree_M2 => false,
-            MapId.MissileSurPattes1 => false,
+            MapId.MissileRace1 => false,
             MapId.EchoingCaves_M1 => false,
             MapId.EchoingCaves_M2 => false,
             MapId.CavesOfBadDreams_M1 => false,
@@ -977,7 +977,7 @@ public sealed partial class Rayman : MovableActor
 
             MapId.IronMountains_M1 => true,
             MapId.IronMountains_M2 => true,
-            MapId.MissileSurPattes2 => true,
+            MapId.MissileRace2 => true,
             MapId.PirateShip_M1 => true,
             MapId.PirateShip_M2 => true,
             MapId.BossFinal_M1 => true,

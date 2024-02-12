@@ -315,7 +315,7 @@ public static class GameInfo
                 LoadLevel(MapId.World1);
                 break;
             
-            case MapId.MissileSurPattes1:
+            case MapId.MissileRace1:
             case MapId.EchoingCaves_M1:
             case MapId.EchoingCaves_M2:
             case MapId.CavesOfBadDreams_M1:
@@ -351,7 +351,7 @@ public static class GameInfo
             case MapId.BossScaleMan:
             case MapId.IronMountains_M1:
             case MapId.IronMountains_M2:
-            case MapId.MissileSurPattes2:
+            case MapId.MissileRace2:
             case MapId.PirateShip_M1:
             case MapId.PirateShip_M2:
             case MapId.BossFinal_M1:
@@ -402,7 +402,7 @@ public static class GameInfo
                 World = 0;
                 break;
 
-            case MapId.MissileSurPattes1:
+            case MapId.MissileRace1:
             case MapId.EchoingCaves_M1:
             case MapId.EchoingCaves_M2:
             case MapId.CavesOfBadDreams_M1:
@@ -440,7 +440,7 @@ public static class GameInfo
             case MapId.BossScaleMan:
             case MapId.IronMountains_M1:
             case MapId.IronMountains_M2:
-            case MapId.MissileSurPattes2:
+            case MapId.MissileRace2:
             case MapId.PirateShip_M1:
             case MapId.PirateShip_M2:
             case MapId.BossFinal_M1:

@@ -12,6 +12,6 @@ public class Act5 : Act
         base.Step();
 
         if (IsFinished)
-            FrameManager.SetNextFrame(new FrameSideScroller(MapId.PirateShip_M1));
+            FrameManager.SetNextFrame(LevelFactory.Create(MapId.PirateShip_M1));
     }
 }

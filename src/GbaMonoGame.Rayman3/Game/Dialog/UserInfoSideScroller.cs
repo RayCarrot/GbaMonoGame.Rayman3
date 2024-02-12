@@ -42,6 +42,25 @@ public class UserInfoSideScroller : Dialog
         CagesBar.AddCages(count);
     }
 
+    public void HideBars()
+    {
+        if (LifeBar.Mode != 3)
+            LifeBar.Mode = 1;
+
+        if (LumsBar != null)
+        {
+            if (LumsBar.Mode != 3)
+                LumsBar.Mode = 1;
+        }
+        else
+        {
+            // TODO: 1000 lums bar
+        }
+
+        if (CagesBar.Mode != 3)
+            CagesBar.Mode = 1;
+    }
+
     protected override bool ProcessMessageImpl(Message message, object param)
     {
         // TODO: Implement

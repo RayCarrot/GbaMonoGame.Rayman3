@@ -326,20 +326,20 @@ public class Rayman3 : GbaGame
 
             { ActorType.MovingUnusedPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
         }, x => ((ActorType)x).ToString());
-        LevelFactory.Init(new Dictionary<MapId, LevelFactory.CreateLevel>()
+        Dictionary<MapId, LevelFactory.CreateLevel> levelCreations = new()
         {
             // World 1
             { MapId.WoodLight_M1, mapId => new WoodLight_M1(mapId) },
             { MapId.WoodLight_M2, mapId => new WoodLight_M2(mapId) },
             { MapId.FairyGlade_M1, mapId => new FairyGlade_M1(mapId) },
             { MapId.FairyGlade_M2, mapId => new FairyGlade_M2(mapId) },
-            // TODO: MarshAwakening1 - different on N-Gage
+            { MapId.MarshAwakening1, mapId => Engine.Settings.Platform != Platform.NGage ? new MarshAwakening1(mapId) : new NGageAscension(mapId) },
             { MapId.BossMachine, mapId => new BossMachine(mapId) },
             { MapId.SanctuaryOfBigTree_M1, mapId => new SanctuaryOfBigTree(mapId) },
             { MapId.SanctuaryOfBigTree_M2, mapId => new SanctuaryOfBigTree(mapId) },
 
             // World 2
-            // TODO: MissileSurPattes1 - different on N-Gage
+            { MapId.MissileRace1, mapId => Engine.Settings.Platform != Platform.NGage ? new MissileRace1(mapId) : new FrameSideScroller(mapId) },
             { MapId.EchoingCaves_M1, mapId => new EchoingCaves_M1(mapId) },
             { MapId.EchoingCaves_M2, mapId => new EchoingCaves_M2(mapId) },
             { MapId.CavesOfBadDreams_M1, mapId => new CavesOfBadDreams(mapId) },
@@ -347,10 +347,93 @@ public class Rayman3 : GbaGame
             { MapId.BossBadDreams, mapId => new BossBadDreams(mapId) },
             { MapId.MenhirHills_M1, mapId => new MenhirHills_M1(mapId) },
             { MapId.MenhirHills_M2, mapId => new FrameSideScroller(mapId) },
-            // TODO: MarshAwakening2 - different on N-Gage
+            { MapId.MarshAwakening2, mapId => Engine.Settings.Platform != Platform.NGage ? new MarshAwakening2(mapId) : new FrameSideScroller(mapId) },
 
-            // TODO: Implement the rest
-        });
+            // World 3
+            { MapId.SanctuaryOfStoneAndFire_M1, mapId => new SanctuaryOfStoneAndFire_M1(mapId) },
+            { MapId.SanctuaryOfStoneAndFire_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.SanctuaryOfStoneAndFire_M3, mapId => new FrameSideScroller(mapId) },
+            { MapId.BeneathTheSanctuary_M1, mapId => new BeneathTheSanctuary_M1(mapId) },
+            { MapId.BeneathTheSanctuary_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.ThePrecipice_M1, mapId => new ThePrecipice_M1(mapId) },
+            { MapId.ThePrecipice_M2, mapId => new ThePrecipice_M2(mapId) },
+            { MapId.BossRockAndLava, mapId => new FrameSideScroller(mapId) },
+            { MapId.TheCanopy_M1, mapId => new FrameSideScroller(mapId) },
+            { MapId.TheCanopy_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.SanctuaryOfRockAndLava_M1, mapId => new SanctuaryOfRockAndLava(mapId) },
+            { MapId.SanctuaryOfRockAndLava_M2, mapId => new SanctuaryOfRockAndLava(mapId) },
+            { MapId.SanctuaryOfRockAndLava_M3, mapId => new SanctuaryOfRockAndLava(mapId) },
+
+            // World 4
+            { MapId.TombOfTheAncients_M1, mapId => new FrameSideScroller(mapId) },
+            { MapId.TombOfTheAncients_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.BossScaleMan, mapId => new BossScaleMan(mapId) },
+            { MapId.IronMountains_M1, mapId => new FrameSideScroller(mapId) },
+            { MapId.IronMountains_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.MissileRace2, mapId => Engine.Settings.Platform != Platform.NGage ? new MissileRace2(mapId) : new FrameSideScroller(mapId) },
+            { MapId.PirateShip_M1, mapId => new FrameSideScroller(mapId) },
+            { MapId.PirateShip_M2, mapId => new FrameSideScroller(mapId) },
+            { MapId.BossFinal_M1, mapId => new BossFinal(mapId) },
+            { MapId.BossFinal_M2, mapId => new BossFinal(mapId) },
+
+            // Bonus
+            { MapId.Bonus1, mapId => new FrameSideScroller(mapId) },
+            { MapId.Bonus2, mapId => new FrameSideScroller(mapId) },
+            { MapId.Bonus3, mapId => new FrameSideScroller(mapId) },
+            { MapId.Bonus4, mapId => new FrameSideScroller(mapId) },
+            { MapId._1000Lums, mapId => new FrameSideScroller(mapId) },
+
+            // Ly's Challenge
+            { MapId.ChallengeLy1, mapId => new ChallengeLy(mapId) },
+            { MapId.ChallengeLy2, mapId => new ChallengeLy(mapId) },
+            { MapId.ChallengeLyGCN, mapId => new ChallengeLy(mapId) },
+
+            // Power
+            { MapId.Power1, mapId => new FrameNewPower(mapId) },
+            { MapId.Power2, mapId => new FrameNewPower(mapId) },
+            { MapId.Power3, mapId => new FrameNewPower(mapId) },
+            { MapId.Power4, mapId => new FrameNewPower(mapId) },
+            { MapId.Power5, mapId => new FrameNewPower(mapId) },
+            { MapId.Power6, mapId => new FrameNewPower(mapId) },
+
+            // World
+            { MapId.World1, mapId => new World1(mapId) },
+            { MapId.World2, mapId => new World(mapId) },
+            { MapId.World3, mapId => new World(mapId) },
+            { MapId.World4, mapId => new World(mapId) },
+            //{ MapId.WorldMap, mapId => new (mapId) }, // TODO: Create class for WorldMap
+        };
+
+        // TODO: Create classes for multiplayer maps
+        switch (Engine.Settings.Platform)
+        {
+            case Platform.GBA:
+                //levelCreations.Add(MapId.GbaMulti_MissileRace, mapId => new (mapId));
+                //levelCreations.Add(MapId.GbaMulti_MissileArena, mapId => new (mapId));
+                //levelCreations.Add(MapId.GbaMulti_RayTag1, mapId => new (mapId));
+                //levelCreations.Add(MapId.GbaMulti_RayTag2, mapId => new (mapId));
+                //levelCreations.Add(MapId.GbaMulti_CatAndMouse1, mapId => new (mapId));
+                //levelCreations.Add(MapId.GbaMulti_CatAndMouse2, mapId => new (mapId));
+                break;
+            
+            case Platform.NGage:
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag1, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag2, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag3, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag4, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag5, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CaptureTheFlag6, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_RayTag1, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_RayTag2, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CatAndMouse1, mapId => new (mapId));
+                //levelCreations.Add(MapId.NGageMulti_CatAndMouse2, mapId => new (mapId));
+                break;
+
+            default:
+                throw new UnsupportedPlatformException();
+        }
+
+        LevelFactory.Init(levelCreations);
 
         // Set default language
         Localization.SetLanguage(0);

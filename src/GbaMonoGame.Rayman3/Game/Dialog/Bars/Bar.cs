@@ -20,7 +20,8 @@ public abstract class Bar
     };
 
     protected BarState State { get; set; } = BarState.Wait;
-    protected int Mode { get; set; }
+    
+    public int Mode { get; set; }
 
     public abstract void Load();
     public abstract void Set();

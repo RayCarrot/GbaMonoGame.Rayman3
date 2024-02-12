@@ -12,8 +12,6 @@ public class Act4 : Act
         base.Step();
 
         if (IsFinished)
-        {
-            // TODO: Load worldmap frame
-        }
+            FrameManager.SetNextFrame(LevelFactory.Create(MapId.World4));
     }
 }

@@ -6,11 +6,11 @@ public enum MapId
     WoodLight_M2 = 1,
     FairyGlade_M1 = 2,
     FairyGlade_M2 = 3,
-    MarshAwakening1 = 4,
+    MarshAwakening1 = 4, // Ascension on N-Gage
     BossMachine = 5,
     SanctuaryOfBigTree_M1 = 6,
     SanctuaryOfBigTree_M2 = 7,
-    MissileSurPattes1 = 8,
+    MissileRace1 = 8, // Ly's Punch Challenge 1 on N-Gage
     EchoingCaves_M1 = 9,
     EchoingCaves_M2 = 10,
     CavesOfBadDreams_M1 = 11,
@@ -18,7 +18,7 @@ public enum MapId
     BossBadDreams = 13,
     MenhirHills_M1 = 14,
     MenhirHills_M2 = 15,
-    MarshAwakening2 = 16,
+    MarshAwakening2 = 16, // Free Falling on N-Gage
     SanctuaryOfStoneAndFire_M1 = 17,
     SanctuaryOfStoneAndFire_M2 = 18,
     SanctuaryOfStoneAndFire_M3 = 19,
@@ -37,7 +37,7 @@ public enum MapId
     BossScaleMan = 32,
     IronMountains_M1 = 33,
     IronMountains_M2 = 34,
-    MissileSurPattes2 = 35,
+    MissileRace2 = 35, // Falling Down on N-Gage
     PirateShip_M1 = 36,
     PirateShip_M2 = 37,
     BossFinal_M1 = 38,

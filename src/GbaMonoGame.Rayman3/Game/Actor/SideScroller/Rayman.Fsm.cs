@@ -241,10 +241,10 @@ public partial class Rayman
 
             case FsmAction.Step:
                 // Check if we're spawning at a curtain
-                if (Flag1_6)
+                if (Flag1_6) // TODO: Where does this flag get set?
                 {
                     // Hide while fading and then show spawn animation
-                    if (!((FrameSideScroller)Frame.Current).TransitionsFX.IsFading)
+                    if (!((FrameWorldSideScroller)Frame.Current).TransitionsFX.IsFading)
                     {
                         if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
                             ActionId = IsFacingRight ? Action.Spawn_Curtain_Right : Action.Spawn_Curtain_Left;
@@ -2391,7 +2391,9 @@ public partial class Rayman
         switch (action)
         {
             case FsmAction.Init:
-                ((FrameSideScroller)Frame.Current).CanPause = false;
+                // NOTE: The game doesn't check the class, and will end up writing to other memory if of type FrameWorldSideScroller
+                if (Frame.Current is FrameSideScroller sideScroller)
+                    sideScroller.CanPause = false;
                 Flag2_1 = false;
                 NextActionId = null;
                 PreviousXSpeed = 0;
@@ -2423,7 +2425,9 @@ public partial class Rayman
                         Timer = 0;
                     }
 
-                    ((FrameSideScroller)Frame.Current).IsTimed = false;
+                    // NOTE: The game doesn't check the class, and will end up writing to other memory if of type FrameWorldSideScroller
+                    if (Frame.Current is FrameSideScroller sideScroller2)
+                        sideScroller2.IsTimed = false;
                 }
                 else
                 {
@@ -2475,7 +2479,9 @@ public partial class Rayman
                         Timer = 0;
                     }
 
-                    ((FrameSideScroller)Frame.Current).IsTimed = false;
+                    // NOTE: The game doesn't check the class, and will end up writing to other memory if of type FrameWorldSideScroller
+                    if (Frame.Current is FrameSideScroller sideScroller2)
+                        sideScroller2.IsTimed = false;
                     return;
                 }
 
@@ -2657,8 +2663,10 @@ public partial class Rayman
         switch (action)
         {
             case FsmAction.Init:
-                ((FrameSideScroller)Frame.Current).CanPause = false;
-                
+                // NOTE: The game doesn't check the class, and will end up writing to other memory if of type FrameWorldSideScroller
+                if (Frame.Current is FrameSideScroller sideScroller)
+                    sideScroller.CanPause = false;
+
                 if (GameInfo.MapId is not (MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN) &&
                     GameInfo.LevelType != LevelType.GameCube)
                 {

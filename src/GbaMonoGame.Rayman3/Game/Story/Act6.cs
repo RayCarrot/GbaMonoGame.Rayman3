@@ -12,8 +12,6 @@ public class Act6 : Act
         base.Step();
 
         if (IsFinished)
-        {
-            // TODO: Load credits frame
-        }
+            FrameManager.SetNextFrame(new Credits());
     }
 }
