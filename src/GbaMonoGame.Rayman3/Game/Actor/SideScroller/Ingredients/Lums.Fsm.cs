@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
@@ -95,7 +96,15 @@ public partial class Lums
                             break;
                         
                         case Action.GreenLum:
-                            // TODO: Implement
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumGreen_Mix04);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumGreen_Mix04);
+
+                            Vector2 pos = Position;
+                            while (Scene.GetPhysicalType(pos) == PhysicalTypeValue.None)
+                                pos += new Vector2(0, Constants.TileSize);
+
+                            GameInfo.LastGreenLumAlive++;
+                            GameInfo.CheckpointPosition = pos;
                             break;
 
                         case Action.BlueLum:
