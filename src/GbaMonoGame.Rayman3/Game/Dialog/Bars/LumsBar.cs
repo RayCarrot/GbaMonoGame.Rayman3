@@ -18,7 +18,7 @@ public class LumsBar : Bar
 
     public void AddLums(int count)
     {
-        State = BarState.MoveIn;
+        DrawStep = BarDrawStep.MoveIn;
         WaitTimer = 0;
 
         CollectedLumsDigitValue2 += count;
@@ -102,25 +102,25 @@ public class LumsBar : Bar
         if (Mode is 1 or 3)
             return;
 
-        switch (State)
+        switch (DrawStep)
         {
-            case BarState.Hide:
+            case BarDrawStep.Hide:
                 YOffset = 35;
                 break;
                 
-            case BarState.MoveIn:
+            case BarDrawStep.MoveIn:
                 if (YOffset > 0)
                 {
                     YOffset -= 2;
                 }
                 else
                 {
-                    State = Mode == 2 ? BarState.Wait : BarState.Bounce;
+                    DrawStep = Mode == 2 ? BarDrawStep.Wait : BarDrawStep.Bounce;
                     WaitTimer = 0;
                 }
                 break;
 
-            case BarState.MoveOut:
+            case BarDrawStep.MoveOut:
                 if (YOffset < 35)
                 {
                     YOffset++;
@@ -128,11 +128,11 @@ public class LumsBar : Bar
                 else
                 {
                     YOffset = 35;
-                    State = BarState.Hide;
+                    DrawStep = BarDrawStep.Hide;
                 }
                 break;
 
-            case BarState.Bounce:
+            case BarDrawStep.Bounce:
                 if (WaitTimer < 35)
                 {
                     YOffset = -BounceData[WaitTimer];
@@ -141,18 +141,18 @@ public class LumsBar : Bar
                 else
                 {
                     YOffset = 0;
-                    State = BarState.Wait;
+                    DrawStep = BarDrawStep.Wait;
                     WaitTimer = 0;
                 }
                 break;
 
-            case BarState.Wait:
+            case BarDrawStep.Wait:
                 if (Mode != 2)
                 {
                     if (WaitTimer >= 180)
                     {
                         YOffset = 0;
-                        State = BarState.MoveOut;
+                        DrawStep = BarDrawStep.MoveOut;
                     }
                     else
                     {
@@ -162,7 +162,7 @@ public class LumsBar : Bar
                 break;
         }
 
-        if (State != BarState.Hide)
+        if (DrawStep != BarDrawStep.Hide)
         {
             LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8 - YOffset);
             CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24 - YOffset);

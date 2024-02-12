@@ -15,7 +15,7 @@ public class CagesBar : Bar
 
     public void AddCages(int count)
     {
-        State = BarState.MoveIn;
+        DrawStep = BarDrawStep.MoveIn;
         WaitTimer = 0;
         CollectedCagesDigitValue += count;
     }
@@ -65,25 +65,25 @@ public class CagesBar : Bar
         if (Mode is 1 or 3)
             return;
 
-        switch (State)
+        switch (DrawStep)
         {
-            case BarState.Hide:
+            case BarDrawStep.Hide:
                 XOffset = 65;
                 break;
 
-            case BarState.MoveIn:
+            case BarDrawStep.MoveIn:
                 if (XOffset > 0)
                 {
                     XOffset -= 3;
                 }
                 else
                 {
-                    State = Mode == 2 ? BarState.Wait : BarState.Bounce;
+                    DrawStep = Mode == 2 ? BarDrawStep.Wait : BarDrawStep.Bounce;
                     WaitTimer = 0;
                 }
                 break;
 
-            case BarState.MoveOut:
+            case BarDrawStep.MoveOut:
                 if (XOffset < 65)
                 {
                     XOffset += 2;
@@ -91,11 +91,11 @@ public class CagesBar : Bar
                 else
                 {
                     XOffset = 65;
-                    State = BarState.Hide;
+                    DrawStep = BarDrawStep.Hide;
                 }
                 break;
 
-            case BarState.Bounce:
+            case BarDrawStep.Bounce:
                 if (WaitTimer < 35)
                 {
                     XOffset = BounceData[WaitTimer];
@@ -104,18 +104,18 @@ public class CagesBar : Bar
                 else
                 {
                     XOffset = 0;
-                    State = BarState.Wait;
+                    DrawStep = BarDrawStep.Wait;
                     WaitTimer = 0;
                 }
                 break;
 
-            case BarState.Wait:
+            case BarDrawStep.Wait:
                 if (Mode != 2)
                 {
                     if (WaitTimer >= 180)
                     {
                         XOffset = 0;
-                        State = BarState.MoveOut;
+                        DrawStep = BarDrawStep.MoveOut;
                     }
                     else
                     {
@@ -125,7 +125,7 @@ public class CagesBar : Bar
                 break;
         }
 
-        if (State != BarState.Hide)
+        if (DrawStep != BarDrawStep.Hide)
         {
             CageIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
             CollectedCagesDigit.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);

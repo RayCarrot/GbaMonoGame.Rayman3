@@ -25,8 +25,8 @@ public class LifeBar : Bar
 
     public void UpdateLife()
     {
-        if (State != BarState.Bounce && Mode != 1)
-            State = BarState.MoveIn;
+        if (DrawStep != BarDrawStep.Bounce && Mode != 1)
+            DrawStep = BarDrawStep.MoveIn;
     }
 
     public override void Load()
@@ -83,16 +83,16 @@ public class LifeBar : Bar
             LifeDigit1.CurrentAnimation = GameInfo.PersistentInfo.Lives / 10;
             LifeDigit2.CurrentAnimation = GameInfo.PersistentInfo.Lives % 10;
 
-            State = BarState.MoveIn;
+            DrawStep = BarDrawStep.MoveIn;
             WaitTimer = 0;
         }
 
         // Check if dead
-        if (hp == 0 && State == BarState.Wait)
+        if (hp == 0 && DrawStep == BarDrawStep.Wait)
         {
             HitPoints.CurrentAnimation = 10;
          
-            State = BarState.Wait;
+            DrawStep = BarDrawStep.Wait;
             WaitTimer = 0;
         }
         // TODO: Have option not to play this sound because it's annoying
@@ -110,7 +110,7 @@ public class LifeBar : Bar
             HitPoints.CurrentAnimation = 10 + Scene.MainActor.HitPoints;
 
             HitPointsChanged = true;
-            State = BarState.MoveIn;
+            DrawStep = BarDrawStep.MoveIn;
             WaitTimer = 0;
         }
         else if (HitPointsChanged && HitPoints.EndOfAnimation)
@@ -121,25 +121,25 @@ public class LifeBar : Bar
             HitPointsChanged = false;
         }
 
-        switch (State)
+        switch (DrawStep)
         {
-            case BarState.Hide:
+            case BarDrawStep.Hide:
                 YOffset = 36;
                 break;
 
-            case BarState.MoveIn:
+            case BarDrawStep.MoveIn:
                 if (YOffset != 0)
                 {
                     YOffset -= 2;
                 }
                 else
                 {
-                    State = BarState.Wait;
+                    DrawStep = BarDrawStep.Wait;
                     WaitTimer = 0;
                 }
                 break;
 
-            case BarState.MoveOut:
+            case BarDrawStep.MoveOut:
                 if (YOffset < 36)
                 {
                     YOffset += 2;
@@ -147,17 +147,17 @@ public class LifeBar : Bar
                 else
                 {
                     YOffset = 36;
-                    State = BarState.Hide;
+                    DrawStep = BarDrawStep.Hide;
                 }
                 break;
 
-            case BarState.Wait:
+            case BarDrawStep.Wait:
                 if (Mode != 2)
                 {
                     if (WaitTimer >= 360)
                     {
                         YOffset = 0;
-                        State = BarState.MoveOut;
+                        DrawStep = BarDrawStep.MoveOut;
                     }
                     else
                     {
@@ -167,7 +167,7 @@ public class LifeBar : Bar
                 break;
         }
 
-        if (State != BarState.Hide)
+        if (DrawStep != BarDrawStep.Hide)
         {
             HitPoints.ScreenPos = new Vector2(HitPoints.ScreenPos.X, 0 - YOffset);
             LifeDigit1.ScreenPos = new Vector2(LifeDigit1.ScreenPos.X, 20 - YOffset);

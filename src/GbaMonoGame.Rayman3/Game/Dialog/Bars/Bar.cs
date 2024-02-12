@@ -19,7 +19,7 @@ public abstract class Bar
         0,
     };
 
-    protected BarState State { get; set; } = BarState.Wait;
+    protected BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
     
     public int Mode { get; set; }
 
@@ -27,7 +27,7 @@ public abstract class Bar
     public abstract void Set();
     public abstract void Draw(AnimationPlayer animationPlayer);
 
-    protected enum BarState
+    protected enum BarDrawStep
     {
         Hide,
         MoveIn,
