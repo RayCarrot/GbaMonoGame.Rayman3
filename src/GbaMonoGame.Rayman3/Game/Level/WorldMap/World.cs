@@ -5,13 +5,22 @@ public class World : FrameWorldSideScroller
 {
     public World(MapId mapId) : base(mapId) { }
 
+    private UserInfoWorld UserInfo { get; set; }
+
     public override void Init()
     {
         base.Init();
 
-        // TODO: Implement user info - need it for teensies
-
-        // Only implement this for now so the teensies work
+        Scene.AddDialog(UserInfo = new UserInfoWorld(Scene, GameInfo.Level.HasBlueLum), false, false);
         Scene.AddDialog(new TextBoxDialog(), false, false);
+    }
+
+    public override void Step()
+    {
+        base.Step();
+
+        // TODO: This is temporary code
+        if (UserInfo.Curtains.EndOfAnimation && UserInfo.Curtains.CurrentAnimation != 0)
+            UserInfo.Curtains.CurrentAnimation = 0;
     }
 }
