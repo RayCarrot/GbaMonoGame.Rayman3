@@ -26,7 +26,7 @@ public partial class Teensies
             case FsmAction.UnInit:
                 TextBox.SetCutsceneCharacter(TextBoxCutsceneCharacter.Teensies);
                 TextBox.FUN_10077108(true);
-                // TODO: Set some value in the current frame
+                // TODO: Set some value in the current frame's user info
                 break;
         }
     }

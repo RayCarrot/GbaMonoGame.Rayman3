@@ -10,20 +10,62 @@ public class UserInfoSideScroller : Dialog
         LifeBar = new LifeBar(scene);
 
         if (GameInfo.MapId == MapId._1000Lums)
-        {
-            // TODO: 1000 lums bar
-        }
+            Lums1000Bar = new Lums1000Bar();
         else
-        {
             LumsBar = new LumsBar();
-        }
 
         CagesBar = new CagesBar();
+
+        if (hasBlueLum)
+        {
+            // TODO: Blue lums bar
+        }
+
+        if (GameInfo.MapId == MapId.EchoingCaves_M1)
+        {
+            // TODO: Switch bar
+        }
+
+        if (GameInfo.MapId == MapId.BossMachine)
+        {
+            // TODO: Boss bar
+        }
+        else if (GameInfo.MapId == MapId.BossRockAndLava)
+        {
+            // TODO: Boss bar
+        }
+        else if (GameInfo.MapId == MapId.BossScaleMan)
+        {
+            // TODO: Boss bar
+        }
+        else if (GameInfo.MapId == MapId.BossFinal_M1)
+        {
+            // TODO: Boss bar
+        }
+        else if (GameInfo.MapId == MapId.BossFinal_M2)
+        {
+            // TODO: Boss bar
+        }
+
+        if (GameInfo.MapId is
+            MapId.BossMachine or
+            MapId.BossBadDreams or
+            MapId.BossRockAndLava or
+            MapId.BossScaleMan or
+            MapId.BossFinal_M1 or
+            MapId.BossFinal_M2)
+        {
+            GetLumsBar().Mode = 3;
+            CagesBar.Mode = 3;
+        }
     }
 
     private LifeBar LifeBar { get; }
     private LumsBar LumsBar { get; }
+    private Lums1000Bar Lums1000Bar { get; }
     private CagesBar CagesBar { get; }
+
+    private Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
 
     public void UpdateLife()
     {
@@ -33,13 +75,9 @@ public class UserInfoSideScroller : Dialog
     public void AddLums(int count)
     {
         if (LumsBar != null)
-        {
             LumsBar.AddLums(count);
-        }
         else
-        {
-            // TODO: 1000 lums bar
-        }
+            Lums1000Bar.AddLastLums();
     }
 
     public void AddCages(int count)
@@ -51,16 +89,10 @@ public class UserInfoSideScroller : Dialog
     {
         if (LifeBar.Mode != 3)
             LifeBar.Mode = 1;
-
-        if (LumsBar != null)
-        {
-            if (LumsBar.Mode != 3)
-                LumsBar.Mode = 1;
-        }
-        else
-        {
-            // TODO: 1000 lums bar
-        }
+        
+        Bar lumsBar = GetLumsBar();
+        if (lumsBar.Mode != 3)
+            lumsBar.Mode = 1;
 
         if (CagesBar.Mode != 3)
             CagesBar.Mode = 1;
@@ -75,11 +107,11 @@ public class UserInfoSideScroller : Dialog
     public override void Load()
     {
         LifeBar.Load();
-        LumsBar?.Load();
+        GetLumsBar().Load();
         CagesBar.Load();
 
         LifeBar.Set();
-        LumsBar?.Set();
+        GetLumsBar().Set();
         CagesBar.Set();
     }
 
@@ -88,7 +120,7 @@ public class UserInfoSideScroller : Dialog
     public override void Draw(AnimationPlayer animationPlayer)
     {
         LifeBar.Draw(animationPlayer);
-        LumsBar?.Draw(animationPlayer);
+        GetLumsBar().Draw(animationPlayer);
         CagesBar.Draw(animationPlayer);
     }
 }

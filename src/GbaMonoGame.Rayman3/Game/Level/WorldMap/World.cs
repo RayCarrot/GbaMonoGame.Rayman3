@@ -9,6 +9,8 @@ public class World : FrameWorldSideScroller
     {
         base.Init();
 
+        // TODO: Implement user info - need it for teensies
+
         // Only implement this for now so the teensies work
         Scene.AddDialog(new TextBoxDialog(), false, false);
     }
