@@ -20,7 +20,9 @@ public class World : FrameWorldSideScroller
         base.Step();
 
         // TODO: This is temporary code
-        if (UserInfo.Curtains.EndOfAnimation && UserInfo.Curtains.CurrentAnimation != 0)
-            UserInfo.Curtains.CurrentAnimation = 0;
+        if (UserInfo.CurtainsLeft.EndOfAnimation && UserInfo.CurtainsLeft.CurrentAnimation != 0)
+            UserInfo.CurtainsLeft.CurrentAnimation = 0;
+        if (UserInfo.CurtainsRight.EndOfAnimation && UserInfo.CurtainsRight.CurrentAnimation != 0)
+            UserInfo.CurtainsRight.CurrentAnimation = 0;
     }
 }

@@ -39,7 +39,10 @@ public class UserInfoWorld : Dialog
     private bool Hide { get; set; }
     private bool ShouldPlayCurtainAnimation { get; set; }
 
-    public AnimatedObject Curtains { get; set; }
+    // The game only has a single animated object, but we split it into two in order
+    // to support different screen resolutions (so it fills the width of the screen)
+    public AnimatedObject CurtainsLeft { get; set; }
+    public AnimatedObject CurtainsRight { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -59,12 +62,24 @@ public class UserInfoWorld : Dialog
         {
             AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.WorldCurtainAnimations);
 
-            Curtains = new AnimatedObject(resource, false)
+            CurtainsLeft = new AnimatedObject(resource, false)
             {
                 IsFramed = true,
                 CurrentAnimation = ShouldPlayCurtainAnimation ? 1 : 0,
                 ScreenPos = new Vector2(120, 56),
             };
+            CurtainsRight = new AnimatedObject(resource, false)
+            {
+                IsFramed = true,
+                CurrentAnimation = ShouldPlayCurtainAnimation ? 1 : 0,
+                ScreenPos = new Vector2(Engine.ScreenCamera.Resolution.X - 120, 56),
+            };
+
+            for (int i = 0; i < 6; i++)
+            {
+                CurtainsLeft.SetChannelInvisible(i);
+                CurtainsRight.SetChannelInvisible(i + 6);
+            }
 
             if (ShouldPlayCurtainAnimation)
                 ShouldPlayCurtainAnimation = false;
@@ -76,7 +91,12 @@ public class UserInfoWorld : Dialog
     public override void Draw(AnimationPlayer animationPlayer)
     {
         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId != MapId.WorldMap)
-            animationPlayer.PlayFront(Curtains);
+        {
+            animationPlayer.PlayFront(CurtainsLeft);
+
+            CurtainsRight.ScreenPos = new Vector2(Engine.ScreenCamera.Resolution.X - 120, CurtainsRight.ScreenPos.Y);
+            animationPlayer.PlayFront(CurtainsRight);
+        }
 
         if (!Hide)
         {
