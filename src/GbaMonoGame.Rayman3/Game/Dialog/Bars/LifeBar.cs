@@ -23,6 +23,12 @@ public class LifeBar : Bar
     private AnimatedObject LifeDigit1 { get; set; }
     private AnimatedObject LifeDigit2 { get; set; }
 
+    public void UpdateLife()
+    {
+        if (State != BarState.Bounce && Mode != 1)
+            State = BarState.MoveIn;
+    }
+
     public override void Load()
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.HudAnimations);

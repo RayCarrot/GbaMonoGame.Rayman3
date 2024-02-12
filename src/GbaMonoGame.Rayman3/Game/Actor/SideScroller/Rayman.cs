@@ -1205,7 +1205,10 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_CollectedRedLum:
-                // TODO: Implement
+                if (HitPoints < 5)
+                    HitPoints++;
+
+                ((FrameSideScroller)Frame.Current).UserInfo.UpdateLife();
                 return false;
 
             case Message.Main_CollectedBlueLum:

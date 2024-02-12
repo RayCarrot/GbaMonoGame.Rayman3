@@ -25,6 +25,11 @@ public class UserInfoSideScroller : Dialog
     private LumsBar LumsBar { get; }
     private CagesBar CagesBar { get; }
 
+    public void UpdateLife()
+    {
+        LifeBar.UpdateLife();
+    }
+
     public void AddLums(int count)
     {
         if (LumsBar != null)
