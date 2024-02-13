@@ -5,7 +5,7 @@ public class World : FrameWorldSideScroller
 {
     public World(MapId mapId) : base(mapId) { }
 
-    private UserInfoWorld UserInfo { get; set; }
+    public UserInfoWorld UserInfo { get; set; }
 
     public override void Init()
     {

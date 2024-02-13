@@ -36,8 +36,9 @@ public class UserInfoWorld : Dialog
     private LifeBar LifeBar { get; }
     private Lums1000Bar Lums1000Bar { get; }
 
-    private bool Hide { get; set; }
     private bool ShouldPlayCurtainAnimation { get; set; }
+    
+    public bool Hide { get; set; }
 
     // The game only has a single animated object, but we split it into two in order
     // to support different screen resolutions (so it fills the width of the screen)
