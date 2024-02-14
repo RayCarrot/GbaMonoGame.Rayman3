@@ -105,6 +105,26 @@ public class Lums1000Bar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
+        // Keep position updated for different screen resolutions support
+        if (DeadLums == 1000)
+        {
+            LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 100, LumsIcon.ScreenPos.Y);
+        }
+        else if (DeadLums == 999)
+        {
+            LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 100, LumsIcon.ScreenPos.Y);
+            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 86, CollectedLumsDigit1.ScreenPos.Y);
+            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 75, CollectedLumsDigit2.ScreenPos.Y);
+            CollectedLumsDigit3.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 64, CollectedLumsDigit3.ScreenPos.Y);
+        }
+        else
+        {
+            LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 88, LumsIcon.ScreenPos.Y);
+            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 72, CollectedLumsDigit1.ScreenPos.Y);
+            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 61, CollectedLumsDigit2.ScreenPos.Y);
+            CollectedLumsDigit3.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 50, CollectedLumsDigit3.ScreenPos.Y);
+        }
+
         animationPlayer.PlayFront(LumsIcon);
 
         if (DeadLums < 1000)
