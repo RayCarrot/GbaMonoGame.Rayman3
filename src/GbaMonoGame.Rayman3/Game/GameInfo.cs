@@ -25,7 +25,7 @@ public static class GameInfo
     public static byte field12_0xf { get; set; }
     public static bool field22_0x1b { get; set; }
     public static Power Powers { get; set; }
-    public static CheatFlags Cheats { get; set; }
+    public static Cheat Cheats { get; set; }
 
     public static int CurrentSlot { get; set; }
     public static SaveGameSlot PersistentInfo { get; set; } = new();
@@ -40,7 +40,7 @@ public static class GameInfo
         LoadedYellowLums = 0;
         LoadedCages = 0;
         Powers = Power.None;
-        Cheats = CheatFlags.None;
+        Cheats = Cheat.None;
         field22_0x1b = field7_0x7;
         field7_0x7 = true;
         field12_0xf = 0;
@@ -106,6 +106,26 @@ public static class GameInfo
     public static void Save(int saveSlot)
     {
         // TODO: Implement
+    }
+
+    public static void EnableCheat(Scene2D scene, Cheat cheat)
+    {
+        Cheats |= cheat;
+
+        switch (cheat)
+        {
+            case Cheat.Invulnerable:
+                scene.MainActor.IsInvulnerable = true;
+                break;
+
+            case Cheat.AllPowers:
+                Powers = Power.All;
+                break;
+
+            case Cheat.InfiniteLives:
+                ModifyLives(99);
+                break;
+        }
     }
 
     public static bool GetLumStatus(int lumId)
@@ -492,7 +512,7 @@ public static class GameInfo
 
     public static void ModifyLives(int change)
     {
-        if ((Cheats & CheatFlags.InfiniteLives) != 0)
+        if ((Cheats & Cheat.InfiniteLives) != 0)
         {
             PersistentInfo.Lives = 99;
             return;

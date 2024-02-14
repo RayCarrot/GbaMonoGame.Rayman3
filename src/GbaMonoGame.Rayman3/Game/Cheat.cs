@@ -3,7 +3,7 @@
 namespace GbaMonoGame.Rayman3;
 
 [Flags]
-public enum CheatFlags
+public enum Cheat
 {
     None = 0,
     Invulnerable = 1 << 0,

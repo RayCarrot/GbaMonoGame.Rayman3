@@ -104,6 +104,17 @@ public sealed partial class Rayman : MovableActor
     public override Box GetDetectionBox() => Debug_NoClip ? Box.Empty : base.GetDetectionBox();
     public override Box GetActionBox() => Debug_NoClip ? Box.Empty : base.GetActionBox();
 
+    private void EnableCheats()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Cheat cheat = (Cheat)(1 << i);
+
+            if ((GameInfo.Cheats & cheat) != 0)
+                GameInfo.EnableCheat(Scene, cheat);
+        }
+    }
+
     private bool CheckInput(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
@@ -561,7 +572,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool ManageHit()
     {
-        if (RSMultiplayer.IsActive || (GameInfo.Cheats & CheatFlags.Invulnerable) != 0)
+        if (RSMultiplayer.IsActive || (GameInfo.Cheats & Cheat.Invulnerable) != 0)
             return false;
 
         CheckForTileDamage();
@@ -1327,7 +1338,8 @@ public sealed partial class Rayman : MovableActor
         }
 
         GameInfo.field12_0xf = 0;
-        // TODO: Run cheats
+
+        EnableCheats();
     }
 
     public override void DoBehavior()
@@ -1360,7 +1372,7 @@ public sealed partial class Rayman : MovableActor
         if (draw)
         {
             if (IsInvulnerable && 
-                (GameInfo.Cheats & CheatFlags.Invulnerable) == 0 && 
+                (GameInfo.Cheats & Cheat.Invulnerable) == 0 && 
                 !RSMultiplayer.IsActive && 
                 HitPoints != 0 && 
                 (GameTime.ElapsedFrames & 1) == 0)
