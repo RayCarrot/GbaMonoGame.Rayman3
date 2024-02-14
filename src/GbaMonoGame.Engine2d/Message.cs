@@ -48,4 +48,8 @@ public enum Message
     Main_AllowCoyoteJump = 1048,
     Murfy_NewMultiplayerLevel = 1049,
     Hit = 1050,
+
+    Main_ExitCutscene = 1059,
+
+    Main_EnterCutscene = 1088,
 }

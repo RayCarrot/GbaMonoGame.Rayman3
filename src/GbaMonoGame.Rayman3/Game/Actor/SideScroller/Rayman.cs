@@ -1245,6 +1245,20 @@ public sealed partial class Rayman : MovableActor
                     CanSafetyJump = true;
                 return false;
 
+            case Message.Main_ExitCutscene:
+                if (Fsm.EqualsAction(FUN_08027b80) || Fsm.EqualsAction(Fsm_Cutscene))
+                {
+                    if (IsOnClimbableVertical() != 0)
+                        Fsm.ChangeAction(Fsm_Climb);
+                    else
+                        Fsm.ChangeAction(Fsm_Default);
+                }
+                return false;
+
+            case Message.Main_EnterCutscene:
+                Fsm.ChangeAction(Fsm_Cutscene);
+                return false;
+
             default:
                 return false;
         }

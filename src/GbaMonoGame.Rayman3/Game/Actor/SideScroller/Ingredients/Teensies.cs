@@ -40,10 +40,17 @@ public sealed partial class Teensies : ActionActor
         }
     }
 
-    private Action InitialActionId { get; set; }
-    private byte field3_0x35 { get; set; }
+    private Action InitialActionId { get; }
+
+    private bool IsMovingOutTextBox { get; set; }
     private bool HasSetTextBox { get; set; }
     private TextBoxDialog TextBox { get; set; }
+
+    private void SetMasterAction()
+    {
+        if (IsActionFinished)
+            ActionId = Random.Shared.Next(5) * 2 + (IsFacingRight ? Action.Master1_Right : Action.Master1_Left);
+    }
 
     private bool IsWorldFinished()
     {
@@ -113,5 +120,81 @@ public sealed partial class Teensies : ActionActor
         {
             throw new Exception("Invalid initial action id for teensies");
         }
+    }
+
+    private void SetRequirementMetText()
+    {
+        switch (InitialActionId)
+        {
+            case Action.Init_World1_Right or Action.Init_World1_Left:
+                TextBox.SetText(1);
+                break;
+
+            case Action.Init_World2_Right or Action.Init_World2_Left:
+                TextBox.SetText(4);
+                break;
+
+            case Action.Init_World3_Right or Action.Init_World3_Left:
+                TextBox.SetText(7);
+                break;
+
+            case Action.Init_World4_Right or Action.Init_World4_Left:
+                TextBox.SetText(10);
+                break;
+        }
+    }
+
+    private void SetRequirementNotMetText()
+    {
+        if (IsWorldFinished())
+        {
+            switch (InitialActionId)
+            {
+                case Action.Init_World1_Right or Action.Init_World1_Left:
+                    TextBox.SetText(2);
+                    break;
+
+                case Action.Init_World2_Right or Action.Init_World2_Left:
+                    TextBox.SetText(5);
+                    break;
+
+                case Action.Init_World3_Right or Action.Init_World3_Left:
+                    TextBox.SetText(8);
+                    break;
+
+                case Action.Init_World4_Right or Action.Init_World4_Left:
+                    TextBox.SetText(11);
+                    break;
+            }
+        }
+        else
+        {
+            switch (InitialActionId)
+            {
+                case Action.Init_World1_Right or Action.Init_World1_Left:
+                    TextBox.SetText(3);
+                    break;
+
+                case Action.Init_World2_Right or Action.Init_World2_Left:
+                    TextBox.SetText(6);
+                    break;
+
+                case Action.Init_World3_Right or Action.Init_World3_Left:
+                    TextBox.SetText(9);
+                    break;
+
+                case Action.Init_World4_Right or Action.Init_World4_Left:
+                    TextBox.SetText(12);
+                    break;
+            }
+        }
+    }
+
+    private bool HasLeftMainActorView()
+    {
+        Box viewBox = GetViewBox();
+        viewBox = new Box(viewBox.MinX + 45, viewBox.MinY, viewBox.MaxX - 45, viewBox.MaxY);
+
+        return !Scene.MainActor.GetDetectionBox().Intersects(viewBox);
     }
 }

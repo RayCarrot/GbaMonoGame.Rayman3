@@ -25,29 +25,28 @@ public partial class Teensies
                 // Why is this called a second time...? Probably a mistake.
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
-                if (IsActionFinished)
-                    ActionId = Random.Shared.Next(5) * 2 + (IsFacingRight ? Action.Master1_Right : Action.Master1_Left);
+                SetMasterAction();
 
                 bool requirementMet = IsWorldFinished() && IsEnoughCagesTaken();
 
                 if (Scene.IsDetectedMainActor(this) && InitialActionId is Action.Init_World1_Right or Action.Init_World1_Left)
                 {
-                    Scene.MainActor.ProcessMessage((Message)1088); // TODO: Implement and name
+                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
                     Fsm.ChangeAction(Fsm_World1IntroText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && requirementMet)
                 {
-                    Scene.MainActor.ProcessMessage((Message)1088); // TODO: Implement and name
-                    //Fsm.ChangeAction(FUN_08078230); // TODO: Implement
+                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Fsm.ChangeAction(Fsm_ShowRequirementMetText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && !requirementMet)
                 {
-                    Scene.MainActor.ProcessMessage((Message)1088); // TODO: Implement and name
-                    //Fsm.ChangeAction(FUN_08078498); // TODO: Implement
+                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Fsm.ChangeAction(Fsm_ShowRequirementNotMetText);
                     return;
                 }
                 break;
@@ -76,9 +75,149 @@ public partial class Teensies
                     ActionId = Random.Shared.Next(3) * 2 + (IsFacingRight ? Action.Init_World1_Right : Action.Init_World1_Left);
 
                 if (JoyPad.CheckSingle(GbaInput.A))
-                    TextBox.FUN_100770e4();
+                    TextBox.MoveToNextText();
 
-                // TODO: Implement
+                if (TextBox.IsFinished)
+                {
+                    if (IsWorldFinished() && IsEnoughCagesTaken())
+                        Fsm.ChangeAction(Fsm_ShowRequirementMetText);
+                    else
+                        Fsm.ChangeAction(Fsm_ShowRequirementNotMetText);
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_ShowRequirementMetText(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.Init_ShowRequirementMet_Right : Action.Init_ShowRequirementMet_Left;
+                IsSolid = false;
+                SetRequirementMetText();
+                break;
+
+            case FsmAction.Step:
+                LevelMusicManager.PlaySpecialMusicIfDetected(this);
+
+                SetMasterAction();
+
+                if (!IsMovingOutTextBox)
+                {
+                    if (TextBox.IsFinished)
+                    {
+                        TextBox.MoveInOurOut(false);
+                        Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                        IsMovingOutTextBox = true;
+                    }
+                    else if (JoyPad.CheckSingle(GbaInput.A))
+                    {
+                        TextBox.MoveToNextText();
+                    }
+                }
+
+                if (!TextBox.IsOnScreen())
+                    Fsm.ChangeAction(Fsm_ExitedRequirementMetText);
+                break;
+
+            case FsmAction.UnInit:
+                ((World)Frame.Current).UserInfo.Hide = false;
+                break;
+        }
+    }
+
+    private void Fsm_ExitedRequirementMetText(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                LevelMusicManager.PlaySpecialMusicIfDetected(this);
+                SetMasterAction();
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_ShowRequirementNotMetText(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.Init_ShowRequirementNotMet_Left : Action.Init_ShowRequirementNotMet_Right;
+                SetRequirementNotMetText();
+                break;
+
+            case FsmAction.Step:
+                LevelMusicManager.PlaySpecialMusicIfDetected(this);
+
+                SetMasterAction();
+
+                if (TextBox.IsFinished)
+                {
+                    TextBox.MoveInOurOut(false);
+                    Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                    Fsm.ChangeAction(Fsm_WaitExitRequirementNotMetText);
+                    return;
+                }
+                
+                if (JoyPad.CheckSingle(GbaInput.A))
+                    TextBox.MoveToNextText();
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_WaitExitRequirementNotMetText(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                LevelMusicManager.PlaySpecialMusicIfDetected(this);
+
+                if (!TextBox.IsOnScreen())
+                    Fsm.ChangeAction(Fsm_ExitedRequirementNotMetText);
+                break;
+
+            case FsmAction.UnInit:
+                ((World)Frame.Current).UserInfo.Hide = false;
+                break;
+        }
+    }
+
+    private void Fsm_ExitedRequirementNotMetText(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                LevelMusicManager.PlaySpecialMusicIfDetected(this);
+
+                SetMasterAction();
+
+                if (HasLeftMainActorView())
+                    Fsm.ChangeAction(Fsm_WaitMaster);
                 break;
 
             case FsmAction.UnInit:

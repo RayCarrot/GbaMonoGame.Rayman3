@@ -17,7 +17,18 @@ public partial class Teensies
         Victory2_Left = 4,
         Victory2_Right = 5,
 
-        // TODO: 6-17
+        Idle1_Right = 6,
+        Idle1_Left = 7,
+        Idle2_Right = 8,
+        Idle2_Left = 9,
+        Idle3_Right = 10,
+        Idle3_Left = 11,
+        Idle4_Right = 12,
+        Idle4_Left = 13,
+        Idle5_Right = 14,
+        Idle5_Left = 15,
+        Idle6_Right = 16,
+        Idle6_Left = 17,
 
         Init_Master_Left = 18,
         Init_Master_Right = 19,
@@ -41,6 +52,9 @@ public partial class Teensies
         Init_World4_Left = 36,
         Init_World4_Right = 37,
 
-        // TODO: 38-41
+        Init_ShowRequirementMet_Left = 38,
+        Init_ShowRequirementMet_Right = 39,
+        Init_ShowRequirementNotMet_Right = 40,
+        Init_ShowRequirementNotMet_Left = 41,
     }
 }

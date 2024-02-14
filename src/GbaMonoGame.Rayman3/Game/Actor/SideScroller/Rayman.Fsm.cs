@@ -2723,6 +2723,60 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_Cutscene(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                PreviousXSpeed = 0;
+
+                if (IsOnClimbableVertical() != 0)
+                {
+                    ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                    MechModel.Speed = Vector2.Zero;
+                }
+                else if (Scene.GetPhysicalType(Position).IsSolid || Scene.MainActor.LinkedMovementActor != null || Speed.Y == 0)
+                {
+                    ActionId = IsFacingRight ? Action.Idle_BeginCutscene_Right : Action.Idle_BeginCutscene_Left;
+                }
+                else
+                {
+                    ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                }
+                break;
+
+            case FsmAction.Step:
+                if (ActionId is Action.Fall_Right or Action.Fall_Left)
+                    MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    if (ActionId is not (Action.Climb_Idle_Right or Action.Climb_Idle_Left))
+                        ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                }
+                else if (Scene.GetPhysicalType(Position).IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
+                {
+                    ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    field18_0x93 = 0x78;
+                    Scene.Camera.ProcessMessage(Message.Cam_1040, field18_0x93);
+                }
+                else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
+                {
+                    ActionId = IsFacingRight ? Action.Idle_BeginCutscene_Right : Action.Idle_BeginCutscene_Left;
+                }
+                else if (ActionId is Action.Idle_BeginCutscene_Right or Action.Idle_BeginCutscene_Left && IsActionFinished)
+                {
+                    ActionId = IsFacingRight ? Action.Idle_Cutscene_Right : Action.Idle_Cutscene_Left;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }
@@ -2734,4 +2788,5 @@ public partial class Rayman
     private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }
     private void FUN_1005bf7c(FsmAction action) { }
+    private void FUN_08027b80(FsmAction action) { }
 }

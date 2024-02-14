@@ -21,9 +21,7 @@ public class TextBoxDialog : Dialog
     private bool ShouldPlayRaymanSound { get; set; } = true;
     private bool ShouldPlayedMurfySound { get; set; } = true;
     private int OffsetY { get; set; } = 45;
-    private byte field19_0xf6 { get; set; } // TODO: Name
     private int IconAnimationTimer { get; set; } = 60;
-    private byte field12_0xea { get; set; } // TODO: Name
     private byte Timer { get; set; }
     private Rayman3SoundEvent NextSoundEvent { get; set; } = Rayman3SoundEvent.None;
     private float TextTransitionValue { get; set; } = 1;
@@ -38,6 +36,12 @@ public class TextBoxDialog : Dialog
 
     #endregion
 
+    #region Public Methods
+
+    public bool IsFinished { get; private set; }
+
+    #endregion
+
     #region Private Methods
 
     public void UpdateText(int textObjectIndex)
@@ -45,7 +49,7 @@ public class TextBoxDialog : Dialog
         CurrentText = Localization.GetText(TextBankId, TextId);
 
         if (textObjectIndex != 0)
-            field12_0xea = 0;
+            IsFinished = false;
 
         if (CurrentTextLine + textObjectIndex >= CurrentText.Length)
         {
@@ -195,7 +199,7 @@ public class TextBoxDialog : Dialog
                 break;
 
             case FsmAction.Step:
-                if (field12_0xea == 0)
+                if (!IsFinished)
                 {
                     TextTransitionValue++;
                     foreach (SpriteTextObject textObj in TextObjects)
@@ -209,7 +213,7 @@ public class TextBoxDialog : Dialog
                             ShouldPlayedLySound = true;
                             ShouldPlayRaymanSound = true;
                             ShouldPlayedMurfySound = true;
-                            field12_0xea = 1;
+                            IsFinished = true;
                         }
 
                         Fsm.ChangeAction(Fsm_TransitionTextIn);
@@ -250,6 +254,8 @@ public class TextBoxDialog : Dialog
                         if (Timer == 2)
                             UpdateText(1);
                     }
+
+                    Timer--;
                 }
                 else
                 {
@@ -341,11 +347,13 @@ public class TextBoxDialog : Dialog
             Fsm.ChangeAction(Fsm_MoveOut);
     }
 
-    public void FUN_100770e4()
+    public void MoveToNextText()
     {
         if (Fsm.EqualsAction(Fsm_WaitForNextText))
-            field19_0xf6 = 1;
+            NextText = true;
     }
+
+    public bool IsOnScreen() => OffsetY < 45;
 
     public override void Load()
     {

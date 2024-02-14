@@ -166,6 +166,10 @@ public partial class Rayman
         Idle_ReadyToFight_Left = 200,
         Idle_Determined_Right = 201,
         Idle_Determined_Left = 202,
+        Idle_BeginCutscene_Right = 203,
+        Idle_BeginCutscene_Left = 204,
+        Idle_Cutscene_Right = 205,
+        Idle_Cutscene_Left = 206,
 
         LookUp_Right = 213,
         LookUp_Left = 214,
