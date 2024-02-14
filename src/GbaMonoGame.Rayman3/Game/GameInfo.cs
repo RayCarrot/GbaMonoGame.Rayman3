@@ -86,7 +86,10 @@ public static class GameInfo
         if (!context.FileExists(saveFile))
         {
             EEPROMEncoder encoder = new(0x200);
-            context.AddFile(new EncodedLinearFile(context, saveFile, encoder));
+            context.AddFile(new EncodedLinearFile(context, saveFile, encoder)
+            {
+                IgnoreCacheOnRead = true
+            });
         }
 
         if (((PhysicalFile)context.GetRequiredFile(saveFile)).SourceFileExists)
