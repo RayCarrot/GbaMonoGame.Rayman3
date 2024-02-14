@@ -1,6 +1,6 @@
 ﻿namespace GbaMonoGame;
 
-public class GeneralOptionsMenu : Menu
+public class GameOptionsMenu : Menu
 {
     public override void Update(MenuManager menu)
     {

@@ -164,7 +164,12 @@ public static class SoundEventsManager
             pan = 0;
         }
 
-        vol *= _volumePerType[(int)song.SoundType] / SoundEngineInterface.MaxVolume;
+        vol *= GetVolumeForType(song.SoundType) / SoundEngineInterface.MaxVolume;
+
+        if (song.SoundType == SoundType.Sfx)
+            vol *= Engine.Config.SfxVolume;
+        else if (song.SoundType == SoundType.Music)
+            vol *= Engine.Config.MusicVolume;
 
         if (song.Volume != vol || song.Pan != pan)
         {
@@ -423,6 +428,7 @@ public static class SoundEventsManager
     {
         foreach (ActiveSong playingSong in _activeSongs)
         {
+            UpdateVolumeAndPan(playingSong);
             playingSong.SoundInstance.Resume();
         }
     }

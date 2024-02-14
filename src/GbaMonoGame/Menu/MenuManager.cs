@@ -19,10 +19,11 @@ public class MenuManager
 
     #region Private Properties
 
+    private const int Margin = 60;
+    private const int LineHeight = 40;
+
     private MenuCamera Camera { get; } = new(Engine.GameWindow);
     private List<Sprite> Sprites { get; } = new();
-    private int Margin => 60;
-    private int LineHeight => 40;
     private Color DisabledColor { get; } = new(0.4f, 0.4f, 0.4f);
     private Color Color { get; } = Color.White;
     private Color HighlightColor { get; } = new(218, 168, 9);
@@ -126,14 +127,14 @@ public class MenuManager
         };
     }
 
-    private void NextLine(Vector2 pos)
+    private void NextLine(Vector2 pos, int lineHeight = LineHeight)
     {
         CurrentColumnIndex++;
 
         if (CurrentColumnIndex >= ColumnsCount)
         {
             CurrentColumnIndex = 0;
-            Position = new Vector2(ColumnRenderBoxes[CurrentColumnIndex].MinX, pos.Y + LineHeight);
+            Position = new Vector2(ColumnRenderBoxes[CurrentColumnIndex].MinX, pos.Y + lineHeight);
         }
         else
         {
@@ -302,9 +303,14 @@ public class MenuManager
         NextLine(pos);
     }
 
-    public void Empty()
+    public void Spacing()
     {
         NextLine(GetPosition());
+    }
+
+    public void SmallSpacing()
+    {
+        NextLine(GetPosition(), LineHeight / 4);
     }
 
     public bool Button(string text, bool isEnabled = true)

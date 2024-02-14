@@ -25,6 +25,8 @@ public class GameConfig
         GbaWindowPosition = null;
         NGageWindowPosition = null;
         InternalResolution = null;
+        SfxVolume = 1;
+        MusicVolume = 1;
     }
 
     #endregion
@@ -46,6 +48,8 @@ public class GameConfig
     [JsonPropertyName("gbaWindowPosition")] public Point? GbaWindowPosition { get; set; }
     [JsonPropertyName("nGageWindowPosition")] public Point? NGageWindowPosition { get; set; }
     [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
+    [JsonPropertyName("sfxVolume")] public float SfxVolume { get; set; }
+    [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; }
 
     #endregion
 

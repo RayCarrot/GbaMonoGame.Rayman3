@@ -91,7 +91,7 @@ public class DisplayOptionsMenu : Menu
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
 
         menu.Text("Display options");
-        menu.Empty();
+        menu.Spacing();
 
         menu.SetColumns(1, 0.9f);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Left);
