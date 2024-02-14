@@ -17,6 +17,15 @@ public class MainMenu : Menu
         if (menu.Button("Resume"))
             menu.Close();
 
+        if (Game.CanSkipCutscene)
+        {
+            if (menu.Button("Skip cutscene"))
+            {
+                Game.SkipCutscene();
+                menu.Close();
+            }
+        }
+
         if (menu.Button("General options"))
             menu.ChangeMenu(new GeneralOptionsMenu());
 

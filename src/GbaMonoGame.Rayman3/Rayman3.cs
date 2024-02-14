@@ -285,6 +285,12 @@ public class Rayman3 : GbaGame
 
     #endregion
 
+    #region Public Properties
+
+    public override bool CanSkipCutscene => (Frame.Current as IHasScene)?.Scene.GetDialog<TextBoxDialog>()?.CanSkip() ?? false;
+
+    #endregion
+
     #region Protected Methods
 
     protected override Frame CreateInitialFrame() => Engine.Settings.Platform switch
@@ -459,6 +465,15 @@ public class Rayman3 : GbaGame
         }
 
         base.Update(gameTime);
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public override void SkipCutscene()
+    {
+        (Frame.Current as IHasScene)?.Scene.GetDialog<TextBoxDialog>()?.Skip();
     }
 
     #endregion

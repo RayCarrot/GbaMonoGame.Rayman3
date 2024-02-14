@@ -168,6 +168,18 @@ public class Scene2D
         return true;
     }
 
+    public T GetDialog<T>()
+        where T : Dialog
+    {
+        foreach (Dialog dialog in Dialogs)
+        {
+            if (dialog is T dlg)
+                return dlg;
+        }
+
+        return null;
+    }
+
     public T GetRequiredDialog<T>()
         where T : Dialog
     {

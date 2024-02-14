@@ -353,6 +353,21 @@ public class TextBoxDialog : Dialog
             NextText = true;
     }
 
+    public bool CanSkip() => Fsm.EqualsAction(Fsm_WaitForNextText);
+
+    public void Skip()
+    {
+        if (!Fsm.EqualsAction(Fsm_WaitForNextText))
+            return;
+
+        CurrentTextLine = 0;
+        ShouldPlayedLySound = true;
+        ShouldPlayRaymanSound = true;
+        ShouldPlayedMurfySound = true;
+        IsFinished = true;
+        Fsm.ChangeAction(Fsm_TransitionTextIn);
+    }
+
     public bool IsOnScreen() => OffsetY < 45;
 
     public override void Load()

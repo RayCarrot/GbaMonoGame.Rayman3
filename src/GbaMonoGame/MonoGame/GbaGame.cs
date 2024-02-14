@@ -69,6 +69,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     #region Public Properties
 
+    public abstract bool CanSkipCutscene { get; }
+
     public bool HasLoadedGameInstallation => _selectedGameInstallation != null && _loadingGameInstallationTask == null;
     public bool RunSingleFrame { get; set; }
     public bool IsPaused { get; set; }
@@ -519,6 +521,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     #endregion
 
     #region Public Methods
+
+    public abstract void SkipCutscene();
 
     public void SaveWindowState()
     {
