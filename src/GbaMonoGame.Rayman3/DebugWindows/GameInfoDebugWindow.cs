@@ -75,6 +75,7 @@ public class GameInfoDebugWindow : DebugWindow
 
             if (ImGui.RadioButton($"Slot {i}", GameInfo.CurrentSlot == i))
             {
+                GameInfo.Init();
                 GameInfo.CurrentSlot = i;
                 GameInfo.Load(i);
             }
