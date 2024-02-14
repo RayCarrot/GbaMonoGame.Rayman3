@@ -71,7 +71,7 @@ public static class GameInfo
         PersistentInfo.PlayedWorld2Unlock = false;
         PersistentInfo.PlayedWorld3Unlock = false;
         PersistentInfo.PlayedWorld4Unlock = false;
-        PersistentInfo.PlayedWorld4Act = false;
+        PersistentInfo.PlayedAct4 = false;
         PersistentInfo.PlayedMurfyWorldHelp = false;
         PersistentInfo.UnlockedFinalBoss = false;
         PersistentInfo.UnlockedLyChallengeGCN = false;

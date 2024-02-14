@@ -77,14 +77,10 @@ public class GfxDebugWindow : DebugWindow
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                bool enabled = screen.IsEnabled;
-                ImGui.Checkbox($"##{screen.Id}_enabled", ref enabled);
-                screen.IsEnabled = enabled;
+                screen.IsEnabled = ImGuiExt.Checkbox($"##{screen.Id}_enabled", screen.IsEnabled);
 
                 ImGui.TableNextColumn();
-                bool wrap = screen.Wrap;
-                ImGui.Checkbox($"##{screen.Id}_wrap", ref wrap);
-                screen.Wrap = wrap;
+                screen.Wrap = ImGuiExt.Checkbox($"##{screen.Id}_wrap", screen.Wrap);
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{screen.Id}");
@@ -112,10 +108,11 @@ public class GfxDebugWindow : DebugWindow
             ImGui.EndTable();
         }
 
+        // TODO: Implement way to view sprites
+        /*
         ImGui.Spacing();
         ImGui.Spacing();
         ImGui.SeparatorText("Sprites");
-
-        ImGui.Text("TODO: Implement");
+        */
     }
 }

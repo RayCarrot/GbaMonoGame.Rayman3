@@ -13,9 +13,7 @@ public class GameObjectDebugWindow : DebugWindow
 
         if (selectedGameObject != null)
         {
-            bool enabled = selectedGameObject.IsEnabled;
-            ImGui.Checkbox("Enabled", ref enabled);
-            selectedGameObject.IsEnabled = enabled;
+            selectedGameObject.IsEnabled = ImGuiExt.Checkbox("Enabled", selectedGameObject.IsEnabled);
 
             System.Numerics.Vector2 pos = new(selectedGameObject.Position.X, selectedGameObject.Position.Y);
             if (ImGui.InputFloat2("Position", ref pos))
