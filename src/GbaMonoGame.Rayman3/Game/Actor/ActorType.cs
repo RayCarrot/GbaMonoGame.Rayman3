@@ -26,6 +26,10 @@ public enum ActorType
 
     FlowerFire = 61,
 
+    Murfy = 64,
+
+    MurfyStone = 92,
+
     Teensies = 95,
 
     Arrive = 101,

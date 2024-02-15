@@ -98,6 +98,8 @@ public sealed partial class Rayman : MovableActor
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; } // Bool?
 
+    public bool IsInDefaultState => Fsm.EqualsAction(Fsm_Default);
+
     // Disable collision when debug mode is on
     public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
     public override Box GetVulnerabilityBox() => Debug_NoClip ? Box.Empty : base.GetVulnerabilityBox();

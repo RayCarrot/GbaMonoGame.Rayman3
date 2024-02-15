@@ -326,6 +326,10 @@ public class Rayman3 : GbaGame
 
             { ActorType.FlowerFire, (instanceId, scene, resource) => new FlowerFire(instanceId, scene, resource) },
 
+            { ActorType.Murfy, (instanceId, scene, resource) => new Murfy(instanceId, scene, resource) },
+            
+            { ActorType.MurfyStone, (instanceId, scene, resource) => new MurfyStone(instanceId, scene, resource) },
+
             { ActorType.Teensies, (instanceId, scene, resource) => new Teensies(instanceId, scene, resource) },
 
             { ActorType.Arrive, (instanceId, scene, resource) => new Arrive(instanceId, scene, resource) },

@@ -19,20 +19,11 @@ public abstract class Bar
         0,
     };
 
-    protected BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
     
     public int Mode { get; set; }
+    public BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
 
     public abstract void Load();
     public abstract void Set();
     public abstract void Draw(AnimationPlayer animationPlayer);
-
-    protected enum BarDrawStep
-    {
-        Hide,
-        MoveIn,
-        MoveOut,
-        Bounce,
-        Wait,
-    }
 }

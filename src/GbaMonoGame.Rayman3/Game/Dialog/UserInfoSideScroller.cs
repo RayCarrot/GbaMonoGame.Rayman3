@@ -98,6 +98,13 @@ public class UserInfoSideScroller : Dialog
             CagesBar.Mode = 1;
     }
 
+    public void MoveOutBars()
+    {
+        LifeBar.DrawStep = BarDrawStep.MoveOut;
+        GetLumsBar().DrawStep = BarDrawStep.MoveOut;
+        CagesBar.DrawStep = BarDrawStep.MoveOut;
+    }
+
     protected override bool ProcessMessageImpl(Message message, object param)
     {
         // TODO: Implement

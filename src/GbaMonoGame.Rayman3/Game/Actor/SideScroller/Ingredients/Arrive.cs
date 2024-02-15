@@ -6,7 +6,7 @@ public sealed partial class Arrive : ActionActor
 {
     public Arrive(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        LinkedActor = -1;
+        LinkedActor = null;
 
         if ((GameInfo.MapId == MapId.ChallengeLy1 && !GameInfo.PersistentInfo.FinishedLyChallenge1) ||
             (GameInfo.MapId == MapId.ChallengeLy2 && !GameInfo.PersistentInfo.FinishedLyChallenge2))
@@ -24,5 +24,5 @@ public sealed partial class Arrive : ActionActor
         }
     }
 
-    private int LinkedActor { get; }
+    private int? LinkedActor { get; }
 }
