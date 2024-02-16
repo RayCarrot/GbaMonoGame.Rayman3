@@ -11,7 +11,7 @@ public sealed partial class Murfy : MovableActor
 {
     public Murfy(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        MainActor = Scene.MainActor;
+        MainActor = (Rayman)Scene.MainActor;
         Byte_8D = 1;
 
         if (Engine.Settings.Platform == Platform.NGage)
@@ -24,7 +24,7 @@ public sealed partial class Murfy : MovableActor
     private Vector2 TargetPosition { get; set; }
     private Vector2 MainActorPosition { get; set; }
     private Vector2 InitialPosition { get; set; }
-    private MovableActor MainActor { get; set; }
+    private Rayman MainActor { get; set; }
     private Vector2 SavedSpeed { get; set; }
     private byte Timer { get; set; }
     private bool MoveTextBoxIn { get; set; }
@@ -102,6 +102,14 @@ public sealed partial class Murfy : MovableActor
         }
     }
 
+    private void SetTargetPosition()
+    {
+        if (MainActor.IsFacingRight)
+            TargetPosition = new Vector2(MainActor.Position.X + 70, MainActor.Position.Y - 15);
+        else
+            TargetPosition = new Vector2(MainActor.Position.X - 70, MainActor.Position.Y - 15);
+    }
+
     private bool FUN_08071fb0()
     {
         if (Byte_8A == 0 && GameInfo.MapId == MapId.WoodLight_M1)
@@ -118,6 +126,12 @@ public sealed partial class Murfy : MovableActor
         {
             return false;
         }
+    }
+
+    private bool IsAttackedByFist(RaymanBody fist)
+    {
+        return (fist.Speed.X > 0 && Position.X > fist.Position.X) ||
+               (fist.Speed.X < 0 && Position.X < fist.Position.X);
     }
 
     protected override bool ProcessMessageImpl(Message message, object param)

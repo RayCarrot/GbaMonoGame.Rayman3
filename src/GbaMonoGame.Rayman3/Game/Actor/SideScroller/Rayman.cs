@@ -48,7 +48,7 @@ public sealed partial class Rayman : MovableActor
     // TODO: Make properties private?
     public ActorResource Resource { get; }
     private Action? NextActionId { get; set; }
-    public Dictionary<RaymanBody.RaymanBodyPartType, BaseActor> BodyParts { get; } = new(4); // Array with 4 entries in the game
+    public Dictionary<RaymanBody.RaymanBodyPartType, RaymanBody> BodyParts { get; } = new(4); // Array with 4 entries in the game
     public BaseActor AttachedObject { get; set; }
     public byte Charge { get; set; }
     public byte HangOnEdgeDelay { get; set; }
