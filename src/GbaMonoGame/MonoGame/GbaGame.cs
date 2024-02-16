@@ -64,6 +64,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     protected abstract string Title { get; }
     protected abstract int SoundBankResourceId { get; }
     protected abstract Dictionary<int, string> SongTable { get; }
+    protected abstract Dictionary<SoundType, int> SampleSongs { get; }
 
     #endregion
 
@@ -177,7 +178,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
 
             // Load engine sounds and fonts
-            SoundEventsManager.Load(SoundBankResourceId, SongTable);
+            SoundEventsManager.Load(SoundBankResourceId, SongTable, SampleSongs);
             FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
             // Load window

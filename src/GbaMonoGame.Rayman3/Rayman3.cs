@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework.Input;
@@ -281,6 +282,11 @@ public class Rayman3 : GbaGame
         [615] = "Sfx/NewPower_Mix06",
         [616] = "Sfx/Curtain2_YoyoMove_Mix02",
         [618] = "Sfx/Propulse_Combust1_Mix02",
+    };
+    protected override Dictionary<SoundType, int> SampleSongs => new()
+    {
+        [SoundType.Music] = 152, // raytheme
+        [SoundType.Sfx] = 472, // LumTotal_Mix02
     };
 
     #endregion

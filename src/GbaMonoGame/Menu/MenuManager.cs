@@ -162,6 +162,7 @@ public class MenuManager
             if (TransitionTextValue > 8)
             {
                 IsTransitioningTextOut = false;
+                CurrentMenu.OnExit();
                 CurrentMenu = NextMenuState?.Menu;
 
                 if (CurrentMenu != null)
@@ -374,6 +375,8 @@ public class MenuManager
 
         return selectedOption;
     }
+
+    public bool IsElementSelected() => CurrentSelectionIndex == SelectableElementsCount - 1;
 
     public void Open(Menu menu)
     {

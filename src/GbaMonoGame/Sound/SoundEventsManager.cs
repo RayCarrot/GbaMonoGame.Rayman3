@@ -15,9 +15,12 @@ public static class SoundEventsManager
     #region Private Fields
 
     private static readonly Dictionary<int, SoundEffect> _songs = new();
+    private static Dictionary<SoundType, int> _sampleSongs;
     private static SoundBank _soundBank;
     private static readonly float[] _volumePerType = Enumerable.Repeat(SoundEngineInterface.MaxVolume, 8).ToArray();
     private static readonly List<ActiveSong> _activeSongs = new(); // On GBA this is max 4 songs, but we don't need that limit
+    private static SoundEffectInstance _activeSampleSong;
+    private static SoundType? _activeSampleSongType;
 
     #endregion
 
@@ -185,7 +188,7 @@ public static class SoundEventsManager
 
     #region Internal Methods
 
-    internal static void Load(int soundBankResourceId, Dictionary<int, string> songTable)
+    internal static void Load(int soundBankResourceId, Dictionary<int, string> songTable, Dictionary<SoundType, int> sampleSongs)
     {
         if (Engine.Settings.Platform == Platform.GBA)
             _soundBank = Storage.LoadResource<SoundBank>(soundBankResourceId);
@@ -210,6 +213,8 @@ public static class SoundEventsManager
                 _songs[song.Key] = snd;
             }
         }
+
+        _sampleSongs = sampleSongs;
     }
 
     internal static void DrawDebugLayout()
@@ -430,6 +435,44 @@ public static class SoundEventsManager
         {
             UpdateVolumeAndPan(playingSong);
             playingSong.SoundInstance.Resume();
+        }
+    }
+
+    public static void PlaySampleSong(SoundType type, bool restart, float volume)
+    {
+        if (!restart && _activeSampleSongType == type)
+        {
+            _activeSampleSong.Volume = volume;
+        }
+        else
+        {
+            StopSampleSongs();
+            _activeSampleSong = _songs[_sampleSongs[type]].CreateInstance();
+            _activeSampleSong.Volume = volume;
+            _activeSampleSong.Play();
+            _activeSampleSongType = type;
+        }
+    }
+
+    public static void StopSampleSongs()
+    {
+        if (_activeSampleSong != null)
+        {
+            _activeSampleSong.Stop();
+            _activeSampleSong.Dispose();
+            _activeSampleSong = null;
+            _activeSampleSongType = null;
+        }
+    }
+
+    public static void StopSampleSong(SoundType type)
+    {
+        if (_activeSampleSong != null && _activeSampleSongType == type)
+        {
+            _activeSampleSong.Stop();
+            _activeSampleSong.Dispose();
+            _activeSampleSong = null;
+            _activeSampleSongType = null;
         }
     }
 
