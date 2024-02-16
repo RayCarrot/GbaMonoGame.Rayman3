@@ -26,24 +26,11 @@ public class MainMenu : Menu
             }
         }
 
-        menu.SmallSpacing();
+        if (menu.Button("Options"))
+            menu.ChangeMenu(new OptionsMenu(Game));
 
-        if (menu.Button("Game options"))
-            menu.ChangeMenu(new GameOptionsMenu());
-
-        if (menu.Button("Sound options"))
-            menu.ChangeMenu(new SoundsOptionsMenu());
-
-        if (menu.Button("Display options"))
-            menu.ChangeMenu(new DisplayOptionsMenu(Game));
-
-        if (menu.Button("Control options"))
-            menu.ChangeMenu(new ControlOptionsMenu());
-
-        if (menu.Button("Debug options"))
-            menu.ChangeMenu(new DebugOptionsMenu());
-
-        menu.SmallSpacing();
+        if (menu.Button("Bonus"))
+            menu.ChangeMenu(new BonusMenu());
 
         if (menu.Button("Quit game"))
             menu.ChangeMenu(new QuitGameMenu(Game));
