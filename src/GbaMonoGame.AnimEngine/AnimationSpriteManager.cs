@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
@@ -84,6 +85,15 @@ public class AnimationSpriteManager
             }
 
             tex = CreateSpriteTexture(spriteShape, spriteSize, resource.Is8Bit, palettes[paletteIndex], resource.SpriteTable.Data, tileIndex);
+
+            if (Engine.Config.DumpSprites)
+            {
+                string outputDir = Path.Combine("Sprites", resource.Offset.StringAbsoluteOffset);
+                Directory.CreateDirectory(outputDir);
+                using Stream fileStream = File.Create(Path.Combine(outputDir, $"{tileIndex}_{paletteIndex}.png"));
+                tex.SaveAsPng(fileStream, tex.Width, tex.Height);
+            }
+
             sprites.Add(key, tex);
         }
 

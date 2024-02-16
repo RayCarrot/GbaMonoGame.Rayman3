@@ -27,6 +27,7 @@ public class GameConfig
         InternalResolution = null;
         SfxVolume = 1;
         MusicVolume = 1;
+        DumpSprites = false;
     }
 
     #endregion
@@ -50,6 +51,7 @@ public class GameConfig
     [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
     [JsonPropertyName("sfxVolume")] public float SfxVolume { get; set; }
     [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; }
+    [JsonPropertyName("dumpSprites")] public bool DumpSprites { get; set; } // TODO: Add debug option to enable this
 
     #endregion
 
