@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -13,8 +14,8 @@ public partial class Murfy
         if (TextBox.IsFinished)
         {
             MoveTextBoxIn = false;
-            Byte_8A = 1;
-            Fsm.ChangeAction(Fsm_End);
+            HasPlayedCutscene = true;
+            Fsm.ChangeAction(Fsm_Leave);
             return false;
         }
 
@@ -90,27 +91,27 @@ public partial class Murfy
         switch (action)
         {
             case FsmAction.Init:
-                if (MainActor == Scene.MainActor) // Should never be false, so why is this here?
+                if (TargetActor == Scene.MainActor)
                 {
-                    FUN_08071fb0();
+                    ManageFirstCutscene();
                     Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
-                    if (MainActor.Position.X < 120)
+                    if (TargetActor.Position.X < 120)
                     {
-                        MainActor.ChangeAction();
-                        MainActor.AnimatedObject.FlipX = false;
-                        MainActor.ChangeAction();
+                        TargetActor.ChangeAction();
+                        TargetActor.AnimatedObject.FlipX = false;
+                        TargetActor.ChangeAction();
                     }
                 }
 
-                if (MainActor.Position.X < Position.X)
+                if (TargetActor.Position.X < Position.X)
                 {
-                    ActionId = 17;
-                    TargetPosition = new Vector2(MainActor.Position.X - 45, MainActor.Position.Y);
+                    ActionId = Action.Fly_Left;
+                    TargetPosition = new Vector2(TargetActor.Position.X - 45, TargetActor.Position.Y);
                 }
                 else
                 {
-                    ActionId = 16;
-                    TargetPosition = new Vector2(MainActor.Position.X + 45, MainActor.Position.Y);
+                    ActionId = Action.Fly_Right;
+                    TargetPosition = new Vector2(TargetActor.Position.X + 45, TargetActor.Position.Y);
                 }
 
                 SavedSpeed = Vector2.Zero;
@@ -127,8 +128,8 @@ public partial class Murfy
                 // Set horizontal speed
                 if (Position.X > TargetPosition.X + 20)
                 {
-                    if (ActionId != 17)
-                        ActionId = 17;
+                    if (ActionId != Action.Fly_Left)
+                        ActionId = Action.Fly_Left;
 
                     if (SavedSpeed.X > 2.5)
                         SavedSpeed -= new Vector2(0.5f, 0);
@@ -137,8 +138,8 @@ public partial class Murfy
                 }
                 else if (Position.X < TargetPosition.X - 20)
                 {
-                    if (ActionId != 16)
-                        ActionId = 16;
+                    if (ActionId != Action.Fly_Right)
+                        ActionId = Action.Fly_Right;
 
                     if (SavedSpeed.X < 2.5)
                         SavedSpeed += new Vector2(0.5f, 0);
@@ -159,12 +160,12 @@ public partial class Murfy
                     {
                         SavedSpeed = new Vector2(0, SavedSpeed.Y);
 
-                        if (ActionId is 16 or 17)
+                        if (ActionId is Action.Fly_Right or Action.Fly_Left)
                         {
-                            if (Position.X > MainActor.Position.X && ActionId != 17)
-                                ActionId = 17;
-                            else if (Position.X < MainActor.Position.X && ActionId != 16)
-                                ActionId = 16;
+                            if (Position.X > TargetActor.Position.X && ActionId != Action.Fly_Left)
+                                ActionId = Action.Fly_Left;
+                            else if (Position.X < TargetActor.Position.X && ActionId != Action.Fly_Right)
+                                ActionId = Action.Fly_Right;
                         }
                     }
                 }
@@ -193,7 +194,7 @@ public partial class Murfy
                 MechModel.Speed = SavedSpeed;
 
                 // If stopped moving
-                if (SavedSpeed == Vector2.Zero && ActionId is not (0 or 1))
+                if (SavedSpeed == Vector2.Zero && ActionId is not (Action.BeginIdle_Right or Action.BeginIdle_Left))
                     Fsm.ChangeAction(Fsm_Talk);
                 break;
 
@@ -208,8 +209,8 @@ public partial class Murfy
         switch (action)
         {
             case FsmAction.Init:
-                ActionId = MainActor.IsFacingRight ? 1 : 0;
-                Byte_8B = ActionId;
+                ActionId = TargetActor.IsFacingLeft ? Action.BeginIdle_Right : Action.BeginIdle_Left;
+                IsTargetActorFacingRight = TargetActor.IsFacingRight;
                 TextBox.MoveInOurOut(true);
                 Timer = 0;
                 break;
@@ -230,28 +231,28 @@ public partial class Murfy
                 {
                     ActionId = Random.Shared.Next(9) switch
                     {
-                        0 => IsFacingRight ? 6 : 7,
-                        1 => IsFacingRight ? 8 : 9,
-                        2 => IsFacingRight ? 10 : 11,
-                        3 => IsFacingRight ? 12 : 13,
-                        4 => IsFacingRight ? 14 : 15,
-                        _ => IsFacingRight ? 6 : 7
+                        0 => IsFacingRight ? Action.Talk1_Right : Action.Talk1_Left,
+                        1 => IsFacingRight ? Action.Talk2_Right : Action.Talk2_Left,
+                        2 => IsFacingRight ? Action.Talk3_Right : Action.Talk3_Left,
+                        3 => IsFacingRight ? Action.Talk4_Right : Action.Talk4_Left,
+                        4 => IsFacingRight ? Action.Talk5_Right : Action.Talk5_Left,
+                        _ => IsFacingRight ? Action.Talk1_Right : Action.Talk1_Left
                     };
 
                     Timer = 0;
                 }
-                else if (IsActionFinished && ActionId is not (4 or 5))
+                else if (IsActionFinished && ActionId is not (Action.Idle_Right or Action.Idle_Left))
                 {
-                    ActionId = IsFacingRight ? 4 : 5;
+                    ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
                 }
 
                 bool isBeingAttacked = false;
-                if (MainActor == Scene.MainActor) // Should never be false, so why is this here?
+                if (TargetActor == Scene.MainActor)
                 {
-                    if (MainActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist) && IsAttackedByFist(fist))
+                    if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist) && IsAttackedByFist(fist))
                         isBeingAttacked = true;
 
-                    if (MainActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist) && IsAttackedByFist(secondFist))
+                    if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist) && IsAttackedByFist(secondFist))
                         isBeingAttacked = true;
                 }
 
@@ -284,7 +285,7 @@ public partial class Murfy
             case FsmAction.Init:
                 TargetPosition = new Vector2(TargetPosition.X, Position.Y - 40);
                 Timer = 0;
-                ActionId = IsFacingRight ? 16 : 17;
+                ActionId = IsFacingRight ? Action.Fly_Right : Action.Fly_Left;
                 break;
 
             case FsmAction.Step:
@@ -292,14 +293,14 @@ public partial class Murfy
                     return;
 
                 bool isSafe = true;
-                if (MainActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist))
+                if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist))
                 {
                     if (IsAttackedByFist(fist))
                         isSafe = false;
                     else
                         Timer = 0;
                 }
-                if (MainActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
+                if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
                 {
                     if (IsAttackedByFist(secondFist))
                         isSafe = false;
@@ -324,20 +325,36 @@ public partial class Murfy
         }
     }
 
-    // TODO: Implement
-    private void Fsm_End(FsmAction action)
+    private void Fsm_Leave(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-
+                ActionId = IsFacingRight ? Action.BeginLeave_Right : Action.BeginLeave_Left;
+                SavedSpeed = new Vector2(SavedSpeed.X, -1);
+                TextBox.MoveInOurOut(false);
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MurfyVO3A_Mix01);
                 break;
 
             case FsmAction.Step:
+                if (IsActionFinished && ActionId is Action.BeginLeave_Right or Action.BeginLeave_Left)
+                    ActionId = IsFacingRight ? Action.Fly_Right : Action.Fly_Left;
 
+                if (SavedSpeed.Y > -2)
+                    SavedSpeed -= new Vector2(0, 0.05859375f);
+                SavedSpeed = new Vector2(IsFacingRight ? 1 : -1, SavedSpeed.Y);
+                MechModel.Speed = SavedSpeed;
+
+                if (ScreenPosition.Y < -10)
+                    Fsm.ChangeAction(Fsm_Init);
                 break;
 
             case FsmAction.UnInit:
+                Position = InitialPosition;
+                if (GameInfo.MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2)
+                    Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                else if (TargetActor == Scene.MainActor)
+                    Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
                 break;
         }
     }

@@ -6,12 +6,11 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// TODO: Action id enum
 public sealed partial class Murfy : MovableActor
 {
     public Murfy(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        MainActor = (Rayman)Scene.MainActor;
+        TargetActor = (Rayman)Scene.MainActor;
         Byte_8D = 1;
 
         if (Engine.Settings.Platform == Platform.NGage)
@@ -20,16 +19,16 @@ public sealed partial class Murfy : MovableActor
         Fsm.ChangeAction(Fsm_PreInit);
     }
 
+    private Rayman TargetActor { get; }
     private TextBoxDialog TextBox { get; set; }
     private Vector2 TargetPosition { get; set; }
     private Vector2 MainActorPosition { get; set; }
     private Vector2 InitialPosition { get; set; }
-    private Rayman MainActor { get; set; }
     private Vector2 SavedSpeed { get; set; }
     private byte Timer { get; set; }
     private bool MoveTextBoxIn { get; set; }
-    private byte Byte_8A { get; set; }
-    private int Byte_8B { get; set; }
+    private bool HasPlayedCutscene { get; set; }
+    private bool IsTargetActorFacingRight { get; set; }
     private bool ShouldSpawn { get; set; }
     private byte Byte_8D { get; set; }
     private byte NGage_Byte_8E { get; set; }
@@ -104,15 +103,15 @@ public sealed partial class Murfy : MovableActor
 
     private void SetTargetPosition()
     {
-        if (MainActor.IsFacingRight)
-            TargetPosition = new Vector2(MainActor.Position.X + 70, MainActor.Position.Y - 15);
+        if (TargetActor.IsFacingRight)
+            TargetPosition = new Vector2(TargetActor.Position.X + 70, TargetActor.Position.Y - 15);
         else
-            TargetPosition = new Vector2(MainActor.Position.X - 70, MainActor.Position.Y - 15);
+            TargetPosition = new Vector2(TargetActor.Position.X - 70, TargetActor.Position.Y - 15);
     }
 
-    private bool FUN_08071fb0()
+    private bool ManageFirstCutscene()
     {
-        if (Byte_8A == 0 && GameInfo.MapId == MapId.WoodLight_M1)
+        if (!HasPlayedCutscene && GameInfo.MapId == MapId.WoodLight_M1)
         {
             if (GameInfo.LastGreenLumAlive == 0)
             {
@@ -145,7 +144,7 @@ public sealed partial class Murfy : MovableActor
             case Message.Murfy_Spawn:
                 ShouldSpawn = true;
                 if (MainActorPosition == Vector2.Zero)
-                    MainActorPosition = MainActor.Position;
+                    MainActorPosition = TargetActor.Position;
                 return false;
 
             default:
