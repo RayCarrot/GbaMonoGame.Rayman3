@@ -249,11 +249,11 @@ public partial class Murfy
                 bool isBeingAttacked = false;
                 if (TargetActor == Scene.MainActor)
                 {
-                    if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist) && IsAttackedByFist(fist))
-                        isBeingAttacked = true;
-
-                    if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist) && IsAttackedByFist(secondFist))
-                        isBeingAttacked = true;
+                    foreach (RaymanBody fist in TargetActor.GetActiveFists())
+                    {
+                        if (IsAttackedByFist(fist))
+                            isBeingAttacked = true;
+                    }
                 }
 
                 // Unused since Rayman can't move while in a cutscene
@@ -293,16 +293,9 @@ public partial class Murfy
                     return;
 
                 bool isSafe = true;
-                if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist))
+                foreach (RaymanBody fist in TargetActor.GetActiveFists())
                 {
                     if (IsAttackedByFist(fist))
-                        isSafe = false;
-                    else
-                        Timer = 0;
-                }
-                if (TargetActor.BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
-                {
-                    if (IsAttackedByFist(secondFist))
                         isSafe = false;
                     else
                         Timer = 0;

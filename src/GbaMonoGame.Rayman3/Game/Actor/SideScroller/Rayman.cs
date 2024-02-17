@@ -688,6 +688,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private void CreateSwingProjectiles()
+    {
+        // TODO: Implement
+    }
+
     // 0 = false, 1 = right, 2 = left
     private int IsNearEdge()
     {
@@ -1253,6 +1258,32 @@ public sealed partial class Rayman : MovableActor
                 ((FrameSideScroller)Frame.Current).UserInfo.AddCages(1);
                 return false;
 
+            case Message.Main_BeginSwing:
+                if (!HasPower(Power.Grab))
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumVioNP_SkulShak_Mix01);
+                    return false;
+                }
+
+                AttachedObject = (BaseActor)param;
+
+                if (Fsm.EqualsAction(Fsm_Swing))
+                    return false;
+
+                if (Position.X < AttachedObject.Position.X)
+                {
+                    if (AttachedObject.Position.X - 200 > Position.X)
+                        return false;
+                }
+                else
+                {
+                    if (AttachedObject.Position.X + 200 <= Position.X)
+                        return false;
+                }
+
+                Fsm.ChangeAction(Fsm_Swing);
+                return false;
+
             case Message.Main_AllowCoyoteJump:
                 if (!Fsm.EqualsAction(Fsm_Jump) && !Fsm.EqualsAction(Fsm_JumpSlide))
                     CanSafetyJump = true;
@@ -1275,6 +1306,14 @@ public sealed partial class Rayman : MovableActor
             default:
                 return false;
         }
+    }
+
+    public IEnumerable<RaymanBody> GetActiveFists()
+    {
+        if (BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist))
+            yield return fist;
+        if (BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
+            yield return secondFist;
     }
 
     public override void Init()

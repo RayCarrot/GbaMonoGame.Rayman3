@@ -38,6 +38,7 @@ public partial class Rayman
         return true;
     }
 
+    // FUN_08020bd4
     private bool FsmStep_Inlined_FUN_1004c1f4()
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
@@ -85,7 +86,7 @@ public partial class Rayman
             {
                 message = Message.Cam_1039;
             }
-            else if (Fsm.EqualsAction(FUN_0803283c))
+            else if (Fsm.EqualsAction(Fsm_Swing))
             {
                 field18_0x93 = 65;
                 message = Message.Cam_1040;
@@ -2386,6 +2387,119 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_Swing(FsmAction action)
+    {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Swing;
+                ChangeAction();
+                NextActionId = null;
+
+                Timer = (uint)(MathF.Atan2(Position.X - AttachedObject.Position.X, Position.Y - AttachedObject.Position.Y) / 2 * MathF.PI * 256);
+                PreviousXSpeed = (Position - AttachedObject.Position).Length();
+
+                if (Position.X < AttachedObject.Position.X)
+                {
+                    Flag2_1 = true;
+
+                    if (Timer > 128)
+                    {
+                        AnimatedObject.CurrentFrame = 0;
+                        Timer = 128;
+                    }
+                    else
+                    {
+                        AnimatedObject.CurrentFrame = (int)(Timer / 40);
+                    }
+                }
+                else
+                {
+                    Flag2_1 = false;
+
+                    if (Timer > 128)
+                    {
+                        AnimatedObject.CurrentFrame = 19;
+                        Timer = 0;
+                    }
+                    else
+                    {
+                        AnimatedObject.CurrentFrame = (int)(Timer / 12 + 19);
+                    }
+                }
+
+                if (AnimatedObject.CurrentFrame < 19)
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 40,
+                        Platform.NGage => 25,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
+                else
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 200,
+                        Platform.NGage => 151,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
+
+                CreateSwingProjectiles();
+                PlaySound(Rayman3SoundEvent.Play__LumMauve_Mix02);
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_Inlined_FUN_1004c1f4())
+                    return;
+
+
+                // TODO: Implement
+                break;
+
+            case FsmAction.UnInit:
+                AttachedObject = null;
+
+                // Momentum and direction
+                if (Flag2_1)
+                {
+                    PreviousXSpeed = 1;
+                }
+                else
+                {
+                    PreviousXSpeed = -1;
+                    ActionId = Action.Jump_Left;
+                    ChangeAction();
+                }
+
+                Flag2_1 = false;
+
+                if (GameInfo.MapId == MapId.TheCanopy_M2)
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 120,
+                        Platform.NGage => 88,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
+                else
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 40,
+                        Platform.NGage => 25,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
+                break;
+        }
+    }
+
     private void Fsm_EndMap(FsmAction action)
     {
         switch (action)
@@ -2783,7 +2897,6 @@ public partial class Rayman
     private void FUN_08033b34(FsmAction action) { }
     private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
-    private void FUN_0803283c(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }

@@ -1,5 +1,4 @@
-﻿using System;
-using GbaMonoGame.AnimEngine;
+﻿using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -43,7 +42,17 @@ public sealed partial class RaymanBody : MovableActor
         switch (message)
         {
             case Message.RaymanBody_FinishedAttack:
-                throw new NotImplementedException();
+                if (!Fsm.EqualsAction(Fsm_MoveBackwards))
+                {
+                    if (BodyPartType == RaymanBodyPartType.Torso)
+                        ActionId = IsFacingRight ? 15 : 16;
+                    else
+                        ActionId = BaseActionId + (IsFacingRight ? 4 : 3);
+
+                    ChangeAction();
+                    Fsm.ChangeAction(Fsm_MoveBackwards);
+                }
+                SpawnHitEffect();
                 return false;
 
             default:

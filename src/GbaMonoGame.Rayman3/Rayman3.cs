@@ -327,6 +327,8 @@ public class Rayman3 : GbaGame
 
             { ActorType.Butterfly, (instanceId, scene, resource) => new Butterfly(instanceId, scene, resource) },
 
+            { ActorType.PurpleLum, (instanceId, scene, resource) => new PurpleLum(instanceId, scene, resource) },
+
             { ActorType.MovingWoodenPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
             { ActorType.LavaSplash, (instanceId, scene, resource) => new LavaSplash(instanceId, scene, resource) },
 

@@ -101,6 +101,7 @@ public partial class Rayman
         UnknownJump_Right = 109, // TODO: What is this?
         UnknownJump_Left = 110,
 
+        Swing = 121,
         HangOnEdge_ChargeAttack_Right = 122,
         HangOnEdge_ChargeAttack_Left = 123,
         HangOnEdge_EndAttack_Right = 124,
