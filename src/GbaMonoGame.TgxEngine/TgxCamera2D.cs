@@ -50,6 +50,35 @@ public class TgxCamera2D : TgxCamera
         }
     }
 
+    protected override Vector2 GetResolution(GameWindow gameWindow)
+    {
+        Vector2 newGameResolution = gameWindow.GameResolution * Engine.Config.Scale;
+
+        if (MainCluster != null)
+        {
+            Vector2 max = MainCluster.Size;
+
+            if (newGameResolution.X > newGameResolution.Y)
+            {
+                if (newGameResolution.Y > max.Y)
+                    newGameResolution = new Vector2(max.Y * newGameResolution.X / newGameResolution.Y, max.Y);
+
+                if (newGameResolution.X > max.X)
+                    newGameResolution = new Vector2(max.X, max.X * newGameResolution.Y / newGameResolution.X);
+            }
+            else
+            {
+                if (newGameResolution.X > max.X)
+                    newGameResolution = new Vector2(max.X, max.X * newGameResolution.Y / newGameResolution.X);
+
+                if (newGameResolution.Y > max.Y)
+                    newGameResolution = new Vector2(max.Y * newGameResolution.X / newGameResolution.Y, max.Y);
+            }
+        }
+
+        return newGameResolution;
+    }
+
     public TgxCluster GetMainCluster() => GetCluster(0);
 
     public TgxCluster GetCluster(int clusterId)
@@ -72,9 +101,14 @@ public class TgxCamera2D : TgxCamera
     public void AddCluster(ClusterResource clusterResource)
     {
         if (MainCluster == null)
+        {
             MainCluster = new TgxCluster(clusterResource, this);
+            UpdateResolution();
+        }
         else
+        {
             Clusters.Add(new TgxCluster(clusterResource, this));
+        }
     }
 
     public void AddLayer(int clusterId, TgxGameLayer layer)

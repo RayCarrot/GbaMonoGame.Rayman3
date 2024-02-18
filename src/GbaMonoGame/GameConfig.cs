@@ -40,7 +40,7 @@ public class GameConfig
 
     #region Public Properties
 
-    [JsonPropertyName("writeSerializerLog")] public bool WriteSerializerLog { get; set; }
+    [JsonPropertyName("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
     [JsonPropertyName("scale")] public float Scale { get; set; }
     [JsonPropertyName("fullscreenResolution")] public Point FullscreenResolution { get; set; }
     [JsonPropertyName("isFullscreen")] public bool IsFullscreen { get; set; }

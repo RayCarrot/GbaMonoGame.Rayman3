@@ -14,8 +14,6 @@ public abstract class TgxCamera : GfxCamera
 
     private void Config_ConfigChanged(object sender, EventArgs e) => UpdateResolution();
 
-    protected override Vector2 GetResolution(GameWindow gameWindow) => gameWindow.GameResolution * Engine.Config.Scale;
-
     public override void UnInit()
     {
         base.UnInit();
