@@ -25,6 +25,7 @@ public class Scene2D
 
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield, cachedTileKit);
         Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
+        Playfield.Camera.SetResolutionBounds(Playfield.Size);
 
         KnotManager = new KnotManager(scene);
         KnotManager.LoadGameObjects(this, scene);
@@ -51,6 +52,7 @@ public class Scene2D
 
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield, cachedTileKit);
         Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
+        Playfield.Camera.SetResolutionBounds(Playfield.Size);
 
         KnotManager = new KnotManager(map.Scene);
         KnotManager.LoadGameObjects(this, map.Scene);

@@ -103,6 +103,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
         Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
+        Playfield.Camera.SetResolutionBoundsToOriginalResolution();
 
         // The background layer can have multiple palettes, so we need to create a texture for each
         TgxTileLayer bgLayer = Playfield.TileLayers[0];
