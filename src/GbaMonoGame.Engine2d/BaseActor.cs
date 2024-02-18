@@ -43,7 +43,11 @@ public class BaseActor : GameObject
     public bool IsActionFinished => AnimatedObject.EndOfAnimation;
     public bool IsFacingLeft => AnimatedObject.FlipX;
     public bool IsFacingRight => !IsFacingLeft;
-    public Vector2 ScreenPosition => AnimatedObject.ScreenPos;
+    public Vector2 ScreenPosition
+    {
+        get => AnimatedObject.ScreenPos;
+        set => AnimatedObject.ScreenPos = value;
+    }
 
     // Flags
     public bool IsSolid { get; set; }

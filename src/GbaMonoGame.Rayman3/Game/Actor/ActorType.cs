@@ -20,6 +20,7 @@ public enum ActorType
 
     PurpleLum = 47,
 
+    SwingSparkle = 49,
     BreakableGround = 50, // TODO: Implement
 
     MovingWoodenPlatform = 53,

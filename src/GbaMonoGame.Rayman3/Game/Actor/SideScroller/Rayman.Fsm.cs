@@ -2457,8 +2457,116 @@ public partial class Rayman
                 if (!FsmStep_Inlined_FUN_1004c1f4())
                     return;
 
+                if (AnimatedObject.CurrentFrame == 19 && Timer == 0)
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 200,
+                        Platform.NGage => 151,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
+                else if (AnimatedObject.CurrentFrame == 39 && Timer == 128)
+                {
+                    cam.HorizontalOffset = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => 40,
+                        Platform.NGage => 25,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+                }
 
-                // TODO: Implement
+                if (Flag2_1)
+                {
+                    if (Timer == 0)
+                    {
+                        Flag2_1 = false;
+                        Timer = 0;
+                        AnimatedObject.CurrentFrame = 19;
+                    }
+                    else
+                    {
+                        float xPos = AttachedObject.Position.X + MathHelpers.Cos256(Timer) * PreviousXSpeed;
+                        float yPos = AttachedObject.Position.Y + MathHelpers.Sin256(Timer) * PreviousXSpeed;
+                        Position = new Vector2(xPos, yPos);
+
+                        if (PreviousXSpeed < 80)
+                        {
+                            // TODO: This is a bug in the src code! It's supposed to use Timer, not ActionId. Fix?
+                            int value = (int)ActionId;
+                            if (value is (< 10 or > 14) and (< 27 or > 34))
+                                PreviousXSpeed += 0.5f;
+                            else
+                                PreviousXSpeed += 4;
+
+                            if (PreviousXSpeed > 80)
+                                PreviousXSpeed = 80;
+                        }
+                        else if (PreviousXSpeed > 80)
+                        {
+                            PreviousXSpeed -= 1;
+
+                            if (PreviousXSpeed < 80)
+                                PreviousXSpeed = 80;
+                        }
+
+                        if (Timer is < 4 or >= 125)
+                            Timer -= 1;
+                        else if (Timer is < 25 or >= 103)
+                            Timer -= 1;
+                        else if (Timer is < 51 or >= 77)
+                            Timer -= 2;
+                        else
+                            Timer -= 2;
+                    }
+                }
+                else
+                {
+                    if (Timer >= 128)
+                    {
+                        Flag2_1 = true;
+                        Timer = 128;
+                        AnimatedObject.CurrentFrame = 39;
+                    }
+                    else
+                    {
+                        float xPos = AttachedObject.Position.X + MathHelpers.Cos256(Timer) * PreviousXSpeed;
+                        float yPos = AttachedObject.Position.Y + MathHelpers.Sin256(Timer) * PreviousXSpeed;
+                        Position = new Vector2(xPos, yPos);
+
+                        if (PreviousXSpeed < 80)
+                        {
+                            // TODO: This is a bug in the src code! It's supposed to use Timer, not ActionId. Fix?
+                            int value = (int)ActionId;
+                            if (value is (< 10 or > 14) and (< 27 or > 34))
+                                PreviousXSpeed += 0.5f;
+                            else
+                                PreviousXSpeed += 4;
+
+                            if (PreviousXSpeed > 80)
+                                PreviousXSpeed = 80;
+                        }
+                        else if (PreviousXSpeed > 80)
+                        {
+                            PreviousXSpeed -= 1;
+
+                            if (PreviousXSpeed < 80)
+                                PreviousXSpeed = 80;
+                        }
+
+                        if (Timer is < 4 or >= 125)
+                            Timer += 1;
+                        else if (Timer is < 25 or >= 103)
+                            Timer += 1;
+                        else if (Timer is < 51 or >= 77)
+                            Timer += 2;
+                        else
+                            Timer += 2;
+                    }
+                }
+
+                if (CheckSingleInput(GbaInput.A) && !Scene.GetPhysicalType(Position).IsSolid)
+                    Fsm.ChangeAction(Fsm_Jump);
                 break;
 
             case FsmAction.UnInit:

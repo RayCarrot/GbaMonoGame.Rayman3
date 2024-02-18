@@ -690,7 +690,31 @@ public sealed partial class Rayman : MovableActor
 
     private void CreateSwingProjectiles()
     {
-        // TODO: Implement
+        SwingSparkle swingSparkle;
+
+        int index = 0;
+        while (true)
+        {
+            float v = index * 16;
+            if (PreviousXSpeed < 80)
+                v = 64 - v;
+            else
+                v = PreviousXSpeed - v - 16;
+
+            if (v <= 2)
+                break;
+
+            swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
+            swingSparkle.Init(v);
+            
+            index++;
+            if (index > 8)
+                return;
+        }
+
+        swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
+        swingSparkle.Init(PreviousXSpeed - 30);
+        swingSparkle.AnimatedObject.CurrentAnimation = 1;
     }
 
     // 0 = false, 1 = right, 2 = left
