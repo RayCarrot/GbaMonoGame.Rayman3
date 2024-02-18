@@ -35,9 +35,9 @@ public class TgxCamera2D : TgxCamera
                     scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
 
                     // Avoid issues with dividing by 0 if max is 0
-                    if (Single.IsInfinity(scrollFactor.X))
+                    if (!Single.IsFinite(scrollFactor.X))
                         scrollFactor = new Vector2(0, scrollFactor.Y);
-                    if (Single.IsInfinity(scrollFactor.Y))
+                    if (!Single.IsFinite(scrollFactor.Y))
                         scrollFactor = new Vector2(scrollFactor.X, 0);
                 }
                 else
