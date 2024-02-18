@@ -57,7 +57,7 @@ public class CircleFXScreenRenderer : IScreenRenderer
 
         // TODO: Could maybe write this a bit cleaner, but essentially the position is in the tgx camera, so we need to use those coordinates
         if (screen.Camera == Engine.ScreenCamera)
-            pos = CirclePosition / Engine.Config.Scale;
+            pos = CirclePosition / Engine.Config.PlayfieldCameraScale;
         else
             pos = CirclePosition;
 

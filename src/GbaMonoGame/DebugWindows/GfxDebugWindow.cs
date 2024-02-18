@@ -14,17 +14,17 @@ public class GfxDebugWindow : DebugWindow
     {
         ImGui.SeparatorText("General");
 
-        float scale = Engine.Config.Scale;
+        float scale = Engine.Config.PlayfieldCameraScale;
         if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
         {
-            Engine.Config.Scale = scale;
+            Engine.Config.PlayfieldCameraScale = scale;
             Engine.SaveConfig();
         }
 
         ImGui.SameLine();
         if (ImGui.Button("Reset"))
         {
-            Engine.Config.Scale = 1;
+            Engine.Config.PlayfieldCameraScale = 1;
             Engine.SaveConfig();
         }
 

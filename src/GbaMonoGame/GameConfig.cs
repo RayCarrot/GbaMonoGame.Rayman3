@@ -16,8 +16,6 @@ public class GameConfig
     {
         DisplayMode defaultDisplayMode = GraphicsAdapter.DefaultAdapter.SupportedDisplayModes.Last();
 
-        WriteSerializerLog = false;
-        Scale = 1;
         FullscreenResolution = new Point(defaultDisplayMode.Width, defaultDisplayMode.Height);
         IsFullscreen = true;
         GbaWindowResolution = new Point(240 * 4, 160 * 4);
@@ -25,8 +23,11 @@ public class GameConfig
         GbaWindowPosition = null;
         NGageWindowPosition = null;
         InternalResolution = null;
+        PlayfieldCameraScale = 1;
+        DynamicPlayfieldCameraScale = true;
         SfxVolume = 1;
         MusicVolume = 1;
+        WriteSerializerLog = false;
         DumpSprites = false;
     }
 
@@ -40,8 +41,7 @@ public class GameConfig
 
     #region Public Properties
 
-    [JsonPropertyName("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
-    [JsonPropertyName("scale")] public float Scale { get; set; }
+    // Display
     [JsonPropertyName("fullscreenResolution")] public Point FullscreenResolution { get; set; }
     [JsonPropertyName("isFullscreen")] public bool IsFullscreen { get; set; }
     [JsonPropertyName("gbaWindowResolution")] public Point GbaWindowResolution { get; set; }
@@ -49,8 +49,16 @@ public class GameConfig
     [JsonPropertyName("gbaWindowPosition")] public Point? GbaWindowPosition { get; set; }
     [JsonPropertyName("nGageWindowPosition")] public Point? NGageWindowPosition { get; set; }
     [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
+    [JsonPropertyName("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
+    [JsonPropertyName("dynamicPlayfieldCameraScale")] public bool DynamicPlayfieldCameraScale { get; set; } // TODO: Implement
+    // TODO: Option for HUD scale
+
+    // Sound
     [JsonPropertyName("sfxVolume")] public float SfxVolume { get; set; }
     [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; }
+
+    // Debug
+    [JsonPropertyName("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
     [JsonPropertyName("dumpSprites")] public bool DumpSprites { get; set; } // TODO: Add debug option to enable this
 
     #endregion

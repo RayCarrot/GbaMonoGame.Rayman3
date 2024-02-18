@@ -34,7 +34,7 @@ public class TgxCamera2D : TgxCamera
                 {
                     scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
 
-                    // Avoid issues with dividing by 0. Should never happen, but will if we scale out of bounds.
+                    // Avoid issues with dividing by 0 if max is 0
                     if (Single.IsInfinity(scrollFactor.X))
                         scrollFactor = new Vector2(0, scrollFactor.Y);
                     if (Single.IsInfinity(scrollFactor.Y))
@@ -52,7 +52,7 @@ public class TgxCamera2D : TgxCamera
 
     protected override Vector2 GetResolution(GameWindow gameWindow)
     {
-        Vector2 newGameResolution = gameWindow.GameResolution * Engine.Config.Scale;
+        Vector2 newGameResolution = gameWindow.GameResolution * Engine.Config.PlayfieldCameraScale;
 
         if (MainCluster != null)
         {
