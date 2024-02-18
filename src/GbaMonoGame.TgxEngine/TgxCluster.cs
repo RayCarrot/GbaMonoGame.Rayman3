@@ -15,7 +15,7 @@ public class TgxCluster
         Stationary = cluster.Stationary;
 
         // Render backgrounds to the screen camera
-        Camera = !Stationary && ScrollFactor == Vector2.One ? tgxCamera : Engine.ScreenCamera;
+        Camera = !Stationary && (ScrollFactor.X == 1 || ScrollFactor.Y == 1) ? tgxCamera : Engine.ScreenCamera;
     }
 
     private Vector2 _position;
