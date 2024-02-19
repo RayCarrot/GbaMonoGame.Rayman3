@@ -18,7 +18,7 @@ public class LevelCloudsRenderer : IScreenRenderer
     public Texture2D Texture { get; }
 
     public Vector2 GetSize(GfxScreen screen) => new(256, Texture.Height);
-    private void DrawCloud(GfxRenderer renderer, Vector2 position, Color color, int offsetX, int offsetY, int height)
+    private void DrawCloud(GfxRenderer renderer, Vector2 position, Color color, float offsetX, int offsetY, int height)
     {
         position += new Vector2(offsetX, offsetY);
         Rectangle rect = new(0, offsetY, 256, height);
@@ -28,11 +28,11 @@ public class LevelCloudsRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        byte[] scrolls = 
+        float[] scrolls =
         {
-            (byte)(GameTime.ElapsedFrames >> 1),
-            (byte)(GameTime.ElapsedFrames >> 2),
-            (byte)(GameTime.ElapsedFrames >> 3),
+            GameTime.ElapsedFrames / 2f % 256,
+            GameTime.ElapsedFrames / 4f % 256,
+            GameTime.ElapsedFrames / 8f % 256,
         };
 
         int offsetY = 0;

@@ -23,9 +23,9 @@ public class IntroCloudsRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        byte scroll0 = (byte)(GameTime.ElapsedFrames >> 1);
-        byte scroll1 = (byte)~(byte)(GameTime.ElapsedFrames >> 2);
-        byte scroll2 = (byte)(GameTime.ElapsedFrames >> 3);
+        float scroll0 = GameTime.ElapsedFrames / 2f % 256;
+        float scroll1 = 255 - GameTime.ElapsedFrames / 4f % 256;
+        float scroll2 = GameTime.ElapsedFrames / 8f % 256;
 
         DrawCloud(renderer, position, color, 0, -scroll0);
         DrawCloud(renderer, position, color, 1, -scroll1);
