@@ -19,7 +19,7 @@ public class FogDialog : Dialog
     private TgxPlayfield Playfield { get; }
     private AnimatedObject Fog { get; set; }
     private bool ShouldDraw { get; set; }
-    private int ScrollX { get; set; }
+    private float ScrollX { get; set; }
     private int ScrollSpeed { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param) => false;
@@ -60,12 +60,8 @@ public class FogDialog : Dialog
             animationPlayer.Play(Fog);
         }
 
-        // TODO: Smoother scrolling using floats? Do that throughout game? Optional setting?
-        if ((GameTime.ElapsedFrames & 7) == 0)
-        {
-            ScrollX += ScrollSpeed;
-            if (ScrollX > 512)
-                ScrollX = 0;
-        }
+        ScrollX += ScrollSpeed / 8f; // NOTE: Game scrolls every 8 frames
+        if (ScrollX > 512)
+            ScrollX = 0;
     }
 }

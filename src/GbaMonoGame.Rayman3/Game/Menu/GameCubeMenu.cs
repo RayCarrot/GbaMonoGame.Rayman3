@@ -794,10 +794,10 @@ public class GameCubeMenu : Frame
         if (WheelRotation >= 2048)
             WheelRotation = 0;
 
-        Data.Wheel1.AffineMatrix = new AffineMatrix((byte)WheelRotation, 1, 1);
-        Data.Wheel2.AffineMatrix = new AffineMatrix(255 - (byte)(WheelRotation >> 1), 1, 1);
-        Data.Wheel3.AffineMatrix = new AffineMatrix((byte)(WheelRotation >> 2), 1, 1);
-        Data.Wheel4.AffineMatrix = new AffineMatrix((byte)(WheelRotation >> 3), 1, 1);
+        Data.Wheel1.AffineMatrix = new AffineMatrix(WheelRotation % 256, 1, 1);
+        Data.Wheel2.AffineMatrix = new AffineMatrix(255 - WheelRotation / 2f % 256, 1, 1);
+        Data.Wheel3.AffineMatrix = new AffineMatrix(WheelRotation / 4f % 256, 1, 1);
+        Data.Wheel4.AffineMatrix = new AffineMatrix(WheelRotation / 8f % 256, 1, 1);
 
         AnimationPlayer.Play(Data.Wheel1);
         AnimationPlayer.Play(Data.Wheel2);

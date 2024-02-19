@@ -347,10 +347,7 @@ public class Intro : Frame, IHasPlayfield
 
             if (BlackLumAndLogoObj.CurrentAnimation < 5)
             {
-                if ((Timer & 1) != 0)
-                {
-                    BlackLumAndLogoObj.ScreenPos += new Vector2(0, -2);
-                }
+                BlackLumAndLogoObj.ScreenPos -= new Vector2(0, 1); // NOTE: Game moves by 2 every second frame
                 Timer++;
 
                 BlackLumAndLogoObj.FrameChannelSprite();

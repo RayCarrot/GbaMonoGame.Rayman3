@@ -45,7 +45,7 @@ public partial class MenuAll
             Data.GameLogo.ScreenPos -= new Vector2(0, 1);
         }
 
-        // TODO: Rewrite with floats to move in 60fps, same in other parts of the game
+        // TODO: Rewrite with floats to move in 60fps
         // Move X (back and forth from a width of 10 to 0)
         uint time = GameTime.ElapsedFrames - PrevGameTime;
         if (time > 4 && GameLogoMovementWidth == 10 ||
@@ -208,7 +208,7 @@ public partial class MenuAll
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position -= new Vector2(0, 4);
-            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - (TransitionValue >> 1));
+            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - TransitionValue / 2f);
         }
         else if (TransitionValue >= 220)
         {

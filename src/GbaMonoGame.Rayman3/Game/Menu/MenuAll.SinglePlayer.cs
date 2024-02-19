@@ -1,5 +1,4 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
-using BinarySerializer;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
 
@@ -131,8 +130,8 @@ public partial class MenuAll
             cluster.Position += new Vector2(0, 8);
         }
 
-        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, (TransitionValue >> 1) - 50);
-        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, (TransitionValue >> 1) - 68);
+        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue / 2f - 50);
+        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue / 2f - 68);
 
         if (TransitionValue >= 160)
         {

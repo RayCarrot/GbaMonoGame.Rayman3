@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Can probably rewrite some of this to use floats and be smoother
 public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller(Scene2D scene) : base(scene)
