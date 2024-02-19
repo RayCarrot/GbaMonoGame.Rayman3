@@ -37,6 +37,10 @@ public static class LevelMusicManager
     public static void Init()
     {
         Timer = 0;
+        Flag_0 = false;
+        Flag_1 = false;
+        ShouldPlaySpecialMusic = false;
+        HasOverridenLevelMusic = false;
     }
 
     public static void Step()
