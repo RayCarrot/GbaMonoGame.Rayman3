@@ -66,6 +66,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
 
         Scene.AddDialog(UserInfo, false, false);
         Scene.Init();
+        Scene.Playfield.Step();
 
         CreateCircleFXTransition();
         InitNewCircleFXTransition(true);

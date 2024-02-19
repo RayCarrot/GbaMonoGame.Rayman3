@@ -95,6 +95,7 @@ public class Intro : Frame, IHasPlayfield
         Playfield.Camera.FixedResolution = true;
 
         Playfield.Camera.Position = Vector2.Zero;
+        Playfield.Step();
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
@@ -190,7 +191,7 @@ public class Intro : Frame, IHasPlayfield
 
     public override void Step()
     {
-        // TODO: Update animated tiles
+        Playfield.Step();
         AnimationPlayer.Execute();
 
         // Fade in music

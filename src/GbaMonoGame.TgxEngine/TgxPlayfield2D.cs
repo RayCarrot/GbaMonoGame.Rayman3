@@ -6,7 +6,8 @@ namespace GbaMonoGame.TgxEngine;
 
 public class TgxPlayfield2D : TgxPlayfield
 {
-    public TgxPlayfield2D(Playfield2DResource playfieldResource, CachedTileKit cachedTileKit) : base(new TgxCamera2D(Engine.GameWindow))
+    public TgxPlayfield2D(Playfield2DResource playfieldResource, CachedTileKit cachedTileKit) 
+        : base(new TgxCamera2D(Engine.GameWindow), playfieldResource.TileKit)
     {
         List<TgxTileLayer> tileLayers = new();
 
@@ -33,6 +34,10 @@ public class TgxPlayfield2D : TgxPlayfield
                 // Set if the layer is scaled. The game doesn't do this as it has no concept of scaling.
                 TgxCluster cluster = Camera.GetCluster(gameLayerResource.TileLayer.ClusterIndex);
                 layer.Screen.Camera = cluster.Camera;
+
+                // Add the renderer to the animated tile kit manager
+                if (layer.Screen.Renderer is TileMapScreenRenderer renderer)
+                    AnimatedTilekitManager?.AddRenderer(renderer);
             }
             else if (gameLayerResource.Type == GameLayerType.PhysicalLayer)
             {

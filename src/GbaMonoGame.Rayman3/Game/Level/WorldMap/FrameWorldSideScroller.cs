@@ -82,6 +82,7 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         PauseDialog = new PauseDialog();
 
         Scene.Init();
+        Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
 
         if (!SoundEventsManager.IsSongPlaying(GameInfo.GetLevelMusicSoundEvent())) // TODO: N-Gage doesn't have this condition - why?
@@ -116,6 +117,7 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
     protected void Step_Normal()
     {
         Scene.Step();
+        Scene.Playfield.Step();
         TransitionsFX.StepAll();
         Scene.AnimationPlayer.Execute();
         LevelMusicManager.Step();

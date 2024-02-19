@@ -185,6 +185,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         PauseDialog = new PauseDialog();
 
         Scene.Init();
+        Scene.Playfield.Step();
 
         CreateCircleFXTransition();
         InitNewCircleFXTransition(true);
@@ -226,6 +227,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     protected void Step_Normal()
     {
         Scene.Step();
+        Scene.Playfield.Step();
         TransitionsFX.StepAll();
         StepCircleFX();
         Scene.AnimationPlayer.Execute();

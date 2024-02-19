@@ -275,6 +275,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         WheelRotation = 0;
 
         LoadPlayfield();
+        Playfield.Step();
 
         switch (InitialPage)
         {
@@ -343,6 +344,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public override void Step()
     {
+        Playfield.Step();
         TransitionsFX.StepAll();
         AnimationPlayer.Execute();
 

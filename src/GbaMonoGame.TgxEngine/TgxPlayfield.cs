@@ -6,13 +6,16 @@ namespace GbaMonoGame.TgxEngine;
 
 public abstract class TgxPlayfield
 {
-    protected TgxPlayfield(TgxCamera camera)
+    protected TgxPlayfield(TgxCamera camera, TileKit tileKit)
     {
         Camera = camera;
+
+        if (tileKit.AnimatedTileKits != null)
+            AnimatedTilekitManager = new AnimatedTilekitManager(tileKit.AnimatedTileKits);
     }
 
     public TgxCamera Camera { get; }
-
+    public AnimatedTilekitManager AnimatedTilekitManager { get; }
     public TgxTilePhysicalLayer PhysicalLayer { get; set; }
 
     public static TgxPlayfield Load(PlayfieldResource playfieldResource, CachedTileKit cachedTileKit = null) => Load<TgxPlayfield>(playfieldResource, cachedTileKit);
@@ -48,6 +51,11 @@ public abstract class TgxPlayfield
             return 0xFF;
 
         return PhysicalLayer.CollisionMap[mapPoint.Y * PhysicalLayer.Width + mapPoint.X];
+    }
+
+    public void Step()
+    {
+        AnimatedTilekitManager?.Step();
     }
 
     public virtual void UnInit()
