@@ -171,7 +171,7 @@ public static class GameInfo
         }
     }
 
-    public static int GetCollectedCagesInLevel(MapId cageId)
+    public static int GetCollectedCagesInLevel(MapId mapId)
     {
         if (LevelType == LevelType.GameCube)
         {
@@ -181,9 +181,9 @@ public static class GameInfo
         {
             int count = 0;
 
-            for (int i = 0; i < Levels[(int)cageId].CagesCount; i++)
+            for (int i = 0; i < Levels[(int)mapId].CagesCount; i++)
             {
-                if (HasCollectedCage(i, cageId))
+                if (HasCollectedCage(i, mapId))
                     count++;
             }
 
@@ -272,7 +272,7 @@ public static class GameInfo
         }
         else
         {
-            KillCage(Level.GlobalLumsIndex + cageId);
+            KillCage(Level.GlobalCagesIndex + cageId);
 
             // NOTE: Game also checks to MapId is not 0xFF, but that shouldn't be possible
             if (GetCollectedCagesInLevel(MapId) == CagesCount)

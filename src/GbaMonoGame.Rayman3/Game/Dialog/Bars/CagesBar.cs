@@ -57,7 +57,7 @@ public class CagesBar : Bar
         int cagesCount = GameInfo.LevelType == LevelType.GameCube ? GameInfo.CagesCount : GameInfo.Level.CagesCount;
         TotalCagesDigit.CurrentAnimation = cagesCount;
 
-        CollectedCagesDigit.CurrentAnimation = GameInfo.GetCollectedCagesInLevel(GameInfo.MapId);
+        CollectedCagesDigitValue = GameInfo.GetCollectedCagesInLevel(GameInfo.MapId);
     }
 
     public override void Draw(AnimationPlayer animationPlayer)
