@@ -79,6 +79,10 @@ public class Scene2D
     // TODO: In multiplayer we get the actor from the machine id
     public MovableActor MainActor => (MovableActor)KnotManager.GameObjects[0];
 
+    // If we're playing in a different resolution than the original we can't use
+    // the knots (object sectors). Instead we keep all objects active at all times.
+    public bool KeepAllObjectsActive => Playfield.Camera.Resolution != Engine.GameWindow.OriginalGameResolution;
+
     public void Init()
     {
         ResurrectActors();
@@ -261,7 +265,7 @@ public class Scene2D
     public void ResurrectActors()
     {
         Vector2 camPos = Playfield.Camera.Position;
-        bool newKnot = KnotManager.UpdateCurrentKnot(Playfield, camPos);
+        bool newKnot = KnotManager.UpdateCurrentKnot(Playfield, camPos, KeepAllObjectsActive);
 
         foreach (GameObject obj in KnotManager.EnumerateAllGameObjects(isEnabled: false))
         {

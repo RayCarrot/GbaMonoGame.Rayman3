@@ -44,7 +44,9 @@ public partial class Cage
         switch (action)
         {
             case FsmAction.Init:
-                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__CageSnd1_Mix02__or__CageSnd2_Mix02);
+                // If all objects are kept active we only want to make this sound when framed
+                if (!Scene.KeepAllObjectsActive || AnimatedObject.IsFramed)
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__CageSnd1_Mix02__or__CageSnd2_Mix02);
                 ActionId = InitialActionId + 1;
                 break;
 

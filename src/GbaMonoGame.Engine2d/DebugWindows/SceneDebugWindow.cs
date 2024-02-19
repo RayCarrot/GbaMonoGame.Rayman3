@@ -78,6 +78,10 @@ public class SceneDebugWindow : DebugWindow
 
         UpdateMouseDetection(scene2D);
 
+        ImGui.SeparatorText("General");
+
+        ImGui.Text($"Keep all objects active: {scene2D.KeepAllObjectsActive}");
+
         if (ImGui.Button("Deselect object"))
             SelectedGameObject = null;
 

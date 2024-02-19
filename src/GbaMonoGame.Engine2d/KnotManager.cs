@@ -113,13 +113,11 @@ public class KnotManager
     public GameObject GetGameObject(int instanceId) => GameObjects[instanceId];
     public T GetGameObject<T>(int instanceId) where T : GameObject => (T)GameObjects[instanceId];
 
-    public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos)
+    public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos, bool keepObjectsActive)
     {
         Knot knot;
 
-        // If the game is scaled we can't use the knots as they're pre-calculated for the original
-        // screen resolution. So instead we use a knot where every object is loaded.
-        if (Engine.Config.PlayfieldCameraScale != 1f) // TODO: Have this be a setting. Also handle for widescreen. Check if res is not = original res?
+        if (keepObjectsActive)
         {
             knot = FullKnot;
         }
