@@ -54,4 +54,6 @@ public enum Message
     Main_ExitCutscene = 1059,
 
     Main_EnterCutscene = 1088,
+
+    Main_LockedLevelCurtain = 1093,
 }

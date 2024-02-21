@@ -110,7 +110,7 @@ public class AnimatedObject : AObject
     public int Timer { get; set; }
 
     public AffineMatrix? AffineMatrix { get; set; }
-    public int? PaletteIndex { get; set; }
+    public int BasePaletteIndex { get; set; }
 
     public bool IsAlphaBlendEnabled { get; set; }
     public float Alpha { get; set; }
@@ -319,7 +319,7 @@ public class AnimatedObject : AObject
                         spriteShape: channel.SpriteShape,
                         spriteSize: channel.SpriteSize,
                         tileIndex: channel.TileIndex,
-                        paletteIndex: PaletteIndex ?? channel.PalIndex);
+                        paletteIndex: BasePaletteIndex + channel.PalIndex);
                     Gfx.AddSprite(new Sprite(
                         texture: tex,
                         position: new Vector2(xPos, yPos),

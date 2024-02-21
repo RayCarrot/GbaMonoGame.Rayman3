@@ -322,6 +322,7 @@ public class Rayman3 : GbaGame
 
             { ActorType.Lums, (instanceId, scene, resource) => new Lums(instanceId, scene, resource) },
             { ActorType.Cage, (instanceId, scene, resource) => new Cage(instanceId, scene, resource) },
+            { ActorType.LevelCurtain, (instanceId, scene, resource) => new LevelCurtain(instanceId, scene, resource) },
 
             { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
 

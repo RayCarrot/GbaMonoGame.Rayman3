@@ -34,7 +34,7 @@ public sealed partial class Lums : BaseActor
 
             case Action.BlueLum:
                 if (!RSMultiplayer.IsActive)
-                    AnimatedObject.PaletteIndex = 1;
+                    AnimatedObject.BasePaletteIndex = 1;
 
                 AnimatedObject.CurrentAnimation = 0;
                 break;
@@ -42,7 +42,7 @@ public sealed partial class Lums : BaseActor
             case Action.WhiteLum:
                 if (!RSMultiplayer.IsActive)
                 {
-                    AnimatedObject.PaletteIndex = 1;
+                    AnimatedObject.BasePaletteIndex = 1;
 
                     if (GameInfo.field22_0x1b)
                         ProcessMessage(Message.Destroy);
@@ -57,7 +57,7 @@ public sealed partial class Lums : BaseActor
 
             case Action.BigBlueLum:
                 if (!RSMultiplayer.IsActive)
-                    AnimatedObject.PaletteIndex = 1;
+                    AnimatedObject.BasePaletteIndex = 1;
 
                 AnimatedObject.CurrentAnimation = 10;
                 break;

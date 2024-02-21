@@ -59,6 +59,35 @@ public class BaseActor : GameObject
     public bool HasMoved { get; set; }
     public bool ActorFlag_E { get; set; }
 
+    protected void DrawDefault(AnimationPlayer animationPlayer, bool forceDraw)
+    {
+        if (Scene.Camera.IsActorFramed(this) || forceDraw)
+        {
+            AnimatedObject.IsFramed = true;
+            animationPlayer.Play(AnimatedObject);
+        }
+        else
+        {
+            AnimatedObject.IsFramed = false;
+            AnimatedObject.ComputeNextFrame();
+        }
+    }
+
+    protected void DrawLarge(AnimationPlayer animationPlayer, bool forceDraw)
+    {
+        if (Scene.Camera.IsActorFramed(this) || forceDraw)
+        {
+            AnimatedObject.IsFramed = true;
+            AnimatedObject.FrameChannelSprite();
+            animationPlayer.Play(AnimatedObject);
+        }
+        else
+        {
+            AnimatedObject.IsFramed = false;
+            AnimatedObject.ComputeNextFrame();
+        }
+    }
+
     public Box GetViewBox() => _viewBox.Offset(Position);
 
     public void RewindAction()
@@ -77,16 +106,7 @@ public class BaseActor : GameObject
 
     public virtual void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (Scene.Camera.IsActorFramed(this) || forceDraw)
-        {
-            AnimatedObject.IsFramed = true;
-            animationPlayer.Play(AnimatedObject);
-        }
-        else
-        {
-            AnimatedObject.IsFramed = false;
-            AnimatedObject.ComputeNextFrame();
-        }
+        DrawDefault(animationPlayer, forceDraw);
     }
 
     public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)

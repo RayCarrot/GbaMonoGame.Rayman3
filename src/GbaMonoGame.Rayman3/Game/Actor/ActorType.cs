@@ -13,6 +13,7 @@ public enum ActorType
 
     Lums = 12,
     Cage = 13,
+    LevelCurtain = 14,
 
     Depart = 30,
 

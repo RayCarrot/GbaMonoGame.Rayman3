@@ -2999,6 +2999,29 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_LockedLevelCurtain(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.LockedLevelCurtain_Right : Action.LockedLevelCurtain_Left;
+                NextActionId = null;
+
+                if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01))
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                break;
+
+            case FsmAction.Step:
+                if (IsActionFinished)
+                    Fsm.ChangeAction(Fsm_Default);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }

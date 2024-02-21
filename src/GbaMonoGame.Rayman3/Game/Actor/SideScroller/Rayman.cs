@@ -1327,6 +1327,11 @@ public sealed partial class Rayman : MovableActor
                 Fsm.ChangeAction(Fsm_Cutscene);
                 return false;
 
+            case Message.Main_LockedLevelCurtain:
+                if (!Fsm.EqualsAction(Fsm_LockedLevelCurtain))
+                    Fsm.ChangeAction(Fsm_LockedLevelCurtain);
+                return false;
+
             default:
                 return false;
         }

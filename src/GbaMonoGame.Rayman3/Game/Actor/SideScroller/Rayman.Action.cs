@@ -180,5 +180,7 @@ public partial class Rayman
         Spawn_Curtain_Left = 218,
         ReturnFromLevel_Right = 219,
         ReturnFromLevel_Left = 220,
+        LockedLevelCurtain_Right = 221,
+        LockedLevelCurtain_Left = 222,
     }
 }

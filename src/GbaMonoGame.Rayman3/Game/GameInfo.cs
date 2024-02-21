@@ -7,6 +7,8 @@ namespace GbaMonoGame.Rayman3;
 
 public static class GameInfo
 {
+    private const int LumsPerWorld = 230;
+
     public static MapId? NextMapId { get; set; }
     public static MapId MapId { get; set; }
     public static LevelType LevelType { get; set; }
@@ -225,6 +227,38 @@ public static class GameInfo
     public static bool HasCollectedAllCages()
     {
         return GetTotalCollectedCages() == 50;
+    }
+
+    public static bool World1LumsCompleted()
+    {
+        int count = 0;
+        for (MapId mapId = MapId.WoodLight_M1; mapId <= MapId.SanctuaryOfBigTree_M2; mapId++)
+            count += GetCollectedYellowLumsInLevel(mapId);
+        return count == LumsPerWorld;
+    }
+
+    public static bool World2LumsCompleted()
+    {
+        int count = 0;
+        for (MapId mapId = MapId.MissileRace1; mapId <= MapId.MarshAwakening2; mapId++)
+            count += GetCollectedYellowLumsInLevel(mapId);
+        return count == LumsPerWorld;
+    }
+
+    public static bool World3LumsCompleted()
+    {
+        int count = 0;
+        for (MapId mapId = MapId.SanctuaryOfStoneAndFire_M1; mapId <= MapId.SanctuaryOfRockAndLava_M3; mapId++)
+            count += GetCollectedYellowLumsInLevel(mapId);
+        return count == LumsPerWorld;
+    }
+
+    public static bool World4LumsCompleted()
+    {
+        int count = 0;
+        for (MapId mapId = MapId.TombOfTheAncients_M1; mapId <= MapId.BossFinal_M2; mapId++)
+            count += GetCollectedYellowLumsInLevel(mapId);
+        return count == LumsPerWorld;
     }
 
     public static bool HasCollectedYellowLum(int lumId, MapId mapId)
