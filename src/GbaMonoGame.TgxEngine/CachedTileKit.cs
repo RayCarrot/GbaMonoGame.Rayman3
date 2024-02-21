@@ -12,12 +12,14 @@ public class CachedTileKit
     public void CacheRenderer(int id, IScreenRenderer renderer) => _renderers.Add(id, renderer);
     public IScreenRenderer GetRenderer(int id) => _renderers[id];
 
-    public static CachedTileKit FromPlayfield(TgxPlayfield2D playfield)
+    public static CachedTileKit FromPlayfield(TgxPlayfield playfield)
     {
         CachedTileKit cachedTileKit = new();
 
-        foreach (TgxTileLayer layer in playfield.TileLayers)
-            cachedTileKit.CacheRenderer(layer.LayerId, layer.Screen.Renderer);
+        // TODO: Cache for Mode7 as well
+        if (playfield is TgxPlayfield2D playfield2D)
+            foreach (TgxTileLayer layer in playfield2D.TileLayers)
+                cachedTileKit.CacheRenderer(layer.LayerId, layer.Screen.Renderer);
 
         return cachedTileKit;
     }

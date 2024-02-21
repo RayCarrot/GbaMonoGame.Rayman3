@@ -274,7 +274,7 @@ public class CameraSideScroller : CameraActor2D
                 // Clamp speed
                 Speed = new Vector2(Math.Clamp(Speed.X, -7, 7), Math.Clamp(Speed.Y, -7, 7));
 
-                TgxCamera2D tgxCam = Scene.Playfield.Camera;
+                TgxCamera2D tgxCam = ((TgxPlayfield2D)Scene.Playfield).Camera;
                 TgxCluster mainCluster = tgxCam.GetMainCluster();
 
                 tgxCam.Position += Speed;

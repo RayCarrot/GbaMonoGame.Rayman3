@@ -22,7 +22,7 @@ public class SceneDebugWindow : DebugWindow
     public GameObject HighlightedGameObject { get; set; }
     public GameObject SelectedGameObject { get; set; }
 
-    private void DrawBox(GfxRenderer renderer, TgxPlayfield2D playfield, Box box, Color color)
+    private void DrawBox(GfxRenderer renderer, TgxPlayfield playfield, Box box, Color color)
     {
         if (box == Box.Empty)
             return;

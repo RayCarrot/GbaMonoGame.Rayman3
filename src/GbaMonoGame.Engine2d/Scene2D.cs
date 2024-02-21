@@ -23,8 +23,11 @@ public class Scene2D
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
 
-        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(scene.Playfield, cachedTileKit);
-        Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
+        Playfield = TgxPlayfield.Load(scene.Playfield, cachedTileKit);
+
+        // TODO: Set bounds if Mode7
+        if (Playfield is TgxPlayfield2D playfield2D)
+            Engine.GameWindow.SetResolutionBounds(null, playfield2D.Size);
 
         KnotManager = new KnotManager(scene);
         KnotManager.LoadGameObjects(this, scene);
@@ -33,7 +36,7 @@ public class Scene2D
 
         // Game does this ugly hack here for some reason to disable background scrolling in Cave of Bad Dreams 1 TODO: Allow this to be be ignored
         if (id == 11)
-            Playfield.Camera.GetCluster(1).ScrollFactor = Vector2.Zero;
+            ((TgxPlayfield2D)Playfield).Camera.GetCluster(1).ScrollFactor = Vector2.Zero;
 
         Camera.SetFirstPosition();
     }
@@ -50,7 +53,10 @@ public class Scene2D
         DialogFlags = new List<bool>(layersCount);
 
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield, cachedTileKit);
-        Engine.GameWindow.SetResolutionBounds(null, Playfield.Size);
+
+        // TODO: Set bounds if Mode7
+        if (Playfield is TgxPlayfield2D playfield2D)
+            Engine.GameWindow.SetResolutionBounds(null, playfield2D.Size);
 
         KnotManager = new KnotManager(map.Scene);
         KnotManager.LoadGameObjects(this, map.Scene);
@@ -63,7 +69,7 @@ public class Scene2D
     public List<Dialog> Dialogs { get; }
     public List<bool> DialogFlags { get; }
     public AnimationPlayer AnimationPlayer { get; }
-    public TgxPlayfield2D Playfield { get; }
+    public TgxPlayfield Playfield { get; }
     public int LayersCount { get; }
     public KnotManager KnotManager { get; }
     public int DialogIndex { get; set; }

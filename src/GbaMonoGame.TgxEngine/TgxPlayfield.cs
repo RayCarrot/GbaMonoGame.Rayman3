@@ -26,7 +26,7 @@ public abstract class TgxPlayfield
         TgxPlayfield playfield = playfieldResource.Type switch
         {
             PlayfieldType.Playfield2D => new TgxPlayfield2D(playfieldResource.Playfield2D, cachedTileKit),
-            PlayfieldType.PlayfieldMode7 => throw new NotImplementedException("Not implemented loading PlayfieldMode7"),
+            PlayfieldType.PlayfieldMode7 => new TgxPlayfieldMode7(playfieldResource.PlayfieldMode7, cachedTileKit),
             PlayfieldType.PlayfieldScope => throw new NotImplementedException("Not implemented loading PlayfieldScope"),
             _ => throw new NotImplementedException($"Unsupported playfield type {playfieldResource.Type}")
         };
