@@ -82,9 +82,10 @@ public class Scene2D
     public bool Flag_5 { get; set; }
     public bool NGage_Flag_6 { get; set; }
 
-    // TODO: In multiplayer we get the actor from the machine id
-    public MovableActor MainActor => (MovableActor)KnotManager.GameObjects[0];
+    public MovableActor MainActor => (MovableActor)(RSMultiplayer.IsActive ? GetGameObject(RSMultiplayer.MachineId) : GetGameObject(0));
 
+    // TODO: This causes ResurrectActors to stop working. Perhaps we should still use
+    //       knots to handle game logic, but still draw and step all actors in the scene?
     // If we're playing in a different resolution than the original we can't use
     // the knots (object sectors). Instead we keep all objects active at all times.
     public bool KeepAllObjectsActive => Playfield.Camera.Resolution != Engine.GameWindow.OriginalGameResolution;
@@ -283,7 +284,7 @@ public class Scene2D
         {
             foreach (BaseActor obj in KnotManager.EnumerateActors(isEnabled: false, knot: KnotManager.PreviousKnot))
             {
-                if (obj.ResurrectsLater && KnotManager.CurrentKnot.ActorIds.All(x => x != obj.InstanceId))
+                if (obj.ResurrectsLater && !KnotManager.IsInCurrentKnot(obj))
                 {
                     obj.ProcessMessage(Message.Resurrect);
                 }
@@ -291,7 +292,7 @@ public class Scene2D
 
             foreach (Captor obj in KnotManager.EnumerateCaptors(isEnabled: false, knot: KnotManager.PreviousKnot))
             {
-                if (obj.ResurrectsLater && KnotManager.CurrentKnot.CaptorIds.All(x => x != obj.InstanceId))
+                if (obj.ResurrectsLater && !KnotManager.IsInCurrentKnot(obj))
                 {
                     obj.ProcessMessage(Message.Resurrect);
                 }
@@ -390,6 +391,9 @@ public class Scene2D
 
         return null;
     }
+
+    public GameObject GetGameObject(int instanceId) => KnotManager.GetGameObject(instanceId);
+    public T GetGameObject<T>(int instanceId) where T : GameObject => (T)KnotManager.GetGameObject(instanceId);
 
     public PhysicalType GetPhysicalType(Vector2 position)
     {

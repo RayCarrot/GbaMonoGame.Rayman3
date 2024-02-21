@@ -64,12 +64,12 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Scene.KnotManager.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, evt.Param >> 8);
+                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, evt.Param >> 8);
                     Logger.Info("Triggering captor event with message {0}, to object {1} with param {2}", msg, evt.Param & 0xFF, evt.Param >> 8);
                     break;
 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Scene.KnotManager.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, this);
+                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, this);
                     Logger.Info("Triggering captor event with message {0} to object {1}", msg, evt.Param & 0xFF);
                     break;
             }

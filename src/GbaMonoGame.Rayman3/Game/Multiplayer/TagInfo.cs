@@ -73,7 +73,7 @@ public class TagInfo
         if (randItemIndex >= field7_0xd)
             randItemIndex++;
 
-        ItemsMulti obj = scene.KnotManager.GetGameObject<ItemsMulti>(randItemIndex);
+        ItemsMulti obj = scene.GetGameObject<ItemsMulti>(randItemIndex);
 
         if (obj.IsInvisibleItem() && Timer != 0 && GameTime.ElapsedFrames - Timer <= 600)
         {
@@ -83,14 +83,14 @@ public class TagInfo
             {
                 if (i != randItemIndex &&
                     i != field7_0xd &&
-                    !scene.KnotManager.GetGameObject<ItemsMulti>(ItemsIdList[i]).IsInvisibleItem())
+                    !scene.GetGameObject<ItemsMulti>(ItemsIdList[i]).IsInvisibleItem())
                 {
                     validItems.Add(i);
                 }
             }
 
             randItemIndex = validItems[Random.Shared.Next(validItems.Count)];
-            obj = scene.KnotManager.GetGameObject<ItemsMulti>(randItemIndex);
+            obj = scene.GetGameObject<ItemsMulti>(randItemIndex);
         }
 
         obj.FUN_08075a64();

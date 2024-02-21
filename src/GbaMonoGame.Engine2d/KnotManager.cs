@@ -111,7 +111,6 @@ public class KnotManager
     }
 
     public GameObject GetGameObject(int instanceId) => GameObjects[instanceId];
-    public T GetGameObject<T>(int instanceId) where T : GameObject => (T)GameObjects[instanceId];
 
     public bool UpdateCurrentKnot(TgxPlayfield playfield, Vector2 camPos, bool keepObjectsActive)
     {
@@ -148,6 +147,26 @@ public class KnotManager
         // NOTE: At this point the game loads tiles into VRAM for objects which are set to load dynamically. This is irrelevant here.
 
         return true;
+    }
+
+    public bool IsInCurrentKnot(GameObject gameObject)
+    {
+        if (gameObject is BaseActor)
+            return CurrentKnot.ActorIds.All(x => x != gameObject.InstanceId);
+        else if (gameObject is Captor)
+            return CurrentKnot.CaptorIds.All(x => x != gameObject.InstanceId);
+        else
+            throw new Exception($"Unsupported game object type {gameObject}");
+    }
+
+    public bool IsInPreviousKnot(GameObject gameObject)
+    {
+        if (gameObject is BaseActor)
+            return PreviousKnot.ActorIds.All(x => x != gameObject.InstanceId);
+        else if (gameObject is Captor)
+            return PreviousKnot.CaptorIds.All(x => x != gameObject.InstanceId);
+        else
+            throw new Exception($"Unsupported game object type {gameObject}");
     }
 
     public T CreateProjectile<T>(Enum actorType)

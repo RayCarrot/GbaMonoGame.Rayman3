@@ -34,7 +34,7 @@ public partial class MurfyStone
                              GameInfo.PersistentInfo.LastCompletedLevel == (int)MapId.WoodLight_M1))
                         {
                             HasTriggered = true;
-                            GameObject murfy = Scene.KnotManager.GetGameObject(MurfyId.Value);
+                            GameObject murfy = Scene.GetGameObject(MurfyId.Value);
 
                             // TODO: This is probably a typo in the original code and explains why Murfy takes a while to appear. Fix?
                             // Why is the horizontal resolution used for the y position??

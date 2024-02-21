@@ -68,7 +68,7 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
                 ? 0
                 : GameInfo.Levels[GameInfo.PersistentInfo.LastPlayedLevel].LevelCurtainActorId;
 
-            Vector2 startPos = Scene.KnotManager.GetGameObject(startActorId).Position;
+            Vector2 startPos = Scene.GetGameObject(startActorId).Position;
             startPos -= new Vector2(32, 0);
 
             while (Scene.GetPhysicalType(startPos) == PhysicalTypeValue.None)
