@@ -40,7 +40,7 @@ public partial class LevelCurtain
         }
     }
 
-    private void Fsm_Open(FsmAction action)
+    private void Fsm_Unlocked(FsmAction action)
     {
         switch (action)
         {
@@ -49,11 +49,103 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.Step:
-                // TODO: Implement
+                if (Scene.IsDetectedMainActor(this) && Scene.MainActor.Speed.Y == 0)
+                {
+                    ((World)Frame.Current).UserInfo.SetLevelInfoBar(InitialActionId);
+                    Scene.MainActor.ProcessMessage(Message.Main_BeginInFrontOfLevelCurtain);
+
+                    if ((JoyPad.Check(GbaInput.Up) || JoyPad.Check(GbaInput.A)) &&
+                        !JoyPad.Check(GbaInput.Left) &&
+                        !JoyPad.Check(GbaInput.Right) &&
+                        !((World)Frame.Current).UserInfo.Hide)
+                    {
+                        Scene.MainActor.ProcessMessage(Message.Main_Stop);
+                        Fsm.ChangeAction(Fsm_EnterCurtain);
+                    }
+                    else
+                    {
+                        if (ActionId != 33 && !((Rayman)Scene.MainActor).IsInDefaultState)
+                            ActionId = 33;
+                        else if (IsActionFinished)
+                            ActionId = InitialActionId;
+                    }
+                }
+                else
+                {
+                    // TODO: This solution won't work if camera scale is too high and multiple level curtains are on screen at once!
+                    //       Perhaps we should rewrite this so it keeps track of when Rayman enters and leaves the detection zone?
+
+                    // If set to keep all objects active we only want to do this if framed. Otherwise this will overwrite
+                    // if another level curtain is on screen and Rayman is in front of that one.
+                    if (!Scene.KeepAllObjectsActive || AnimatedObject.IsFramed)
+                        Scene.MainActor.ProcessMessage(Message.Main_EndInFrontOfLevelCurtain);
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_EnterCurtain(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                if (ActionId != 33)
+                {
+                    ActionId = 31;
+                    Scene.MainActor.ProcessMessage(Message.Main_EnterLevelCurtain);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
+                }
+                break;
+
+            case FsmAction.Step:
+                if (IsActionFinished)
+                {
+                    if (ActionId == 33)
+                    {
+                        ActionId = 31;
+                        Scene.MainActor.ProcessMessage(Message.Main_EnterLevelCurtain);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
+                    }
+                    else if (ActionId == 31)
+                    {
+                        AnimatedObject.YPriority = 0;
+                        ActionId = 32;
+                    }
+                    else
+                    {
+                        Fsm.ChangeAction(Fsm_TransitionToLevel);
+                    }
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_TransitionToLevel(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ((World)Frame.Current).InitTransitionOut();
+                ActionId = InitialActionId;
+                break;
+
+            case FsmAction.Step:
+                if (((World)Frame.Current).FinishedTransitioningOut)
+                    Fsm.ChangeAction(Fsm_Unlocked);
+                break;
+
+            case FsmAction.UnInit:
+                Gfx.Fade = 1;
+                SoundEventsManager.StopAllSongs();
+                GameInfo.LoadLevel(MapId);
                 break;
         }
     }

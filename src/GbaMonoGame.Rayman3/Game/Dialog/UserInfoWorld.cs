@@ -51,6 +51,11 @@ public class UserInfoWorld : Dialog
         return false;
     }
 
+    public void SetLevelInfoBar(int levelCurtainId)
+    {
+        // TODO: Implement
+    }
+
     public override void Load()
     {
         LifeBar.Load();

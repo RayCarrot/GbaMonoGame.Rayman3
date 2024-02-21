@@ -8,6 +8,7 @@ public sealed partial class LevelCurtain : ActionActor
 {
     public LevelCurtain(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
+        InitialActionId = ActionId;
         MapId = ActionId switch
         {
             0  => MapId.WoodLight_M1,
@@ -50,7 +51,7 @@ public sealed partial class LevelCurtain : ActionActor
         {
             if (GameInfo.World1LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Open);
+                Fsm.ChangeAction(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus1)
                     IsLocked = true;
@@ -65,7 +66,7 @@ public sealed partial class LevelCurtain : ActionActor
         {
             if (GameInfo.World2LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Open);
+                Fsm.ChangeAction(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus2)
                     IsLocked = true;
@@ -80,7 +81,7 @@ public sealed partial class LevelCurtain : ActionActor
         {
             if (GameInfo.World3LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Open);
+                Fsm.ChangeAction(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus3)
                     IsLocked = true;
@@ -95,7 +96,7 @@ public sealed partial class LevelCurtain : ActionActor
         {
             if (GameInfo.World4LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Open);
+                Fsm.ChangeAction(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus4)
                     IsLocked = true;
@@ -112,7 +113,7 @@ public sealed partial class LevelCurtain : ActionActor
                 MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN ||
                 (MapId == MapId._1000Lums && GameInfo.GetTotalCollectedYellowLums() >= 999))
             {
-                Fsm.ChangeAction(Fsm_Open);
+                Fsm.ChangeAction(Fsm_Unlocked);
             }
             else
             {
@@ -127,6 +128,7 @@ public sealed partial class LevelCurtain : ActionActor
         AnimatedObject.BasePaletteIndex = IsLocked ? 1 : 0;
     }
 
+    private int InitialActionId { get; }
     private MapId MapId { get; }
     private bool IsLocked { get; }
 

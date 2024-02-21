@@ -70,7 +70,7 @@ public sealed partial class Rayman : MovableActor
     public bool Flag1_3 { get; set; }
     public bool Flag1_4 { get; set; }
     public bool Flag1_5 { get; set; }
-    public bool Flag1_6 { get; set; }
+    public bool IsInFrontOfLevelCurtain { get; set; }
     public bool Flag1_7 { get; set; }
     public bool Flag1_8 { get; set; }
     public bool Flag1_9 { get; set; }
@@ -1313,6 +1313,10 @@ public sealed partial class Rayman : MovableActor
                     CanSafetyJump = true;
                 return false;
 
+            case Message.Main_Stop:
+                Fsm.ChangeAction(Fsm_Stop);
+                return false;
+
             case Message.Main_ExitCutscene:
                 if (Fsm.EqualsAction(FUN_08027b80) || Fsm.EqualsAction(Fsm_Cutscene))
                 {
@@ -1321,6 +1325,19 @@ public sealed partial class Rayman : MovableActor
                     else
                         Fsm.ChangeAction(Fsm_Default);
                 }
+                return false;
+
+            case Message.Main_EnterLevelCurtain:
+                if (!Fsm.EqualsAction(Fsm_EnterLevelCurtain))
+                    Fsm.ChangeAction(Fsm_EnterLevelCurtain);
+                return false;
+
+            case Message.Main_BeginInFrontOfLevelCurtain:
+                IsInFrontOfLevelCurtain = true;
+                return false;
+
+            case Message.Main_EndInFrontOfLevelCurtain:
+                IsInFrontOfLevelCurtain = false;
                 return false;
 
             case Message.Main_EnterCutscene:
@@ -1360,7 +1377,7 @@ public sealed partial class Rayman : MovableActor
         Flag1_3 = false;
         Flag1_4 = false;
         Flag1_5 = false;
-        Flag1_6 = false;
+        IsInFrontOfLevelCurtain = false;
         Flag1_7 = false;
         Flag1_8 = false;
         Flag1_9 = false;

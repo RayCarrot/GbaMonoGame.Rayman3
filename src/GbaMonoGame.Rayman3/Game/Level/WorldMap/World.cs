@@ -6,6 +6,13 @@ public class World : FrameWorldSideScroller
     public World(MapId mapId) : base(mapId) { }
 
     public UserInfoWorld UserInfo { get; set; }
+    public bool FinishedTransitioningOut { get; set; }
+
+    public void InitTransitionOut()
+    {
+        // TODO: Implement
+        FinishedTransitioningOut = true; // Temp
+    }
 
     public override void Init()
     {

@@ -65,7 +65,7 @@ public partial class Rayman
             !Fsm.EqualsAction(FUN_080284ac) &&
             !Fsm.EqualsAction(FUN_08033b34) &&
             !Fsm.EqualsAction(FUN_080287d8) &&
-            !Flag1_6)
+            !IsInFrontOfLevelCurtain)
         {
             Message message;
 
@@ -242,7 +242,7 @@ public partial class Rayman
 
             case FsmAction.Step:
                 // Check if we're spawning at a curtain
-                if (Flag1_6) // TODO: Where does this flag get set?
+                if (IsInFrontOfLevelCurtain)
                 {
                     // Hide while fading and then show spawn animation
                     if (!((FrameWorldSideScroller)Frame.Current).TransitionsFX.IsFading)
@@ -2767,7 +2767,7 @@ public partial class Rayman
                         case MapId.World2:
                         case MapId.World3:
                         case MapId.World4:
-                            // TODO: Implement
+                            ((World)Frame.Current).InitTransitionOut();
                             break;
 
                         case MapId.WorldMap:
@@ -2980,7 +2980,7 @@ public partial class Rayman
                 else if (Scene.GetPhysicalType(Position).IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
                 {
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
-                    field18_0x93 = 0x78;
+                    field18_0x93 = 120;
                     Scene.Camera.ProcessMessage(Message.Cam_1040, field18_0x93);
                 }
                 else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
@@ -2991,6 +2991,83 @@ public partial class Rayman
                 {
                     ActionId = IsFacingRight ? Action.Idle_Cutscene_Right : Action.Idle_Cutscene_Left;
                 }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_Stop(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                PreviousXSpeed = 0;
+
+                if (IsOnClimbableVertical() != 0)
+                {
+                    ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                    MechModel.Speed = Vector2.Zero;
+                }
+                else if (Scene.GetPhysicalType(Position).IsSolid || Scene.MainActor.LinkedMovementActor != null || Speed.Y == 0)
+                {
+                    ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                }
+                else
+                {
+                    ActionId = IsFacingRight ? Action.Fall_Right : Action.Fall_Left;
+                }
+                break;
+
+            case FsmAction.Step:
+                if (ActionId is Action.Fall_Right or Action.Fall_Left)
+                    MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    if (ActionId is not (Action.Climb_Idle_Right or Action.Climb_Idle_Left))
+                        ActionId = IsFacingRight ? Action.Climb_Idle_Right : Action.Climb_Idle_Left;
+                }
+                else if (Scene.GetPhysicalType(Position).IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
+                {
+                    ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    field18_0x93 = 120;
+                    Scene.Camera.ProcessMessage(Message.Cam_1040, field18_0x93);
+                }
+                else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
+                {
+                    ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_EnterLevelCurtain(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = Action.EnterCurtain_Right;
+
+                CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+                cam.HorizontalOffset = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => 120,
+                    Platform.NGage => 88,
+                    _ => throw new UnsupportedPlatformException()
+                };
+                break;
+
+            case FsmAction.Step:
+                // Do nothing
                 break;
 
             case FsmAction.UnInit:

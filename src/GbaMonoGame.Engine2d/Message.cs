@@ -51,7 +51,13 @@ public enum Message
     Murfy_Spawn = 1049,
     Hit = 1050,
 
+    Main_Stop = 1057,
+
     Main_ExitCutscene = 1059,
+
+    Main_EnterLevelCurtain = 1081,
+    Main_BeginInFrontOfLevelCurtain = 1082,
+    Main_EndInFrontOfLevelCurtain = 1083,
 
     Main_EnterCutscene = 1088,
 
