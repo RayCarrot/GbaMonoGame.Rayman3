@@ -63,6 +63,7 @@ public sealed partial class Rayman : MovableActor
 
     public bool Debug_NoClip { get; set; } // Custom no-clip mode
 
+    // TODO: Name flags
     // Unknown flags 1
     public bool Flag1_0 { get; set; }
     public bool Flag1_1 { get; set; }
@@ -83,7 +84,7 @@ public sealed partial class Rayman : MovableActor
 
     // Unknown flags 2
     public bool Flag2_0 { get; set; }
-    public bool Flag2_1 { get; set; }
+    public bool Flag2_1 { get; set; } // TODO: Seems to be some general purpose flag. Name something like "TestFlag" or "TempFlag"?
     public bool Flag2_2 { get; set; }
     public bool IsLocalPlayer { get; set; }
     public bool CanSafetyJump { get; set; } // Coyote jump
@@ -1242,6 +1243,46 @@ public sealed partial class Rayman : MovableActor
                 Flag2_2 = true;
                 return false;
 
+            case Message.Main_BeginBounce:
+                if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                {
+                    if (Fsm.EqualsAction(Fsm_Swing) || 
+                        Fsm.EqualsAction(Fsm_Dying) || 
+                        Fsm.EqualsAction(FUN_1005dea0) || 
+                        Fsm.EqualsAction(FUN_1005dfa4) || 
+                        Fsm.EqualsAction(FUN_1005e04c))
+                        return false;
+                }
+                else
+                {
+                    if (Fsm.EqualsAction(Fsm_Swing) || 
+                        Fsm.EqualsAction(Fsm_Dying))
+                        return false;
+                }
+
+                Fsm.ChangeAction(Fsm_Bounce);
+                return false;
+
+            case Message.Main_Bounce:
+                if (Fsm.EqualsAction(Fsm_Bounce))
+                {
+                    Flag1_5 = true;
+                    return false;
+                }
+
+                if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                {
+                    if (Fsm.EqualsAction(FUN_1005dea0) ||
+                        Fsm.EqualsAction(FUN_1005dfa4) ||
+                        Fsm.EqualsAction(FUN_1005e04c))
+                        return false;
+                }
+
+                ActionId = IsFacingRight ? Action.BouncyJump_Right : Action.BouncyJump_Left;
+
+                Fsm.ChangeAction(Fsm_Jump);
+                return false;
+
             case Message.Main_CollectedYellowLum:
                 ((FrameSideScroller)Frame.Current).UserInfo.AddLums(1);
                 return false;
@@ -1272,6 +1313,47 @@ public sealed partial class Rayman : MovableActor
             case Message.Main_LevelEnd:
                 FinishedMap = true;
                 Fsm.ChangeAction(Fsm_EndMap);
+                return false;
+
+            case Message.Main_Damaged1:
+            case Message.Main_Damaged2:
+            case Message.Main_Damaged3:
+            case Message.Main_Damaged4:
+                if (Fsm.EqualsAction(Fsm_HitKnockback) || Fsm.EqualsAction(Fsm_Dying) || Fsm.EqualsAction(Fsm_EndMap) || InvulnerabilityDuration != 0)
+                    return false;
+
+                if (LinkedMovementActor != null)
+                {
+                    LinkedMovementActor = null;
+                    Position -= new Vector2(0, 7);
+                }
+
+                if (AttachedObject is { Type: (int)ActorType.Plum })
+                {
+                    Box box = ((ActionActor)AttachedObject).GetActionBox(); // TODO: Cast to Plum when we create a class for it
+                    LinkedMovementActor = null; // TODO: Huh? Isn't this meant to be setting attached object to null?
+                    Position = new Vector2(Position.X, box.MinY - 16);
+                }
+
+                if (((BaseActor)param).Type == (int)ActorType.SpikyBall && !IsInvulnerable)
+                    InvulnerabilityDuration = 60;
+
+                if (message == Message.Main_Damaged3)
+                    CheckAgainstObjectCollision = false;
+                else if (message == Message.Main_Damaged4)
+                    Flag1_C = true;
+
+                if (AttachedObject != null)
+                {
+                    // TODO: If keg, sphere or caterpillar then send message
+                }
+
+                AttachedObject = (BaseActor)param;
+
+                if (Fsm.EqualsAction(Fsm_Climb))
+                    Flag2_1 = true;
+
+                Fsm.ChangeAction(Fsm_HitKnockback);
                 return false;
 
             case Message.Main_LevelExit:

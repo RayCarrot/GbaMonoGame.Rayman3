@@ -98,9 +98,17 @@ public partial class Rayman
         Damage_Knockback_Right = 100,
         Damage_Knockback_Left = 101,
 
-        UnknownJump_Right = 109, // TODO: What is this?
-        UnknownJump_Left = 110,
+        BeginBounce_Right = 107,
+        BeginBounce_Left = 108,
+        BouncyJump_Right = 109,
+        BouncyJump_Left = 110,
 
+        KnockbackBackwards_Right = 115,
+        KnockbackBackwards_Left = 116,
+        KnockbackForwards_Right = 117,
+        KnockbackForwards_Left = 118,
+        UnknownKnockback_Right = 119, // TODO: Unused?
+        UnknownKnockback_Left = 120,
         Swing = 121,
         HangOnEdge_ChargeAttack_Right = 122,
         HangOnEdge_ChargeAttack_Left = 123,
@@ -153,8 +161,8 @@ public partial class Rayman
         HelicoTimeout_Left = 186,
         Hidden_Right = 187,
         Hidden_Left = 188,
-        UnknownHelico_Right = 189, // TODO: What is this?
-        UnknownHelico_Left = 190,
+        BouncyHelico_Right = 189,
+        BouncyHelico_Left = 190,
         EnterCurtain_Right = 191,
         EnterCurtain_Left = 192,
         Idle_LookAround_Right = 193,
@@ -172,6 +180,10 @@ public partial class Rayman
         Idle_Cutscene_Right = 205,
         Idle_Cutscene_Left = 206,
 
+        SmallKnockbackBackwards_Right = 209,
+        SmallKnockbackBackwards_Left = 210,
+        SmallKnockbackForwards_Right = 211,
+        SmallKnockbackForwards_Left = 212,
         LookUp_Right = 213,
         LookUp_Left = 214,
         Damage_Shock_Right = 215,

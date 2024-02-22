@@ -9,6 +9,7 @@ public enum ActorType
     WaterSplash = 4,
     Explosion = 5,
 
+    BouncyPlatform = 7,
     MovingFlowerPlatform = 8,
 
     Lums = 12,
@@ -28,6 +29,7 @@ public enum ActorType
     Plum = 54, // TODO: Implement
     LavaSplash = 55,
 
+    SpikyBall = 60, // TODO: Implement
     FlowerFire = 61,
 
     Murfy = 64,

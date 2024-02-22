@@ -23,6 +23,8 @@ public enum Message
     RaymanBody_FinishedAttack = 1002,
     Main_LinkMovement = 1003,
     Main_UnlinkMovement = 1004,
+    Main_BeginBounce = 1005,
+    Main_Bounce = 1006,
 
     Main_CollectedYellowLum = 1009,
     Main_CollectedRedLum = 1010,
@@ -35,6 +37,8 @@ public enum Message
 
     Main_LevelEnd = 1019,
 
+    Main_Damaged1 = 1025,
+
     Cam_1027 = 1027, // TODO: Name
 
     Main_LevelExit = 1031,
@@ -46,6 +50,7 @@ public enum Message
     Cam_1040 = 1040, // TODO: Name
 
     Main_BeginSwing = 1044,
+    Main_Damaged2 = 1045,
 
     Main_AllowCoyoteJump = 1048,
     Murfy_Spawn = 1049,
@@ -58,6 +63,9 @@ public enum Message
     Main_EnterLevelCurtain = 1081,
     Main_BeginInFrontOfLevelCurtain = 1082,
     Main_EndInFrontOfLevelCurtain = 1083,
+    Main_Damaged3 = 1084,
+    
+    Main_Damaged4 = 1086,
 
     Main_EnterCutscene = 1088,
 

@@ -857,7 +857,7 @@ public partial class Rayman
             case FsmAction.Init:
                 PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
 
-                if (ActionId is not (Action.UnknownJump_Right or Action.UnknownJump_Left))
+                if (ActionId is not (Action.BouncyJump_Right or Action.BouncyJump_Left))
                 {
                     ActionId = IsFacingRight ? Action.Jump_Right : Action.Jump_Left;
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
@@ -1180,8 +1180,8 @@ public partial class Rayman
             case FsmAction.Init:
                 PlaySound(Rayman3SoundEvent.Play__Helico01_Mix10);
 
-                if (ActionId is Action.UnknownJump_Right or Action.UnknownJump_Left)
-                    ActionId = IsFacingRight ? Action.UnknownHelico_Right : Action.UnknownHelico_Left;
+                if (ActionId is Action.BouncyJump_Right or Action.BouncyJump_Left)
+                    ActionId = IsFacingRight ? Action.BouncyHelico_Right : Action.BouncyHelico_Left;
                 else
                     ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
 
@@ -2608,6 +2608,37 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_Bounce(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = IsFacingRight ? Action.BeginBounce_Right : Action.BeginBounce_Left;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (Flag1_5)
+                {
+                    Flag1_5 = false;
+
+                    if (Engine.Settings.Platform == Platform.NGage)
+                        ActionId = IsFacingRight ? Action.BouncyJump_Right : Action.BouncyJump_Left;
+
+                    Fsm.ChangeAction(Fsm_Jump);
+                }
+                break;
+
+            case FsmAction.UnInit:
+                if (Engine.Settings.Platform != Platform.NGage)
+                    ActionId = IsFacingRight ? Action.BouncyJump_Right : Action.BouncyJump_Left;
+                break;
+        }
+    }
+
     private void Fsm_EndMap(FsmAction action)
     {
         switch (action)
@@ -2880,6 +2911,133 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_HitKnockback(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                LinkedMovementActor = null;
+                Timer = 0;
+
+                if (Flag1_4)
+                {
+                    CheckAgainstMapCollision = false;
+                    CheckAgainstObjectCollision = false;
+                    ReceiveDamage(HitPoints);
+                    Flag1_4 = false;
+                }
+
+                if (!Flag1_C)
+                {
+                    // TODO: N-Gage checks if AttachedObject is null and if so goes to the "else". However on GBA it'd
+                    //       probably go to the first block if null? Check if this is ever an issue.
+                    if (Position.X - AttachedObject.Position.X >= 0)
+                        ActionId = IsFacingRight ? Action.KnockbackForwards_Right : Action.KnockbackBackwards_Left;
+                    else
+                        ActionId = IsFacingRight ? Action.KnockbackBackwards_Right : Action.KnockbackForwards_Left;
+                }
+                else
+                {
+                    if (Position.X - AttachedObject.Position.X >= 0)
+                        ActionId = IsFacingRight ? Action.SmallKnockbackForwards_Right : Action.SmallKnockbackBackwards_Left;
+                    else
+                        ActionId = IsFacingRight ? Action.SmallKnockbackBackwards_Right : Action.SmallKnockbackForwards_Left;
+                }
+
+                NextActionId = null;
+                AttachedObject = null;
+                PlaySound(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
+                break;
+
+            case FsmAction.Step:
+                if (HitPoints != 0)
+                {
+                    if (!FsmStep_DoInTheAir())
+                        return;
+                }
+
+                if (CheckInput(GbaInput.Left))
+                {
+                    if (IsFacingRight)
+                        AnimatedObject.FlipX = true;
+                }
+                else if (CheckInput(GbaInput.Right))
+                {
+                    if (IsFacingLeft)
+                        AnimatedObject.FlipX = false;
+                }
+
+                Timer++;
+
+                // TODO: Seems to be a bug - fix? The flag is true if you started out climbing. This should probably set it to false after 25 frames.
+                if (!Flag2_1 && Timer > 25)
+                    Flag2_1 = false;
+
+                if (HitPoints == 0 && Timer > 20)
+                {
+                    Fsm.ChangeAction(Fsm_Dying);
+                    return;
+                }
+
+                if (HitPoints != 0 && Timer > 90)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+
+                if (HitPoints != 0 && CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                {
+                    Fsm.ChangeAction(Fsm_Helico);
+                    return;
+                }
+
+                if (HitPoints != 0 && CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                {
+                    Fsm.ChangeAction(FUN_0802ddac);
+                    return;
+                }
+
+                if (HitPoints != 0 && IsNearHangableEdge())
+                {
+                    Fsm.ChangeAction(Fsm_HangOnEdge);
+                    return;
+                }
+
+                if (HitPoints != 0 && HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                if (HitPoints != 0 && Timer > 10 && IsOnHangable())
+                {
+                    BeginHang();
+                    Fsm.ChangeAction(Fsm_Hang);
+                    return;
+                }
+
+                if (HitPoints != 0 && !Flag2_1 && IsOnClimbableVertical() == 1)
+                {
+                    Fsm.ChangeAction(Fsm_Climb);
+                    return;
+                }
+
+                // TODO: Implement
+                //if (HitPoints != 0 && CheckInput2(GbaInput.L) && IsOnWallJumpable())
+                //{
+
+                //}
+                break;
+
+            case FsmAction.UnInit:
+                CheckAgainstMapCollision = true;
+                CheckAgainstObjectCollision = true;
+                Flag2_1 = false;
+                break;
+        }
+    }
+
     private void Fsm_Dying(FsmAction action)
     {
         switch (action)
@@ -3110,4 +3268,7 @@ public partial class Rayman
     private void FUN_080224f4(FsmAction action) { }
     private void FUN_1005bf7c(FsmAction action) { }
     private void FUN_08027b80(FsmAction action) { }
+    private void FUN_1005dea0(FsmAction action) { }
+    private void FUN_1005dfa4(FsmAction action) { }
+    private void FUN_1005e04c(FsmAction action) { }
 }

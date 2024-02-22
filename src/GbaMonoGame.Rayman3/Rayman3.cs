@@ -318,6 +318,7 @@ public class Rayman3 : GbaGame
             { ActorType.WaterSplash, (instanceId, scene, resource) => new WaterSplash(instanceId, scene, resource) },
             { ActorType.Explosion, (instanceId, scene, resource) => new Explosion(instanceId, scene, resource) },
 
+            { ActorType.BouncyPlatform, (instanceId, scene, resource) => new BouncyPlatform(instanceId, scene, resource) },
             { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
 
             { ActorType.Lums, (instanceId, scene, resource) => new Lums(instanceId, scene, resource) },
