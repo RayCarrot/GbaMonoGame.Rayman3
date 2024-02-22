@@ -25,8 +25,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
-        // Force frame-rate to 60. The GBA framerate is actually 59.727500569606, but we do 60.
-        SetFramerate(60);
+        SetFramerate(Framerate);
     }
 
     #endregion
@@ -34,6 +33,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     #region Private Fields
 
     private const string InstalledGamesDirName = "Games";
+
+    // The GBA framerate is actually 59.727500569606, but we do 60
+    private const float Framerate = 60;
 
     private readonly GraphicsDeviceManager _graphics;
     private readonly Stopwatch _updateTimeStopWatch;
@@ -405,6 +407,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             else
                 Resume();
         }
+
+        // Speed up game
+        if (!_showMenu && JoyPad.Check(Keys.LeftShift))
+            SetFramerate(Framerate * 4);
+        else if (JoyPad.CheckSingleReleased(Keys.LeftShift))
+            SetFramerate(Framerate);
 
         // Toggle menu
         if (!_menu.IsTransitioningOut && JoyPad.CheckSingle(Keys.Escape))

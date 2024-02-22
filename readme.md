@@ -101,6 +101,7 @@ The button mapping will be made customizable in the future, along with controlle
 | GBA R-button             | W                  |
 | GBA L-button             | Q                  |
 | Toggle pause             | Ctrl+P             |
+| Speed up game            | Left shift         |
 | Run one frame            | Ctrl+F             |
 | Toggle debug mode        | Tab                |
 | Toggle menu              | Escape             |
