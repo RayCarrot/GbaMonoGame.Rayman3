@@ -62,6 +62,9 @@ public class LoggerDebugWindow : DebugWindow
             ImGui.PopStyleColor();
         }
 
+        if (ImGui.Button("Clear"))
+            _logs.Clear();
+
         ImGui.Spacing();
 
         foreach (Log log in _logs)
