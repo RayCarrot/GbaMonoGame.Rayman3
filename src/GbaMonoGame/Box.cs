@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
+﻿using System.Text.Json.Serialization;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame;
@@ -44,11 +45,16 @@ public readonly struct Box
     public float MaxX { get; }
     public float MaxY { get; }
 
+    [JsonIgnore]
     public float Width => MaxX - MinX;
+    [JsonIgnore]
     public float Height => MaxY - MinY;
 
+    [JsonIgnore]
     public Vector2 Center => new(Width / 2 + MinX, Height / 2 + MinY);
+    [JsonIgnore]
     public Vector2 Position => new(MinX, MinY);
+    [JsonIgnore]
     public Vector2 Size => new(Width, Height);
 
     public Box Offset(Vector2 offset) => new(MinX + offset.X, MinY + offset.Y, MaxX + offset.X, MaxY + offset.Y);
