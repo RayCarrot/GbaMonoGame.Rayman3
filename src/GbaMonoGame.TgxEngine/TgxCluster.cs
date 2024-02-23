@@ -14,8 +14,10 @@ public class TgxCluster
         Size = new Vector2(cluster.SizeX * Constants.TileSize, cluster.SizeY * Constants.TileSize);
         Stationary = cluster.Stationary;
 
-        // Render backgrounds to the screen camera
-        Camera = !Stationary && ScrollFactor == Vector2.One ? tgxCamera : Engine.ScreenCamera;
+        // Render parallax backgrounds to a separate camera
+        Camera = !Stationary && ScrollFactor == Vector2.One 
+            ? tgxCamera 
+            : new ParallaxClusterCamera(Engine.GameWindow, this);
     }
 
     private Vector2 _position;
@@ -47,14 +49,14 @@ public class TgxCluster
         }
     }
 
-    public Vector2 MaxPosition => GetMaxPosition(Camera);
+    public Vector2 MaxPosition => GetMaxPosition(Camera.Resolution);
 
     public Vector2 ScrollFactor { get; set; }
 
     public bool Stationary { get; }
     public GfxCamera Camera { get; }
 
-    public Vector2 GetMaxPosition(GfxCamera camera) => new(Math.Max(0, Size.X - camera.Resolution.X), Math.Max(0, Size.Y - camera.Resolution.Y));
+    public Vector2 GetMaxPosition(Vector2 resolution) => new(Math.Max(0, Size.X - resolution.X), Math.Max(0, Size.Y - resolution.Y));
 
     public void AddLayer(TgxGameLayer layer)
     {

@@ -9,30 +9,44 @@ public abstract class GfxCamera
     protected GfxCamera(GameWindow gameWindow)
     {
         GameWindow = gameWindow;
-        UpdateResolution();
 
         gameWindow.GameResolutionChanged += GameWindow_GameResolutionChanged;
         gameWindow.Resized += GameWindow_Resized;
     }
 
+    private bool _hasSetResolution;
     private Vector2 _resolution;
     private Matrix _matrix;
+    private Box _visibleArea;
 
     private GameWindow GameWindow { get; }
 
     public Vector2 Resolution
     {
-        get => _resolution;
+        get
+        {
+            if (!_hasSetResolution)
+                UpdateResolution();
+
+            return _resolution;
+        }
         private set
         {
             _resolution = value;
+            _hasSetResolution = true;
             Matrix = CreateRenderMatrix(Resolution);
         }
     }
 
     public Matrix Matrix
     {
-        get => _matrix;
+        get
+        {
+            if (!_hasSetResolution)
+                UpdateResolution();
+
+            return _matrix;
+        }
         private set
         {
             _matrix = value;
@@ -40,7 +54,17 @@ public abstract class GfxCamera
         }
     }
 
-    public Box VisibleArea { get; private set; }
+    public Box VisibleArea
+    {
+        get
+        {
+            if (!_hasSetResolution)
+                UpdateResolution();
+
+            return _visibleArea;
+        }
+        private set => _visibleArea = value;
+    }
 
     private void GameWindow_GameResolutionChanged(object sender, EventArgs e) => 
         UpdateResolution();

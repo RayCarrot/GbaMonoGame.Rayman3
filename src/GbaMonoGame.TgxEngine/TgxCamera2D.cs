@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.TgxEngine;
@@ -35,32 +36,33 @@ public class TgxCamera2D : TgxCamera
             TgxCluster mainCluster = GetMainCluster();
             mainCluster.Position = value;
 
-            Vector2 originalMax = mainCluster.GetMaxPosition(Engine.ScreenCamera);
-            Vector2 scaledMax = mainCluster.GetMaxPosition(this);
-
             foreach (TgxCluster cluster in Clusters)
             {
                 if (cluster.Stationary)
                     continue;
 
+                //Vector2 scrollFactor = cluster.GetMaxPosition(Engine.GameWindow.OriginalGameResolution) /
+                //                       mainCluster.GetMaxPosition(Engine.GameWindow.OriginalGameResolution);
                 Vector2 scrollFactor;
 
-                // If it's not scaled we have to update the scroll factor so it scrolls the same range
-                if (cluster.Camera == Engine.ScreenCamera)
+                // If it's not scaled to the main playfield camera we have to update the scroll factor
+                if (cluster.Camera != this && Engine.ScreenCamera.Resolution != Engine.GameWindow.OriginalGameResolution)
                 {
-                    scrollFactor = originalMax * cluster.ScrollFactor / scaledMax;
+                    // Determine if the cluster wraps horizontally. We assume that none of them wrap vertically.
+                    bool wrapX = cluster.GetLayers().Any(x => x.PixelWidth < cluster.Size.X);
 
-                    // Avoid issues with dividing by 0 if max is 0
-                    if (!Single.IsFinite(scrollFactor.X))
-                        scrollFactor = new Vector2(0, scrollFactor.Y);
-                    if (!Single.IsFinite(scrollFactor.Y))
-                        scrollFactor = new Vector2(scrollFactor.X, 0);
-
-                    // TODO: Have some setting for limiting bg scrolling when scaled like so. Do we need to multiply by some scaling value though or is this value good?
-                    //if (scrollFactor.Y > 0.7)
-                    //    scrollFactor = new Vector2(scrollFactor.X, 0.7f);
-                    //if (scrollFactor.X > 0.7) // TODO: This breaks boss machine, but needed for Menhir Hills
-                    //    scrollFactor = new Vector2(0.7f, scrollFactor.Y);
+                    if (wrapX)
+                    {
+                        // If the cluster wraps we use the original scroll factor (scaling it by the different camera resolutions)
+                        scrollFactor = cluster.ScrollFactor * cluster.Camera.Resolution / Resolution;
+                    }
+                    else
+                    {
+                        // If the cluster does not wrap we want it to scroll evenly through the width of the level
+                        scrollFactor = new Vector2(
+                            cluster.GetMaxPosition(cluster.Camera.Resolution).X / mainCluster.MaxPosition.X,
+                            cluster.ScrollFactor.Y);
+                    }
                 }
                 else
                 {
