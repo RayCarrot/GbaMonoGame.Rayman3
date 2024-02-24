@@ -9,9 +9,7 @@ public class UserInfoWorld : Dialog
     public UserInfoWorld(Scene2D scene, bool hasBlueLum)
     {
         LifeBar = new LifeBar(scene);
-
-        // TODO: Level info bar
-
+        LevelInfoBar = new LevelInfoBar();
         Lums1000Bar = new Lums1000Bar();
 
         // TODO: Cages 50 bar
@@ -34,6 +32,7 @@ public class UserInfoWorld : Dialog
     }
 
     private LifeBar LifeBar { get; }
+    private LevelInfoBar LevelInfoBar { get; }
     private Lums1000Bar Lums1000Bar { get; }
 
     private bool ShouldPlayCurtainAnimation { get; set; }
@@ -53,15 +52,17 @@ public class UserInfoWorld : Dialog
 
     public void SetLevelInfoBar(int levelCurtainId)
     {
-        // TODO: Implement
+        LevelInfoBar.SetLevel(levelCurtainId);
     }
 
     public override void Load()
     {
         LifeBar.Load();
+        LevelInfoBar.Load();
         Lums1000Bar.Load();
 
         LifeBar.Set();
+        LevelInfoBar.Set();
         Lums1000Bar.Set();
 
         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId != MapId.WorldMap)
@@ -107,6 +108,7 @@ public class UserInfoWorld : Dialog
         if (!Hide)
         {
             LifeBar.Draw(animationPlayer);
+            LevelInfoBar.Draw(animationPlayer);
             Lums1000Bar.Draw(animationPlayer);
         }
     }
