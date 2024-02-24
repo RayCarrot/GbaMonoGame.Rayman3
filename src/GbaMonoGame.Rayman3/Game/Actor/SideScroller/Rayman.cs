@@ -1115,26 +1115,29 @@ public sealed partial class Rayman : MovableActor
 
     private void AutoSave()
     {
-        switch (GameInfo.MapId)
+        if (FinishedMap)
         {
-            case MapId.WoodLight_M1:
-            case MapId.FairyGlade_M1:
-            case MapId.SanctuaryOfBigTree_M1:
-            case MapId.EchoingCaves_M1:
-            case MapId.CavesOfBadDreams_M1:
-            case MapId.MenhirHills_M1:
-            case MapId.SanctuaryOfStoneAndFire_M1:
-            case MapId.SanctuaryOfStoneAndFire_M2:
-            case MapId.BeneathTheSanctuary_M1:
-            case MapId.ThePrecipice_M1:
-            case MapId.TheCanopy_M1:
-            case MapId.SanctuaryOfRockAndLava_M1:
-            case MapId.SanctuaryOfRockAndLava_M2:
-            case MapId.TombOfTheAncients_M1:
-            case MapId.IronMountains_M1:
-            case MapId.PirateShip_M1:
-            case MapId.BossFinal_M1:
-                return;
+            switch (GameInfo.MapId)
+            {
+                case MapId.WoodLight_M1:
+                case MapId.FairyGlade_M1:
+                case MapId.SanctuaryOfBigTree_M1:
+                case MapId.EchoingCaves_M1:
+                case MapId.CavesOfBadDreams_M1:
+                case MapId.MenhirHills_M1:
+                case MapId.SanctuaryOfStoneAndFire_M1:
+                case MapId.SanctuaryOfStoneAndFire_M2:
+                case MapId.BeneathTheSanctuary_M1:
+                case MapId.ThePrecipice_M1:
+                case MapId.TheCanopy_M1:
+                case MapId.SanctuaryOfRockAndLava_M1:
+                case MapId.SanctuaryOfRockAndLava_M2:
+                case MapId.TombOfTheAncients_M1:
+                case MapId.IronMountains_M1:
+                case MapId.PirateShip_M1:
+                case MapId.BossFinal_M1:
+                    return;
+            }
         }
 
         if (GameInfo.MapId is not (MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 or MapId.WorldMap))
