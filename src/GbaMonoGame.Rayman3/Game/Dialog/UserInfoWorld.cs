@@ -11,8 +11,7 @@ public class UserInfoWorld : Dialog
         LifeBar = new LifeBar(scene);
         LevelInfoBar = new LevelInfoBar();
         Lums1000Bar = new Lums1000Bar();
-
-        // TODO: Cages 50 bar
+        Cages50Bar = new Cages50Bar();
 
         if (hasBlueLum)
         {
@@ -34,6 +33,7 @@ public class UserInfoWorld : Dialog
     private LifeBar LifeBar { get; }
     private LevelInfoBar LevelInfoBar { get; }
     private Lums1000Bar Lums1000Bar { get; }
+    private Cages50Bar Cages50Bar { get; }
 
     private bool ShouldPlayCurtainAnimation { get; set; }
     
@@ -60,10 +60,12 @@ public class UserInfoWorld : Dialog
         LifeBar.Load();
         LevelInfoBar.Load();
         Lums1000Bar.Load();
+        Cages50Bar.Load();
 
         LifeBar.Set();
         LevelInfoBar.Set();
         Lums1000Bar.Set();
+        Cages50Bar.Set();
 
         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId != MapId.WorldMap)
         {
@@ -110,6 +112,7 @@ public class UserInfoWorld : Dialog
             LifeBar.Draw(animationPlayer);
             LevelInfoBar.Draw(animationPlayer);
             Lums1000Bar.Draw(animationPlayer);
+            Cages50Bar.Draw(animationPlayer);
         }
     }
 }
