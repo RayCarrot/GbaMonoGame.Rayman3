@@ -138,7 +138,7 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.Step:
-                if (((World)Frame.Current).FinishedTransitioningOut)
+                if (!((World)Frame.Current).IsTransitioningOut())
                     Fsm.ChangeAction(Fsm_Unlocked);
                 break;
 

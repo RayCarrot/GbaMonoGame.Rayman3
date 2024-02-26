@@ -11,7 +11,7 @@ public sealed partial class Murfy : MovableActor
     public Murfy(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         TargetActor = (Rayman)Scene.MainActor;
-        Byte_8D = 1;
+        IsForBonusInWorld1 = true;
 
         if (Engine.Settings.Platform == Platform.NGage)
             NGage_Byte_8E = 1;
@@ -19,7 +19,7 @@ public sealed partial class Murfy : MovableActor
         Fsm.ChangeAction(Fsm_PreInit);
     }
 
-    private Rayman TargetActor { get; }
+    private BaseActor TargetActor { get; set; }
     private TextBoxDialog TextBox { get; set; }
     private Vector2 TargetPosition { get; set; }
     private Vector2 MainActorPosition { get; set; }
@@ -30,8 +30,9 @@ public sealed partial class Murfy : MovableActor
     private bool HasPlayedCutscene { get; set; }
     private bool IsTargetActorFacingRight { get; set; }
     private bool ShouldSpawn { get; set; }
-    private byte Byte_8D { get; set; }
     private byte NGage_Byte_8E { get; set; }
+    
+    public bool IsForBonusInWorld1 { get; set; }
 
     private void SetText()
     {
@@ -78,10 +79,10 @@ public sealed partial class Murfy : MovableActor
                 break;
 
             case MapId.World1:
-                if (Byte_8D == 0)
-                    TextBox.SetText(14);
-                else
+                if (IsForBonusInWorld1)
                     TextBox.SetText(7);
+                else
+                    TextBox.SetText(14);
                 break;
 
             case MapId.World2:
@@ -172,5 +173,10 @@ public sealed partial class Murfy : MovableActor
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__MurfHeli_Mix01);
             }
         }
+    }
+
+    public void SetTarget(BaseActor targetActor)
+    {
+        TargetActor = targetActor;
     }
 }

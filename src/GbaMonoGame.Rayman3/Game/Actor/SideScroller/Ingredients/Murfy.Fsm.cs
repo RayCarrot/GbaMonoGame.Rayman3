@@ -97,9 +97,9 @@ public partial class Murfy
                     Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
                     if (TargetActor.Position.X < 120)
                     {
-                        TargetActor.ChangeAction();
+                        ((ActionActor)TargetActor).ChangeAction();
                         TargetActor.AnimatedObject.FlipX = false;
-                        TargetActor.ChangeAction();
+                        ((ActionActor)TargetActor).ChangeAction();
                     }
                 }
 
@@ -249,7 +249,7 @@ public partial class Murfy
                 bool isBeingAttacked = false;
                 if (TargetActor == Scene.MainActor)
                 {
-                    foreach (RaymanBody fist in TargetActor.GetActiveFists())
+                    foreach (RaymanBody fist in ((Rayman)TargetActor).GetActiveFists())
                     {
                         if (IsAttackedByFist(fist))
                             isBeingAttacked = true;
@@ -293,7 +293,7 @@ public partial class Murfy
                     return;
 
                 bool isSafe = true;
-                foreach (RaymanBody fist in TargetActor.GetActiveFists())
+                foreach (RaymanBody fist in ((Rayman)TargetActor).GetActiveFists())
                 {
                     if (IsAttackedByFist(fist))
                         isSafe = false;

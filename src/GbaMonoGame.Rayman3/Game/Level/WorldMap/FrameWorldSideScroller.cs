@@ -26,14 +26,9 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Private Properties
-
-    private byte field6_0x16 { get; set; }
-
-    #endregion
-
     #region Public Properties
 
+    public bool BlockPause { get; set; }
     public TransitionsFX TransitionsFX { get; set; }
     public PauseDialog PauseDialog { get; set; }
 
@@ -47,6 +42,8 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
     #endregion
 
     #region Pubic Methods
+
+    public bool IsBusy() => CurrentStepAction != Step_Normal;
 
     public override void Init()
     {
@@ -88,7 +85,7 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         if (!SoundEventsManager.IsSongPlaying(GameInfo.GetLevelMusicSoundEvent())) // TODO: N-Gage doesn't have this condition - why?
             GameInfo.PlayLevelMusic();
 
-        field6_0x16 = 0;
+        BlockPause = false;
         CurrentStepAction = Step_Normal;
     }
 
@@ -122,7 +119,7 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
         LevelMusicManager.Step();
 
-        if (JoyPad.CheckSingle(GbaInput.Start) && field6_0x16 == 0)
+        if (JoyPad.CheckSingle(GbaInput.Start) && !BlockPause)
         {
             GameTime.IsPaused = true;
             // TODO: Go to pause state

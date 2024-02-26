@@ -60,6 +60,8 @@ public enum Message
 
     Main_ExitCutscene = 1059,
 
+    Cam_SetPosition = 1062,
+
     Main_EnterLevelCurtain = 1081,
     Main_BeginInFrontOfLevelCurtain = 1082,
     Main_EndInFrontOfLevelCurtain = 1083,
@@ -68,6 +70,9 @@ public enum Message
     Main_Damaged4 = 1086,
 
     Main_EnterCutscene = 1088,
+
+    Cam_Lock = 1090,
+    Cam_Unlock = 1091,
 
     Main_LockedLevelCurtain = 1093,
 }

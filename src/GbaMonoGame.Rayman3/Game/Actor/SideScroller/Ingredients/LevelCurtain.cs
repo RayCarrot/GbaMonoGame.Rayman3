@@ -4,6 +4,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Create action enum
 public sealed partial class LevelCurtain : ActionActor
 {
     public LevelCurtain(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
@@ -130,7 +131,7 @@ public sealed partial class LevelCurtain : ActionActor
 
     private int InitialActionId { get; }
     private MapId MapId { get; }
-    private bool IsLocked { get; }
+    private bool IsLocked { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -145,5 +146,11 @@ public sealed partial class LevelCurtain : ActionActor
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
         DrawLarge(animationPlayer, forceDraw);
+    }
+
+    public void Unlock()
+    {
+        AnimatedObject.BasePaletteIndex = 0;
+        IsLocked = false;
     }
 }

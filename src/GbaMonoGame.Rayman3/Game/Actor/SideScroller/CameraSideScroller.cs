@@ -327,6 +327,21 @@ public class CameraSideScroller : CameraActor2D
                 TargetY = (byte)param;
                 return true;
 
+            case Message.Cam_SetPosition:
+                Scene.Playfield.Camera.Position = (Vector2)param;
+                return true;
+
+            case Message.Cam_Lock:
+                if (param is Vector2 pos)
+                    Scene.Playfield.Camera.Position = pos;
+                
+                Fsm.ChangeAction(null);
+                return true;
+
+            case Message.Cam_Unlock:
+                Fsm.ChangeAction(Fsm_Default);
+                return true;
+
             default:
                 return false;
         }

@@ -37,12 +37,12 @@ public class UserInfoWorld : Dialog
 
     private bool ShouldPlayCurtainAnimation { get; set; }
     
-    public bool Hide { get; set; }
-
     // The game only has a single animated object, but we split it into two in order
     // to support different screen resolutions (so it fills the width of the screen)
-    public AnimatedObject CurtainsLeft { get; set; }
-    public AnimatedObject CurtainsRight { get; set; }
+    private AnimatedObject CurtainsLeft { get; set; }
+    private AnimatedObject CurtainsRight { get; set; }
+
+    public bool Hide { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -53,6 +53,41 @@ public class UserInfoWorld : Dialog
     public void SetLevelInfoBar(int levelCurtainId)
     {
         LevelInfoBar.SetLevel(levelCurtainId);
+    }
+
+    public bool HasFinishedMovingInCurtains()
+    {
+        if (CurtainsLeft == null)
+            return true;
+
+        if (CurtainsLeft.EndOfAnimation)
+        {
+            CurtainsLeft.CurrentAnimation = 0;
+            CurtainsRight.CurrentAnimation = 0;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void MoveOutCurtains()
+    {
+        if (CurtainsLeft == null)
+            return;
+
+        CurtainsLeft.CurrentAnimation = 2;
+        CurtainsRight.CurrentAnimation = 2;
+    }
+
+    public bool HasFinishedMovingOutCurtains()
+    {
+        if (CurtainsLeft == null)
+            return true;
+
+        if (CurtainsLeft.EndOfAnimation)
+            return true;
+
+        return false;
     }
 
     public override void Load()
