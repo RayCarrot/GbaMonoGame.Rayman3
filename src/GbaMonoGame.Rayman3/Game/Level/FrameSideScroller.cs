@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
-using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Action = System.Action;
@@ -19,8 +18,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Private Properties
 
-    private GfxScreen CircleFXScreen { get; set; }
-    private CircleFXScreenRenderer CircleFXRenderer { get; set; }
+    private CircleWindowEffectObject CircleEffect { get; set; }
     private int CircleFXTimer { get; set; }
     private CircleFXTransitionMode CircleFXMode { get; set; }
 
@@ -72,7 +70,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
                     CircleFXTimer = 252;
                     CircleFXMode = CircleFXTransitionMode.FinishedIn;
                 }
-                CircleFXRenderer.Radius = CircleFXTimer;
+                CircleEffect.Radius = CircleFXTimer;
                 break;
 
             case CircleFXTransitionMode.Out:
@@ -82,11 +80,12 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
                     CircleFXTimer = 0;
                     CircleFXMode = CircleFXTransitionMode.FinishedOut;
                 }
-                CircleFXRenderer.Radius = CircleFXTimer;
+                CircleEffect.Radius = CircleFXTimer;
                 break;
         }
 
-        CircleFXScreen.IsEnabled = CircleFXMode != CircleFXTransitionMode.None;
+        if (CircleFXMode != CircleFXTransitionMode.None)
+            Scene.AnimationPlayer.PlayFront(CircleEffect);
     }
 
     #endregion
@@ -95,19 +94,11 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     protected void CreateCircleFXTransition()
     {
-        // Add the circle FX as a screen. On the GBA this is done using a window.
-        CircleFXRenderer = new CircleFXScreenRenderer();
-        CircleFXScreen = new GfxScreen(4)
+        // Add the circle FX as an effect object. On the GBA this is done using a window.
+        CircleEffect = new CircleWindowEffectObject
         {
-            Priority = -1,
-            IsEnabled = false,
-            Camera = Engine.ScreenCamera, // If we use the tgx camera then it won't fill the entire screen, so use the screen camera for now
-            Renderer = CircleFXRenderer,
+            SpritePriority = 0,
         };
-
-        // TODO: N-Gage seems to only have a transition when enter the hub, and it's a slight fade
-        if (Engine.Settings.Platform == Platform.GBA)
-            Gfx.AddScreen(CircleFXScreen);
     }
 
     #endregion
@@ -129,9 +120,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideOut_Mix01);
         }
 
-        CircleFXScreen.IsEnabled = true;
-        CircleFXRenderer.Radius = CircleFXTimer;
-        CircleFXRenderer.CirclePosition = Scene.MainActor.ScreenPosition - new Vector2(0, 32);
+        CircleEffect.Radius = CircleFXTimer;
+        CircleEffect.CirclePosition = Scene.MainActor.ScreenPosition - new Vector2(0, 32);
     }
 
     public override void Init()
@@ -190,6 +180,9 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CreateCircleFXTransition();
         InitNewCircleFXTransition(true);
 
+        // We have to show the circle effect already now or we have one game frame with the level visible
+        Scene.AnimationPlayer.PlayFront(CircleEffect);
+
         Scene.AnimationPlayer.Execute();
 
         GameInfo.PlayLevelMusic();
@@ -205,8 +198,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         CircleFXTimer = 0;
         CircleFXMode = CircleFXTransitionMode.None;
-        CircleFXScreen = null;
-        CircleFXRenderer = null;
+        CircleEffect = null;
 
         GameInfo.StopLevelMusic();
         SoundEventsManager.StopAllSongs();

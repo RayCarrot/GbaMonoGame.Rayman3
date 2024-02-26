@@ -16,5 +16,19 @@ namespace GbaMonoGame.Rayman3
         }
 
         protected static Texture2D Pixel { get; }
+
+        protected void DrawRectangle(Vector2 position, Vector2 size, Color color)
+        {
+            Gfx.AddSprite(new Sprite
+            {
+                Texture = Pixel,
+                Position = position,
+                Priority = SpritePriority,
+                Center = false,
+                AffineMatrix = new AffineMatrix(0, size),
+                Color = color,
+                Camera = Engine.ScreenCamera,
+            });
+        }
     }
 }

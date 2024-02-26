@@ -24,17 +24,6 @@ public class PaletteFadeEffectObject : EffectObject
     {
         // We draw a black, faded, texture over the screen to emulate fading the palette
         if (Fade is > 0 and <= 1)
-        {
-            Gfx.AddSprite(new Sprite
-            {
-                Texture = Pixel,
-                Position = Vector2.Zero,
-                Priority = SpritePriority,
-                Center = false,
-                AffineMatrix = new AffineMatrix(0, Engine.ScreenCamera.Resolution),
-                Color = Color.Black * Fade,
-                Camera = Engine.ScreenCamera,
-            });
-        }
+            DrawRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
     }
 }
