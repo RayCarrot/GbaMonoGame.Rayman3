@@ -91,4 +91,11 @@ public class TransitionsFX
         BrightnessCoefficient = 0;
         StepSize = stepSize;
     }
+
+    public void StopFade()
+    {
+        FadeCoefficient = 0;
+        BrightnessCoefficient = 1;
+        Gfx.Fade = 0;
+    }
 }

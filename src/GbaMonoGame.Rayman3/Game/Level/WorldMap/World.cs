@@ -31,7 +31,7 @@ public class World : FrameWorldSideScroller
         UserInfo.Hide = true;
         CurrentExStepAction = StepEx_MoveInCurtains;
         PaletteFadeTimer = 0;
-        Gfx.Fade = 0;
+        TransitionsFX.StopFade(); // Game does this by setting BLDCNT to 0, thus ignoring the alpha value
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
     }
 
