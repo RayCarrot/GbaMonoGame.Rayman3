@@ -210,6 +210,7 @@ public static class FontManager
             TextureRectangle = loadedFont.CharacterRectangles[c],
             Position = position,
             Priority = priority,
+            Center = true,
             AffineMatrix = affineMatrix,
             Color = color,
             Camera = camera

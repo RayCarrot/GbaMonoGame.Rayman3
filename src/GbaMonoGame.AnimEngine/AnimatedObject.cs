@@ -327,6 +327,7 @@ public class AnimatedObject : AObject
                         FlipX = channel.FlipX ^ FlipX,
                         FlipY = channel.FlipY ^ FlipY,
                         Priority = SpritePriority,
+                        Center = true,
                         AffineMatrix = affineMatrix,
                         Alpha = IsAlphaBlendEnabled ? Alpha : null,
                         Camera = Camera

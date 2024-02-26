@@ -12,7 +12,7 @@ public class Sprite
     public bool FlipY { get; set; }
     public int Priority { get; set; }
 
-    public bool Center { get; set; } = true;
+    public bool Center { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
     public Color Color { get; set; } = Color.White;
 
