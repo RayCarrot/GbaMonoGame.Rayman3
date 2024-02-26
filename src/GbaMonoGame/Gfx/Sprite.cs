@@ -1,101 +1,24 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame;
 
 public class Sprite
 {
-    public Sprite(Texture2D texture, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color, float? alpha) 
-        : this(texture, texture.Bounds, position, flipX, flipY, priority, affineMatrix, camera, color, alpha) { }
+    public Texture2D Texture { get; set; }
+    public Rectangle TextureRectangle { get; set; }
+    public Vector2 Position { get; set; }
+    public bool FlipX { get; set; }
+    public bool FlipY { get; set; }
+    public int Priority { get; set; }
 
-    public Sprite(Texture2D texture, Rectangle textureRectangle, Vector2 position, bool flipX, bool flipY, int priority, AffineMatrix? affineMatrix, GfxCamera camera, Color? color, float? alpha)
-    {
-        Texture = texture;
-        TextureRectangle = textureRectangle;
-        Position = position;
-        FlipX = flipX;
-        FlipY = flipY;
-        Priority = priority;
-
-        if (affineMatrix != null)
-        {
-            // The following affine sprite rendering code has been re-implemented from Ray1Map. Credits to Droolie for writing it!
-
-            Rotation = MathF.Atan2(affineMatrix.Value.Pb, affineMatrix.Value.Pa);
-
-            float a = affineMatrix.Value.Pa;
-            float b = affineMatrix.Value.Pb;
-            float c = affineMatrix.Value.Pc;
-            float d = affineMatrix.Value.Pd;
-            float delta = a * d - b * c;
-
-            Vector2 scale;
-
-            // Apply the QR-like decomposition.
-            if (a != 0 || b != 0)
-            {
-                float r = MathF.Sqrt(a * a + b * b);
-                scale = new Vector2(r, delta / r);
-            }
-            else if (c != 0 || d != 0)
-            {
-                float s = MathF.Sqrt(c * c + d * d);
-                scale = new Vector2(delta / s, s);
-            }
-            else
-            {
-                scale = Vector2.Zero;
-            }
-
-            if (scale.X != 0)
-                scale.X = 1f / scale.X;
-
-            if (scale.Y != 0)
-                scale.Y = 1f / scale.Y;
-
-            Scale = scale;
-        }
-        else
-        {
-            Rotation = 0;
-            Scale = Vector2.One;
-        }
-
-        // Since we can't set a negative sprite scale in MonoGame we
-        // instead get the absolute scale and flip the sprite accordingly
-
-        Effects = SpriteEffects.None;
-
-        if (FlipX || Scale.X < 0)
-            Effects |= SpriteEffects.FlipHorizontally;
-        if (FlipY || Scale.Y < 0)
-            Effects |= SpriteEffects.FlipVertically;
-
-        Scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
-        Origin = new Vector2(TextureRectangle.Width / 2f, TextureRectangle.Height / 2f);
-        Color = color ?? Color.White;
-        Alpha = alpha;
-        Camera = camera;
-    }
-
-    public Texture2D Texture { get; }
-    public Rectangle TextureRectangle { get; }
-    public Vector2 Position { get; }
-    public bool FlipX { get; }
-    public bool FlipY { get; }
-    public int Priority { get; }
-
-    public float Rotation { get; }
-    public Vector2 Origin { get; }
-    public Vector2 Scale { get; }
-    public SpriteEffects Effects { get; }
-    public Color Color { get; }
+    public AffineMatrix? AffineMatrix { get; set; }
+    public Color Color { get; set; } = Color.White;
 
     // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other.
     public float? Alpha { get; set; }
 
-    public GfxCamera Camera { get; }
+    public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
 
     public void Draw(GfxRenderer renderer)
     {
@@ -105,6 +28,22 @@ public class Sprite
         if (Alpha != null)
             color = new Color(color, Alpha.Value);
 
-        renderer.Draw(Texture, Position + Origin, TextureRectangle, Rotation, Origin, Scale, Effects, color);
+        Rectangle textureRectangle = TextureRectangle;
+        if (textureRectangle == Rectangle.Empty)
+            textureRectangle = Texture.Bounds;
+
+        Vector2 origin = new(textureRectangle.Width / 2f, textureRectangle.Height / 2f);
+
+        SpriteEffects effects = SpriteEffects.None;
+        if (AffineMatrix?.FlipX ?? false ^ FlipX)
+            effects |= SpriteEffects.FlipHorizontally;
+        if (AffineMatrix?.FlipY ?? false ^ FlipY)
+            effects |= SpriteEffects.FlipVertically;
+
+        float rotation = AffineMatrix?.Rotation ?? 0;
+
+        Vector2 scale = AffineMatrix?.Scale ?? Vector2.One;
+
+        renderer.Draw(Texture, Position + origin, textureRectangle, rotation, origin, scale, effects, color);
     }
 }

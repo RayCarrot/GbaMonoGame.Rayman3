@@ -320,16 +320,17 @@ public class AnimatedObject : AObject
                         spriteSize: channel.SpriteSize,
                         tileIndex: channel.TileIndex,
                         paletteIndex: BasePaletteIndex + channel.PalIndex);
-                    Gfx.AddSprite(new Sprite(
-                        texture: tex,
-                        position: new Vector2(xPos, yPos),
-                        flipX: channel.FlipX ^ FlipX,
-                        flipY: channel.FlipY ^ FlipY,
-                        priority: SpritePriority,
-                        affineMatrix: affineMatrix,
-                        camera: Camera,
-                        color: null,
-                        alpha: IsAlphaBlendEnabled ? Alpha : null));
+                    Gfx.AddSprite(new Sprite()
+                    {
+                        Texture = tex,
+                        Position = new Vector2(xPos, yPos),
+                        FlipX = channel.FlipX ^ FlipX,
+                        FlipY = channel.FlipY ^ FlipY,
+                        Priority = SpritePriority,
+                        AffineMatrix = affineMatrix,
+                        Alpha = IsAlphaBlendEnabled ? Alpha : null,
+                        Camera = Camera
+                    });
                     break;
 
                 case AnimationChannelType.Sound:
