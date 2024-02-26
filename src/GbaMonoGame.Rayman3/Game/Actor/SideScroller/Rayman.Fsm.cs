@@ -245,7 +245,7 @@ public partial class Rayman
                 if (IsInFrontOfLevelCurtain)
                 {
                     // Hide while fading and then show spawn animation
-                    if (!((FrameWorldSideScroller)Frame.Current).TransitionsFX.IsFading)
+                    if (((FrameWorldSideScroller)Frame.Current).TransitionsFX.IsFadeInFinished)
                     {
                         if (ActionId is not (Action.Spawn_Curtain_Right or Action.Spawn_Curtain_Left))
                             ActionId = IsFacingRight ? Action.Spawn_Curtain_Right : Action.Spawn_Curtain_Left;

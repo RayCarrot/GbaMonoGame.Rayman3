@@ -312,7 +312,7 @@ public class World : FrameWorldSideScroller
 
     private void StepEx_MurfyFadeOut()
     {
-        if (!TransitionsFX.IsChangingBrightness)
+        if (TransitionsFX.IsFadeOutFinished)
         {
             Scene.Camera.ProcessMessage(Message.Cam_SetPosition, Scene.MainActor.Position - new Vector2(120, 120));
             Scene.Camera.ProcessMessage(Message.Cam_Unlock);
@@ -324,7 +324,7 @@ public class World : FrameWorldSideScroller
 
     private void StepEx_MurfyFadeIn()
     {
-        if (!TransitionsFX.IsFading)
+        if (TransitionsFX.IsFadeInFinished)
         {
             Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
             CurrentExStepAction = null;

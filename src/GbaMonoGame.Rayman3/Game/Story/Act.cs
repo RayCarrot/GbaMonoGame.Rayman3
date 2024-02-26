@@ -297,13 +297,13 @@ public abstract class Act : Frame
 
     public override void Step()
     {
-        if (TransitionsFX.IsChangingBrightness)
+        if (!TransitionsFX.IsFadeOutFinished)
         {
-            TransitionsFX.StepBrightness();
+            TransitionsFX.StepFadeOut();
         }
-        else if (TransitionsFX.IsFading)
+        else if (!TransitionsFX.IsFadeInFinished)
         {
-            TransitionsFX.StepFade();
+            TransitionsFX.StepFadeIn();
         }
         else if (IsFadingOut)
         {

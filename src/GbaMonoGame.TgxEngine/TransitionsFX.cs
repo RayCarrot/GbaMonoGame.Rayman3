@@ -11,8 +11,8 @@ public class TransitionsFX
     public float FadeCoefficient { get; set; }
     public float BrightnessCoefficient { get; set; } = 1;
 
-    public bool IsChangingBrightness => BrightnessCoefficient < 1;
-    public bool IsFading => FadeCoefficient > 0;
+    public bool IsFadeOutFinished => BrightnessCoefficient == 1;
+    public bool IsFadeInFinished => FadeCoefficient == 0;
 
     public float StepSize { get; set; }
 
@@ -46,12 +46,12 @@ public class TransitionsFX
         }
     }
 
-    public void StepFade()
+    public void StepFadeIn()
     {
         // The game only runs this in 30 fps (every 2 frames), but we want to do it every frame
         float stepSize = StepSize / 2;
 
-        if (IsFading)
+        if (!IsFadeInFinished)
         {
             FadeCoefficient -= stepSize;
 
@@ -62,12 +62,12 @@ public class TransitionsFX
         }
     }
 
-    public void StepBrightness()
+    public void StepFadeOut()
     {
         // The game only runs this in 30 fps (every 2 frames), but we want to do it every frame
         float stepSize = StepSize / 2;
 
-        if (IsChangingBrightness)
+        if (!IsFadeOutFinished)
         {
             BrightnessCoefficient += stepSize;
 

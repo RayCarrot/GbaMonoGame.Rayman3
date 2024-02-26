@@ -260,7 +260,7 @@ public partial class MenuAll
     {
         if (IsLoadingCredits)
         {
-            if (!TransitionsFX.IsChangingBrightness)
+            if (TransitionsFX.IsFadeOutFinished)
                 FrameManager.SetNextFrame(new Credits());
         }
         else

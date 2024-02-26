@@ -167,7 +167,7 @@ public partial class MenuAll
             case 0:
                 if (IsLoadingSlot)
                 {
-                    if (!TransitionsFX.IsChangingBrightness)
+                    if (TransitionsFX.IsFadeOutFinished)
                     {
                         SoundEventsManager.StopAllSongs();
 
@@ -337,7 +337,7 @@ public partial class MenuAll
                 break;
         }
 
-        if (JoyPad.CheckSingle(GbaInput.B) && !TransitionsFX.IsChangingBrightness && !IsLoadingSlot)
+        if (JoyPad.CheckSingle(GbaInput.B) && TransitionsFX.IsFadeOutFinished && !IsLoadingSlot)
         {
             if (EraseSaveStage == 0)
             {

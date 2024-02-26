@@ -310,7 +310,7 @@ public class GameOver : Frame
                 break;
 
             case GameOverMode.ReloadLevel:
-                if (!TransitionsFX.IsChangingBrightness)
+                if (TransitionsFX.IsFadeOutFinished)
                 {
                     GameInfo.PersistentInfo.Lives = 3;
                     GameInfo.PersistentInfo.LastPlayedLevel = (byte)GameInfo.MapId;
@@ -319,7 +319,7 @@ public class GameOver : Frame
                 break;
 
             case GameOverMode.ReturnToMenu:
-                if (!TransitionsFX.IsChangingBrightness)
+                if (TransitionsFX.IsFadeOutFinished)
                 {
                     FrameManager.SetNextFrame(new MenuAll(MenuAll.Page.SelectGameMode));
                 }
