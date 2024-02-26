@@ -38,8 +38,8 @@ public static class Gfx
 
     public static void Draw(GfxRenderer renderer)
     {
-        // Draw each game layer (3-0, and then -1 for special always on top drawing)
-        for (int i = 3; i >= -1; i--)
+        // Draw each game layer (3-0)
+        for (int i = 3; i >= 0; i--)
         {
             // Draw screens
             foreach (GfxScreen screen in Screens.Values.Where(x => x.IsEnabled && x.Priority == i))
