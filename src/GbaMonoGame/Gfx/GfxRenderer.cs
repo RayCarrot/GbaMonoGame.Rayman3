@@ -28,7 +28,6 @@ public class GfxRenderer
     private Texture2D Pixel { get; }
     private RasterizerState RasterizerState { get; }
     private RenderOptions? RenderOptions { get; set; }
-    private GfxCamera CurrentCamera => RenderOptions?.Camera ?? throw new Exception("Can't access a camera to render with if no options have been set");
 
     #endregion
 

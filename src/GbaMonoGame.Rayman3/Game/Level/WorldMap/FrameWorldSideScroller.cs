@@ -6,11 +6,11 @@ using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Rayman3;
 
-public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
+public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
 
-    public FrameWorldSideScroller(MapId mapId)
+    protected FrameWorldSideScroller(MapId mapId)
     {
         GameInfo.SetNextMapId(mapId);
     }
@@ -79,8 +79,8 @@ public class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         PauseDialog = new PauseDialog();
 
         Scene.Init();
-        Scene.Playfield.Step();
-        Scene.AnimationPlayer.Execute();
+        // NOTE: The game calls vsync, steps the playfield and executes the animations here, but we do
+        //       that in the derived classed instead since this is all to be run in one game frame.
 
         if (!SoundEventsManager.IsSongPlaying(GameInfo.GetLevelMusicSoundEvent())) // TODO: N-Gage doesn't have this condition - why?
             GameInfo.PlayLevelMusic();

@@ -31,6 +31,9 @@ public static class Gfx
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void ClearSprites() => Sprites.Clear();
 
+    /// <summary>
+    /// The equivalent of BLD on GBA. This is not implemented on the N-Gage.
+    /// </summary>
     public static float Fade { get; set; } = 0;
 
     public static void Draw(GfxRenderer renderer)

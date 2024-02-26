@@ -12,6 +12,7 @@ public class Sprite
     public bool FlipY { get; set; }
     public int Priority { get; set; }
 
+    public bool Center { get; set; } = true;
     public AffineMatrix? AffineMatrix { get; set; }
     public Color Color { get; set; } = Color.White;
 
@@ -44,6 +45,14 @@ public class Sprite
 
         Vector2 scale = AffineMatrix?.Scale ?? Vector2.One;
 
-        renderer.Draw(Texture, Position + origin, textureRectangle, rotation, origin, scale, effects, color);
+        renderer.Draw(
+            texture: Texture, 
+            position: Center ? Position + origin : Position, 
+            sourceRectangle: textureRectangle, 
+            rotation: rotation, 
+            origin: Center ? origin : Vector2.Zero, 
+            scale: scale, 
+            effects: effects, 
+            color: color);
     }
 }

@@ -19,18 +19,17 @@ public class World : FrameWorldSideScroller
     private byte MurfyLevelCurtainTargetId { get; set; }
     private byte MurfyId { get; set; }
 
-    private float PaletteFadeTimer { get; set; }
+    private PaletteFadeEffectObject PaletteFade { get; set; }
+    private int PaletteFadeTimer { get; set; }
     private bool FinishedTransitioningOut { get; set; }
 
     public void InitTransitionIn()
     {
         FinishedTransitioningOut = false;
-     
-        // The game initializes the palette for fading here, but we don't do that
-
+        PaletteFade.Fade = 1;
         UserInfo.Hide = true;
         CurrentExStepAction = StepEx_MoveInCurtains;
-        PaletteFadeTimer = 0;
+        PaletteFadeTimer = PaletteFade.MinFadeTime;
         TransitionsFX.StopFade(); // Game does this by setting BLDCNT to 0, thus ignoring the alpha value
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
     }
@@ -38,7 +37,7 @@ public class World : FrameWorldSideScroller
     public void InitTransitionOut()
     {
         CurrentExStepAction = StepEx_FadeOut;
-        PaletteFadeTimer = 16;
+        PaletteFadeTimer = PaletteFade.MaxFadeTime;
         FinishedTransitioningOut = false;
         UserInfo.Hide = true;
         BlockPause = true;
@@ -173,11 +172,24 @@ public class World : FrameWorldSideScroller
             UserInfo.Hide = true;
         }
 
+        PaletteFade = new PaletteFadeEffectObject()
+        {
+            SpritePriority = 0,
+        };
+
         InitTransitionIn();
+
+        // We have to show the palette fade already now or we have one game frame with the level visible
+        Scene.AnimationPlayer.PlayFront(PaletteFade);
+
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
     }
 
     public override void Step()
     {
+        Scene.AnimationPlayer.PlayFront(PaletteFade);
+
         base.Step();
 
         if (!IsBusy())
@@ -198,9 +210,10 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        // TODO: Implement fading
-        PaletteFadeTimer += 0.5f;
-        if (PaletteFadeTimer >= 17)
+        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
+
+        PaletteFadeTimer++;
+        if (PaletteFadeTimer > PaletteFade.MaxFadeTime)
         {
             if (NextExStepAction == null)
                 UserInfo.Hide = false;
@@ -216,12 +229,16 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        // TODO: Implement fading
-        PaletteFadeTimer -= 0.5f;
-        if (PaletteFadeTimer == 0)
+        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
+
+        if (PaletteFadeTimer == PaletteFade.MinFadeTime)
         {
             CurrentExStepAction = StepEx_MoveOutCurtains;
             UserInfo.MoveOutCurtains();
+        }
+        else
+        {
+            PaletteFadeTimer--;
         }
     }
 

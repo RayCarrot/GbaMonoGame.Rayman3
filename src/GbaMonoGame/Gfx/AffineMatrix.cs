@@ -7,6 +7,22 @@ namespace GbaMonoGame;
 /// </summary>
 public readonly struct AffineMatrix
 {
+    public AffineMatrix(float rotation, Vector2 scale)
+    {
+        Rotation = rotation;
+        Scale = scale;
+        FlipX = false;
+        FlipY = false;
+    }
+
+    public AffineMatrix(float rotation, Vector2 scale, bool flipX, bool flipY)
+    {
+        Rotation = rotation;
+        Scale = scale;
+        FlipX = flipX;
+        FlipY = flipY;
+    }
+
     public AffineMatrix(float pa, float pb, float pc, float pd)
     {
         // The following affine sprite rendering code has been re-implemented from Ray1Map. Credits to Droolie for writing it!

@@ -22,6 +22,10 @@ public static class FrameManager
     /// </summary>
     public static void Step()
     {
+        // The game doesn't clear sprites here, but rather in places such as the animation player.
+        // For us this however makes more sense, so we always start each frame fresh.
+        Gfx.ClearSprites();
+
         if (NextFrame != null)
         {
             CurrentFrame?.UnInit();
@@ -42,10 +46,6 @@ public static class FrameManager
             // update cycle and have the next continue on as normal.
             return;
         }
-
-        // The game doesn't clear sprites here, but rather in places such as the animation player.
-        // For us this however makes more sense, so we always start each frame fresh.
-        Gfx.ClearSprites();
 
         // Refresh sound events
         SoundEventsManager.RefreshEventSet();
