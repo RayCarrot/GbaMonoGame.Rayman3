@@ -30,7 +30,11 @@ public static class GameInfo
     public static Cheat Cheats { get; set; }
 
     public static int CurrentSlot { get; set; }
-    public static SaveGameSlot PersistentInfo { get; set; } = new();
+    public static SaveGameSlot PersistentInfo { get; set; } = new()
+    {
+        Lums = new byte[125],
+        Cages = new byte[7],
+    };
 
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
