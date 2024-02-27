@@ -6,8 +6,6 @@ namespace GbaMonoGame;
 
 public class GfxDebugWindow : DebugWindow
 {
-    private bool _cropAspectRatio;
-
     public override string Name => "Gfx";
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
@@ -30,27 +28,12 @@ public class GfxDebugWindow : DebugWindow
 
         ImGui.Spacing();
 
-        ImGui.Checkbox("Crop", ref _cropAspectRatio);
-
-        if (ImGui.Button("GBA (3:2"))
-            Engine.GameViewPort.SetAspectRatio(3 / 2f, _cropAspectRatio);
-
-        ImGui.SameLine();
-        if (ImGui.Button("N-Gage (11:13)"))
-            Engine.GameViewPort.SetAspectRatio(11 / 13f, _cropAspectRatio);
-
-        ImGui.SameLine();
-        if (ImGui.Button("Widescreen (16:9)"))
-            Engine.GameViewPort.SetAspectRatio(16 / 9f, _cropAspectRatio);
-
-        float ratio = Engine.GameViewPort.AspectRatio;
-        if (ImGui.InputFloat("Aspect ratio", ref ratio) && ratio > 0)
-            Engine.GameViewPort.SetAspectRatio(ratio, _cropAspectRatio);
-
-        ImGui.Spacing();
-
         ImGui.Text($"Original resolution: {Engine.GameViewPort.OriginalGameResolution.X} x {Engine.GameViewPort.OriginalGameResolution.Y}");
         ImGui.Text($"Resolution: {Engine.GameViewPort.GameResolution.X} x {Engine.GameViewPort.GameResolution.Y}");
+
+        System.Numerics.Vector2 res = new(Engine.GameViewPort.RequestedGameResolution.X, Engine.GameViewPort.RequestedGameResolution.Y);
+        if (ImGui.InputFloat2("Requested resolution", ref res))
+            Engine.GameViewPort.SetRequestedResolution(new Vector2(res.X, res.Y));
 
         ImGui.Spacing();
 
