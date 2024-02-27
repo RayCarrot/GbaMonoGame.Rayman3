@@ -313,7 +313,7 @@ public class LevelInfoBar : Bar
         if (DrawStep != BarDrawStep.Hide)
         {
             // Set x position to support widescreen
-            float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameWindow.OriginalGameResolution.X) / 2;
+            float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
 
             LevelName.ScreenPos = new Vector2(
                 x: Engine.ScreenCamera.Resolution.X / 2 - LevelName.GetStringWidth() / 2f,

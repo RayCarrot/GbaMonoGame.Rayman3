@@ -109,7 +109,7 @@ public class GameOver : Frame
 
     public override void Init()
     {
-        Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
+        Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
 
         TransitionsFX = new TransitionsFX(true);
 
@@ -119,8 +119,8 @@ public class GameOver : Frame
             Priority = 1,
             Offset = Vector2.Zero,
             Renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: (int)Engine.GameWindow.OriginalGameResolution.X,
-                height: (int)Engine.GameWindow.OriginalGameResolution.Y,
+                width: (int)Engine.GameViewPort.OriginalGameResolution.X,
+                height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
                 bitmap: Engine.Loader.Rayman3_GameOverBitmap.ImgData,
                 palette: new Palette(Engine.Loader.Rayman3_GameOverPalette)))
         });

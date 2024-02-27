@@ -5,7 +5,7 @@
 /// </summary>
 public class ScreenCamera : GfxCamera
 {
-    public ScreenCamera(GameWindow gameWindow) : base(gameWindow) { }
+    public ScreenCamera(GameViewPort gameViewPort) : base(gameViewPort) { }
 
-    protected override Vector2 GetResolution(GameWindow gameWindow) => gameWindow.GameResolution;
+    protected override Vector2 GetResolution(GameViewPort gameViewPort) => gameViewPort.GameResolution;
 }

@@ -51,7 +51,7 @@ public static class Engine
     /// </summary>
     public static ScreenCamera ScreenCamera { get; private set; }
 
-    public static GameWindow GameWindow { get; private set; }
+    public static GameViewPort GameViewPort { get; private set; }
 
     #endregion
 
@@ -127,12 +127,12 @@ public static class Engine
         LoadRom();
     }
 
-    internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera, GameWindow gameWindow)
+    internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera, GameViewPort gameViewPort)
     {
         GraphicsDevice = graphicsDevice;
         ContentManager = contentManager;
         ScreenCamera = screenCamera;
-        GameWindow = gameWindow;
+        GameViewPort = gameViewPort;
     }
 
     internal static void Unload()

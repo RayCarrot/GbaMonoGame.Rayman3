@@ -6,16 +6,16 @@ namespace GbaMonoGame;
 
 public class GameRenderTarget
 {
-    public GameRenderTarget(GraphicsDevice graphicsDevice, GameWindow gameWindow)
+    public GameRenderTarget(GraphicsDevice graphicsDevice, GameViewPort gameViewPort)
     {
         GraphicsDevice = graphicsDevice;
-        GameWindow = gameWindow;
+        GameViewPort = gameViewPort;
     }
 
     private Point? PendingResize { get; set; }
 
     public GraphicsDevice GraphicsDevice { get; }
-    public GameWindow GameWindow { get; }
+    public GameViewPort GameViewPort { get; }
     public RenderTarget2D RenderTarget { get; private set; }
 
     public void ResizeGame(Point newSize)
@@ -28,7 +28,7 @@ public class GameRenderTarget
     {
         if (PendingResize != null)
         {
-            GameWindow.Resize(PendingResize.Value.ToVector2());
+            GameViewPort.Resize(PendingResize.Value.ToVector2());
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(
                 GraphicsDevice,

@@ -8,10 +8,10 @@ public class GfxRenderer
 {
     #region Constructor
 
-    public GfxRenderer(SpriteBatch spriteBatch, GameWindow gameWindow)
+    public GfxRenderer(SpriteBatch spriteBatch, GameViewPort gameViewPort)
     {
         SpriteBatch = spriteBatch;
-        GameWindow = gameWindow;
+        GameViewPort = gameViewPort;
 
         Pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
         Pixel.SetData(new[] { Color.White });
@@ -24,7 +24,7 @@ public class GfxRenderer
     #region Private Properties
 
     private SpriteBatch SpriteBatch { get; }
-    private GameWindow GameWindow { get; }
+    private GameViewPort GameViewPort { get; }
     private Texture2D Pixel { get; }
     private RasterizerState RasterizerState { get; }
     private RenderOptions? RenderOptions { get; set; }
@@ -37,7 +37,7 @@ public class GfxRenderer
     {
         // Set the scissor area first time we render this frame
         if (RenderOptions == null)
-            SpriteBatch.GraphicsDevice.ScissorRectangle = GameWindow.ScreenRectangle;
+            SpriteBatch.GraphicsDevice.ScissorRectangle = GameViewPort.ScreenRectangle;
 
         // If we have new render options then we need to begin a new batch
         if (RenderOptions != options)

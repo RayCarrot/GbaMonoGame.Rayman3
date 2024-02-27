@@ -33,24 +33,24 @@ public class GfxDebugWindow : DebugWindow
         ImGui.Checkbox("Crop", ref _cropAspectRatio);
 
         if (ImGui.Button("GBA (3:2"))
-            Engine.GameWindow.SetAspectRatio(3 / 2f, _cropAspectRatio);
+            Engine.GameViewPort.SetAspectRatio(3 / 2f, _cropAspectRatio);
 
         ImGui.SameLine();
         if (ImGui.Button("N-Gage (11:13)"))
-            Engine.GameWindow.SetAspectRatio(11 / 13f, _cropAspectRatio);
+            Engine.GameViewPort.SetAspectRatio(11 / 13f, _cropAspectRatio);
 
         ImGui.SameLine();
         if (ImGui.Button("Widescreen (16:9)"))
-            Engine.GameWindow.SetAspectRatio(16 / 9f, _cropAspectRatio);
+            Engine.GameViewPort.SetAspectRatio(16 / 9f, _cropAspectRatio);
 
-        float ratio = Engine.GameWindow.AspectRatio;
+        float ratio = Engine.GameViewPort.AspectRatio;
         if (ImGui.InputFloat("Aspect ratio", ref ratio) && ratio > 0)
-            Engine.GameWindow.SetAspectRatio(ratio, _cropAspectRatio);
+            Engine.GameViewPort.SetAspectRatio(ratio, _cropAspectRatio);
 
         ImGui.Spacing();
 
-        ImGui.Text($"Original resolution: {Engine.GameWindow.OriginalGameResolution.X} x {Engine.GameWindow.OriginalGameResolution.Y}");
-        ImGui.Text($"Resolution: {Engine.GameWindow.GameResolution.X} x {Engine.GameWindow.GameResolution.Y}");
+        ImGui.Text($"Original resolution: {Engine.GameViewPort.OriginalGameResolution.X} x {Engine.GameViewPort.OriginalGameResolution.Y}");
+        ImGui.Text($"Resolution: {Engine.GameViewPort.GameResolution.X} x {Engine.GameViewPort.GameResolution.Y}");
 
         ImGui.Spacing();
 

@@ -27,7 +27,7 @@ public class Scene2D
 
         // TODO: Set bounds if Mode7
         if (Playfield is TgxPlayfield2D playfield2D)
-            Engine.GameWindow.SetResolutionBounds(null, playfield2D.Size);
+            Engine.GameViewPort.SetResolutionBounds(null, playfield2D.Size);
 
         KnotManager = new KnotManager(scene);
         KnotManager.LoadGameObjects(this, scene);
@@ -56,7 +56,7 @@ public class Scene2D
 
         // TODO: Set bounds if Mode7
         if (Playfield is TgxPlayfield2D playfield2D)
-            Engine.GameWindow.SetResolutionBounds(null, playfield2D.Size);
+            Engine.GameViewPort.SetResolutionBounds(null, playfield2D.Size);
 
         KnotManager = new KnotManager(map.Scene);
         KnotManager.LoadGameObjects(this, map.Scene);
@@ -88,7 +88,7 @@ public class Scene2D
     //       knots to handle game logic, but still draw and step all actors in the scene?
     // If we're playing in a different resolution than the original we can't use
     // the knots (object sectors). Instead we keep all objects active at all times.
-    public bool KeepAllObjectsActive => Playfield.Camera.Resolution != Engine.GameWindow.OriginalGameResolution;
+    public bool KeepAllObjectsActive => Playfield.Camera.Resolution != Engine.GameViewPort.OriginalGameResolution;
 
     public void Init()
     {

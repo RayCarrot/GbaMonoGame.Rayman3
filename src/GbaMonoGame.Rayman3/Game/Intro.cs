@@ -85,7 +85,7 @@ public class Intro : Frame, IHasPlayfield
     {
         PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(GameResource.IntroPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
-        Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
+        Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
         Playfield.Camera.FixedResolution = true;
 
         Playfield.Camera.Position = Vector2.Zero;

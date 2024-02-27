@@ -7,7 +7,7 @@ namespace GbaMonoGame.TgxEngine;
 
 public class TgxCamera2D : TgxCamera
 {
-    public TgxCamera2D(GameWindow gameWindow) : base(gameWindow) { }
+    public TgxCamera2D(GameViewPort gameViewPort) : base(gameViewPort) { }
 
     private bool _fixedResolution;
 
@@ -41,12 +41,12 @@ public class TgxCamera2D : TgxCamera
                 if (cluster.Stationary)
                     continue;
 
-                //Vector2 scrollFactor = cluster.GetMaxPosition(Engine.GameWindow.OriginalGameResolution) /
-                //                       mainCluster.GetMaxPosition(Engine.GameWindow.OriginalGameResolution);
+                //Vector2 scrollFactor = cluster.GetMaxPosition(Engine.GameViewPort.OriginalGameResolution) /
+                //                       mainCluster.GetMaxPosition(Engine.GameViewPort.OriginalGameResolution);
                 Vector2 scrollFactor;
 
                 // If it's not scaled to the main playfield camera we have to update the scroll factor
-                if (cluster.Camera != this && Engine.ScreenCamera.Resolution != Engine.GameWindow.OriginalGameResolution)
+                if (cluster.Camera != this && Engine.ScreenCamera.Resolution != Engine.GameViewPort.OriginalGameResolution)
                 {
                     // Determine if the cluster wraps horizontally. We assume that none of them wrap vertically.
                     bool wrapX = cluster.GetLayers().Any(x => x.PixelWidth < cluster.Size.X);
@@ -74,17 +74,17 @@ public class TgxCamera2D : TgxCamera
         }
     }
 
-    protected override Vector2 GetResolution(GameWindow gameWindow)
+    protected override Vector2 GetResolution(GameViewPort gameViewPort)
     {
         // If fixed resolution we always use the original resolution
         if (FixedResolution)
         {
-            return Engine.GameWindow.OriginalGameResolution;
+            return Engine.GameViewPort.OriginalGameResolution;
         }
         // If not fixed we attempt to confine it to the main cluster size
         else
         {
-            Vector2 newGameResolution = gameWindow.GameResolution * Engine.Config.PlayfieldCameraScale;
+            Vector2 newGameResolution = gameViewPort.GameResolution * Engine.Config.PlayfieldCameraScale;
 
             if (MainCluster != null)
             {

@@ -7,7 +7,7 @@ namespace GbaMonoGame.TgxEngine;
 public class TgxPlayfield2D : TgxPlayfield
 {
     public TgxPlayfield2D(Playfield2DResource playfieldResource, CachedTileKit cachedTileKit) 
-        : base(new TgxCamera2D(Engine.GameWindow), playfieldResource.TileKit)
+        : base(new TgxCamera2D(Engine.GameViewPort), playfieldResource.TileKit)
     {
         List<TgxTileLayer> tileLayers = new();
 

@@ -486,7 +486,7 @@ public class TextBoxDialog : Dialog
         }
 
         // Set x position to support widescreen
-        float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameWindow.OriginalGameResolution.X) / 2;
+        float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
 
         Canvas.ScreenPos = new Vector2(xPos, -OffsetY);
 

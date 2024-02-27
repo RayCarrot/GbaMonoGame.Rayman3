@@ -119,7 +119,7 @@ public class DisplayOptionsMenu : Menu
                 _ => throw new UnsupportedPlatformException()
             };
 
-            float scale = windowRes.ToVector2().X / Engine.GameWindow.RequestedGameResolution.X;
+            float scale = windowRes.ToVector2().X / Engine.GameViewPort.RequestedGameResolution.X;
 
             for (int i = 0; i < 8; i++)
             {
@@ -194,18 +194,18 @@ public class DisplayOptionsMenu : Menu
             Engine.Config.InternalResolution = AvailableInternalResolutions[InternalResolutionSelectedIndex];
             Engine.Config.DynamicPlayfieldCameraScale = DynamicPlayfieldCameraScale;
             Engine.Config.PlayfieldCameraScale = AvailablePlayfieldCameraScales[PlayfieldCameraScale];
-            Engine.GameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
+            Engine.GameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
 
             if (WindowResolutionScale != 0)
             {
                 switch (Engine.Settings.Platform)
                 {
                     case Platform.GBA:
-                        Engine.Config.GbaWindowResolution = (Engine.GameWindow.RequestedGameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.GbaWindowResolution = (Engine.GameViewPort.RequestedGameResolution * WindowResolutionScale).ToPoint();
                         break;
 
                     case Platform.NGage:
-                        Engine.Config.NGageWindowResolution = (Engine.GameWindow.RequestedGameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.NGageWindowResolution = (Engine.GameViewPort.RequestedGameResolution * WindowResolutionScale).ToPoint();
                         break;
 
                     default:

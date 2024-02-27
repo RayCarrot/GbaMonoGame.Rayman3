@@ -717,7 +717,7 @@ public class GameCubeMenu : Frame
 
     public override void Init()
     {
-        Engine.GameWindow.SetResolutionBoundsToOriginalResolution();
+        Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
 
         AnimationPlayer = new AnimationPlayer(false, null);
 
@@ -727,8 +727,8 @@ public class GameCubeMenu : Frame
             Priority = 1,
             Offset = Vector2.Zero,
             Renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: (int)Engine.GameWindow.OriginalGameResolution.X,
-                height: (int)Engine.GameWindow.OriginalGameResolution.Y,
+                width: (int)Engine.GameViewPort.OriginalGameResolution.X,
+                height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
                 bitmap: Engine.Loader.Rayman3_GameCubeMenuBitmap.ImgData,
                 palette: new Palette(Engine.Loader.Rayman3_GameCubeMenuPalette)))
         });

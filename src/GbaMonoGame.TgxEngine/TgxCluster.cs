@@ -17,7 +17,7 @@ public class TgxCluster
         // Render parallax backgrounds to a separate camera
         Camera = !Stationary && ScrollFactor == Vector2.One 
             ? tgxCamera 
-            : new ParallaxClusterCamera(Engine.GameWindow, this);
+            : new ParallaxClusterCamera(Engine.GameViewPort, this);
     }
 
     private Vector2 _position;

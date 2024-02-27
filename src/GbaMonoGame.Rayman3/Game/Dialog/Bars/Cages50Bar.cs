@@ -18,7 +18,7 @@ public class Cages50Bar : Bar
         CagesIcon = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 68, 41),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 68, 41),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -26,7 +26,7 @@ public class Cages50Bar : Bar
         CollectedCagesDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 56, 45),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 56, 45),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -34,7 +34,7 @@ public class Cages50Bar : Bar
         CollectedCagesDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44, 45),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 44, 45),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -59,9 +59,9 @@ public class Cages50Bar : Bar
     public override void Draw(AnimationPlayer animationPlayer)
     {
         // Keep position updated for different screen resolutions support
-        CagesIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 68, CagesIcon.ScreenPos.Y);
-        CollectedCagesDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 56, CollectedCagesDigit1.ScreenPos.Y);
-        CollectedCagesDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 44, CollectedCagesDigit2.ScreenPos.Y);
+        CagesIcon.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 68, CagesIcon.ScreenPos.Y);
+        CollectedCagesDigit1.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 56, CollectedCagesDigit1.ScreenPos.Y);
+        CollectedCagesDigit2.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 44, CollectedCagesDigit2.ScreenPos.Y);
 
         animationPlayer.PlayFront(CagesIcon);
 

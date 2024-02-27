@@ -5,7 +5,7 @@ namespace GbaMonoGame.TgxEngine;
 
 public abstract class TgxCamera : GfxCamera
 {
-    protected TgxCamera(GameWindow gameWindow) : base(gameWindow)
+    protected TgxCamera(GameViewPort gameViewPort) : base(gameViewPort)
     {
         Engine.Config.ConfigChanged += Config_ConfigChanged;
     }

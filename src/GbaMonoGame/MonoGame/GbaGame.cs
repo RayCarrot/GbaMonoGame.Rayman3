@@ -140,7 +140,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         if (HasLoadedGameInstallation)
-            Engine.GameWindow.Resize(size.ToVector2());
+            Engine.GameViewPort.Resize(size.ToVector2());
 
         _isChangingResolution = false;
     }
@@ -155,7 +155,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameWindow.Resize(GetResolution().ToVector2(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
+        Engine.GameViewPort.Resize(GetResolution().ToVector2(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
         SaveWindowState();
         Engine.SaveConfig();
     }
@@ -175,9 +175,9 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             _loadingGameInstallationTask = null;
 
             // Load the MonoGame part of the engine
-            GameWindow gameWindow = new(Engine.Settings);
-            gameWindow.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
-            Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameWindow), gameWindow);
+            GameViewPort gameViewPort = new(Engine.Settings);
+            gameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
+            Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameViewPort), gameViewPort);
 
             // Load engine sounds and fonts
             SoundEventsManager.Load(SoundBankResourceId, SongTable, SampleSongs);
@@ -193,8 +193,8 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             LoadGame();
 
             // Load the renderer
-            _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameWindow);
-            _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameWindow);
+            _gfxRenderer = new GfxRenderer(_spriteBatch, Engine.GameViewPort);
+            _debugGameRenderTarget = new GameRenderTarget(GraphicsDevice, Engine.GameViewPort);
 
             // Load the menu
             _menu = new MenuManager();

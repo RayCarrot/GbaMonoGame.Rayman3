@@ -46,9 +46,9 @@ public class CameraSideScroller : CameraActor2D
 
     // Handle scaling by centering the target offsets within the new scaled view area
     private float ScaledHorizontalOffset => HorizontalOffset +
-                                            (Scene.Playfield.Camera.Resolution.X - Engine.GameWindow.GameResolution.X) / 2;
+                                            (Scene.Playfield.Camera.Resolution.X - Engine.GameViewPort.GameResolution.X) / 2;
     private float ScaledTargetY => TargetY + 
-                                   (Scene.Playfield.Camera.Resolution.Y - Engine.GameWindow.GameResolution.Y) / 2;
+                                   (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y) / 2;
     
     public byte HorizontalOffset { get; set; }
     public float TargetX { get; set; }
@@ -207,7 +207,7 @@ public class CameraSideScroller : CameraActor2D
                 // Do not follow Y (unless near the edge). Used when jumping for example.
                 if (field20_0x32 == 0)
                 {
-                    float yOff = (Scene.Playfield.Camera.Resolution.Y - Engine.GameWindow.GameResolution.Y);
+                    float yOff = (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y);
 
                     if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
                         (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))

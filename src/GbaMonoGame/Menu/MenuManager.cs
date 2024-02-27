@@ -22,7 +22,7 @@ public class MenuManager
     private const int Margin = 60;
     private const int LineHeight = 40;
 
-    private MenuCamera Camera { get; } = new(Engine.GameWindow);
+    private MenuCamera Camera { get; } = new(Engine.GameViewPort);
     private List<Sprite> Sprites { get; } = new();
     private Color DisabledColor { get; } = new(0.4f, 0.4f, 0.4f);
     private Color Color { get; } = Color.White;
@@ -438,7 +438,7 @@ public class MenuManager
         renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
 
         // Fade out the game
-        renderer.DrawFilledRectangle(Vector2.Zero, Engine.GameWindow.GameResolution, Color.Black * MathHelper.Lerp(0.0f, 0.7f, TransitionValue));
+        renderer.DrawFilledRectangle(Vector2.Zero, Engine.GameViewPort.GameResolution, Color.Black * MathHelper.Lerp(0.0f, 0.7f, TransitionValue));
 
         // Draw the sprites
         foreach (Sprite sprite in Sprites)
@@ -458,12 +458,12 @@ public class MenuManager
 
     private class MenuCamera : GfxCamera
     {
-        public MenuCamera(GameWindow gameWindow) : base(gameWindow) { }
+        public MenuCamera(GameViewPort gameViewPort) : base(gameViewPort) { }
 
-        protected override Vector2 GetResolution(GameWindow gameWindow)
+        protected override Vector2 GetResolution(GameViewPort gameViewPort)
         {
             // Scale by 3.5 to fit more text on screen
-            return gameWindow.GameResolution * 3.5f;
+            return gameViewPort.GameResolution * 3.5f;
         }
     }
 

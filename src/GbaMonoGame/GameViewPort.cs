@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame;
 
-public class GameWindow
+public class GameViewPort
 {
-    public GameWindow(GbaEngineSettings settings)
+    public GameViewPort(GbaEngineSettings settings)
     {
         OriginalGameResolution = settings.Platform switch
         {
@@ -129,7 +129,7 @@ public class GameWindow
 
     public void SetResolutionBoundsToOriginalResolution()
     {
-        SetResolutionBounds(Engine.GameWindow.OriginalGameResolution, Engine.GameWindow.OriginalGameResolution);
+        SetResolutionBounds(Engine.GameViewPort.OriginalGameResolution, Engine.GameViewPort.OriginalGameResolution);
     }
 
     public void SetResolutionBounds(Vector2? minResolution, Vector2? maxResolution)

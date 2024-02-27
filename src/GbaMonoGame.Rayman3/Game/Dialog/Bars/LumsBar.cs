@@ -40,7 +40,7 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 24,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 77, 8),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -49,7 +49,7 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 52, 24),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -58,7 +58,7 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 40, 24),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 40, 24),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -67,7 +67,7 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 22, 24),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 22, 24),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -76,7 +76,7 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 24),
+            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10, 24),
             SpritePriority = 0,
             YPriority = 0,
         };
@@ -164,11 +164,11 @@ public class LumsBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            LumsIcon.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 77, 8 - YOffset);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 52, 24 - YOffset);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 40, 24 - YOffset);
-            TotalLumsDigit1.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 22, 24 - YOffset);
-            TotalLumsDigit2.ScreenPos = new Vector2(Engine.GameWindow.GameResolution.X - 10, 24 - YOffset);
+            LumsIcon.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 77, 8 - YOffset);
+            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 52, 24 - YOffset);
+            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 40, 24 - YOffset);
+            TotalLumsDigit1.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 22, 24 - YOffset);
+            TotalLumsDigit2.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10, 24 - YOffset);
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;

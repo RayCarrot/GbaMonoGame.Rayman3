@@ -6,12 +6,12 @@ namespace GbaMonoGame;
 // The follow base class is custom and not in the original GBA engine. We use this for cameras responsible for rendering graphics.
 public abstract class GfxCamera
 {
-    protected GfxCamera(GameWindow gameWindow)
+    protected GfxCamera(GameViewPort gameViewPort)
     {
-        GameWindow = gameWindow;
+        GameViewPort = gameViewPort;
 
-        gameWindow.GameResolutionChanged += GameWindow_GameResolutionChanged;
-        gameWindow.Resized += GameWindow_Resized;
+        gameViewPort.GameResolutionChanged += GameViewPort_GameResolutionChanged;
+        gameViewPort.Resized += GameViewPort_Resized;
     }
 
     private bool _hasSetResolution;
@@ -19,7 +19,7 @@ public abstract class GfxCamera
     private Matrix _matrix;
     private Box _visibleArea;
 
-    private GameWindow GameWindow { get; }
+    private GameViewPort GameViewPort { get; }
 
     public Vector2 Resolution
     {
@@ -66,34 +66,34 @@ public abstract class GfxCamera
         private set => _visibleArea = value;
     }
 
-    private void GameWindow_GameResolutionChanged(object sender, EventArgs e) => 
+    private void GameViewPort_GameResolutionChanged(object sender, EventArgs e) => 
         UpdateResolution();
-    private void GameWindow_Resized(object sender, EventArgs e) => 
+    private void GameViewPort_Resized(object sender, EventArgs e) => 
         Matrix = CreateRenderMatrix(Resolution);
 
     private Matrix CreateRenderMatrix(Vector2 resolution)
     {
-        float screenRatio = GameWindow.ScreenSizeVector.X / GameWindow.ScreenSizeVector.Y;
-        float gameRatio = GameWindow.GameResolution.X / GameWindow.GameResolution.Y;
+        float screenRatio = GameViewPort.ScreenSizeVector.X / GameViewPort.ScreenSizeVector.Y;
+        float gameRatio = GameViewPort.GameResolution.X / GameViewPort.GameResolution.Y;
 
         float worldScale;
 
         if (screenRatio > gameRatio)
-            worldScale = GameWindow.ScreenSizeVector.Y / resolution.Y;
+            worldScale = GameViewPort.ScreenSizeVector.Y / resolution.Y;
         else
-            worldScale = GameWindow.ScreenSizeVector.X / resolution.X;
+            worldScale = GameViewPort.ScreenSizeVector.X / resolution.X;
 
         return Matrix.CreateScale(worldScale) *
-               Matrix.CreateTranslation(GameWindow.ScreenBox.MinX, GameWindow.ScreenBox.MinY, 0);
+               Matrix.CreateTranslation(GameViewPort.ScreenBox.MinX, GameViewPort.ScreenBox.MinY, 0);
     }
 
     private Box GetVisibleArea(Matrix matrix)
     {
         Matrix inverseViewMatrix = Matrix.Invert(matrix);
         Vector2 tl = Vector2.Transform(Vector2.Zero, inverseViewMatrix);
-        Vector2 tr = Vector2.Transform(new Vector2(GameWindow.ScreenBox.Width, 0), inverseViewMatrix);
-        Vector2 bl = Vector2.Transform(new Vector2(0, GameWindow.ScreenBox.Height), inverseViewMatrix);
-        Vector2 br = Vector2.Transform(GameWindow.ScreenBox.Size, inverseViewMatrix);
+        Vector2 tr = Vector2.Transform(new Vector2(GameViewPort.ScreenBox.Width, 0), inverseViewMatrix);
+        Vector2 bl = Vector2.Transform(new Vector2(0, GameViewPort.ScreenBox.Height), inverseViewMatrix);
+        Vector2 br = Vector2.Transform(GameViewPort.ScreenBox.Size, inverseViewMatrix);
         Vector2 min = new(
             MathHelper.Min(tl.X, MathHelper.Min(tr.X, MathHelper.Min(bl.X, br.X))),
             MathHelper.Min(tl.Y, MathHelper.Min(tr.Y, MathHelper.Min(bl.Y, br.Y))));
@@ -103,11 +103,11 @@ public abstract class GfxCamera
         return new Box(0, 0, max.X - min.X, max.Y - min.Y);
     }
 
-    protected abstract Vector2 GetResolution(GameWindow gameWindow);
+    protected abstract Vector2 GetResolution(GameViewPort gameViewPort);
 
     protected void UpdateResolution()
     {
-        Resolution = GetResolution(GameWindow);
+        Resolution = GetResolution(GameViewPort);
     }
 
     public Vector2 ToWorldPosition(Vector2 pos) => Vector2.Transform(pos, Matrix.Invert(Matrix));
@@ -119,7 +119,7 @@ public abstract class GfxCamera
 
     public virtual void UnInit()
     {
-        GameWindow.GameResolutionChanged -= GameWindow_GameResolutionChanged;
-        GameWindow.Resized -= GameWindow_Resized;
+        GameViewPort.GameResolutionChanged -= GameViewPort_GameResolutionChanged;
+        GameViewPort.Resized -= GameViewPort_Resized;
     }
 }
