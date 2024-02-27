@@ -18,10 +18,10 @@ public sealed partial class Rayman : MovableActor
 
         IsLocalPlayer = true;
 
-        // TODO: On N-Gage it loads a bunch of animated objects here for multiplayer - implement that?
-
         if (RSMultiplayer.IsActive)
         {
+            // TODO: Implement N-Gage specific changes - there are a lot!
+
             if (instanceId >= RSMultiplayer.PlayersCount)
             {
                 ProcessMessage(Message.Destroy);
@@ -34,11 +34,37 @@ public sealed partial class Rayman : MovableActor
                     AnimatedObject.IsSoundEnabled = false;
                 }
 
-                // TODO: Load special palettes if id is 1, 2 or 3
+                // This is some hacky code to add the additional multiplayer palettes. The game doesn't store this
+                // in the animated object resource to avoid them being allocated in single player. So the game
+                // manually allocates them to vram here. We however can't just modify this actor's animations since
+                // we cache sprites between all actors that share the same animated object. So the easiest solution
+                // is to add the palettes to the animated object resource and then just change the base pal index.
+                if (AnimatedObject.Resource.PalettesCount == 2)
+                {
+                    Palette16 pal2 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player2RaymanPalette).Value;
+                    Palette16 pal3 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player3RaymanPalette).Value;
+                    Palette16 pal4 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player4RaymanPalette).Value;
 
+                    AnimatedObject.Resource.PalettesCount = 2 * 4;
+                    AnimatedObject.Resource.Palettes = new SpritePalettes
+                    {
+                        Palettes = new[]
+                        {
+                            AnimatedObject.Resource.Palettes.Palettes[0],
+                            AnimatedObject.Resource.Palettes.Palettes[1],
+                            AnimatedObject.Resource.Palettes.Palettes[0],
+                            pal2,
+                            AnimatedObject.Resource.Palettes.Palettes[0],
+                            pal3,
+                            AnimatedObject.Resource.Palettes.Palettes[0],
+                            pal4,
+                        }
+                    };
+                }
+
+                AnimatedObject.BasePaletteIndex = InstanceId * 2;
                 IsInvulnerable = true;
-
-                // TODO: Enable all powers
+                SetPowers(Power.All);
             }
         }
 
@@ -116,6 +142,11 @@ public sealed partial class Rayman : MovableActor
             if ((GameInfo.Cheats & cheat) != 0)
                 GameInfo.EnableCheat(Scene, cheat);
         }
+    }
+
+    private void SetPowers(Power powers)
+    {
+        GameInfo.Powers |= powers;
     }
 
     private bool CheckInput(GbaInput input)
