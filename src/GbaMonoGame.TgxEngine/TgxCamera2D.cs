@@ -151,4 +151,16 @@ public class TgxCamera2D : TgxCamera
         TgxCluster cluster = GetCluster(clusterId);
         cluster.AddLayer(layer);
     }
+
+    public override void UnInit()
+    {
+        base.UnInit();
+
+        // Make sure to uninit the parallax cameras
+        foreach (TgxCluster cluster in GetClusters(true))
+        {
+            if (cluster.Camera != this)
+                cluster.Camera.UnInit();
+        }
+    }
 }
