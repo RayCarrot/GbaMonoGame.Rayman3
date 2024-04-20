@@ -23,23 +23,24 @@ public class ParallaxClusterCamera : GfxCamera
         if (Engine.ScreenCamera.Resolution == Engine.GameViewPort.OriginalGameResolution)
             return res;
 
-        Vector2 max = Cluster.GetLayers().Min(x => new Vector2(x.PixelWidth, x.PixelHeight));
+        float maxX = Cluster.GetLayers().Min(x => x.PixelWidth);
+        float maxY = Cluster.GetLayers().Min(x => x.PixelHeight);
 
         if (res.X > res.Y)
         {
-            if (res.Y > max.Y)
-                res = new Vector2(max.Y * res.X / res.Y, max.Y);
+            if (res.Y > maxY)
+                res = new Vector2(maxY * res.X / res.Y, maxY);
 
-            if (res.X > max.X)
-                res = new Vector2(max.X, max.X * res.Y / res.X);
+            if (res.X > maxX)
+                res = new Vector2(maxX, maxX * res.Y / res.X);
         }
         else
         {
-            if (res.X > max.X)
-                res = new Vector2(max.X, max.X * res.Y / res.X);
+            if (res.X > maxX)
+                res = new Vector2(maxX, maxX * res.Y / res.X);
 
-            if (res.Y > max.Y)
-                res = new Vector2(max.Y * res.X / res.Y, max.Y);
+            if (res.Y > maxY)
+                res = new Vector2(maxY * res.X / res.Y, maxY);
         }
 
         if (res != Engine.ScreenCamera.Resolution)
