@@ -32,13 +32,14 @@ public class PlayfieldDebugWindow : DebugWindow
         ImGui.Spacing();
         ImGui.SeparatorText("Clusters");
 
-        if (ImGui.BeginTable("_clusters", 6))
+        if (ImGui.BeginTable("_clusters", 7))
         {
             ImGui.TableSetupColumn("Id");
             ImGui.TableSetupColumn("Position");
             ImGui.TableSetupColumn("Max position");
             ImGui.TableSetupColumn("Scroll factor");
             ImGui.TableSetupColumn("Type");
+            ImGui.TableSetupColumn("Camera");
             ImGui.TableSetupColumn("Layers");
             ImGui.TableHeadersRow();
 
@@ -61,6 +62,9 @@ public class PlayfieldDebugWindow : DebugWindow
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{(cluster.Stationary ? "Stationary" : "Scrollable")}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{cluster.Camera.GetType().Name}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{String.Join(", ", cluster.GetLayers().Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
