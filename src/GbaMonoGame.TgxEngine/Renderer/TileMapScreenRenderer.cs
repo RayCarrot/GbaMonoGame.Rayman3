@@ -103,4 +103,10 @@ public class TileMapScreenRenderer : IScreenRenderer
             absTileY += Constants.TileSize;
         }
     }
+
+    public void Dispose()
+    {
+        foreach (Texture2D tex in TileTextures.Values)
+            tex?.Dispose();
+    }
 }

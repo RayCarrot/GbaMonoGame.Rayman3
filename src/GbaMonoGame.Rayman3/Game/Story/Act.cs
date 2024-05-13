@@ -291,6 +291,11 @@ public abstract class Act : Frame
 
     public override void UnInit()
     {
+        foreach (IScreenRenderer renderer in CachedTextureRenderers.Values)
+            renderer.Dispose();
+
+        AnimationPlayer.UnInit();
+
         if (ActResource.StopMusicSoundEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(ActResource.StopMusicSoundEvent);
     }

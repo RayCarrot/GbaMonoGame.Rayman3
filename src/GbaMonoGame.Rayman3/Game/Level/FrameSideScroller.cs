@@ -204,6 +204,12 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         SoundEventsManager.StopAllSongs();
     }
 
+    public override void OnReload()
+    {
+        // We don't want to dispose the cached renderers, so we remove them the screens
+        CachedTileKit?.RemoveCachedRenderersFromScreens();
+    }
+
     public override void Step()
     {
         CurrentStepAction();

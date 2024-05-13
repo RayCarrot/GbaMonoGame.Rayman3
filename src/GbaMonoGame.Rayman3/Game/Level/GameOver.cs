@@ -208,6 +208,7 @@ public class GameOver : Frame
 
     public override void UnInit()
     {
+        AnimationPlayer.UnInit();
         Gfx.Fade = 1;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__tizetre_Swing);
 

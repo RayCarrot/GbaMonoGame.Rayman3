@@ -779,6 +779,8 @@ public class GameCubeMenu : Frame
 
     public override void UnInit()
     {
+        AnimationPlayer.UnInit();
+
         if (IsJoyBusActive)
             JoyBus.Disconnect();
 

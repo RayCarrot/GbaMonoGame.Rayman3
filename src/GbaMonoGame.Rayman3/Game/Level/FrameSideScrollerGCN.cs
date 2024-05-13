@@ -91,7 +91,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
                 if (Engine.Settings.Platform == Platform.GBA)
                 {
                     TgxTileLayer cloudsLayer = ((TgxPlayfield2D)Scene.Playfield).TileLayers[0];
-                    cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(((TextureScreenRenderer)cloudsLayer.Screen.Renderer).Texture, new[]
+                    cloudsLayer.Screen.Renderer = new LevelCloudsRenderer((TextureScreenRenderer)cloudsLayer.Screen.Renderer, new[]
                     {
                         32, 120, 227
                     });
@@ -110,6 +110,12 @@ public class FrameSideScrollerGCN : FrameSideScroller
                 // TODO: Implement
                 break;
         }
+    }
+
+    public override void OnReload()
+    {
+        // We don't want to dispose the cached renderers, so we remove them the screens
+        CachedTileKit?.RemoveCachedRenderersFromScreens();
     }
 
     public override void Step()

@@ -1,16 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.Rayman3;
 
 public class IntroCloudsRenderer : IScreenRenderer
 {
-    public IntroCloudsRenderer(Texture2D texture)
+    public IntroCloudsRenderer(TextureScreenRenderer textureRenderer)
     {
-        Texture = texture;
+        TextureRenderer = textureRenderer;
+        Texture = TextureRenderer.Texture;
     }
 
-    public Texture2D Texture { get; }
+    private Texture2D Texture { get; }
+
+    public TextureScreenRenderer TextureRenderer { get; }
 
     public Vector2 GetSize(GfxScreen screen) => new(Texture.Width, Texture.Height);
     private void DrawCloud(GfxRenderer renderer, Vector2 position, Color color, int index, float offsetX)
@@ -34,5 +38,10 @@ public class IntroCloudsRenderer : IScreenRenderer
         DrawCloud(renderer, position, color, 0, Texture.Width - scroll0);
         DrawCloud(renderer, position, color, 1, Texture.Width - scroll1);
         DrawCloud(renderer, position, color, 2, Texture.Width - scroll2);
+    }
+
+    public void Dispose()
+    {
+        TextureRenderer?.Dispose();
     }
 }

@@ -115,6 +115,7 @@ public partial class MenuAll : Frame, IHasPlayfield
             new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(2), bgLayer.Is8Bit),
             new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(3), bgLayer.Is8Bit),
         });
+        renderer.Dispose();
         SetBackgroundPalette(3);
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
@@ -330,6 +331,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
+        AnimationPlayer.UnInit();
         SoundEngineInterface.SetNbVoices(7);
         Playfield.UnInit();
 

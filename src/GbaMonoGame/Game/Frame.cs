@@ -1,4 +1,6 @@
-﻿namespace GbaMonoGame;
+﻿using System;
+
+namespace GbaMonoGame;
 
 /// <summary>
 /// A frame is the most important object in this engine, determining how the game loop is handled. Only one frame
@@ -25,6 +27,11 @@ public abstract class Frame
     /// UnInitializes the frame. This is called once when a new frame is made active.
     /// </summary>
     public virtual void UnInit() { }
+
+    /// <summary>
+    /// Gets called before the frame is reloaded. This is not part of the original game engine.
+    /// </summary>
+    public virtual void OnReload() { }
 
     /// <summary>
     /// Steps the frame. This is called once every game frame when the frame is active.

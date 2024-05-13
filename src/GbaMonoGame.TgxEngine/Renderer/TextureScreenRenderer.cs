@@ -17,4 +17,9 @@ public class TextureScreenRenderer : IScreenRenderer
     {
         renderer.Draw(Texture, position, color);
     }
+
+    public void Dispose()
+    {
+        Texture?.Dispose();
+    }
 }

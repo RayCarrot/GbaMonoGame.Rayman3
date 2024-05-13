@@ -5,8 +5,10 @@
 /// </summary>
 public static class FrameManager
 {
-    internal static Frame CurrentFrame { get; set; }
-    internal static Frame NextFrame { get; set; }
+    private static bool _reloadCurrentFrame;
+
+    internal static Frame CurrentFrame { get; private set; }
+    internal static Frame NextFrame { get; private set; }
 
     /// <summary>
     /// Sets the next frame to be made active. This will go into effect at the start of the next game frame.
@@ -15,6 +17,16 @@ public static class FrameManager
     public static void SetNextFrame(Frame frame)
     {
         NextFrame = frame;
+        _reloadCurrentFrame = false;
+    }
+
+    /// <summary>
+    /// Reloads the current frame. In the original game this is the equivalent of setting the next frame to the current one.
+    /// </summary>
+    public static void ReloadCurrentFrame()
+    {
+        NextFrame = CurrentFrame;
+        _reloadCurrentFrame = true;
     }
 
     /// <summary>
@@ -28,6 +40,12 @@ public static class FrameManager
 
         if (NextFrame != null)
         {
+            if (_reloadCurrentFrame)
+            {
+                CurrentFrame?.OnReload();
+                _reloadCurrentFrame = false;
+            }
+
             CurrentFrame?.UnInit();
 
             // Clear all screens for the new frame. The game doesn't do this, but it makes

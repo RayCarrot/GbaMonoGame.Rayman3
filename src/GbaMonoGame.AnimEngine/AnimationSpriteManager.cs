@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
@@ -98,5 +99,14 @@ public class AnimationSpriteManager
         }
 
         return tex;
+    }
+
+    public void UnInit()
+    {
+        foreach (Texture2D tex in SpriteTextures.Values.SelectMany(d => d.Values))
+            tex.Dispose();
+
+        Palettes.Clear();
+        SpriteTextures.Clear();
     }
 }

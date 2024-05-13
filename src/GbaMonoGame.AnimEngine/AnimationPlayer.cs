@@ -59,4 +59,9 @@ public class AnimationPlayer
         UnsortedObjects.Clear();
         SortedObjects.Clear();
     }
+
+    public void UnInit()
+    {
+        AnimationSpriteManager.UnInit();
+    }
 }

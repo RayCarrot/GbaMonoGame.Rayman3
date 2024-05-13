@@ -3093,7 +3093,7 @@ public partial class Rayman
                     else
                     {
                         // Reload current map
-                        FrameManager.SetNextFrame(Frame.Current);
+                        FrameManager.ReloadCurrentFrame();
                     }
                 }
                 break;

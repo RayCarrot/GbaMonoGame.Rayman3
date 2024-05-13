@@ -71,4 +71,6 @@ public class CollisionMapScreenRenderer : IScreenRenderer
             absTileY += Constants.TileSize;
         }
     }
+
+    public void Dispose() { }
 }

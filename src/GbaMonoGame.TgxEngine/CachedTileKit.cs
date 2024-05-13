@@ -12,6 +12,16 @@ public class CachedTileKit
     public void CacheRenderer(int id, IScreenRenderer renderer) => _renderers.Add(id, renderer);
     public IScreenRenderer GetRenderer(int id) => _renderers[id];
 
+    // Use this to avoid disposing cached renderers
+    public void RemoveCachedRenderersFromScreens()
+    {
+        foreach (int id in _renderers.Keys)
+        {
+            GfxScreen screen = Gfx.GetScreen(id);
+            screen.Renderer = null;
+        }
+    }
+
     public static CachedTileKit FromPlayfield(TgxPlayfield playfield)
     {
         CachedTileKit cachedTileKit = new();

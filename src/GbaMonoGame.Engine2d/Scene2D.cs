@@ -101,6 +101,7 @@ public class Scene2D
     public void UnInit()
     {
         Playfield.UnInit();
+        AnimationPlayer.UnInit();
     }
 
     public void Step()
