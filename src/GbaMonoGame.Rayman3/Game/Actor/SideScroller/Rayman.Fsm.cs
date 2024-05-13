@@ -27,7 +27,8 @@ public partial class Rayman
             Fsm.ChangeAction(Fsm_JumpSlide);
             return false;
         }
-        else if (FUN_0802a0f8())
+
+        if (ShouldAutoJump())
         {
             PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
 
@@ -184,7 +185,7 @@ public partial class Rayman
             return false;
         }
 
-        if (FUN_0802a0f8())
+        if (ShouldAutoJump())
         {
             PlaySound(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
             Fsm.ChangeAction(Fsm_JumpSlide);

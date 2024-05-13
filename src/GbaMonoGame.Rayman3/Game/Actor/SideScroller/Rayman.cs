@@ -646,9 +646,45 @@ public sealed partial class Rayman : MovableActor
         return takenDamage;
     }
 
-    private bool FUN_0802a0f8()
+    private bool ShouldAutoJump()
     {
-        // TODO: Implement
+        // Make sure you're sliding
+        if (SlideType == null)
+            return false;
+
+        // Make sure you're moving fast enough
+        if (Math.Abs(Speed.X) <= 2)
+            return false;
+
+        Vector2 topPos = Position;
+        Vector2 bottomPos = Position + new Vector2(0, Constants.TileSize);;
+
+        if (Speed.X < 0)
+        {
+            topPos -= new Vector2(Constants.TileSize * 2, 0);
+            bottomPos -= new Vector2(Constants.TileSize, 0);
+        }
+        else
+        {
+            topPos += new Vector2(Constants.TileSize * 2, 0);
+            bottomPos += new Vector2(Constants.TileSize, 0);
+        }
+
+        PhysicalType topType = Scene.GetPhysicalType(topPos);
+        PhysicalType bottomType = Scene.GetPhysicalType(bottomPos);
+
+        if (topType == PhysicalTypeValue.SlideJump)
+            return bottomType.IsSolid;
+
+        topPos += new Vector2(Constants.TileSize, 0);
+        bottomPos += new Vector2(Constants.TileSize, 0);
+
+        topType = Scene.GetPhysicalType(topPos);
+        bottomType = Scene.GetPhysicalType(bottomPos);
+
+        if (topType == PhysicalTypeValue.SlideJump) 
+            return bottomType.IsSolid;
+        
         return false;
     }
 
