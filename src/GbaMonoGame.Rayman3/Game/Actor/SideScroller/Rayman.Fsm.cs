@@ -298,7 +298,7 @@ public partial class Rayman
                         if (NextActionId == null)
                         {
                             // Randomly show Rayman being bored
-                            if (Random.Shared.Next(11) < 6)
+                            if (Random.GetNumber(11) < 6)
                                 ActionId = IsFacingRight ? Action.Idle_Bored_Right : Action.Idle_Bored_Left;
                             else
                                 ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
@@ -635,7 +635,7 @@ public partial class Rayman
                         // Randomly look around for Globox in the first level
                         if (GameInfo.MapId == MapId.WoodLight_M1 && GameInfo.LastGreenLumAlive == 0)
                         {
-                            if (Random.Shared.Next(501) >= 401)
+                            if (Random.GetNumber(501) >= 401)
                                 ActionId = IsFacingRight ? Action.Walk_LookAround_Right : Action.Walk_LookAround_Left;
                             else
                                 ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
@@ -675,13 +675,13 @@ public partial class Rayman
                     if (IsActionFinished)
                     {
                         if (ActionId is Action.Walk_Right or Action.Walk_Left &&
-                            field22_0x97 > Random.Shared.Next(121) + 120)
+                            field22_0x97 > Random.GetNumber(121) + 120)
                         {
                             ActionId = IsFacingRight ? Action.Walk_LookAround_Right : Action.Walk_LookAround_Left;
                             field22_0x97 = 0;
                         }
                         else if (ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left && 
-                                 field22_0x97 > Random.Shared.Next(121) + 60)
+                                 field22_0x97 > Random.GetNumber(121) + 60)
                         {
                             ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
                             field22_0x97 = 0;

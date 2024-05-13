@@ -44,15 +44,15 @@ public partial class Lums
                 {
                     if (ActionId == Action.BlueLum)
                     {
-                        AnimatedObject.CurrentAnimation = 0 + Random.Shared.Next(3);
+                        AnimatedObject.CurrentAnimation = 0 + Random.GetNumber(3);
                     }
                     else if (ActionId == Action.WhiteLum)
                     {
-                        AnimatedObject.CurrentAnimation = 3 + Random.Shared.Next(3);
+                        AnimatedObject.CurrentAnimation = 3 + Random.GetNumber(3);
                     }
                     else if (ActionId is not (Action.BigYellowLum or Action.BigBlueLum))
                     {
-                        AnimatedObject.CurrentAnimation = (byte)ActionId * 3 + Random.Shared.Next(3);
+                        AnimatedObject.CurrentAnimation = (byte)ActionId * 3 + Random.GetNumber(3);
                     }
                 }
 

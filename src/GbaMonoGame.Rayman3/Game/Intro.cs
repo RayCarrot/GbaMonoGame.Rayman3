@@ -403,6 +403,7 @@ public class Intro : Frame, IHasPlayfield
         {
             Gfx.Fade = 1;
             FrameManager.SetNextFrame(Menu);
+            Random.SetSeed(GameTime.ElapsedFrames);
         }
     }
 

@@ -11,7 +11,7 @@ public partial class SwingSparkle
         {
             case FsmAction.Init:
                 if (AnimatedObject.CurrentAnimation != 1)
-                    AnimatedObject.CurrentFrame = Random.Shared.Next(7);
+                    AnimatedObject.CurrentFrame = Random.GetNumber(7);
                 break;
 
             case FsmAction.Step:

@@ -378,8 +378,8 @@ public partial class MenuAll : Frame, IHasPlayfield
             }
             else
             {
-                SteamTimer = Random.Shared.Next(60, 240);
-                Data.Steam.CurrentAnimation = Random.Shared.Next(200) < 100 ? 0 : 1;
+                SteamTimer = Random.GetNumber(180) + 60; // Value between 60 and 240
+                Data.Steam.CurrentAnimation = Random.GetNumber(200) < 100 ? 0 : 1;
             }
         }
         else

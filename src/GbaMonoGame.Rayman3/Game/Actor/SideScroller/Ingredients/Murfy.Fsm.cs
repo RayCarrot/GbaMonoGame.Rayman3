@@ -229,7 +229,7 @@ public partial class Murfy
 
                 if (IsActionFinished && Timer > 120)
                 {
-                    ActionId = Random.Shared.Next(9) switch
+                    ActionId = Random.GetNumber(9) switch
                     {
                         0 => IsFacingRight ? Action.Talk1_Right : Action.Talk1_Left,
                         1 => IsFacingRight ? Action.Talk2_Right : Action.Talk2_Left,

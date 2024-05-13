@@ -72,7 +72,7 @@ public partial class Teensies
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
-                    ActionId = Random.Shared.Next(3) * 2 + (IsFacingRight ? Action.Init_World1_Right : Action.Init_World1_Left);
+                    ActionId = Random.GetNumber(3) * 2 + (IsFacingRight ? Action.Init_World1_Right : Action.Init_World1_Left);
 
                 if (JoyPad.CheckSingle(GbaInput.A))
                     TextBox.MoveToNextText();
@@ -238,7 +238,7 @@ public partial class Teensies
             case FsmAction.Step:
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
                 if (IsActionFinished)
-                    ActionId = Random.Shared.Next(2) * 2 + (IsFacingRight ? Action.Victory1_Right : Action.Victory1_Left);
+                    ActionId = Random.GetNumber(2) * 2 + (IsFacingRight ? Action.Victory1_Right : Action.Victory1_Left);
                 break;
 
             case FsmAction.UnInit:

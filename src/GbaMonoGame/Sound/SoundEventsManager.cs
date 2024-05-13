@@ -58,6 +58,7 @@ public static class SoundEventsManager
 
     private static ushort? GetRandomResourceId(SoundResource res)
     {
+        // TODO: Use Random.Shared or game's random implementation? It matters less here than in the game code though.
         int rand = Random.Shared.Next(100);
 
         for (int i = 0; i < res.ResourceIdsCount; i++)

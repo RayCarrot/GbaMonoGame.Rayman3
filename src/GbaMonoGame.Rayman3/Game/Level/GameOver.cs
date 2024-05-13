@@ -22,7 +22,7 @@ public class GameOver : Frame
 
     private void NextRaymanIdleAnimation()
     {
-        int rand = Random.Shared.Next(100);
+        int rand = Random.GetNumber(100);
         Rayman.CurrentAnimation = Rayman.CurrentAnimation switch
         {
             3 => rand >= 50 ? 5 : 4,

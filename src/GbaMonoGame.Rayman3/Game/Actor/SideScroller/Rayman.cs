@@ -1000,7 +1000,7 @@ public sealed partial class Rayman : MovableActor
     {
         PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
 
-        int rand = Random.Shared.Next(41);
+        int rand = Random.GetNumber(41);
 
         if (IsBossFight())
         {

@@ -49,7 +49,7 @@ public sealed partial class Teensies : ActionActor
     private void SetMasterAction()
     {
         if (IsActionFinished)
-            ActionId = Random.Shared.Next(5) * 2 + (IsFacingRight ? Action.Master1_Right : Action.Master1_Left);
+            ActionId = Random.GetNumber(5) * 2 + (IsFacingRight ? Action.Master1_Right : Action.Master1_Left);
     }
 
     private bool IsWorldFinished()

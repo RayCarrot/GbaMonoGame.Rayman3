@@ -529,11 +529,11 @@ public class TextBoxDialog : Dialog
             IconAnimationTimer--;
 
             if (IconAnimationTimer == 0)
-                icon.CurrentAnimation = Random.Shared.Next(100) < 50 ? 1 : 2;
+                icon.CurrentAnimation = Random.GetNumber(100) < 50 ? 1 : 2;
         }
         else if (icon.EndOfAnimation)
         {
-            IconAnimationTimer = 60 + Random.Shared.Next(60);
+            IconAnimationTimer = 60 + Random.GetNumber(60);
             icon.CurrentAnimation = 0;
         }
 
