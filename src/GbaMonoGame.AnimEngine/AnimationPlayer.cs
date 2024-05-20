@@ -10,14 +10,11 @@ public class AnimationPlayer
         Is8Bit = is8Bit;
         SoundEventCallback = soundEventCallback;
 
-        AnimationSpriteManager = new AnimationSpriteManager();
         UnsortedObjects = new List<AObject>();
         SortedObjects = new List<AObject>();
     }
 
     private Action<short> SoundEventCallback { get; }
-    private AnimationSpriteManager AnimationSpriteManager { get; }
-
     private List<AObject> UnsortedObjects { get; }
     private List<AObject> SortedObjects { get; }
 
@@ -51,17 +48,12 @@ public class AnimationPlayer
     public void Execute()
     {
         foreach (AObject obj in UnsortedObjects)
-            obj.Execute(AnimationSpriteManager, SoundEventRequest);
+            obj.Execute(SoundEventRequest);
 
         foreach (AObject obj in SortedObjects)
-            obj.Execute(AnimationSpriteManager, SoundEventRequest);
+            obj.Execute(SoundEventRequest);
 
         UnsortedObjects.Clear();
         SortedObjects.Clear();
-    }
-
-    public void UnInit()
-    {
-        AnimationSpriteManager.UnInit();
     }
 }

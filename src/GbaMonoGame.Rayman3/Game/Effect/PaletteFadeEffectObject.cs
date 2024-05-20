@@ -1,5 +1,4 @@
 ﻿using System;
-using GbaMonoGame.AnimEngine;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
@@ -20,7 +19,7 @@ public class PaletteFadeEffectObject : EffectObject
 
     public void SetFadeFromTimer(int timer) => Fade = 1 - timer / (float)MaxFadeTime;
 
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback)
+    public override void Execute(Action<short> soundEventCallback)
     {
         // We draw a black, faded, texture over the screen to emulate fading the palette
         if (Fade is > 0 and <= 1)

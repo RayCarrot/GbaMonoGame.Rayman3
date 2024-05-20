@@ -22,8 +22,6 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
     protected Scene2D Scene { get; set; }
     protected Action CurrentStepAction { get; set; }
 
-    protected CachedTileKit CachedTileKit { get; set; } // Cache so we can quickly reload when dying
-
     #endregion
 
     #region Public Properties
@@ -54,8 +52,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         TransitionsFX.FadeInInit(1 / 16f);
 
         BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3, CachedTileKit);
-        CachedTileKit = CachedTileKit.FromPlayfield(Scene.Playfield);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3);
 
         // Set start position
         if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
@@ -97,12 +94,6 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         Scene = null;
 
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumTimer_Mix02);
-    }
-
-    public override void OnReload()
-    {
-        // We don't want to dispose the cached renderers, so we remove them the screens
-        CachedTileKit?.RemoveCachedRenderersFromScreens();
     }
 
     public override void Step()

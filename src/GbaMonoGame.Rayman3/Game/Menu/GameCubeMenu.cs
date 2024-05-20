@@ -726,11 +726,14 @@ public class GameCubeMenu : Frame
             IsEnabled = true,
             Priority = 1,
             Offset = Vector2.Zero,
-            Renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: (int)Engine.GameViewPort.OriginalGameResolution.X,
-                height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
-                bitmap: Engine.Loader.Rayman3_GameCubeMenuBitmap.ImgData,
-                palette: new Palette(Engine.Loader.Rayman3_GameCubeMenuPalette)))
+            Renderer = new TextureScreenRenderer(Engine.TextureCache.GetOrCreateObject(
+                pointer: Engine.Loader.Rayman3_GameCubeMenuBitmap.Offset,
+                id: 0,
+                createObjFunc: static () => new BitmapTexture2D(
+                    width: (int)Engine.GameViewPort.OriginalGameResolution.X,
+                    height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
+                    bitmap: Engine.Loader.Rayman3_GameCubeMenuBitmap.ImgData,
+                    palette: new Palette(Engine.Loader.Rayman3_GameCubeMenuPalette))))
         });
 
         Data = new GameCubeMenuData();
@@ -779,8 +782,6 @@ public class GameCubeMenu : Frame
 
     public override void UnInit()
     {
-        AnimationPlayer.UnInit();
-
         if (IsJoyBusActive)
             JoyBus.Disconnect();
 

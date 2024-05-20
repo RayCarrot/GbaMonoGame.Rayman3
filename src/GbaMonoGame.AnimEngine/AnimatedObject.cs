@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.AnimEngine;
@@ -134,6 +137,75 @@ public class AnimatedObject : AObject
             yield return anim.Channels[i + ChannelIndex];
     }
 
+    private static Texture2D CreateSpriteTexture(SpriteDefine spriteDefine)
+    {
+        AnimatedObjectResource resource = spriteDefine.Resource;
+
+        Palette palette = Engine.PaletteCache.GetOrCreateObject(
+            pointer: resource.Palettes.Offset,
+            id: spriteDefine.PaletteIndex,
+            data: resource.Palettes.Palettes[spriteDefine.PaletteIndex],
+            createObjFunc: p => new Palette(p));
+
+        Constants.Size shape = Constants.GetSpriteShape(spriteDefine.SpriteShape, spriteDefine.SpriteSize);
+        Texture2D tex = new(Engine.GraphicsDevice, shape.Width, shape.Height);
+        Color[] texColors = new Color[tex.Width * tex.Height];
+        byte[] tileSet = resource.SpriteTable.Data;
+        int tileSetIndex = spriteDefine.TileIndex * 0x20;
+        bool is8Bit = resource.Is8Bit;
+
+        int absTileY = 0;
+
+        // TODO: Optimize like how we did with TiledTexture2D. Perhaps class SpriteTexture2D which inherits from it?
+        for (int tileY = 0; tileY < shape.TilesHeight; tileY++)
+        {
+            int absTileX = 0;
+
+            for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
+            {
+                for (int y = 0; y < Constants.TileSize; y++)
+                {
+                    for (int x = 0; x < Constants.TileSize; x++)
+                    {
+                        int absX = absTileX + x;
+                        int absY = absTileY + y;
+
+                        int colorIndex = tileSet[tileSetIndex];
+
+                        if (!is8Bit)
+                            colorIndex = BitHelpers.ExtractBits(colorIndex, 4, x % 2 == 0 ? 0 : 4);
+
+                        // 0 is transparent, so ignore
+                        if (colorIndex != 0)
+                        {
+                            // Set the pixel
+                            texColors[absY * tex.Width + absX] = palette.Colors[colorIndex];
+                        }
+
+                        if (is8Bit || x % 2 == 1)
+                            tileSetIndex++;
+                    }
+                }
+
+                absTileX += Constants.TileSize;
+            }
+
+            absTileY += Constants.TileSize;
+        }
+
+        tex.SetData(texColors);
+
+        if (Engine.Config.DumpSprites)
+        {
+            string outputDir = Path.Combine("Sprites", resource.Offset.StringAbsoluteOffset);
+            Directory.CreateDirectory(outputDir);
+            using Stream fileStream = File.Create(Path.Combine(outputDir, $"{spriteDefine.TileIndex}_{spriteDefine.PaletteIndex}.png"));
+            tex.SaveAsPng(fileStream, tex.Width, tex.Height);
+        }
+
+        return tex;
+    }
+
     #endregion
 
     #region Public Methods
@@ -243,7 +315,7 @@ public class AnimatedObject : AObject
         Logger.NotImplemented("Not implemented framing channel sprites");
     }
 
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback)
+    public override void Execute(Action<short> soundEventCallback)
     {
         Animation anim = GetAnimation();
 
@@ -310,19 +382,19 @@ public class AnimatedObject : AObject
                             pd: matrix.Pd);
                     }
 
+                    int paletteIndex = BasePaletteIndex + channel.PalIndex;
+
                     // Add the sprite to vram. In the original engine this part
                     // is more complicated. If the object is dynamic then it loads
                     // in the data to vram first, then for all sprites it adds an
                     // entry to the list of object attributes in OAM memory.
-                    Texture2D tex = animationSpriteManager.GetSpriteTexture(
-                        resource: Resource,
-                        spriteShape: channel.SpriteShape,
-                        spriteSize: channel.SpriteSize,
-                        tileIndex: channel.TileIndex,
-                        paletteIndex: BasePaletteIndex + channel.PalIndex);
                     Gfx.AddSprite(new Sprite()
                     {
-                        Texture = tex,
+                        Texture = Engine.TextureCache.GetOrCreateObject(
+                            pointer: Resource.Offset, 
+                            id: channel.TileIndex * Resource.PalettesCount + paletteIndex,
+                            data: new SpriteDefine(Resource, channel.SpriteShape, channel.SpriteSize, paletteIndex, channel.TileIndex),
+                            createObjFunc: CreateSpriteTexture),
                         Position = new Vector2(xPos, yPos),
                         FlipX = channel.FlipX ^ FlipX,
                         FlipY = channel.FlipY ^ FlipY,
@@ -362,6 +434,28 @@ public class AnimatedObject : AObject
         }
 
         ComputeNextFrame();
+    }
+
+    #endregion
+
+    #region Data Types
+
+    private readonly struct SpriteDefine
+    {
+        public SpriteDefine(AnimatedObjectResource resource, int spriteShape, int spriteSize, int paletteIndex, int tileIndex)
+        {
+            Resource = resource;
+            PaletteIndex = paletteIndex;
+            SpriteShape = spriteShape;
+            SpriteSize = spriteSize;
+            TileIndex = tileIndex;
+        }
+
+        public AnimatedObjectResource Resource { get; }
+        public int SpriteShape { get; }
+        public int SpriteSize { get; }
+        public int PaletteIndex { get; }
+        public int TileIndex { get; }
     }
 
     #endregion

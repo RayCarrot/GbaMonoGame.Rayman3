@@ -55,6 +55,14 @@ public static class Engine
 
     #endregion
 
+    #region Cache
+
+    // TODO: Show cache in debug layout
+    public static Cache<Texture2D> TextureCache { get; } = new();
+    public static Cache<Palette> PaletteCache { get; } = new();
+
+    #endregion
+
     #region Private Static Methods
 
     private static void LoadRom()

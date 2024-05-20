@@ -56,7 +56,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     #region Private Methods
 
-    private Palette GetBackgroundPalette(int index)
+    private static Palette GetBackgroundPalette(int index)
     {
         RGB555Color[] colors = index switch
         {
@@ -98,6 +98,19 @@ public partial class MenuAll : Frame, IHasPlayfield
         ((MultiTextureScreenRenderer)Playfield.TileLayers[0].Screen.Renderer).CurrentTextureIndex = index;
     }
 
+    private Texture2D CreateBackgroundTexture(TgxTileLayer bgLayer, int index)
+    {
+        return Engine.TextureCache.GetOrCreateObject(
+            pointer: bgLayer.Resource.Offset,
+            id: index + 1, // +1 since 0 is the default
+            data: (Layer: bgLayer, TileSet: Playfield.Vram.TileSet, Index: index),
+            createObjFunc: static data =>
+            {
+                Palette pal = GetBackgroundPalette(data.Index);
+                return new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, pal, data.Layer.Is8Bit);
+            });
+    }
+
     private void LoadPlayfield()
     {
         PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
@@ -107,15 +120,13 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         // The background layer can have multiple palettes, so we need to create a texture for each
         TgxTileLayer bgLayer = Playfield.TileLayers[0];
-        TiledTextureScreenRenderer renderer = (TiledTextureScreenRenderer)bgLayer.Screen.Renderer;
-        bgLayer.Screen.Renderer = new MultiTextureScreenRenderer(new Texture2D[]
+        bgLayer.Screen.Renderer = new MultiTextureScreenRenderer(new[]
         { 
-            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(0), bgLayer.Is8Bit),
-            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(1), bgLayer.Is8Bit),
-            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(2), bgLayer.Is8Bit),
-            new TiledTexture2D(bgLayer.Width, bgLayer.Height, renderer.TileSet, renderer.TileMap, GetBackgroundPalette(3), bgLayer.Is8Bit),
+            CreateBackgroundTexture(bgLayer, 0),
+            CreateBackgroundTexture(bgLayer, 1),
+            CreateBackgroundTexture(bgLayer, 2),
+            CreateBackgroundTexture(bgLayer, 3),
         });
-        renderer.Dispose();
         SetBackgroundPalette(3);
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
@@ -331,7 +342,6 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public override void UnInit()
     {
-        AnimationPlayer.UnInit();
         SoundEngineInterface.SetNbVoices(7);
         Playfield.UnInit();
 

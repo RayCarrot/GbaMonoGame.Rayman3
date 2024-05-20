@@ -17,7 +17,7 @@ public class FairyGlade_M2 : FrameSideScroller
         if (Engine.Settings.Platform == Platform.GBA)
         {
             TgxTileLayer cloudsLayer = ((TgxPlayfield2D)Scene.Playfield).TileLayers[0];
-            cloudsLayer.Screen.Renderer = new LevelCloudsRenderer((TextureScreenRenderer)cloudsLayer.Screen.Renderer, new[]
+            cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(((TextureScreenRenderer)cloudsLayer.Screen.Renderer).Texture, new[]
             {
                 32, 120, 227
             });

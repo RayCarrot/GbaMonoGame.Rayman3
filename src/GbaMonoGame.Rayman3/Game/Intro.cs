@@ -111,7 +111,7 @@ public class Intro : Frame, IHasPlayfield
 
         // TODO: Allow scrolling on N-Gage too?
         if (Engine.Settings.Platform == Platform.GBA)
-            Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer);
+            Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer).Texture);
     }
 
     private void Skip()
@@ -172,7 +172,6 @@ public class Intro : Frame, IHasPlayfield
 
     public override void UnInit()
     {
-        AnimationPlayer.UnInit();
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
         Gfx.Fade = 1;

@@ -5,8 +5,6 @@
 /// </summary>
 public static class FrameManager
 {
-    private static bool _reloadCurrentFrame;
-
     internal static Frame CurrentFrame { get; private set; }
     internal static Frame NextFrame { get; private set; }
 
@@ -17,7 +15,6 @@ public static class FrameManager
     public static void SetNextFrame(Frame frame)
     {
         NextFrame = frame;
-        _reloadCurrentFrame = false;
     }
 
     /// <summary>
@@ -26,7 +23,6 @@ public static class FrameManager
     public static void ReloadCurrentFrame()
     {
         NextFrame = CurrentFrame;
-        _reloadCurrentFrame = true;
     }
 
     /// <summary>
@@ -40,17 +36,19 @@ public static class FrameManager
 
         if (NextFrame != null)
         {
-            if (_reloadCurrentFrame)
-            {
-                CurrentFrame?.OnReload();
-                _reloadCurrentFrame = false;
-            }
-
             CurrentFrame?.UnInit();
 
             // Clear all screens for the new frame. The game doesn't do this, but it makes
             // more sense with how this code is structured.
             Gfx.ClearScreens();
+
+            // TODO: Add option not to clear cache? Makes loading faster, but uses more memory.
+            // Clear cache if loading a new frame
+            if (CurrentFrame != NextFrame)
+            {
+                Engine.TextureCache.Clear();
+                Engine.PaletteCache.Clear();
+            }
 
             // Initializing a new frame might take longer than 1/60th of a second, so we mark it as a load
             Engine.BeginLoad();

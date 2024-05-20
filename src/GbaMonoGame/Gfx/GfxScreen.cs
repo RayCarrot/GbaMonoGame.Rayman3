@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame;
 
 /// <summary>
 /// A graphics screen. This is the equivalent of a GBA background.
 /// </summary>
-public class GfxScreen : IDisposable
+public class GfxScreen
 {
     public GfxScreen(int id)
     {
@@ -94,10 +93,5 @@ public class GfxScreen : IDisposable
         {
             Renderer?.Draw(renderer, this, -Offset, color);
         }
-    }
-
-    public void Dispose()
-    {
-        Renderer?.Dispose();
     }
 }

@@ -29,8 +29,6 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     protected Scene2D Scene { get; set; }
     protected Action CurrentStepAction { get; set; }
 
-    protected CachedTileKit CachedTileKit { get; set; } // Cache so we can quickly reload when dying
-
     #endregion
 
     #region Public Properties
@@ -132,8 +130,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         LevelMusicManager.Init();
         TransitionsFX = new TransitionsFX(true);
         BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, CachedTileKit);
-        CachedTileKit = CachedTileKit.FromPlayfield(Scene.Playfield);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
 
         // Add fog
         if (GameInfo.MapId is 
@@ -202,12 +199,6 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         GameInfo.StopLevelMusic();
         SoundEventsManager.StopAllSongs();
-    }
-
-    public override void OnReload()
-    {
-        // We don't want to dispose the cached renderers, so we remove them the screens
-        CachedTileKit?.RemoveCachedRenderersFromScreens();
     }
 
     public override void Step()

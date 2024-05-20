@@ -26,13 +26,7 @@ public static class Gfx
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];
     public static IEnumerable<GfxScreen> GetScreens() => Screens.Values;
-    public static void ClearScreens()
-    {
-        foreach (GfxScreen screen in Screens.Values)
-            screen.Dispose();
-
-        Screens.Clear();
-    }
+    public static void ClearScreens() => Screens.Clear();
 
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void ClearSprites() => Sprites.Clear();

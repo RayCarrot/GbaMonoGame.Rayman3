@@ -11,7 +11,7 @@ namespace GbaMonoGame.Engine2d;
 
 public class Scene2D
 {
-    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, CachedTileKit cachedTileKit = null)
+    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
@@ -23,7 +23,7 @@ public class Scene2D
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
 
-        Playfield = TgxPlayfield.Load(scene.Playfield, cachedTileKit);
+        Playfield = TgxPlayfield.Load(scene.Playfield);
 
         // TODO: Set bounds if Mode7
         if (Playfield is TgxPlayfield2D playfield2D)
@@ -42,7 +42,7 @@ public class Scene2D
     }
 
     // Scene2DGameCube
-    public Scene2D(GameCubeMap map, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, CachedTileKit cachedTileKit = null)
+    public Scene2D(GameCubeMap map, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
@@ -52,7 +52,7 @@ public class Scene2D
         Dialogs = new List<Dialog>(layersCount);
         DialogFlags = new List<bool>(layersCount);
 
-        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield, cachedTileKit);
+        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield);
 
         // TODO: Set bounds if Mode7
         if (Playfield is TgxPlayfield2D playfield2D)
@@ -101,7 +101,6 @@ public class Scene2D
     public void UnInit()
     {
         Playfield.UnInit();
-        AnimationPlayer.UnInit();
     }
 
     public void Step()

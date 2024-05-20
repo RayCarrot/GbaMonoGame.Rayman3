@@ -1,5 +1,4 @@
-﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
@@ -118,11 +117,14 @@ public class GameOver : Frame
             IsEnabled = true,
             Priority = 1,
             Offset = Vector2.Zero,
-            Renderer = new TextureScreenRenderer(new BitmapTexture2D(
-                width: (int)Engine.GameViewPort.OriginalGameResolution.X,
-                height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
-                bitmap: Engine.Loader.Rayman3_GameOverBitmap.ImgData,
-                palette: new Palette(Engine.Loader.Rayman3_GameOverPalette)))
+            Renderer = new TextureScreenRenderer(Engine.TextureCache.GetOrCreateObject(
+                pointer: Engine.Loader.Rayman3_GameOverBitmap.Offset,
+                id: 0,
+                createObjFunc: static () => new BitmapTexture2D(
+                    width: (int)Engine.GameViewPort.OriginalGameResolution.X,
+                    height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
+                    bitmap: Engine.Loader.Rayman3_GameOverBitmap.ImgData,
+                    palette: new Palette(Engine.Loader.Rayman3_GameOverPalette))))
         });
 
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
@@ -208,7 +210,6 @@ public class GameOver : Frame
 
     public override void UnInit()
     {
-        AnimationPlayer.UnInit();
         Gfx.Fade = 1;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__tizetre_Swing);
 

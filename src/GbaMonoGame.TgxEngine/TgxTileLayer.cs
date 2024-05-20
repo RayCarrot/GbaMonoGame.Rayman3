@@ -1,6 +1,6 @@
-﻿using System;
-using BinarySerializer.Nintendo.GBA;
+﻿using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
+using Microsoft.Xna.Framework.Graphics;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace GbaMonoGame.TgxEngine;
@@ -9,12 +9,12 @@ public class TgxTileLayer : TgxGameLayer
 {
     public TgxTileLayer(GameLayerResource gameLayerResource) : base(gameLayerResource)
     {
-        TileLayerResource tileLayerResource = gameLayerResource.TileLayer;
+        Resource = gameLayerResource.TileLayer;
 
-        TileMap = tileLayerResource.TileMap;
-        LayerId = tileLayerResource.LayerId;
-        Is8Bit = tileLayerResource.Is8Bit;
-        IsDynamic = tileLayerResource.IsDynamic;
+        TileMap = Resource.TileMap;
+        LayerId = Resource.LayerId;
+        Is8Bit = Resource.Is8Bit;
+        IsDynamic = Resource.IsDynamic;
 
         Screen = new GfxScreen(LayerId)
         {
@@ -22,14 +22,15 @@ public class TgxTileLayer : TgxGameLayer
             Offset = Vector2.Zero,
             Priority = 3 - LayerId,
             Wrap = true,
-            Is8Bit = tileLayerResource.Is8Bit,
-            IsAlphaBlendEnabled = tileLayerResource.HasAlphaBlending,
-            GbaAlpha = tileLayerResource.AlphaCoeff,
+            Is8Bit = Resource.Is8Bit,
+            IsAlphaBlendEnabled = Resource.HasAlphaBlending,
+            GbaAlpha = Resource.AlphaCoeff,
         };
 
         Gfx.AddScreen(Screen);
     }
 
+    public TileLayerResource Resource { get; }
     public GfxScreen Screen { get; }
     public MapTile[] TileMap { get; }
     public byte LayerId { get; }
@@ -41,51 +42,32 @@ public class TgxTileLayer : TgxGameLayer
         Screen.Offset = offset;
     }
 
-    public void LoadTileKit(TileKit tileKit, TileMappingTable tileMappingTable, int defaultPalette, int vramLength = 0x180)
+    public void LoadRenderer(TileKit tileKit, GbaVram vram)
     {
         // The game has two ways of allocating tilesets. If it's dynamic then it reserves space in vram for dynamically loading
         // the tile graphics as they're being displayed on screen (as the camera scrolls). If it's static then it's all pre-loaded.
         if (IsDynamic)
         {
             byte[] tileSet = Is8Bit ? tileKit.Tiles8bpp : tileKit.Tiles4bpp;
-            Screen.Renderer = new TileMapScreenRenderer(Width, Height, TileMap, tileSet, new Palette(tileKit.Palettes[defaultPalette].Palette), Is8Bit);
+            Screen.Renderer = new TileMapScreenRenderer(
+                // Use the tilekit as the cache pointer since multiple layers can share the same tilekit and we're
+                // caching per tile,´but make the pointer differ depending on if it's 4-bit or 8-bit.
+                cachePointer: tileKit.Offset + (Is8Bit ? 1 : 0), 
+                width: Width, 
+                height: Height, 
+                tileMap: TileMap, 
+                tileSet: tileSet, 
+                palette: vram.Palette, 
+                is8Bit: Is8Bit);
         }
         else
         {
-            byte[] tileSet;
-
-            // If the tile layer is static then we have to allocate the tileset in the same order the game does, or else
-            // the tile indices won't match! The game has a rather complicated way of handling it.
-            if (Is8Bit)
-            {
-                tileSet = new byte[1024 * 0x40];
-                for (int i = 0; i < tileMappingTable.Table8bpp.Length; i++)
-                {
-                    int offset = i < vramLength ? 512 : -vramLength + 1;
-                    int value = tileMappingTable.Table8bpp[i] - 1;
-                    Array.Copy(tileKit.Tiles8bpp, value * 0x40, tileSet, (i + offset) * 0x40, 0x40);
-                }
-            }
-            else
-            {
-                // First 0x40 bytes are always empty. For 8-bit that's one tile, but for 4-bit it's 2 tiles.
-                const int offset = 2;
-
-                tileSet = new byte[1024 * 0x20];
-                for (int i = 0; i < tileMappingTable.Table4bpp.Length; i++)
-                {
-                    int value = tileMappingTable.Table4bpp[i] - 1;
-                    Array.Copy(tileKit.Tiles4bpp, value * 0x20, tileSet, (i + offset) * 0x20, 0x20);
-                }
-            }
-
-            Palette pal = new(tileKit.Palettes[defaultPalette].Palette);
-            Screen.Renderer = new TiledTextureScreenRenderer(Width, Height, tileSet, TileMap, pal, Is8Bit);
+            Texture2D tex = Engine.TextureCache.GetOrCreateObject(
+                pointer: Resource.Offset,
+                id: 0,
+                data: (Vram: vram, Layer: this),
+                createObjFunc: static data => new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.Vram.Palette, data.Layer.Is8Bit));
+            Screen.Renderer = new TextureScreenRenderer(tex);
         }
-    }
-
-    public void LoadCachedTileKit(CachedTileKit cachedTileKit)
-    {
-        Screen.Renderer = cachedTileKit.GetRenderer(Screen.Id);
     }
 }

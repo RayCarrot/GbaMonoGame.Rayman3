@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
@@ -10,8 +9,6 @@ namespace GbaMonoGame.Rayman3;
 public abstract class Act : Frame
 {
     #region Private Properties
-
-    private Dictionary<Bitmap, IScreenRenderer> CachedTextureRenderers { get; } = new();
 
     private TransitionsFX TransitionsFX { get; set; }
     private ActResource ActResource { get; set; }
@@ -159,15 +156,15 @@ public abstract class Act : Frame
         if (frame.MusicSongEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(frame.MusicSongEvent);
 
-        if (!CachedTextureRenderers.TryGetValue(frame.Bitmap, out IScreenRenderer renderer))
-        {
-            renderer = new TextureScreenRenderer(new BitmapTexture2D(
+        IScreenRenderer renderer = new TextureScreenRenderer(Engine.TextureCache.GetOrCreateObject(
+            pointer: frame.Bitmap.Offset,
+            id: 0,
+            data: frame,
+            createObjFunc: static frame => new BitmapTexture2D(
                 width: (int)Engine.GameViewPort.OriginalGameResolution.X,
                 height: (int)Engine.GameViewPort.OriginalGameResolution.Y,
                 bitmap: frame.Bitmap.ImgData,
-                palette: new Palette(frame.Palette)));
-            CachedTextureRenderers[frame.Bitmap] = renderer;
-        }
+                palette: new Palette(frame.Palette))));
 
         BitmapScreen.Renderer = renderer;
 
@@ -291,11 +288,6 @@ public abstract class Act : Frame
 
     public override void UnInit()
     {
-        foreach (IScreenRenderer renderer in CachedTextureRenderers.Values)
-            renderer.Dispose();
-
-        AnimationPlayer.UnInit();
-
         if (ActResource.StopMusicSoundEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(ActResource.StopMusicSoundEvent);
     }

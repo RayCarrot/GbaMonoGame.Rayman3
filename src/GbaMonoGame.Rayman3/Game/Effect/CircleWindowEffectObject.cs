@@ -1,6 +1,5 @@
 ﻿using System;
 using BinarySerializer.Ubisoft.GbaEngine;
-using GbaMonoGame.AnimEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -65,7 +64,7 @@ public class CircleWindowEffectObject : EffectObject
     public int Radius { get; set; }
     public Vector2 CirclePosition { get; set; }
     
-    public override void Execute(AnimationSpriteManager animationSpriteManager, Action<short> soundEventCallback)
+    public override void Execute(Action<short> soundEventCallback)
     {
         // TODO: Add option to use this on N-Gage
         if (Engine.Settings.Platform == Platform.NGage)

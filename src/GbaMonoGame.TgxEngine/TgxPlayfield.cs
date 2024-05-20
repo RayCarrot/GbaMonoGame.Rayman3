@@ -18,15 +18,15 @@ public abstract class TgxPlayfield
     public AnimatedTilekitManager AnimatedTilekitManager { get; }
     public TgxTilePhysicalLayer PhysicalLayer { get; set; }
 
-    public static TgxPlayfield Load(PlayfieldResource playfieldResource, CachedTileKit cachedTileKit = null) => Load<TgxPlayfield>(playfieldResource, cachedTileKit);
+    public static TgxPlayfield Load(PlayfieldResource playfieldResource) => Load<TgxPlayfield>(playfieldResource);
 
-    public static T Load<T>(PlayfieldResource playfieldResource, CachedTileKit cachedTileKit = null)
+    public static T Load<T>(PlayfieldResource playfieldResource)
         where T : TgxPlayfield
     {
         TgxPlayfield playfield = playfieldResource.Type switch
         {
-            PlayfieldType.Playfield2D => new TgxPlayfield2D(playfieldResource.Playfield2D, cachedTileKit),
-            PlayfieldType.PlayfieldMode7 => new TgxPlayfieldMode7(playfieldResource.PlayfieldMode7, cachedTileKit),
+            PlayfieldType.Playfield2D => new TgxPlayfield2D(playfieldResource.Playfield2D),
+            PlayfieldType.PlayfieldMode7 => new TgxPlayfieldMode7(playfieldResource.PlayfieldMode7),
             PlayfieldType.PlayfieldScope => throw new NotImplementedException("Not implemented loading PlayfieldScope"),
             _ => throw new NotImplementedException($"Unsupported playfield type {playfieldResource.Type}")
         };

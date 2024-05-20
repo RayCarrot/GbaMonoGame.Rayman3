@@ -6,7 +6,7 @@ namespace GbaMonoGame.TgxEngine;
 
 public class TgxPlayfield2D : TgxPlayfield
 {
-    public TgxPlayfield2D(Playfield2DResource playfieldResource, CachedTileKit cachedTileKit) 
+    public TgxPlayfield2D(Playfield2DResource playfieldResource) 
         : base(new TgxCamera2D(Engine.GameViewPort), playfieldResource.TileKit)
     {
         List<TgxTileLayer> tileLayers = new();
@@ -14,6 +14,9 @@ public class TgxPlayfield2D : TgxPlayfield
         // Add clusters to the camera
         foreach (ClusterResource clusterResource in playfieldResource.Clusters)
             Camera.AddCluster(clusterResource);
+
+        // Load vram
+        Vram = GbaVram.AllocateStatic(playfieldResource.TileKit, playfieldResource.TileMappingTable, 0x180, playfieldResource.DefaultPalette);
 
         // Load the layers
         foreach (GameLayerResource gameLayerResource in playfieldResource.Layers)
@@ -23,10 +26,7 @@ public class TgxPlayfield2D : TgxPlayfield
                 TgxTileLayer layer = new(gameLayerResource);
                 tileLayers.Add(layer);
 
-                if (cachedTileKit != null)
-                    layer.LoadCachedTileKit(cachedTileKit);
-                else
-                    layer.LoadTileKit(playfieldResource.TileKit, playfieldResource.TileMappingTable, playfieldResource.DefaultPalette);
+                layer.LoadRenderer(playfieldResource.TileKit, Vram);
                 
                 // The game does this in the layer constructor, but it's easier here since we have access to the camera
                 Camera.AddLayer(gameLayerResource.TileLayer.ClusterIndex, layer);
@@ -54,4 +54,5 @@ public class TgxPlayfield2D : TgxPlayfield
     public new TgxCamera2D Camera => (TgxCamera2D)base.Camera;
     public Vector2 Size => Camera.GetMainCluster().Size;
     public IReadOnlyList<TgxTileLayer> TileLayers { get; }
+    public GbaVram Vram { get; }
 }

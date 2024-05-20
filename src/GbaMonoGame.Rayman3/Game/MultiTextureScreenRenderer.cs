@@ -19,10 +19,4 @@ public class MultiTextureScreenRenderer : IScreenRenderer
     {
         renderer.Draw(Textures[CurrentTextureIndex], position, color);
     }
-
-    public void Dispose()
-    {
-        foreach (Texture2D tex in Textures)
-            tex.Dispose();
-    }
 }
