@@ -28,6 +28,7 @@ public static class GameInfo
     public static bool field22_0x1b { get; set; }
     public static Power Powers { get; set; }
     public static Cheat Cheats { get; set; }
+    public static ActorSoundFlags ActorSoundFlags { get; set; } // Defines if actor type has made sound this frame to avoid repeated sounds
 
     public static int CurrentSlot { get; set; }
     public static SaveGameSlot PersistentInfo { get; set; } = new()

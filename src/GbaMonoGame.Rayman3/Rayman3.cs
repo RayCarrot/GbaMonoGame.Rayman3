@@ -344,6 +344,7 @@ public class Rayman3 : GbaGame
 
             { ActorType.Teensies, (instanceId, scene, resource) => new Teensies(instanceId, scene, resource) },
 
+            { ActorType.Urchin, (instanceId, scene, resource) => new Urchin(instanceId, scene, resource) },
             { ActorType.Arrive, (instanceId, scene, resource) => new Arrive(instanceId, scene, resource) },
 
             { ActorType.MovingUnusedPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },

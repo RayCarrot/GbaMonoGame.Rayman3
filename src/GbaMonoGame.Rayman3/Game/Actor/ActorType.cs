@@ -38,6 +38,7 @@ public enum ActorType
 
     Teensies = 95,
 
+    Urchin = 100,
     Arrive = 101,
 
     MovingUnusedPlatform = 106, // Unused
