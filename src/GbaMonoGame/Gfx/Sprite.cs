@@ -36,9 +36,9 @@ public class Sprite
         Vector2 origin = new(textureRectangle.Width / 2f, textureRectangle.Height / 2f);
 
         SpriteEffects effects = SpriteEffects.None;
-        if (AffineMatrix?.FlipX ?? false ^ FlipX)
+        if ((AffineMatrix?.FlipX ?? false) ^ FlipX)
             effects |= SpriteEffects.FlipHorizontally;
-        if (AffineMatrix?.FlipY ?? false ^ FlipY)
+        if ((AffineMatrix?.FlipY ?? false) ^ FlipY)
             effects |= SpriteEffects.FlipVertically;
 
         float rotation = AffineMatrix?.Rotation ?? 0;
