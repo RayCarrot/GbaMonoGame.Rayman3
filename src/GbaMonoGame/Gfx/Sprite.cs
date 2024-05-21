@@ -41,7 +41,17 @@ public class Sprite
         if ((AffineMatrix?.FlipY ?? false) ^ FlipY)
             effects |= SpriteEffects.FlipVertically;
 
-        float rotation = AffineMatrix?.Rotation ?? 0;
+        float rotation;
+        if (AffineMatrix != null)
+        {
+            rotation = AffineMatrix.Value.Rotation;
+            if (FlipX ^ FlipY)
+                rotation = -rotation;
+        }
+        else
+        {
+            rotation = 0;
+        }
 
         Vector2 scale = AffineMatrix?.Scale ?? Vector2.One;
 
