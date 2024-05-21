@@ -16,6 +16,8 @@ public enum ActorType
     Cage = 13,
     LevelCurtain = 14,
 
+    Keg = 18,
+
     Depart = 30,
 
     Butterfly = 37,
@@ -33,6 +35,8 @@ public enum ActorType
     FlowerFire = 61,
 
     Murfy = 64,
+
+    KegDebris = 82,
 
     MurfyStone = 92,
 

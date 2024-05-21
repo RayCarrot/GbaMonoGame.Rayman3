@@ -1,0 +1,38 @@
+﻿using GbaMonoGame.Engine2d;
+
+namespace GbaMonoGame.Rayman3;
+
+public partial class KegDebris
+{
+    private void Fsm_Default(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                Timer++;
+
+                Position += new Vector2(0, ActionId switch
+                {
+                    0 => 3.25f,
+                    1 => 3,
+                    2 => 3.5f,
+                    3 => 2.75f,
+                    _ => 0,
+                });
+
+                if (Timer > 60 && !Scene.Camera.IsActorFramed(this))
+                    Fsm.ChangeAction(Fsm_Default);
+                break;
+
+            case FsmAction.UnInit:
+                AnimatedObject.ScreenPos = Vector2.Zero;
+                Timer = 0;
+                ProcessMessage(Message.Destroy);
+                break;
+        }
+    }
+}
