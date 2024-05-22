@@ -49,12 +49,12 @@ public enum Message
     Cam_1039 = 1039, // TODO: Name
     Cam_1040 = 1040, // TODO: Name
 
+    Hit = 1043,
     Main_BeginSwing = 1044,
     Main_Damaged2 = 1045,
 
     Main_AllowCoyoteJump = 1048,
     Murfy_Spawn = 1049,
-    Hit = 1050,
 
     Main_Stop = 1057,
 

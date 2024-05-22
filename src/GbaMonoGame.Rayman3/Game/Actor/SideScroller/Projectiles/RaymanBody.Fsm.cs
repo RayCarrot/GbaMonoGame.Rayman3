@@ -25,7 +25,7 @@ public partial class RaymanBody
                     damage = 5;
 
                 hitActor.ReceiveDamage(damage);
-                hitActor.ProcessMessage(Message.Hit);
+                hitActor.ProcessMessage(Message.Hit, this);
                 SpawnHitEffect();
             }
 
