@@ -122,5 +122,8 @@ public class GameInfoDebugWindow : DebugWindow
         GameInfo.PersistentInfo.UnlockedLyChallengeGCN = ImGuiExt.Checkbox("Unlocked Ly Challenge GCN", GameInfo.PersistentInfo.UnlockedLyChallengeGCN);
 
         ImGui.Text($"Completed GCN bonus levels: {GameInfo.PersistentInfo.CompletedGCNBonusLevels}");
+
+        if (ImGui.Button("Unlock all levels"))
+            GameInfo.PersistentInfo.LastCompletedLevel = (byte)MapId.BossFinal_M2;
     }
 }
