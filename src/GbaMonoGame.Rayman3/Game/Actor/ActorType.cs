@@ -17,7 +17,9 @@ public enum ActorType
     LevelCurtain = 14,
 
     Keg = 18,
+    Barrel = 19,
 
+    BarrelSplash = 29,
     Depart = 30,
 
     Butterfly = 37,

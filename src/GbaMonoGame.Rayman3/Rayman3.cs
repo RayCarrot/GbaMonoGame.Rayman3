@@ -326,7 +326,9 @@ public class Rayman3 : GbaGame
             { ActorType.LevelCurtain, (instanceId, scene, resource) => new LevelCurtain(instanceId, scene, resource) },
 
             { ActorType.Keg, (instanceId, scene, resource) => new Keg(instanceId, scene, resource) },
+            { ActorType.Barrel, (instanceId, scene, resource) => new Barrel(instanceId, scene, resource) },
 
+            { ActorType.BarrelSplash, (instanceId, scene, resource) => new BarrelSplash(instanceId, scene, resource) },
             { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
 
             { ActorType.Butterfly, (instanceId, scene, resource) => new Butterfly(instanceId, scene, resource) },
