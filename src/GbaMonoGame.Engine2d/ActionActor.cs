@@ -3,9 +3,9 @@ using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
 
-public class ActionActor : BaseActor
+public abstract class ActionActor : BaseActor
 {
-    public ActionActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    protected ActionActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         HitPoints = actorResource.Model.HitPoints;
         AttackPoints = actorResource.Model.AttackPoints;

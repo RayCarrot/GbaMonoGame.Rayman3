@@ -4,12 +4,12 @@ using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
 
-public class BaseActor : GameObject
+public abstract class BaseActor : GameObject
 {
     // NOTE: The game allows actors to pass in "user-defined" AObject classes. However the game handles this in a rather
     //       ugly way where it will by default assume it's of type AnimatedObject, so the class then has to override all
     //       of this behavior. We however only use a single AnimatedObject in the engine, thus making this cleaner.
-    public BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    protected BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         ActorModel = actorResource.Model;
         IsSolid = ActorModel.IsSolid;

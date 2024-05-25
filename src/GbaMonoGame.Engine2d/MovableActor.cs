@@ -5,9 +5,9 @@ using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
 
-public class MovableActor : InteractableActor
+public abstract class MovableActor : InteractableActor
 {
-    public MovableActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    protected MovableActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         MapCollisionType = actorResource.Model.MapCollisionType;
         CheckAgainstMapCollision = actorResource.Model.CheckAgainstMapCollision;
