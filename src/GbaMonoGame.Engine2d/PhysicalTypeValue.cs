@@ -10,8 +10,8 @@ public enum PhysicalTypeValue : byte
     Passthrough = 15,
 
     // Angled solid
-    SolidAngle90Right = 16, // Unused
-    SolidAngle90Left = 17, // Unused
+    SolidAngle90Left = 16, // Unused
+    SolidAngle90Right = 17, // Unused
     SolidAngle30Left1 = 18,
     SolidAngle30Left2 = 19,
     SolidAngle30Right1 = 20,

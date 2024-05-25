@@ -227,7 +227,7 @@ public abstract class MovableActor : InteractableActor
 
             if (type.IsAngledSolid)
             {
-                float tileHeight = type.GetAngleHeight(detectionBox.Center.X);
+                float tileHeight = type.GetAngleSolidHeight(detectionBox.Center.X);
 
                 if (Speed.Y == 0 && tileHeight != 0)
                     Position -= new Vector2(0, tileHeight);
@@ -249,7 +249,7 @@ public abstract class MovableActor : InteractableActor
                 }
                 else if (type.IsAngledSolid)
                 {
-                    float tileHeight = Constants.TileSize - type.GetAngleHeight(detectionBox.Center.X);
+                    float tileHeight = Constants.TileSize - type.GetAngleSolidHeight(detectionBox.Center.X);
 
                     if (Speed.Y == 0)
                     {
