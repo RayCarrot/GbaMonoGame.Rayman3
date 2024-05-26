@@ -8,6 +8,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Rayman
 {
+    // TODO: Name
     private bool FsmStep_Inlined_FUN_1004c544()
     {
         if (!FsmStep_Inlined_FUN_1004c1f4())
@@ -40,6 +41,7 @@ public partial class Rayman
     }
 
     // FUN_08020bd4
+    // TODO: Name
     private bool FsmStep_Inlined_FUN_1004c1f4()
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
@@ -762,7 +764,7 @@ public partial class Rayman
                             Action.Walk_Right or Action.Walk_Left or
                             Action.Walk_LookAround_Right or Action.Walk_LookAround_Left &&
                         AnimatedObject.CurrentFrame is 2 or 10 &&
-                        !AnimatedObject.HasExecutedFrame)
+                        !AnimatedObject.IsDelayMode)
                     {
                         PlaySound(Rayman3SoundEvent.Play__PlumSnd2_Mix03);
                     }

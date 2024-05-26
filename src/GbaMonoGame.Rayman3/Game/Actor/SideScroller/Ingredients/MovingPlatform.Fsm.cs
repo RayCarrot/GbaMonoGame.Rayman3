@@ -353,7 +353,7 @@ public partial class MovingPlatform
                     int originalAnim = AnimatedObject.CurrentAnimation;
                     int originalFrame = AnimatedObject.CurrentFrame;
                     int originalTimer = AnimatedObject.Timer;
-                    bool originalHasExecutedFrame = AnimatedObject.HasExecutedFrame;
+                    bool originalIsDelayMode = AnimatedObject.IsDelayMode;
 
                     Action directionalAction = DirectionalTypeToMoveAction(CurrentDirectionalType);
                     if (directionalAction != ActionId)
@@ -363,7 +363,7 @@ public partial class MovingPlatform
                     AnimatedObject.CurrentAnimation = originalAnim;
                     AnimatedObject.CurrentFrame = originalFrame;
                     AnimatedObject.Timer = originalTimer;
-                    AnimatedObject.HasExecutedFrame = originalHasExecutedFrame;
+                    AnimatedObject.IsDelayMode = originalIsDelayMode;
                 }
 
                 MovableActor mainActor = Scene.MainActor;

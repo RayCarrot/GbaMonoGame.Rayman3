@@ -305,7 +305,7 @@ public class GameOver : Frame
                             SoundEventsManager.StopAllSongs();
                     }
                 }
-                else if (Rayman.CurrentAnimation == 7 && Rayman.CurrentFrame == 25 && !Rayman.HasExecutedFrame)
+                else if (Rayman.CurrentAnimation == 7 && Rayman.CurrentFrame == 25 && !Rayman.IsDelayMode)
                 {
                     SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__death, 0);
                 }

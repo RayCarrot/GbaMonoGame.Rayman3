@@ -46,7 +46,7 @@ public class AnimatedObject : AObject
     public bool IsSoundEnabled { get; set; }
     public bool IsDynamic { get; set; } // TODO: If not dynamic we might want to pre-load the sprites?
     public bool EndOfAnimation { get; set; }
-    public bool HasExecutedFrame { get; set; }
+    public bool IsDelayMode { get; set; }
     public bool IsPaused { get; set; }
 
     public uint VisibleSpriteChannels { get; set; }
@@ -64,11 +64,7 @@ public class AnimatedObject : AObject
         set
         {
             _currentAnimation = value;
-            _currentFrame = 0;
-            ChannelIndex = 0;
-            Timer = GetAnimation().Speed;
-            EndOfAnimation = false;
-            HasExecutedFrame = false;
+            Rewind();
         }
     }
 
@@ -104,7 +100,7 @@ public class AnimatedObject : AObject
             }
 
             Timer = anim.Speed;
-            HasExecutedFrame = false;
+            IsDelayMode = false;
             EndOfAnimation = false;
         }
     }
@@ -216,7 +212,14 @@ public class AnimatedObject : AObject
     public void SetChannelVisible(int channel) => VisibleSpriteChannels = (uint)((int)VisibleSpriteChannels | (1 << channel));
     public void SetChannelInvisible(int channel) => VisibleSpriteChannels = (uint)((int)VisibleSpriteChannels & ~(1 << channel));
 
-    public void Rewind() => CurrentFrame = 0;
+    public void Rewind()
+    {
+        _currentFrame = 0;
+        ChannelIndex = 0;
+        Timer = GetAnimation().Speed;
+        IsDelayMode = false;
+        EndOfAnimation = false;
+    }
 
     public void Pause() => IsPaused = true;
     public void Resume() => IsPaused = false;
@@ -234,7 +237,7 @@ public class AnimatedObject : AObject
         if (IsPaused)
         {
             if (Timer != 0)
-                HasExecutedFrame = true;
+                IsDelayMode = true;
 
             if (CurrentFrame >= anim.FramesCount)
                 EndOfAnimation = true;
@@ -247,7 +250,7 @@ public class AnimatedObject : AObject
             ChannelIndex += anim.ChannelsPerFrame[CurrentFrame];
             _currentFrame++;
             Timer = anim.Speed;
-            HasExecutedFrame = false;
+            IsDelayMode = false;
 
             if (CurrentFrame < anim.FramesCount)
                 return;
@@ -256,13 +259,13 @@ public class AnimatedObject : AObject
             {
                 _currentFrame--;
                 ChannelIndex -= anim.ChannelsPerFrame[CurrentFrame];
-                HasExecutedFrame = true;
+                IsDelayMode = true;
             }
             else
             {
                 _currentFrame = 0;
                 ChannelIndex = 0;
-                HasExecutedFrame = false;
+                IsDelayMode = false;
             }
 
             EndOfAnimation = true;
@@ -270,13 +273,13 @@ public class AnimatedObject : AObject
         else
         {
             Timer--;
-            HasExecutedFrame = true;
+            IsDelayMode = true;
         }
     }
 
     public void PlayChannelBox()
     {
-        if (HasExecutedFrame || BoxTable == null)
+        if (IsDelayMode || BoxTable == null)
             return;
 
         BoxTable.AttackBox = new Box();
@@ -299,7 +302,7 @@ public class AnimatedObject : AObject
 
     public void PlayChannelSound(AnimationPlayer animationPlayer)
     {
-        if (HasExecutedFrame)
+        if (IsDelayMode)
             return;
 
         foreach (AnimationChannel channel in EnumerateCurrentChannels())
@@ -319,7 +322,7 @@ public class AnimatedObject : AObject
     {
         Animation anim = GetAnimation();
 
-        if (!HasExecutedFrame && BoxTable != null)
+        if (!IsDelayMode && BoxTable != null)
         {
             BoxTable.AttackBox = new Box();
             BoxTable.VulnerabilityBox = new Box();
@@ -329,7 +332,7 @@ public class AnimatedObject : AObject
 
         // --- At this point the engine loads dynamic data which we don't need to ---
 
-        if (anim.Idx_PaletteCycleAnimation != 0 && !HasExecutedFrame)
+        if (anim.Idx_PaletteCycleAnimation != 0 && !IsDelayMode)
             throw new NotImplementedException("Not implemented animations with palette data");
 
         // Enumerate every channel
@@ -407,12 +410,12 @@ public class AnimatedObject : AObject
                     break;
 
                 case AnimationChannelType.Sound:
-                    if (!HasExecutedFrame && IsSoundEnabled)
+                    if (!IsDelayMode && IsSoundEnabled)
                         soundEventCallback(channel.SoundId);
                     break;
 
                 case AnimationChannelType.DisplacementVector:
-                    if (!HasExecutedFrame)
+                    if (!IsDelayMode)
                     {
                         // Appears mostly unused in Rayman 3. Only used for ship in final boss and Ly, but seems to always be 0 anyway.
                         Logger.NotImplemented("Not implemented displacement vectors");
@@ -420,12 +423,12 @@ public class AnimatedObject : AObject
                     break;
 
                 case AnimationChannelType.AttackBox:
-                    if (!HasExecutedFrame && BoxTable != null)
+                    if (!IsDelayMode && BoxTable != null)
                         BoxTable.AttackBox = new Box(channel.Box);
                     break;
 
                 case AnimationChannelType.VulnerabilityBox:
-                    if (!HasExecutedFrame && BoxTable != null)
+                    if (!IsDelayMode && BoxTable != null)
                         BoxTable.VulnerabilityBox = new Box(channel.Box);
                     break;
             }
