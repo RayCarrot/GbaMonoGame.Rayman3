@@ -25,11 +25,8 @@ public abstract class MovableActor : InteractableActor
     public bool CheckAgainstMapCollision { get; set; }
     public bool CheckAgainstObjectCollision { get; set; }
 
-    private bool CheckObjectCollision1(Box actorDetectionBox, Box otherDetectionBox)
+    private bool CheckObjectCollisionXY(Box actorDetectionBox, Box otherDetectionBox)
     {
-        // TODO: The game removes the decimals in the commented out code - should we? I probably haven't done it
-        //       elsewhere since the game goes between int and fixed-point a bunch.
-
         Box intersectBox = Box.Intersect(actorDetectionBox, otherDetectionBox);
 
         if (intersectBox == Box.Empty)
@@ -38,23 +35,17 @@ public abstract class MovableActor : InteractableActor
         float width = intersectBox.Width;
         float height = intersectBox.Height;
 
-        if (Speed.Y >= 1 &&
+        if (Speed.Y > 0 &&
             otherDetectionBox.MinY > actorDetectionBox.MinY &&
             otherDetectionBox.MaxY > actorDetectionBox.MaxY &&
+            // TODO: Should we remove this? Only there in base engine because of limitations.
             height < Constants.TileSize)
         {
             Speed -= new Vector2(0, height);
             Position -= new Vector2(0, height);
 
-            if (Speed.Y < 0)
-                Speed += new Vector2(0, 1);
+            // NOTE: The original engine casts speed y and pos y to integers here (floor if positive, ceil if negative)
 
-            // Speed = new Vector2(Speed.X, (int)Speed.Y);
-
-            if (Position.Y < 0)
-                Position += new Vector2(0, 1);
-
-            // Position = new Vector2(Position.X, (int)Position.Y);
             return true;
         }
 
@@ -65,68 +56,60 @@ public abstract class MovableActor : InteractableActor
             Speed += new Vector2(0, height);
             Position += new Vector2(0, height);
 
-            if (Speed.Y < 0)
-                Speed += new Vector2(0, 1);
+            // NOTE: The original engine casts speed y and pos y to integers here (floor if positive, ceil if negative)
 
-            // Speed = new Vector2(Speed.X, (int)Speed.Y);
-
-            if (Position.Y < 0)
-                Position += new Vector2(0, 1);
-
-            // Position = new Vector2(Position.X, (int)Position.Y);
             return true;
         }
 
-        if (Speed.X < 1)
+        if (Speed.X > 0)
         {
-            if (-1 < Speed.X)
-                return true;
+            if (otherDetectionBox.MaxX > actorDetectionBox.MaxX)
+            {
+                Speed -= new Vector2(width, 0);
+                Position -= new Vector2(width, 0);
 
-            if (actorDetectionBox.MinX <= otherDetectionBox.MinX)
-                return true;
+                // NOTE: The original engine casts speed x and pos x to integers here (floor if positive, ceil if negative)
+            }
+        }
+        else if (Speed.X < 0)
+        {
+            if (actorDetectionBox.MinX > otherDetectionBox.MinX)
+            {
+                Speed += new Vector2(width, 0);
+                Position += new Vector2(width, 0);
 
+                // NOTE: The original engine casts speed x and pos x to integers here (floor if positive, ceil if negative)
+            }
+        }
+
+        return true;
+    }
+
+    private bool CheckObjectCollisionX(Box actorDetectionBox, Box otherDetectionBox)
+    {
+        Box intersectBox = Box.Intersect(actorDetectionBox, otherDetectionBox);
+
+        if (intersectBox == Box.Empty)
+            return false;
+
+        float width = intersectBox.Width;
+
+        // TODO: Should we remove this? Only there in base engine because of limitations.
+        if (width > Constants.TileSize - 1)
+            width = Constants.TileSize - 1;
+
+        if (Position.X > otherDetectionBox.Center.X)
+        {
             Speed += new Vector2(width, 0);
             Position += new Vector2(width, 0);
-
-            if (Speed.X < 0)
-                Speed += new Vector2(1, 0);
-
-            // Speed = new Vector2((int)Speed.X, Speed.Y);
-
-            if (Position.X < 0)
-                Position += new Vector2(1, 0);
-
-            // Position = new Vector2((int)Position.X, Position.Y);
-            return true;
         }
         else
         {
-            if (otherDetectionBox.MaxX <= actorDetectionBox.MaxX)
-                return true;
-
             Speed -= new Vector2(width, 0);
             Position -= new Vector2(width, 0);
-
-            if (Speed.X < 0)
-                Speed += new Vector2(1, 0);
-
-            // Speed = new Vector2((int)Speed.X, Speed.Y);
-
-            if (Position.X < 0)
-                Position += new Vector2(1, 0);
-
-            // Position = new Vector2((int)Position.X, Position.Y);
-            return true;
         }
-    }
 
-    private bool CheckObjectCollision2(Box actorDetectionBox, Box otherDetectionBox)
-    {
-        if (!actorDetectionBox.Intersects(otherDetectionBox))
-            return false;
-
-        // TODO: Modify position and speed
-        throw new NotImplementedException();
+        // NOTE: The original engine casts speed x and pos x to integers here (floor if positive, ceil if negative)
 
         return true;
     }
@@ -425,9 +408,9 @@ public abstract class MovableActor : InteractableActor
                     {
                         Box otherDetectionBox = actionActor.GetDetectionBox();
 
-                        if (!actionActor.ActorFlag_E)
+                        if (!actionActor.IsObjectCollisionXOnly)
                         {
-                            if (CheckObjectCollision1(detectionBox, otherDetectionBox))
+                            if (CheckObjectCollisionXY(detectionBox, otherDetectionBox))
                             {
                                 IsTouchingActor = true;
                                 detectionBox = GetDetectionBox();
@@ -435,7 +418,7 @@ public abstract class MovableActor : InteractableActor
                         }
                         else
                         {
-                            if (CheckObjectCollision2(detectionBox, otherDetectionBox))
+                            if (CheckObjectCollisionX(detectionBox, otherDetectionBox))
                             {
                                 IsTouchingActor = true;
                                 detectionBox = GetDetectionBox();

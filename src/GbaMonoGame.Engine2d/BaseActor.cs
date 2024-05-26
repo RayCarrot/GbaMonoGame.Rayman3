@@ -57,7 +57,7 @@ public abstract class BaseActor : GameObject
     public bool IsTouchingActor { get; set; }
     public bool IsTouchingMap { get; set; }
     public bool HasMoved { get; set; }
-    public bool ActorFlag_E { get; set; } // TODO: Name
+    public bool IsObjectCollisionXOnly { get; set; }
 
     protected void DrawDefault(AnimationPlayer animationPlayer, bool forceDraw)
     {

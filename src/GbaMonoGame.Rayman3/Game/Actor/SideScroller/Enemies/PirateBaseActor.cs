@@ -7,7 +7,7 @@ public abstract class PirateBaseActor : MovableActor
 {
     protected PirateBaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        ActorFlag_E = true;
+        IsObjectCollisionXOnly = true;
         Resource = actorResource;
         SpawnsRedLum = false;
         Reset();
