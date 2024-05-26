@@ -15,7 +15,7 @@ public partial class RedPirate
         if (Scene.IsHitMainActor(this))
         {
             Scene.MainActor.ReceiveDamage(AttackPoints);
-            Scene.MainActor.ProcessMessage(Message.Main_Damaged1);
+            Scene.MainActor.ProcessMessage(Message.Main_Damaged1, this);
         }
 
         // Killed
@@ -185,7 +185,7 @@ public partial class RedPirate
         {
             case FsmAction.Init:
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
-                if (HitFromBehind)
+                if (HitFromFront)
                     ActionId = IsFacingRight ? Action.HitBehind_Right : Action.HitBehind_Left;
                 else
                     ActionId = IsFacingRight ? Action.Hit_Right : Action.Hit_Left;
@@ -288,7 +288,7 @@ public partial class RedPirate
         switch (action)
         {
             case FsmAction.Init:
-                if (HitFromBehind)
+                if (HitFromFront)
                     ActionId = IsFacingRight ? Action.DyingBehind_Right : Action.DyingBehind_Left;
                 else
                     ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;

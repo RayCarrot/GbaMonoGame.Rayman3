@@ -20,14 +20,14 @@ public abstract class PirateBaseActor : MovableActor
 
     protected uint InvulnerabilityTimer { get; set; }
     protected uint IdleDetectionTimer { get; set; }
-    protected bool HitFromBehind { get; set; }
+    protected bool HitFromFront { get; set; }
     protected int PrevHitPoints { get; set; }
 
     private void Reset()
     {
         InvulnerabilityTimer = 0;
         IdleDetectionTimer = 0;
-        HitFromBehind = false;
+        HitFromFront = false;
         PrevHitPoints = HitPoints;
         PirateFlag_1 = false;
     }
@@ -40,8 +40,8 @@ public abstract class PirateBaseActor : MovableActor
         Lums lum = Scene.KnotManager.CreateProjectile<Lums>(ActorType.Lums);
 
         float xPos;
-        if ((IsFacingLeft && HitFromBehind) ||
-            (!IsFacingLeft && !HitFromBehind))
+        if ((IsFacingLeft && HitFromFront) ||
+            (!IsFacingLeft && !HitFromFront))
             xPos = Position.X - offsetX;
         else
             xPos = Position.X + offsetX;
@@ -76,8 +76,16 @@ public abstract class PirateBaseActor : MovableActor
         {
             case Message.Hit:
                 BaseActor hitActor = (BaseActor)param;
-                HitFromBehind = (hitActor.IsFacingLeft && IsFacingRight) ||
-                                (hitActor.IsFacingRight && IsFacingLeft);
+
+                if ((hitActor.IsFacingLeft && IsFacingRight) ||
+                    (hitActor.IsFacingRight && IsFacingLeft))
+                {
+                    HitFromFront = false;
+                }
+                else
+                {
+                    HitFromFront = true;
+                }
                 return false;
 
             default:
