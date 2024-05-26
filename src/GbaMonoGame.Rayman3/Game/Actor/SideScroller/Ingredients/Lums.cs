@@ -175,4 +175,11 @@ public sealed partial class Lums : BaseActor
             }
         }
     }
+
+    public void InitializeRedLumProjectile(Vector2 position)
+    {
+        AnimatedObject.CurrentAnimation = 3;
+        ActionId = Action.RedLum;
+        Position = position;
+    }
 }

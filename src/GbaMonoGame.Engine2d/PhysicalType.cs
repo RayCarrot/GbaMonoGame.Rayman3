@@ -46,6 +46,15 @@ public readonly struct PhysicalType
         };
     }
 
+    public bool IsAnglePointSolid(Vector2 position)
+    {
+        float subTileY = MathHelpers.Mod(position.Y, Constants.TileSize);
+        float solidHeight = GetAngleSolidHeight(position.X);
+
+        // In the game this is done using a pre-calculated table, but since we want float-precision we calculate it dynamically
+        return subTileY >= Constants.TileSize - solidHeight;
+    }
+
     public static implicit operator byte(PhysicalType type) => type.ValueByte;
     public static implicit operator PhysicalTypeValue(PhysicalType type) => type.Value;
     public static implicit operator PhysicalType(PhysicalTypeValue type) => new(type);

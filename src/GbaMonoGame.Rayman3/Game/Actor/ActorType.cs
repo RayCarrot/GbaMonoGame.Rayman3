@@ -4,7 +4,7 @@ public enum ActorType
 {
     Rayman = 0,
     RaymanBody = 1,
-
+    RedPirate = 2,
     Piranha = 3,
     WaterSplash = 4,
     Explosion = 5,

@@ -313,7 +313,7 @@ public class Rayman3 : GbaGame
         {
             { ActorType.Rayman, (instanceId, scene, resource) => new Rayman(instanceId, scene, resource) },
             { ActorType.RaymanBody, (instanceId, scene, resource) => new RaymanBody(instanceId, scene, resource) },
-
+            { ActorType.RedPirate, (instanceId, scene, resource) => new RedPirate(instanceId, scene, resource) },
             { ActorType.Piranha, (instanceId, scene, resource) => new Piranha(instanceId, scene, resource) },
             { ActorType.WaterSplash, (instanceId, scene, resource) => new WaterSplash(instanceId, scene, resource) },
             { ActorType.Explosion, (instanceId, scene, resource) => new Explosion(instanceId, scene, resource) },

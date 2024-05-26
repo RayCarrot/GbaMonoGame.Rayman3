@@ -116,4 +116,19 @@ public static class LevelMusicManager
         HasOverridenLevelMusic = true;
         OverridenSoundEvent = SoundEventsManager.ReplaceAllSongs(soundEventId, 0);
     }
+
+    // TODO: Name
+    public static void FUN_08001918()
+    {
+        if (Flag_0 && !Flag_1)
+        {
+            Rayman3SoundEvent soundEvent = GameInfo.GetLevelMusicSoundEvent();
+            SoundEventsManager.ReplaceAllSongs(soundEvent, 3);
+
+            // TODO: N-Gage has a lot of additional code here
+
+            Flag_0 = false;
+            Flag_1 = true;
+        }
+    }
 }

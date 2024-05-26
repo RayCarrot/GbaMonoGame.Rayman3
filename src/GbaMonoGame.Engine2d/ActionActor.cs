@@ -1,4 +1,6 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Ubisoft.GbaEngine;
+using GbaMonoGame.AnimEngine;
 using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
@@ -56,6 +58,35 @@ public abstract class ActionActor : BaseActor
         return base.ProcessMessageImpl(message, param);
     }
 
+    protected void DrawWithInvulnerability(AnimationPlayer animationPlayer, bool forceDraw)
+    {
+        CameraActor camera = Scene.Camera;
+
+        bool draw = camera.IsActorFramed(this) || forceDraw;
+
+        // Conditionally don't draw every second frame during invulnerability
+        if (draw)
+        {
+            if (IsInvulnerable &&
+                HitPoints != 0 &&
+                (GameTime.ElapsedFrames & 1) == 0)
+            {
+                draw = false;
+            }
+        }
+
+        if (draw)
+        {
+            AnimatedObject.IsFramed = true;
+            animationPlayer.Play(AnimatedObject);
+        }
+        else
+        {
+            AnimatedObject.IsFramed = false;
+            AnimatedObject.ComputeNextFrame();
+        }
+    }
+
     public override void Step()
     {
         ChangeAction();
@@ -94,6 +125,76 @@ public abstract class ActionActor : BaseActor
             HitPoints -= damage;
         else
             HitPoints = 0;
+    }
+
+    public PhysicalType GetPhysicalGroundType()
+    {
+        Box detectionBox = GetDetectionBox();
+
+        // Get the type at the bottom-center
+        Vector2 pos = new(detectionBox.Center.X, detectionBox.MaxY);
+        PhysicalType centerType = Scene.GetPhysicalType(pos);
+
+        // If the type is angled, then check if the point within the tile is solid
+        if (centerType.IsAngledSolid)
+            centerType = centerType.IsAnglePointSolid(pos) ? PhysicalTypeValue.Solid : PhysicalTypeValue.None;
+
+        // Return if the type is solid
+        if (centerType.IsSolid) 
+            return centerType;
+
+        // Get the type one tile to the left from the center
+        pos -= new Vector2(Constants.TileSize, 0);
+        PhysicalType leftType = Scene.GetPhysicalType(pos);
+
+        if (!leftType.IsAngledSolid)
+        {
+            // Get the type all the way to the left
+            pos = new Vector2(detectionBox.MinX, pos.Y);
+            leftType = Scene.GetPhysicalType(pos);
+
+            // If the type is fully solid then we check the tile above it. If it's
+            // also fully solid then it's a wall, so we set the type to none.
+            if (leftType.IsFullySolid)
+            {
+                pos -= new Vector2(0, Constants.TileSize);
+                if (Scene.GetPhysicalType(pos).IsFullySolid)
+                    leftType = PhysicalTypeValue.None;
+            }
+        }
+
+        // Get the type one tile to the right from the center
+        pos = new Vector2(detectionBox.Center.X + Constants.TileSize, detectionBox.MaxY);
+        PhysicalType rightType = Scene.GetPhysicalType(pos);
+
+        if (!rightType.IsAngledSolid)
+        {
+            // Get the type all the way to the right
+            pos = new Vector2(detectionBox.MaxX, pos.Y);
+            rightType = Scene.GetPhysicalType(pos);
+
+            // If the type is fully solid then we check the tile above it. If it's
+            // also fully solid then it's a wall, so we set the type to none.
+            if (rightType.IsFullySolid)
+            {
+                pos -= new Vector2(0, Constants.TileSize);
+
+                if (Scene.GetPhysicalType(pos).IsFullySolid)
+                    rightType = PhysicalTypeValue.None;
+            }
+        }
+
+        // If any of the types are angled solid then return empty type
+        if (leftType.IsAngledSolid || rightType.IsAngledSolid)
+            return PhysicalTypeValue.None;
+
+        // Return types if fully solid, otherwise none
+        if (rightType.IsFullySolid)
+            return rightType;
+        else if (leftType.IsFullySolid)
+            return leftType;
+        else
+            return PhysicalTypeValue.None;
     }
 
     public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
