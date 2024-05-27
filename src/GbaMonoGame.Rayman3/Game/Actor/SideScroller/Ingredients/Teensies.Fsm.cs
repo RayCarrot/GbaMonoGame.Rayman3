@@ -1,5 +1,4 @@
-﻿using System;
-using GbaMonoGame.Engine2d;
+﻿using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -31,21 +30,21 @@ public partial class Teensies
 
                 if (Scene.IsDetectedMainActor(this) && InitialActionId is Action.Init_World1_Right or Action.Init_World1_Left)
                 {
-                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     Fsm.ChangeAction(Fsm_World1IntroText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && requirementMet)
                 {
-                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     Fsm.ChangeAction(Fsm_ShowRequirementMetText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && !requirementMet)
                 {
-                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     Fsm.ChangeAction(Fsm_ShowRequirementNotMetText);
                     return;
                 }
@@ -112,7 +111,7 @@ public partial class Teensies
                     if (TextBox.IsFinished)
                     {
                         TextBox.MoveInOurOut(false);
-                        Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                        Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
                         IsMovingOutTextBox = true;
                     }
                     else if (JoyPad.CheckSingle(GbaInput.A))
@@ -167,7 +166,7 @@ public partial class Teensies
                 if (TextBox.IsFinished)
                 {
                     TextBox.MoveInOurOut(false);
-                    Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
                     Fsm.ChangeAction(Fsm_WaitExitRequirementNotMetText);
                     return;
                 }

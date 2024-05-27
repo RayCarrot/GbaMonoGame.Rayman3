@@ -24,7 +24,7 @@ public sealed partial class Rayman : MovableActor
 
             if (instanceId >= RSMultiplayer.PlayersCount)
             {
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
             }
             else
             {
@@ -1250,9 +1250,9 @@ public sealed partial class Rayman : MovableActor
             Position += new Vector2(speed, 0);
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // TODO: Implement remaining messages
@@ -1405,7 +1405,7 @@ public sealed partial class Rayman : MovableActor
                     Position = new Vector2(Position.X, box.MinY - 16);
                 }
 
-                if (((BaseActor)param).Type == (int)ActorType.SpikyBall && !IsInvulnerable)
+                if (((BaseActor)sender).Type == (int)ActorType.SpikyBall && !IsInvulnerable)
                     InvulnerabilityDuration = 60;
 
                 if (message == Message.Main_Damaged3)
@@ -1418,7 +1418,7 @@ public sealed partial class Rayman : MovableActor
                     // TODO: If keg, sphere or caterpillar then send message
                 }
 
-                AttachedObject = (BaseActor)param;
+                AttachedObject = (BaseActor)sender;
 
                 if (Fsm.EqualsAction(Fsm_Climb))
                     Flag2_1 = true;
@@ -1442,18 +1442,19 @@ public sealed partial class Rayman : MovableActor
                 }
 
                 AttachedObject = (BaseActor)param;
+                BaseActor senderObj = (BaseActor)sender;
 
                 if (Fsm.EqualsAction(Fsm_Swing))
                     return false;
 
-                if (Position.X < AttachedObject.Position.X)
+                if (Position.X < senderObj.Position.X)
                 {
-                    if (AttachedObject.Position.X - 200 > Position.X)
+                    if (senderObj.Position.X - 200 > Position.X)
                         return false;
                 }
                 else
                 {
-                    if (AttachedObject.Position.X + 200 <= Position.X)
+                    if (senderObj.Position.X + 200 <= Position.X)
                         return false;
                 }
 

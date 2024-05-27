@@ -13,7 +13,7 @@ public partial class Depart
             case FsmAction.Step:
                 if (Scene.IsDetectedMainActor(this))
                 {
-                    Scene.MainActor.ProcessMessage(MessageToSend);
+                    Scene.MainActor.ProcessMessage(this, MessageToSend);
                     Fsm.ChangeAction(null);
                 }
                 break;

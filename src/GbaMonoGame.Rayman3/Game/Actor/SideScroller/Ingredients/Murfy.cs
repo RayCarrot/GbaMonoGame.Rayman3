@@ -134,9 +134,9 @@ public sealed partial class Murfy : MovableActor
                (fist.Speed.X < 0 && Position.X < fist.Position.X);
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // Handle messages

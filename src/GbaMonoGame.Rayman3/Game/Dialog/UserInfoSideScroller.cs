@@ -105,7 +105,7 @@ public class UserInfoSideScroller : Dialog
         CagesBar.DrawStep = BarDrawStep.MoveOut;
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // TODO: Implement
         return false;

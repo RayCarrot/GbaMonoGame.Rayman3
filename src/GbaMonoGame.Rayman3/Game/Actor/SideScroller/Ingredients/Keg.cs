@@ -48,10 +48,10 @@ public sealed partial class Keg : MovableActor
         }
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // TODO: Implement
-        return base.ProcessMessageImpl(message, param);
+        return base.ProcessMessageImpl(sender, message, param);
     }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)

@@ -179,7 +179,7 @@ public class KnotManager
     {
         // TODO: Check IsProjectile flag
         BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
-        actor?.ProcessMessage(Message.ResurrectWakeUp);
+        actor?.ProcessMessage(null, Message.ResurrectWakeUp);
         return actor;
     }
 

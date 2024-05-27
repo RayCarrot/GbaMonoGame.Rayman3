@@ -31,7 +31,7 @@ public partial class KegDebris
             case FsmAction.UnInit:
                 AnimatedObject.ScreenPos = Vector2.Zero;
                 Timer = 0;
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

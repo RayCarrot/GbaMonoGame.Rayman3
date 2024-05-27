@@ -105,7 +105,7 @@ public partial class Rayman
                 message = Message.Cam_1040;
             }
 
-            cam.ProcessMessage(message, field18_0x93);
+            cam.ProcessMessage(this, message, field18_0x93);
         }
 
         if (field23_0x98 != 0)
@@ -232,7 +232,7 @@ public partial class Rayman
                 }
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_1027);
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     cam.HorizontalOffset = Engine.Settings.Platform switch
@@ -870,7 +870,7 @@ public partial class Rayman
                 field18_0x93 = 70;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1039, field18_0x93);
+                    cam.ProcessMessage(this, Message.Cam_1039, field18_0x93);
 
                 Timer = GameTime.ElapsedFrames;
                 SlideType = null;
@@ -882,7 +882,7 @@ public partial class Rayman
                     return;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1039, (byte)130);
+                    cam.ProcessMessage(this, Message.Cam_1039, (byte)130);
 
                 if (ActionId is Action.Jump_Right or Action.Jump_Left &&
                     CheckReleasedInput2(GbaInput.A) && 
@@ -1254,7 +1254,7 @@ public partial class Rayman
                 PreviousXSpeed = 0;
                 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_1027);
 
                 PlaySound(Rayman3SoundEvent.Stop__Helico01_Mix10);
 
@@ -1393,7 +1393,7 @@ public partial class Rayman
                 PreviousXSpeed = 0;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_1027);
 
                 if (Timer > 50)
                 {
@@ -1824,7 +1824,7 @@ public partial class Rayman
                     if (AttachedObject?.Type == (int)ActorType.Plum)
                     {
                         // TODO: Implement and handle message to move plum
-                        AttachedObject.ProcessMessage(IsFacingRight ? (Message)0x40c : (Message)0x40d, chargePower);
+                        AttachedObject.ProcessMessage(this, IsFacingRight ? (Message)0x40c : (Message)0x40d, chargePower);
                     }
 
                     if (ActionId is
@@ -2215,7 +2215,7 @@ public partial class Rayman
                     };
 
                 if (!CheckSingleInput(GbaInput.B) && IsLocalPlayer)
-                    cam.ProcessMessage(Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_1027);
 
                 if (ActionId == NextActionId)
                     NextActionId = null;
@@ -3079,7 +3079,7 @@ public partial class Rayman
 
                 if (AttachedObject != null)
                 {
-                    AttachedObject.ProcessMessage((Message)0x400); // TODO: Implement
+                    AttachedObject.ProcessMessage(this, (Message)1024); // TODO: Implement
                     AttachedObject = null;
                 }
                 break;
@@ -3142,7 +3142,7 @@ public partial class Rayman
                 {
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
                     field18_0x93 = 120;
-                    Scene.Camera.ProcessMessage(Message.Cam_1040, field18_0x93);
+                    Scene.Camera.ProcessMessage(this, Message.Cam_1040, field18_0x93);
                 }
                 else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
                 {
@@ -3196,7 +3196,7 @@ public partial class Rayman
                 {
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
                     field18_0x93 = 120;
-                    Scene.Camera.ProcessMessage(Message.Cam_1040, field18_0x93);
+                    Scene.Camera.ProcessMessage(this, Message.Cam_1040, field18_0x93);
                 }
                 else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
                 {

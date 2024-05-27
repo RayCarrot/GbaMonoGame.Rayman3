@@ -1,5 +1,4 @@
-﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -94,7 +93,7 @@ public partial class Murfy
                 if (TargetActor == Scene.MainActor)
                 {
                     ManageFirstCutscene();
-                    Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     if (TargetActor.Position.X < 120)
                     {
                         ((ActionActor)TargetActor).ChangeAction();
@@ -345,9 +344,9 @@ public partial class Murfy
             case FsmAction.UnInit:
                 Position = InitialPosition;
                 if (GameInfo.MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2)
-                    Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
                 else if (TargetActor == Scene.MainActor)
-                    Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
                 break;
         }
     }

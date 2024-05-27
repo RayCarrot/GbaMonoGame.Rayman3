@@ -15,7 +15,7 @@ public sealed partial class FlowerFire : BaseActor
     public byte Timer { get; set; }
     public MovingPlatform Platform { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
         switch (message)
@@ -25,7 +25,7 @@ public sealed partial class FlowerFire : BaseActor
                 break;
         }
 
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // Handle messages

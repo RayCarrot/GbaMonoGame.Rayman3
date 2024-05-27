@@ -61,7 +61,7 @@ public abstract class PirateBaseActor : MovableActor
         IsInvulnerable = true;
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
         switch (message)
@@ -74,7 +74,7 @@ public abstract class PirateBaseActor : MovableActor
                 break;
         }
 
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // Handle messages

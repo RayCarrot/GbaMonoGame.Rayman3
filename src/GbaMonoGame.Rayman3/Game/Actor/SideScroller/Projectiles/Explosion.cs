@@ -10,9 +10,9 @@ public sealed partial class Explosion : BaseActor
         Fsm.ChangeAction(Fsm_Default);
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        base.ProcessMessageImpl(message, param);
+        base.ProcessMessageImpl(sender, message, param);
         return false;
     }
 }

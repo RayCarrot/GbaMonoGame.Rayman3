@@ -44,7 +44,7 @@ public abstract class ActionActor : BaseActor
     public virtual Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
     public virtual Box GetActionBox() => _actionBox.Offset(Position);
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
         switch (message)
@@ -55,7 +55,7 @@ public abstract class ActionActor : BaseActor
                 break;
         }
 
-        return base.ProcessMessageImpl(message, param);
+        return base.ProcessMessageImpl(sender, message, param);
     }
 
     protected void DrawWithInvulnerability(AnimationPlayer animationPlayer, bool forceDraw)

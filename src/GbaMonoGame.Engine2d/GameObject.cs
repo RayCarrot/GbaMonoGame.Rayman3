@@ -34,7 +34,7 @@ public abstract class GameObject : Object
     public bool Flag_6 { get; set; }
     public bool Flag_7 { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         switch (message)
         {

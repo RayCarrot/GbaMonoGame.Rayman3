@@ -42,9 +42,9 @@ public sealed partial class Barrel : MovableActor
     public RaymanBody.RaymanBodyPartType? LastHitBodyPartType { get; set; }
     public byte Timer { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         switch (message)

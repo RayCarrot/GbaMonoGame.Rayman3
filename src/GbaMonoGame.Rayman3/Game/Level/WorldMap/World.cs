@@ -75,9 +75,9 @@ public class World : FrameWorldSideScroller
 
             // Lock the camera on N-Gage, otherwise Murfy is off-screen
             if (Engine.Settings.Platform == Platform.NGage)
-                Scene.Camera.ProcessMessage(Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
+                Scene.Camera.ProcessMessage(this, Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
 
-            Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+            Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
             NextExStepAction = StepEx_SpawnMurfy;
             
             GameInfo.PersistentInfo.PlayedMurfyWorldHelp = true;
@@ -94,8 +94,8 @@ public class World : FrameWorldSideScroller
             MurfyLevelCurtainTargetId = 20;
             MurfyId = 41;
 
-            Scene.Camera.ProcessMessage(Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
-            Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+            Scene.Camera.ProcessMessage(this, Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
+            Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
             NextExStepAction = StepEx_SpawnMurfy;
 
             GameInfo.PersistentInfo.UnlockedBonus1 = true;
@@ -115,8 +115,8 @@ public class World : FrameWorldSideScroller
             };
             MurfyId = 22;
 
-            Scene.Camera.ProcessMessage(Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
-            Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+            Scene.Camera.ProcessMessage(this, Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
+            Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
             NextExStepAction = StepEx_SpawnMurfy;
 
             GameInfo.PersistentInfo.UnlockedBonus2 = true;
@@ -141,8 +141,8 @@ public class World : FrameWorldSideScroller
                 _ => throw new UnsupportedPlatformException()
             };
 
-            Scene.Camera.ProcessMessage(Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
-            Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+            Scene.Camera.ProcessMessage(this, Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
+            Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
             NextExStepAction = StepEx_SpawnMurfy;
 
             GameInfo.PersistentInfo.UnlockedBonus3 = true;
@@ -162,8 +162,8 @@ public class World : FrameWorldSideScroller
                 _ => throw new UnsupportedPlatformException()
             };
 
-            Scene.Camera.ProcessMessage(Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
-            Scene.MainActor.ProcessMessage(Message.Main_EnterCutscene);
+            Scene.Camera.ProcessMessage(this, Message.Cam_Lock, Scene.GetGameObject(MurfyLevelCurtainTargetId).Position - camLockOffset);
+            Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
             NextExStepAction = StepEx_SpawnMurfy;
 
             GameInfo.PersistentInfo.UnlockedBonus4 = true;
@@ -252,7 +252,7 @@ public class World : FrameWorldSideScroller
     {
         Murfy murfy = Scene.GetGameObject<Murfy>(MurfyId);
         murfy.TargetActor = Scene.GetGameObject<BaseActor>(MurfyLevelCurtainTargetId);
-        murfy.ProcessMessage(Message.Murfy_Spawn);
+        murfy.ProcessMessage(this, Message.Murfy_Spawn);
 
         if (MurfyLevelCurtainTargetId == 16)
             CurrentExStepAction = StepEx_MurfyIntroCutscene;
@@ -273,10 +273,10 @@ public class World : FrameWorldSideScroller
         {
             if (MurfyTimer > 90)
             {
-                Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+                Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
                 
                 if (Engine.Settings.Platform == Platform.NGage)
-                    Scene.Camera.ProcessMessage(Message.Cam_Unlock);
+                    Scene.Camera.ProcessMessage(this, Message.Cam_Unlock);
                 
                 UserInfo.Hide = false;
                 CurrentExStepAction = null;
@@ -317,8 +317,8 @@ public class World : FrameWorldSideScroller
     {
         if (TransitionsFX.IsFadeOutFinished)
         {
-            Scene.Camera.ProcessMessage(Message.Cam_SetPosition, Scene.MainActor.Position - new Vector2(120, 120));
-            Scene.Camera.ProcessMessage(Message.Cam_Unlock);
+            Scene.Camera.ProcessMessage(this, Message.Cam_SetPosition, Scene.MainActor.Position - new Vector2(120, 120));
+            Scene.Camera.ProcessMessage(this, Message.Cam_Unlock);
             UserInfo.Hide = false;
             TransitionsFX.FadeInInit(2 / 16f);
             CurrentExStepAction = StepEx_MurfyFadeIn;
@@ -329,7 +329,7 @@ public class World : FrameWorldSideScroller
     {
         if (TransitionsFX.IsFadeInFinished)
         {
-            Scene.MainActor.ProcessMessage(Message.Main_ExitCutscene);
+            Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
             CurrentExStepAction = null;
         }
     }

@@ -142,7 +142,7 @@ public partial class Cage
                 GameInfo.SetCageAsCollected(CageId);
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__CageTrsh_Mix05);
                 ActionId = InitialActionId + 4;
-                Scene.MainActor.ProcessMessage(Message.Main_CollectedCage);
+                Scene.MainActor.ProcessMessage(this, Message.Main_CollectedCage);
                 break;
 
             case FsmAction.Step:
@@ -151,7 +151,7 @@ public partial class Cage
                 break;
 
             case FsmAction.UnInit:
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

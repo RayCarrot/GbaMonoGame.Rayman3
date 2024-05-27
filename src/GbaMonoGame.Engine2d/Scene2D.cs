@@ -277,7 +277,7 @@ public class Scene2D
         foreach (GameObject obj in KnotManager.EnumerateAllGameObjects(isEnabled: false))
         {
             if (obj.ResurrectsImmediately)
-                obj.ProcessMessage(Message.Resurrect);
+                obj.ProcessMessage(null, Message.Resurrect);
         }
 
         if (newKnot && KnotManager.PreviousKnot != null)
@@ -286,7 +286,7 @@ public class Scene2D
             {
                 if (obj.ResurrectsLater && !KnotManager.IsInCurrentKnot(obj))
                 {
-                    obj.ProcessMessage(Message.Resurrect);
+                    obj.ProcessMessage(null, Message.Resurrect);
                 }
             }
 
@@ -294,7 +294,7 @@ public class Scene2D
             {
                 if (obj.ResurrectsLater && !KnotManager.IsInCurrentKnot(obj))
                 {
-                    obj.ProcessMessage(Message.Resurrect);
+                    obj.ProcessMessage(null, Message.Resurrect);
                 }
             }
         }

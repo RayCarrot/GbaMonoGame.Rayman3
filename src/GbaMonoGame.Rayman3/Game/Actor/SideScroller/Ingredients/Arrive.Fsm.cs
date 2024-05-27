@@ -16,7 +16,7 @@ public partial class Arrive
             case FsmAction.Step:
                 if (Scene.IsDetectedMainActor(this))
                 {
-                    Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
                     Fsm.ChangeAction(Fsm_EndLevel);
                 }
                 break;
@@ -60,12 +60,12 @@ public partial class Arrive
                     if (Engine.Settings.Platform == Platform.GBA)
                     {
                         if (GameInfo.MapId == MapId.ChallengeLyGCN)
-                            Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                            Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
                     }
                     else if (Engine.Settings.Platform == Platform.NGage)
                     {
                         if (GameInfo.MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN)
-                            Scene.MainActor.ProcessMessage(Message.Main_LevelEnd);
+                            Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
                     }
                     else
                     {

@@ -44,7 +44,7 @@ public partial class BouncyPlatform
                 else if (ActionId == Action.Trap && Scene.IsHitMainActor(this))
                 {
                     Scene.MainActor.ReceiveDamage(AttackPoints);
-                    Scene.MainActor.ProcessMessage(Message.Main_Damaged1, this);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_Damaged1, this);
                     ActionId = Action.EndTrap;
                 }
 
@@ -96,12 +96,12 @@ public partial class BouncyPlatform
                 {
                     InitialMainActorSpeed = TriggeredActor.Speed;
                     foreach (MovableActor actor in DetectedActors)
-                        actor?.ProcessMessage(Message.Main_BeginBounce);
+                        actor?.ProcessMessage(this, Message.Main_BeginBounce, this);
                 }
                 else
                 {
                     InitialMainActorSpeed = Scene.MainActor.Speed;
-                    Scene.MainActor.ProcessMessage(Message.Main_BeginBounce);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_BeginBounce);
                 }
 
                 HasTriggeredBounce = false;
@@ -157,7 +157,7 @@ public partial class BouncyPlatform
                             if (actor.GetDetectionBox().Intersects(box))
                             {
                                 DetectedActors[i] = actor;
-                                actor.ProcessMessage(Message.Main_BeginBounce);
+                                actor.ProcessMessage(this, Message.Main_BeginBounce, this);
                             }
                         }
                     }
@@ -168,11 +168,11 @@ public partial class BouncyPlatform
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                     {
                         foreach (MovableActor actor in DetectedActors)
-                            actor?.ProcessMessage(Message.Main_Bounce);
+                            actor?.ProcessMessage(this, Message.Main_Bounce);
                     }
                     else
                     {
-                        Scene.MainActor.ProcessMessage(Message.Main_Bounce);
+                        Scene.MainActor.ProcessMessage(this, Message.Main_Bounce);
                     }
 
                     HasTriggeredBounce = true;

@@ -32,6 +32,6 @@ public class ChallengeLy : FrameSideScroller
             IsTimed = true;
 
         if (GameInfo.RemainingTime == 0)
-            Scene.MainActor.ProcessMessage((Message)1060); // TODO: Name and implement
+            Scene.MainActor.ProcessMessage(this, (Message)1060); // TODO: Name and implement
     }
 }

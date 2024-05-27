@@ -28,7 +28,7 @@ public partial class WaterSplash
                 break;
 
             case FsmAction.UnInit:
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

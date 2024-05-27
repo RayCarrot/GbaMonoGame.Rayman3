@@ -31,7 +31,7 @@ public class Captor : GameObject
 
     public Box GetCaptorBox() => _captorBox;
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
         switch (message)
@@ -42,7 +42,7 @@ public class Captor : GameObject
                 return true;
         }
 
-        return base.ProcessMessageImpl(message, param);
+        return base.ProcessMessageImpl(sender, message, param);
     }
 
     public void TriggerEvent()
@@ -64,12 +64,12 @@ public class Captor : GameObject
                 
                 case Message.Captor_Trigger_SendMessageWithParam:
                 default:
-                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, evt.Param >> 8);
+                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(this, msg, evt.Param >> 8);
                     Logger.Info("Triggering captor event with message {0}, to object {1} with param {2}", msg, evt.Param & 0xFF, evt.Param >> 8);
                     break;
 
                 case Message.Captor_Trigger_SendMessageWithCaptorParam:
-                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(msg, this);
+                    Scene.GetGameObject(evt.Param & 0xFF).ProcessMessage(this, msg, this);
                     Logger.Info("Triggering captor event with message {0} to object {1}", msg, evt.Param & 0xFF);
                     break;
             }
@@ -81,7 +81,7 @@ public class Captor : GameObject
 
         if (EventsToTrigger == 0)
         {
-            ProcessMessage(Message.Destroy);
+            ProcessMessage(this, Message.Destroy);
             TriggeredCount = 0;
             EventsToTrigger = OriginalEventsToTrigger;
             IsTriggering = false;

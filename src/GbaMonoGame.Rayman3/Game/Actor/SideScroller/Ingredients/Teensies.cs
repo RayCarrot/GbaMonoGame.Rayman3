@@ -22,7 +22,7 @@ public sealed partial class Teensies : ActionActor
                 (ActionId is Action.Init_World3_Right or Action.Init_World3_Left && GameInfo.PersistentInfo.UnlockedWorld4) ||
                 (ActionId is Action.Init_World4_Right or Action.Init_World4_Left && GameInfo.PersistentInfo.UnlockedFinalBoss))
             {
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
             }
             else
             {

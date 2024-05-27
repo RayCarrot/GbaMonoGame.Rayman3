@@ -28,7 +28,7 @@ public sealed partial class Lums : BaseActor
                     GameInfo.LoadedYellowLums++;
 
                     if (GameInfo.HasCollectedYellowLum(LumId, GameInfo.MapId))
-                        ProcessMessage(Message.Destroy);
+                        ProcessMessage(this, Message.Destroy);
                 }
                 break;
 
@@ -45,7 +45,7 @@ public sealed partial class Lums : BaseActor
                     AnimatedObject.BasePaletteIndex = 1;
 
                     if (GameInfo.field22_0x1b)
-                        ProcessMessage(Message.Destroy);
+                        ProcessMessage(this, Message.Destroy);
                 }
 
                 AnimatedObject.CurrentAnimation = 3;
@@ -76,7 +76,7 @@ public sealed partial class Lums : BaseActor
                 GameInfo.GreenLums++;
 
                 if (LumId < GameInfo.LastGreenLumAlive)
-                    ProcessMessage(Message.Destroy);
+                    ProcessMessage(this, Message.Destroy);
             }
         }
         else
@@ -126,7 +126,7 @@ public sealed partial class Lums : BaseActor
         return collided;
     }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
         switch (message)
@@ -138,7 +138,7 @@ public sealed partial class Lums : BaseActor
                 break;
         }
 
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // Handle messages

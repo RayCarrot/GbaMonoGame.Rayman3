@@ -39,7 +39,7 @@ public partial class MurfyStone
                             // TODO: This is probably a typo in the original code and explains why Murfy takes a while to appear. Fix?
                             // Why is the horizontal resolution used for the y position??
                             murfy.Position = new Vector2(murfy.Position.X, Position.Y - Engine.ScreenCamera.Resolution.X);
-                            murfy.ProcessMessage(Message.Murfy_Spawn);
+                            murfy.ProcessMessage(this, Message.Murfy_Spawn);
                         }
                     }
                 }

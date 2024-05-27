@@ -44,7 +44,7 @@ public class UserInfoWorld : Dialog
 
     public bool Hide { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // TODO: Implement
         return false;

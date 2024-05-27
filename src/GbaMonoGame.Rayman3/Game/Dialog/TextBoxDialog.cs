@@ -310,7 +310,7 @@ public class TextBoxDialog : Dialog
 
     #region Protected Methods
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         return false;
     }

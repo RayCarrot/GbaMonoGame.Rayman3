@@ -38,7 +38,7 @@ public partial class SwingSparkle
             case FsmAction.UnInit:
                 ScreenPosition = new Vector2(0, ScreenPosition.Y);
                 AnimatedObject.CurrentAnimation = 0;
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

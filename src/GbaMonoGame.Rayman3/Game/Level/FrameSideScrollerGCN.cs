@@ -58,7 +58,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
 
         // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, MapInfo.HasBlueLum);
-        UserInfo.ProcessMessage((Message)1081); // TODO: Implement and name message
+        UserInfo.ProcessMessage(this, (Message)1081); // TODO: Implement and name message
 
         // Create pause dialog, but don't add yet
         PauseDialog = new PauseDialog();

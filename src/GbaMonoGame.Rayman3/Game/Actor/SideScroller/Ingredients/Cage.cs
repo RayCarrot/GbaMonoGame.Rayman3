@@ -15,7 +15,7 @@ public sealed partial class Cage : InteractableActor
         Fsm.ChangeAction(Fsm_Idle);
 
         if (GameInfo.HasCollectedCage(CageId, GameInfo.MapId))
-            ProcessMessage(Message.Destroy);
+            ProcessMessage(this, Message.Destroy);
     }
 
     public int CageId { get; }
@@ -25,9 +25,9 @@ public sealed partial class Cage : InteractableActor
     public int Timer { get; set; }
     public int HitAction { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // TODO: Handle messages 1043 and 1025

@@ -15,7 +15,7 @@ public partial class RedPirate
         if (Scene.IsHitMainActor(this))
         {
             Scene.MainActor.ReceiveDamage(AttackPoints);
-            Scene.MainActor.ProcessMessage(Message.Main_Damaged1, this);
+            Scene.MainActor.ProcessMessage(this, Message.Main_Damaged1, this);
         }
 
         // Killed
@@ -304,7 +304,7 @@ public partial class RedPirate
                 if (IsActionFinished)
                 {
                     SpawnRedLum(32);
-                    ProcessMessage(Message.Destroy);
+                    ProcessMessage(this, Message.Destroy);
                 }
                 break;
 

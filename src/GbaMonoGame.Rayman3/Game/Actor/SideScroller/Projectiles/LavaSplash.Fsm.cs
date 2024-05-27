@@ -17,7 +17,7 @@ public partial class LavaSplash
                 {
                     if (IsActionFinished)
                     {
-                        ProcessMessage(Message.Destroy);
+                        ProcessMessage(this, Message.Destroy);
                     }
                     else
                     {

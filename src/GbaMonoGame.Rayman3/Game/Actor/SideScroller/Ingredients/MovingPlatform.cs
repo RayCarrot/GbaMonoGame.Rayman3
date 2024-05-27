@@ -167,11 +167,11 @@ public sealed partial class MovingPlatform : MovableActor
 
         if (Timer == 120)
         {
-            Fire.ProcessMessage(Message.FlowerFire_End);
+            Fire.ProcessMessage(this, Message.FlowerFire_End);
 
             if (Scene.MainActor.LinkedMovementActor == this)
             {
-                Scene.MainActor.ProcessMessage(Message.Main_UnlinkMovement);
+                Scene.MainActor.ProcessMessage(this, Message.Main_UnlinkMovement, this);
             }
             else
             {
@@ -183,8 +183,8 @@ public sealed partial class MovingPlatform : MovableActor
         }
         else if (Timer == 121)
         {
-            Scene.MainActor.ProcessMessage(Message.Main_AllowCoyoteJump);
-            Scene.MainActor.ProcessMessage(Message.Main_UnlinkMovement);
+            Scene.MainActor.ProcessMessage(this, Message.Main_AllowCoyoteJump, this);
+            Scene.MainActor.ProcessMessage(this, Message.Main_UnlinkMovement, this);
 
             Explosion explosion = Scene.KnotManager.CreateProjectile<Explosion>(ActorType.Explosion);
             if (explosion != null)
@@ -245,7 +245,7 @@ public sealed partial class MovingPlatform : MovableActor
         if (ResurrectsImmediately)
             Fsm.ChangeAction(Fsm_Respawn);
         else
-            ProcessMessage(Message.Destroy);
+            ProcessMessage(this, Message.Destroy);
     }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)

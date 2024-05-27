@@ -35,8 +35,8 @@ public partial class PurpleLum
 
                             if (detectionBox.Intersects(viewBox))
                             {
-                                rayman.ProcessMessage(Message.Main_BeginSwing, this);
-                                fist.ProcessMessage(Message.RaymanBody_FinishedAttack);
+                                rayman.ProcessMessage(this, Message.Main_BeginSwing, this);
+                                fist.ProcessMessage(this, Message.RaymanBody_FinishedAttack, this);
                                 break;
                             }
                         }

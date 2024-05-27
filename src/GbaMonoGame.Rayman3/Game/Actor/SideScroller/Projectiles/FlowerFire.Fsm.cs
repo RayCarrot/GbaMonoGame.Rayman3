@@ -21,7 +21,7 @@ public partial class FlowerFire
                 if (Timer == 0)
                 {
                     AnimatedObject.CurrentAnimation = 2;
-                    ProcessMessage(Message.Destroy);
+                    ProcessMessage(this, Message.Destroy);
                     Platform.Destroy();
                 }
                 break;
@@ -46,7 +46,7 @@ public partial class FlowerFire
                 break;
 
             case FsmAction.UnInit:
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

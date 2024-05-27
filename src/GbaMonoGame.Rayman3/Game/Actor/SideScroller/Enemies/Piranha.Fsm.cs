@@ -81,7 +81,7 @@ public partial class Piranha
 
             case FsmAction.UnInit:
                 SpawnSplash();
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

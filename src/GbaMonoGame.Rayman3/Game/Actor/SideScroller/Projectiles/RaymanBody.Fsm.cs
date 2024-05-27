@@ -25,7 +25,7 @@ public partial class RaymanBody
                     damage = 5;
 
                 hitActor.ReceiveDamage(damage);
-                hitActor.ProcessMessage(Message.Hit, this);
+                hitActor.ProcessMessage(this, Message.Hit, this);
                 SpawnHitEffect();
             }
 
@@ -222,12 +222,12 @@ public partial class RaymanBody
                 else if (BodyPartType == RaymanBodyPartType.SecondSuperFist)
                     BodyPartType = RaymanBodyPartType.SecondFist;
                 
-                Rayman.ProcessMessage(Message.RaymanBody_FinishedAttack, BodyPartType);
+                Rayman.ProcessMessage(this, Message.RaymanBody_FinishedAttack, BodyPartType);
 
                 HitActor = null;
                 CheckAgainstMapCollision = true;
 
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
     }
@@ -248,7 +248,7 @@ public partial class RaymanBody
             case FsmAction.UnInit:
                 HitActor = null;
                 CheckAgainstMapCollision = true;
-                ProcessMessage(Message.Destroy);
+                ProcessMessage(this, Message.Destroy);
                 AnimatedObject.YPriority = 32;
                 break;
         }

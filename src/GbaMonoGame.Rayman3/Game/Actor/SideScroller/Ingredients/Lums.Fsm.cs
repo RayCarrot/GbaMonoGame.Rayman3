@@ -125,7 +125,7 @@ public partial class Lums
                     }
                 }
 
-                Scene.MainActor.ProcessMessage(ActionId switch
+                Scene.MainActor.ProcessMessage(this, ActionId switch
                 {
                     Action.YellowLum => Message.Main_CollectedYellowLum,
                     Action.RedLum => Message.Main_CollectedRedLum,
@@ -160,7 +160,7 @@ public partial class Lums
 
             case FsmAction.UnInit:
                 if (ActionId != Action.BlueLum || GameInfo.MapId == MapId.BossRockAndLava)
-                    ProcessMessage(Message.Destroy);
+                    ProcessMessage(this, Message.Destroy);
                 break;
         }
     }

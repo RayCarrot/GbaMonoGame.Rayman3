@@ -124,7 +124,7 @@ public sealed partial class LevelCurtain : ActionActor
         }
 
         if (MapId == MapId.ChallengeLyGCN && !GameInfo.PersistentInfo.UnlockedLyChallengeGCN)
-            ProcessMessage(Message.Destroy);
+            ProcessMessage(this, Message.Destroy);
 
         AnimatedObject.BasePaletteIndex = IsLocked ? 1 : 0;
     }
@@ -133,9 +133,9 @@ public sealed partial class LevelCurtain : ActionActor
     public MapId MapId { get; }
     public bool IsLocked { get; set; }
 
-    protected override bool ProcessMessageImpl(Message message, object param)
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        if (base.ProcessMessageImpl(message, param))
+        if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
         // TODO: Handle message 1087
