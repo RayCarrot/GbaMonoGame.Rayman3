@@ -11,11 +11,11 @@ public sealed partial class RedPirate : PirateBaseActor
         ReInit();
     }
 
-    private uint AttackTimer { get; set; }
-    private uint DoubleHitTimer { get; set; }
-    private Vector2 KnockBackPosition { get; set; }
-    private int Ammo { get; set; } // Ammo functionality appears unused
-    private bool HasFiredShot { get; set; }
+    public uint AttackTimer { get; set; }
+    public uint DoubleHitTimer { get; set; }
+    public Vector2 KnockBackPosition { get; set; }
+    public int Ammo { get; set; } // Ammo functionality appears unused
+    public bool HasFiredShot { get; set; }
 
     private void Walk()
     {

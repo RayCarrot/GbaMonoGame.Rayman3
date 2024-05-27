@@ -2,13 +2,13 @@
 
 public partial class Lums
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         YellowLum = 0,
         RedLum = 1,

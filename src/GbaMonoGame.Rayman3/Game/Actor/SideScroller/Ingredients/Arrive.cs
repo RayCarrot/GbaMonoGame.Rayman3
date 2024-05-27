@@ -24,5 +24,5 @@ public sealed partial class Arrive : ActionActor
         }
     }
 
-    private int? LinkedActor { get; }
+    public int? LinkedActor { get; }
 }

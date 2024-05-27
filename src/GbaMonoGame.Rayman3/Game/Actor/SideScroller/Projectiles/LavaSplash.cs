@@ -9,10 +9,4 @@ public sealed partial class LavaSplash : MovableActor
         AnimatedObject.YPriority = 5;
         Fsm.ChangeAction(Fsm_Default);
     }
-
-    public void InitMainActorDrown()
-    {
-        ActionId = Action.MainActorDrownSplash;
-        ChangeAction();
-    }
 }

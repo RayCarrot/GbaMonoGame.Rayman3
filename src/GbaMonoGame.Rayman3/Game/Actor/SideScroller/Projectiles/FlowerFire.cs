@@ -12,8 +12,8 @@ public sealed partial class FlowerFire : BaseActor
         Fsm.ChangeAction(Fsm_Default);
     }
 
-    private byte Timer { get; set; }
-    private MovingPlatform Platform { get; set; }
+    public byte Timer { get; set; }
+    public MovingPlatform Platform { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -39,6 +39,4 @@ public sealed partial class FlowerFire : BaseActor
                 return false;
         }
     }
-
-    public void AttachPlatform(MovingPlatform platform) => Platform = platform;
 }

@@ -71,9 +71,8 @@ public sealed partial class Rayman : MovableActor
         Fsm.ChangeAction(Fsm_LevelStart);
     }
 
-    // TODO: Make properties private?
     public ActorResource Resource { get; }
-    private Action? NextActionId { get; set; }
+    public Action? NextActionId { get; set; }
     public Dictionary<RaymanBody.RaymanBodyPartType, RaymanBody> BodyParts { get; } = new(4); // Array with 4 entries in the game
     public BaseActor AttachedObject { get; set; }
     public byte Charge { get; set; }
@@ -773,7 +772,7 @@ public sealed partial class Rayman : MovableActor
                 break;
 
             swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
-            swingSparkle.Init(v);
+            swingSparkle.Value = v;
             
             index++;
             if (index > 8)
@@ -781,7 +780,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
-        swingSparkle.Init(PreviousXSpeed - 30);
+        swingSparkle.Value = PreviousXSpeed - 30;
         swingSparkle.AnimatedObject.CurrentAnimation = 1;
     }
 
@@ -1154,7 +1153,8 @@ public sealed partial class Rayman : MovableActor
                 if (lavaSplash != null)
                 {
                     lavaSplash.Position = Position;
-                    lavaSplash.InitMainActorDrown();
+                    lavaSplash.ActionId = LavaSplash.Action.MainActorDrownSplash;
+                    lavaSplash.ChangeAction();
                 }
 
                 ActionId = IsFacingRight ? Action.Drown_Right : Action.Drown_Left;

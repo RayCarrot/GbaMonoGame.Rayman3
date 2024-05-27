@@ -2,13 +2,13 @@
 
 public partial class MovingPlatform
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         Stationary = 0,
         

@@ -123,7 +123,9 @@ public partial class MovingPlatform
                     Fire = Scene.KnotManager.CreateProjectile<FlowerFire>(ActorType.FlowerFire);
                     AnimatedObject.CurrentAnimation = 5;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BBQ_Mix10);
-                    Fire?.AttachPlatform(this);
+
+                    if (Fire != null)
+                        Fire.Platform = this;
                 }
 
                 // Burn if we have a fire projectile

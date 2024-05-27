@@ -129,9 +129,9 @@ public sealed partial class LevelCurtain : ActionActor
         AnimatedObject.BasePaletteIndex = IsLocked ? 1 : 0;
     }
 
-    private int InitialActionId { get; }
-    private MapId MapId { get; }
-    private bool IsLocked { get; set; }
+    public int InitialActionId { get; }
+    public MapId MapId { get; }
+    public bool IsLocked { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {
@@ -146,11 +146,5 @@ public sealed partial class LevelCurtain : ActionActor
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
         DrawLarge(animationPlayer, forceDraw);
-    }
-
-    public void Unlock()
-    {
-        AnimatedObject.BasePaletteIndex = 0;
-        IsLocked = false;
     }
 }

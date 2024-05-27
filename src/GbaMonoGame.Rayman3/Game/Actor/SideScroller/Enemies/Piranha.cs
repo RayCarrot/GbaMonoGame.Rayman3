@@ -11,9 +11,9 @@ public sealed partial class Piranha : MovableActor
         Fsm.ChangeAction(Fsm_Wait);
     }
 
-    private Vector2 InitPos { get; }
-    private int Timer { get; set; }
-    private bool ShouldDraw { get; set; }
+    public Vector2 InitPos { get; }
+    public int Timer { get; set; }
+    public bool ShouldDraw { get; set; }
 
     private void SpawnSplash()
     {

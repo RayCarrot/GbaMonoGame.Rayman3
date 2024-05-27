@@ -40,11 +40,11 @@ public sealed partial class Teensies : ActionActor
         }
     }
 
-    private Action InitialActionId { get; }
+    public Action InitialActionId { get; }
 
-    private bool IsMovingOutTextBox { get; set; }
-    private bool HasSetTextBox { get; set; }
-    private TextBoxDialog TextBox { get; set; }
+    public bool IsMovingOutTextBox { get; set; }
+    public bool HasSetTextBox { get; set; }
+    public TextBoxDialog TextBox { get; set; }
 
     private void SetMasterAction()
     {

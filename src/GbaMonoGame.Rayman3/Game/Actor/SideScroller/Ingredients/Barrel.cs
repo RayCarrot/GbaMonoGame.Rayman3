@@ -33,14 +33,14 @@ public sealed partial class Barrel : MovableActor
         Fsm.ChangeAction(Fsm_WaitForHit);
     }
 
-    private bool MoveOnWater { get; }
-    private bool MoveRight { get; set; }
-    private int InitialHitPoints { get; set; }
-    private BarrelSplash BarrelSplash { get; set; }
-    private Vector2 InitialWaterPosition { get; set; }
-    private bool LastHitFacingLeft { get; set; }
-    private RaymanBody.RaymanBodyPartType? LastHitBodyPartType { get; set; }
-    private byte Timer { get; set; }
+    public bool MoveOnWater { get; }
+    public bool MoveRight { get; set; }
+    public int InitialHitPoints { get; set; }
+    public BarrelSplash BarrelSplash { get; set; }
+    public Vector2 InitialWaterPosition { get; set; }
+    public bool LastHitFacingLeft { get; set; }
+    public RaymanBody.RaymanBodyPartType? LastHitBodyPartType { get; set; }
+    public byte Timer { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {

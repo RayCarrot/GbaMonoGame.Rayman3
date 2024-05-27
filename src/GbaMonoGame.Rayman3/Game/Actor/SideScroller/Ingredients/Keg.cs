@@ -29,11 +29,11 @@ public sealed partial class Keg : MovableActor
         }
     }
 
-    private byte?[] Links { get; }
-    private bool ShouldDraw { get; set; }
-    private ushort Timer { get; set; }
-    private int SpawnedDebrisCount { get; set; }
-    private Vector2 InitialPos { get; set; }
+    public byte?[] Links { get; }
+    public bool ShouldDraw { get; set; }
+    public ushort Timer { get; set; }
+    public int SpawnedDebrisCount { get; set; }
+    public Vector2 InitialPos { get; set; }
 
     private void SpawnDebris()
     {

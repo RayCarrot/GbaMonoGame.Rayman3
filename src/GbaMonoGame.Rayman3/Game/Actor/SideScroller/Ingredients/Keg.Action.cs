@@ -2,13 +2,13 @@
 
 public partial class Keg
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         // TODO: Name the remaining ones
         Action0 = 0,

@@ -2,13 +2,13 @@
 
 public partial class Teensies
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         Init_Victory_Left = 0,
         Init_Victory_Right = 1,

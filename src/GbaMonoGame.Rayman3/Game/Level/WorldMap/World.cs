@@ -251,7 +251,7 @@ public class World : FrameWorldSideScroller
     private void StepEx_SpawnMurfy()
     {
         Murfy murfy = Scene.GetGameObject<Murfy>(MurfyId);
-        murfy.SetTarget(Scene.GetGameObject<BaseActor>(MurfyLevelCurtainTargetId));
+        murfy.TargetActor = Scene.GetGameObject<BaseActor>(MurfyLevelCurtainTargetId);
         murfy.ProcessMessage(Message.Murfy_Spawn);
 
         if (MurfyLevelCurtainTargetId == 16)
@@ -293,8 +293,11 @@ public class World : FrameWorldSideScroller
         {
             if (TextBox.IsFinished)
             {
+                // Unlock curtain
                 LevelCurtain levelCurtain = Scene.GetGameObject<LevelCurtain>(MurfyLevelCurtainTargetId);
-                levelCurtain.Unlock();
+                levelCurtain.AnimatedObject.BasePaletteIndex = 0;
+                levelCurtain.IsLocked = false;
+                
                 MurfyTimer = 1;
             }
         }

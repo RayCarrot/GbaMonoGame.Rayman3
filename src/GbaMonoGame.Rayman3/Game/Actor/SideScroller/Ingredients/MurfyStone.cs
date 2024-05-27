@@ -12,8 +12,8 @@ public sealed partial class MurfyStone : BaseActor
         Fsm.ChangeAction(Fsm_Default);
     }
 
-    private int? MurfyId { get; }
-    private uint Timer { get; set; }
-    private byte RaymanIdleTimer { get; set; }
-    private bool HasTriggered { get; set; }
+    public int? MurfyId { get; }
+    public uint Timer { get; set; }
+    public byte RaymanIdleTimer { get; set; }
+    public bool HasTriggered { get; set; }
 }

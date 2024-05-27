@@ -88,8 +88,8 @@ public sealed partial class Lums : BaseActor
         }
     }
 
-    private int LumId { get; }
-    private int BossDespawnTimer { get; set; }
+    public int LumId { get; }
+    public int BossDespawnTimer { get; set; }
 
     private Box GetCollisionBox()
     {
@@ -174,12 +174,5 @@ public sealed partial class Lums : BaseActor
                     AnimatedObject.ComputeNextFrame();
             }
         }
-    }
-
-    public void InitializeRedLumProjectile(Vector2 position)
-    {
-        AnimatedObject.CurrentAnimation = 3;
-        ActionId = Action.RedLum;
-        Position = position;
     }
 }

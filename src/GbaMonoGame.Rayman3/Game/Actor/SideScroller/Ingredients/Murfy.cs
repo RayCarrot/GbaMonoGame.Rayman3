@@ -19,18 +19,18 @@ public sealed partial class Murfy : MovableActor
         Fsm.ChangeAction(Fsm_PreInit);
     }
 
-    private BaseActor TargetActor { get; set; }
-    private TextBoxDialog TextBox { get; set; }
-    private Vector2 TargetPosition { get; set; }
-    private Vector2 MainActorPosition { get; set; }
-    private Vector2 InitialPosition { get; set; }
-    private Vector2 SavedSpeed { get; set; }
-    private byte Timer { get; set; }
-    private bool MoveTextBoxIn { get; set; }
-    private bool HasPlayedCutscene { get; set; }
-    private bool IsTargetActorFacingRight { get; set; }
-    private bool ShouldSpawn { get; set; }
-    private byte NGage_Byte_8E { get; set; }
+    public BaseActor TargetActor { get; set; }
+    public TextBoxDialog TextBox { get; set; }
+    public Vector2 TargetPosition { get; set; }
+    public Vector2 MainActorPosition { get; set; }
+    public Vector2 InitialPosition { get; set; }
+    public Vector2 SavedSpeed { get; set; }
+    public byte Timer { get; set; }
+    public bool MoveTextBoxIn { get; set; }
+    public bool HasPlayedCutscene { get; set; }
+    public bool IsTargetActorFacingRight { get; set; }
+    public bool ShouldSpawn { get; set; }
+    public byte NGage_Byte_8E { get; set; }
     
     public bool IsForBonusInWorld1 { get; set; }
 
@@ -173,10 +173,5 @@ public sealed partial class Murfy : MovableActor
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__MurfHeli_Mix01);
             }
         }
-    }
-
-    public void SetTarget(BaseActor targetActor)
-    {
-        TargetActor = targetActor;
     }
 }

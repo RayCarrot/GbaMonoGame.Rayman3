@@ -2,13 +2,13 @@
 
 public partial class Piranha
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         Move_Right = 0,
         Move_Left = 1,

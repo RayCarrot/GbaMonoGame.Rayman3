@@ -11,5 +11,5 @@ public sealed partial class Depart : ActionActor
         Fsm.ChangeAction(Fsm_Idle);
     }
 
-    private Message MessageToSend { get; }
+    public Message MessageToSend { get; }
 }

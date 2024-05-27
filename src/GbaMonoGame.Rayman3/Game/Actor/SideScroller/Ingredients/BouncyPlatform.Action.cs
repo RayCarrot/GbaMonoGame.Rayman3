@@ -2,13 +2,13 @@
 
 public partial class BouncyPlatform
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
-    private enum Action
+    public enum Action
     {
         Idle = 0,
         BeginTrap = 1,

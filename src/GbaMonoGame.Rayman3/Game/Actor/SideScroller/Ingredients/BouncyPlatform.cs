@@ -10,13 +10,13 @@ public sealed partial class BouncyPlatform : InteractableActor
         Fsm.ChangeAction(Fsm_Idle);
     }
 
-    private bool HasTrap { get; }
-    private byte Timer { get; set; }
-    private bool HasTriggeredBounce { get; set; }
-    private Vector2 InitialMainActorSpeed { get; set; }
+    public bool HasTrap { get; }
+    public byte Timer { get; set; }
+    public bool HasTriggeredBounce { get; set; }
+    public Vector2 InitialMainActorSpeed { get; set; }
 
     // These are added on N-Gage to support bouncy platforms used in multiplayer levels
-    private byte MultiplayerCooldown { get; set; }
-    private MovableActor TriggeredActor { get; set; }
-    private MovableActor[] DetectedActors { get; } = new MovableActor[RSMultiplayer.PlayersCount];
+    public byte MultiplayerCooldown { get; set; }
+    public MovableActor TriggeredActor { get; set; }
+    public MovableActor[] DetectedActors { get; } = new MovableActor[RSMultiplayer.PlayersCount];
 }

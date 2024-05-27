@@ -2,14 +2,14 @@
 
 public partial class RedPirate
 {
-    private new Action ActionId
+    public new Action ActionId
     {
         get => (Action)base.ActionId;
         set => base.ActionId = (int)value;
     }
 
     // TODO: Name all - are the rest unused?
-    private enum Action
+    public enum Action
     {
         Idle_Right = 0,
         Idle_Left = 1,

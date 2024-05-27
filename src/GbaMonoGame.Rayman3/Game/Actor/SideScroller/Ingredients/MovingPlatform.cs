@@ -26,21 +26,21 @@ public sealed partial class MovingPlatform : MovableActor
         [Action.MoveAccelerated_Down] = new AcceleratedInfo(0x800 / (float)0x10000, 0x500 / (float)0x10000, new Vector2(0, 24), PhysicalTypeValue.MovingPlatform_Up),
     };
 
-    private ActorResource Resource { get; }
-    private float ReturnXPosition { get; }
-    private float PlatformSpeed { get; set; }
-    private FlowerFire Fire { get; set; }
-    private Action InitialAction { get; set; }
-    private byte Timer { get; set; }
-    private PhysicalTypeValue CurrentDirectionalType { get; set; }
-    private PhysicalTypeValue PreviousPhysicalType { get; set; }
-    private PhysicalTypeValue PreviousValidDirectionalType { get; set; }
-    private Action ActionAfterImpact { get; set; }
+    public ActorResource Resource { get; }
+    public float ReturnXPosition { get; }
+    public float PlatformSpeed { get; set; }
+    public FlowerFire Fire { get; set; }
+    public Action InitialAction { get; set; }
+    public byte Timer { get; set; }
+    public PhysicalTypeValue CurrentDirectionalType { get; set; }
+    public PhysicalTypeValue PreviousPhysicalType { get; set; }
+    public PhysicalTypeValue PreviousValidDirectionalType { get; set; }
+    public Action ActionAfterImpact { get; set; }
 
     // Flags
-    private bool IsActivated { get; set; }
-    private bool IsAccelerating { get; set; }
-    private bool ShouldDraw { get; set; }
+    public bool IsActivated { get; set; }
+    public bool IsAccelerating { get; set; }
+    public bool ShouldDraw { get; set; }
 
     private bool IsDirectionalType(PhysicalTypeValue value)
     {

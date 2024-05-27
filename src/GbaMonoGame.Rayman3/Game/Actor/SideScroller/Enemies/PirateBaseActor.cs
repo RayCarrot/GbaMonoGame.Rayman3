@@ -13,15 +13,15 @@ public abstract class PirateBaseActor : MovableActor
         Reset();
     }
 
-    protected ActorResource Resource { get; }
+    public ActorResource Resource { get; }
 
-    protected bool SpawnsRedLum { get; set; }
-    protected bool PirateFlag_1 { get; set; } // TODO: Name
+    public bool SpawnsRedLum { get; set; }
+    public bool PirateFlag_1 { get; set; } // TODO: Name
 
-    protected uint InvulnerabilityTimer { get; set; }
-    protected uint IdleDetectionTimer { get; set; }
-    protected bool HitFromFront { get; set; }
-    protected int PrevHitPoints { get; set; }
+    public uint InvulnerabilityTimer { get; set; }
+    public uint IdleDetectionTimer { get; set; }
+    public bool HitFromFront { get; set; }
+    public int PrevHitPoints { get; set; }
 
     private void Reset()
     {
@@ -39,6 +39,12 @@ public abstract class PirateBaseActor : MovableActor
 
         Lums lum = Scene.KnotManager.CreateProjectile<Lums>(ActorType.Lums);
 
+        if (lum == null) 
+            return;
+
+        lum.AnimatedObject.CurrentAnimation = 3;
+        lum.ActionId = Lums.Action.RedLum;
+
         float xPos;
         if ((IsFacingLeft && HitFromFront) ||
             (!IsFacingLeft && !HitFromFront))
@@ -46,7 +52,7 @@ public abstract class PirateBaseActor : MovableActor
         else
             xPos = Position.X + offsetX;
 
-        lum?.InitializeRedLumProjectile(new Vector2(xPos, Position.Y - 25));
+        lum.Position = new Vector2(xPos, Position.Y - 25);
     }
 
     protected void StartInvulnerability()

@@ -10,5 +10,5 @@ public sealed partial class KegDebris : ActionActor
         Fsm.ChangeAction(Fsm_Default);
     }
 
-    private byte Timer { get; set; }
+    public byte Timer { get; set; }
 }

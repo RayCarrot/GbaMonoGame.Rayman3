@@ -18,12 +18,12 @@ public sealed partial class Cage : InteractableActor
             ProcessMessage(Message.Destroy);
     }
 
-    private int CageId { get; }
-    private int InitialActionId { get; }
+    public int CageId { get; }
+    public int InitialActionId { get; }
 
-    private int PrevHitPoints { get; set; }
-    private int Timer { get; set; }
-    private int HitAction { get; set; }
+    public int PrevHitPoints { get; set; }
+    public int Timer { get; set; }
+    public int HitAction { get; set; }
 
     protected override bool ProcessMessageImpl(Message message, object param)
     {

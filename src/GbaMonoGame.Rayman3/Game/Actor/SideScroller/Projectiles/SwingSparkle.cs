@@ -12,12 +12,7 @@ public sealed partial class SwingSparkle : BaseActor
         Fsm.ChangeAction(Fsm_Default);
     }
 
-    private float Value { get; set; }
-
-    public void Init(float value)
-    {
-        Value = value;
-    }
+    public float Value { get; set; }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
