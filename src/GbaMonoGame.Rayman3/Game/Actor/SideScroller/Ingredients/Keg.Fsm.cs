@@ -66,7 +66,7 @@ public partial class Keg
                     if (Scene.IsHitMainActor(this))
                         Scene.MainActor.ReceiveDamage(AttackPoints);
 
-                    Explosion explosion = Scene.KnotManager.CreateProjectile<Explosion>(ActorType.Explosion);
+                    Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
 
                     if (AnimatedObject.IsFramed)
                     {

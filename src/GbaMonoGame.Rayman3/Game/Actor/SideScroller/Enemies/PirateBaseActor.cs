@@ -37,7 +37,7 @@ public abstract class PirateBaseActor : MovableActor
         if (!SpawnsRedLum)
             return;
 
-        Lums lum = Scene.KnotManager.CreateProjectile<Lums>(ActorType.Lums);
+        Lums lum = Scene.CreateProjectile<Lums>(ActorType.Lums);
 
         if (lum == null) 
             return;

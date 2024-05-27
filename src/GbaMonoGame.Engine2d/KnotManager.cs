@@ -169,16 +169,9 @@ public class KnotManager
             throw new Exception($"Unsupported game object type {gameObject}");
     }
 
-    public T CreateProjectile<T>(Enum actorType)
-        where T : BaseActor
-    {
-        return (T)CreateProjectile((int)(object)actorType);
-    }
-
     public BaseActor CreateProjectile(int actorType)
     {
-        // TODO: Check IsProjectile flag
-        BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType);
+        BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType && x.IsProjectile);
         actor?.ProcessMessage(null, Message.ResurrectWakeUp);
         return actor;
     }

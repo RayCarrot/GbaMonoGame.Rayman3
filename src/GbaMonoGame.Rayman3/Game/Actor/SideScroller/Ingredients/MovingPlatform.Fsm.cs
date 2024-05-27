@@ -120,7 +120,7 @@ public partial class MovingPlatform
                 // Burn up if we stop moving
                 if (CurrentDirectionalType == PhysicalTypeValue.MovingPlatform_Stop && Fire == null)
                 {
-                    Fire = Scene.KnotManager.CreateProjectile<FlowerFire>(ActorType.FlowerFire);
+                    Fire = Scene.CreateProjectile<FlowerFire>(ActorType.FlowerFire);
                     AnimatedObject.CurrentAnimation = 5;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BBQ_Mix10);
 

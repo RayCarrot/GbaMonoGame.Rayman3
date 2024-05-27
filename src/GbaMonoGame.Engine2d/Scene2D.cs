@@ -395,6 +395,17 @@ public class Scene2D
     public GameObject GetGameObject(int instanceId) => KnotManager.GetGameObject(instanceId);
     public T GetGameObject<T>(int instanceId) where T : GameObject => (T)KnotManager.GetGameObject(instanceId);
 
+    public T CreateProjectile<T>(Enum actorType)
+        where T : BaseActor
+    {
+        return (T)KnotManager.CreateProjectile((int)(object)actorType);
+    }
+
+    public BaseActor CreateProjectile(int actorType)
+    {
+        return KnotManager.CreateProjectile(actorType);
+    }
+
     public PhysicalType GetPhysicalType(Vector2 position)
     {
         return new PhysicalType(Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint()));

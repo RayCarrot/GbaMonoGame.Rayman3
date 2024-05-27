@@ -21,7 +21,7 @@ public sealed partial class RaymanBody : MovableActor
 
     private void SpawnHitEffect()
     {
-        RaymanBody hitEffectActor = Scene.KnotManager.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
+        RaymanBody hitEffectActor = Scene.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
         if (hitEffectActor != null)
         {
             hitEffectActor.BodyPartType = RaymanBodyPartType.HitEffect;

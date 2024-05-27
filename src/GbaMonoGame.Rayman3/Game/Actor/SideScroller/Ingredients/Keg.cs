@@ -37,7 +37,7 @@ public sealed partial class Keg : MovableActor
 
     private void SpawnDebris()
     {
-        KegDebris debris = Scene.KnotManager.CreateProjectile<KegDebris>(ActorType.KegDebris);
+        KegDebris debris = Scene.CreateProjectile<KegDebris>(ActorType.KegDebris);
 
         if (debris != null)
         {

@@ -147,15 +147,15 @@ public partial class Barrel
                 break;
 
             case FsmAction.UnInit:
-                WaterSplash waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                WaterSplash waterSplash = Scene.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
                 if (waterSplash != null)
                     waterSplash.Position = Position;
 
-                waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                waterSplash = Scene.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
                 if (waterSplash != null)
                     waterSplash.Position = Position - new Vector2(16, 0);
 
-                waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                waterSplash = Scene.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
                 if (waterSplash != null)
                     waterSplash.Position = Position + new Vector2(16, 0);
                 break;
@@ -169,7 +169,7 @@ public partial class Barrel
             case FsmAction.Init:
                 ActionId = Action.LandInWater;
 
-                BarrelSplash = Scene.KnotManager.CreateProjectile<BarrelSplash>(ActorType.BarrelSplash);
+                BarrelSplash = Scene.CreateProjectile<BarrelSplash>(ActorType.BarrelSplash);
                 if (BarrelSplash != null)
                     BarrelSplash.Position = new Vector2(Position.X + 4, InitialWaterPosition.Y - 10);
 
@@ -359,7 +359,7 @@ public partial class Barrel
                 {
                     BarrelSplash?.ProcessMessage(this, Message.Destroy);
 
-                    WaterSplash waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                    WaterSplash waterSplash = Scene.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
                     if (waterSplash != null)
                         waterSplash.Position = Position - new Vector2(0, 48);
 

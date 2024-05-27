@@ -287,7 +287,7 @@ public sealed partial class Rayman : MovableActor
 
     private void Attack(uint chargePower, RaymanBody.RaymanBodyPartType type, Vector2 offset, bool hasCharged)
     {
-        RaymanBody bodyPart = Scene.KnotManager.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
+        RaymanBody bodyPart = Scene.CreateProjectile<RaymanBody>(ActorType.RaymanBody);
 
         if (bodyPart == null)
             return;
@@ -771,7 +771,7 @@ public sealed partial class Rayman : MovableActor
             if (v <= 2)
                 break;
 
-            swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
+            swingSparkle = Scene.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
             swingSparkle.Value = v;
             
             index++;
@@ -779,7 +779,7 @@ public sealed partial class Rayman : MovableActor
                 return;
         }
 
-        swingSparkle = Scene.KnotManager.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
+        swingSparkle = Scene.CreateProjectile<SwingSparkle>(ActorType.SwingSparkle);
         swingSparkle.Value = PreviousXSpeed - 30;
         swingSparkle.AnimatedObject.CurrentAnimation = 1;
     }
@@ -1149,7 +1149,7 @@ public sealed partial class Rayman : MovableActor
             // Handle drowning
             if (IsLavaInLevel() && type is PhysicalTypeValue.Lava or PhysicalTypeValue.MoltenLava)
             {
-                LavaSplash lavaSplash = Scene.KnotManager.CreateProjectile<LavaSplash>(ActorType.LavaSplash);
+                LavaSplash lavaSplash = Scene.CreateProjectile<LavaSplash>(ActorType.LavaSplash);
                 if (lavaSplash != null)
                 {
                     lavaSplash.Position = Position;
@@ -1161,7 +1161,7 @@ public sealed partial class Rayman : MovableActor
             }
             else if (type == PhysicalTypeValue.Water)
             {
-                WaterSplash waterSplash = Scene.KnotManager.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
+                WaterSplash waterSplash = Scene.CreateProjectile<WaterSplash>(ActorType.WaterSplash);
                 if (waterSplash != null)
                     waterSplash.Position = Position;
 
