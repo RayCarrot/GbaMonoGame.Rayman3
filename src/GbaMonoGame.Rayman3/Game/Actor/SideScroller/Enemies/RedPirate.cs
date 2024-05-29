@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -34,7 +35,26 @@ public sealed partial class RedPirate : PirateBaseActor
     private void Shoot()
     {
         Ammo--;
-        // TODO: Create projectile type 6
+
+        LaserShot shot = Scene.CreateProjectile<LaserShot>(ActorType.LaserShot);
+
+        if (shot == null) 
+            return;
+        
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Laser3_Mix03);
+
+        if (IsFacingRight)
+        {
+            shot.Position = Position + new Vector2(28, -32);
+            shot.ActionId = LaserShot.Action.Shot1_Right;
+        }
+        else
+        {
+            shot.Position = Position + new Vector2(-28, -32);
+            shot.ActionId = LaserShot.Action.Shot1_Right;
+        }
+
+        shot.ChangeAction();
     }
 
     protected override void ReInit()
