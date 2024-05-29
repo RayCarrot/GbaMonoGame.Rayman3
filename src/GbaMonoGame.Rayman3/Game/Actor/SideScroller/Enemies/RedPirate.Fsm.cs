@@ -36,6 +36,7 @@ public partial class RedPirate
         // Taken damage multiple times in quick succession
         if (HitPoints < PrevHitPoints)
         {
+            PrevHitPoints = HitPoints;
             Fsm.ChangeAction(Fsm_HitKnockBack);
             return false;
         }
