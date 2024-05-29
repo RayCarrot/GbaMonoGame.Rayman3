@@ -116,15 +116,35 @@ public abstract class MovableActor : InteractableActor
 
     private void CheckMapCollisionX()
     {
-        throw new NotImplementedException();
+        Box detectionBox = GetDetectionBox();
+
+        if (Speed.X < 0)
+        {
+            // Get the left-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.Center.Y));
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
+                Position += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
+                IsTouchingMap = true;
+            }
+        }
+        else
+        {
+            // Get the right-center type
+            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.Center.Y));
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
+                Position -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
+                IsTouchingMap = true;
+            }
+        }
     }
 
     private void CheckMapCollisionY()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void CheckMapCollisionXY()
     {
         Box detectionBox = GetDetectionBox();
 
@@ -152,31 +172,15 @@ public abstract class MovableActor : InteractableActor
                 IsTouchingMap = true;
             }
         }
+    }
 
-        if (Speed.X < 0)
-        {
-            // Get the left-center type
-            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.Center.Y));
-
-            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
-            {
-                Speed += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
-                Position += new Vector2(Constants.TileSize - MathHelpers.Mod(detectionBox.MinX, Constants.TileSize), 0);
-                IsTouchingMap = true;
-            }
-        }
-        else
-        {
-            // Get the right-center type
-            PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.Center.Y));
-
-            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
-            {
-                Speed -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
-                Position -= new Vector2(MathHelpers.Mod(detectionBox.MaxX, Constants.TileSize), 0);
-                IsTouchingMap = true;
-            }
-        }
+    private void CheckMapCollisionXY()
+    {
+        // The game doesn't call these, but rather re-implements them. Code
+        // appears identical though, so might as well. The game probably does
+        // it for performance reasons.
+        CheckMapCollisionX();
+        CheckMapCollisionY();
     }
 
     private void CheckMapCollisionExtendedX()
@@ -462,7 +466,7 @@ public abstract class MovableActor : InteractableActor
 
             // If on a linked object then we remove gravity
             if (LinkedMovementActor != null)
-                Speed = new Vector2(Speed.X, 0);
+                Speed = Speed with { Y = 0 };
         }
 
         HasMoved = true;
