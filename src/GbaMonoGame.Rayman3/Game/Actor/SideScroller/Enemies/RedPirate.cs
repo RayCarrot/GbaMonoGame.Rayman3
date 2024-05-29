@@ -51,7 +51,7 @@ public sealed partial class RedPirate : PirateBaseActor
         else
         {
             shot.Position = Position + new Vector2(-28, -32);
-            shot.ActionId = LaserShot.Action.Shot1_Right;
+            shot.ActionId = LaserShot.Action.Shot1_Left;
         }
 
         shot.ChangeAction();
