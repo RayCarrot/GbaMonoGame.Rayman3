@@ -2,7 +2,6 @@
 
 namespace GbaMonoGame;
 
-// TODO: Replace this with a more game-specific input system where we have input actions for things like jump, confirm in menu etc.
 [Flags]
 public enum GbaInput
 {
@@ -17,4 +16,5 @@ public enum GbaInput
     Down = 1 << 7,
     R = 1 << 8,
     L = 1 << 9,
+    Valid = 0xFC00,
 }

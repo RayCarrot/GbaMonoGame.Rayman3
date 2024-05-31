@@ -1216,7 +1216,7 @@ public sealed partial class Rayman : MovableActor
 
     private void ToggleNoClip()
     {
-        if (JoyPad.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
+        if (InputManager.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
         {
             Debug_NoClip = !Debug_NoClip;
 

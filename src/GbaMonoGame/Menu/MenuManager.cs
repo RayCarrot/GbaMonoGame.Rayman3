@@ -203,21 +203,21 @@ public class MenuManager
         if (!IsTransitioningText)
         {
             // Run standard controls
-            if (JoyPad.CheckSingle(GbaInput.Down))
+            if (InputManager.CheckSingle(Keys.Down))
             {
                 if (CurrentSelectionIndex >= SelectableElementsCount - 1)
                     CurrentSelectionIndex = 0;
                 else
                     CurrentSelectionIndex++;
             }
-            else if (JoyPad.CheckSingle(GbaInput.Up))
+            else if (InputManager.CheckSingle(Keys.Up))
             {
                 if (CurrentSelectionIndex <= 0)
                     CurrentSelectionIndex = SelectableElementsCount - 1;
                 else
                     CurrentSelectionIndex--;
             }
-            else if (JoyPad.CheckSingle(GbaInput.B) || JoyPad.CheckSingle(Keys.Back))
+            else if (InputManager.CheckSingle(Keys.Back))
             {
                 GoBack();
             }
@@ -336,7 +336,7 @@ public class MenuManager
             SelectableElementsCount++;
         NextLine(pos);
 
-        return CurrentSelectionIndex == index && !IsTransitioningText && JoyPad.CheckSingle(GbaInput.A);
+        return CurrentSelectionIndex == index && !IsTransitioningText && InputManager.CheckSingle(Keys.Space);
     }
 
     public int Selection(string[] options, int selectedOption)
@@ -349,13 +349,13 @@ public class MenuManager
         {
             text = $"< {text} >";
 
-            if (JoyPad.CheckSingle(Keys.Left))
+            if (InputManager.CheckSingle(Keys.Left))
             {
                 selectedOption--;
                 if (selectedOption < 0)
                     selectedOption = options.Length - 1;
             }
-            else if (JoyPad.CheckSingle(Keys.Right))
+            else if (InputManager.CheckSingle(Keys.Right))
             {
                 selectedOption++;
                 if (selectedOption >= options.Length)

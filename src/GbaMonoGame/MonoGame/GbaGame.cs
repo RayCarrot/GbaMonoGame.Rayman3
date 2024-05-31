@@ -155,7 +155,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameViewPort.Resize(GetResolution().ToVector2(), JoyPad.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
+        Engine.GameViewPort.Resize(GetResolution().ToVector2(), InputManager.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
         SaveWindowState();
         Engine.SaveConfig();
     }
@@ -301,10 +301,10 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     {
         base.Update(gameTime);
 
-        JoyPad.Scan();
+        InputManager.Update();
 
         // Toggle full-screen
-        if (JoyPad.Check(Keys.LeftAlt) && JoyPad.CheckSingle(Keys.Enter))
+        if (InputManager.Check(Keys.LeftAlt) && InputManager.CheckSingle(Keys.Enter))
         {
             Engine.Config.IsFullscreen = !_graphics.IsFullScreen;
             SaveWindowState();
@@ -329,13 +329,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             else
             {
                 // Use arrow keys to select game
-                if (JoyPad.CheckSingle(Keys.Up))
+                if (InputManager.CheckSingle(Keys.Up))
                 {
                     _selectedGameInstallationIndex--;
                     if (_selectedGameInstallationIndex < 0)
                         _selectedGameInstallationIndex = _gameInstallations.Count - 1;
                 }
-                else if (JoyPad.CheckSingle(Keys.Down))
+                else if (InputManager.CheckSingle(Keys.Down))
                 {
                     _selectedGameInstallationIndex++;
                     if (_selectedGameInstallationIndex > _gameInstallations.Count - 1)
@@ -343,7 +343,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
                 }
 
                 // Select with space or enter (but not when alt is pressed due to fullscreen toggle)
-                if (!JoyPad.Check(Keys.LeftAlt) && (JoyPad.CheckSingle(Keys.Space) || JoyPad.CheckSingle(Keys.Enter)))
+                if (!InputManager.Check(Keys.LeftAlt) && (InputManager.CheckSingle(Keys.Space) || InputManager.CheckSingle(Keys.Enter)))
                     LoadEngine(_gameInstallations[_selectedGameInstallationIndex]);
             }
             
@@ -381,7 +381,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle debug mode
-        if (JoyPad.CheckSingle(Keys.Tab))
+        if (InputManager.CheckSingle(Keys.Tab))
         {
             DebugMode = !DebugMode;
 
@@ -400,7 +400,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle pause
-        if (!_showMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.P))
+        if (!_showMenu && InputManager.Check(Keys.LeftControl) && InputManager.CheckSingle(Keys.P))
         {
             if (!IsPaused)
                 Pause();
@@ -409,13 +409,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Speed up game
-        if (!_showMenu && JoyPad.Check(Keys.LeftShift))
+        if (!_showMenu && InputManager.Check(Keys.LeftShift))
             SetFramerate(Framerate * 4);
-        else if (JoyPad.CheckSingleReleased(Keys.LeftShift))
+        else if (InputManager.CheckSingleReleased(Keys.LeftShift))
             SetFramerate(Framerate);
 
         // Toggle menu
-        if (!_menu.IsTransitioningOut && JoyPad.CheckSingle(Keys.Escape))
+        if (!_menu.IsTransitioningOut && InputManager.CheckSingle(Keys.Escape))
         {
             if (!_showMenu)
             {
@@ -430,7 +430,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Run one frame
-        if (!_showMenu && JoyPad.Check(Keys.LeftControl) && JoyPad.CheckSingle(Keys.F))
+        if (!_showMenu && InputManager.Check(Keys.LeftControl) && InputManager.CheckSingle(Keys.F))
         {
             IsPaused = false;
             RunSingleFrame = true;

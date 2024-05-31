@@ -47,9 +47,9 @@ public class SceneDebugWindow : DebugWindow
 
     private void UpdateMouseDetection(Scene2D scene)
     {
-        Vector2 mousePos = JoyPad.GetMousePosition(scene.Playfield.Camera);
+        Vector2 mousePos = InputManager.GetMousePosition(scene.Playfield.Camera);
 
-        if (!JoyPad.IsMouseOnScreen(scene.Playfield.Camera))
+        if (!InputManager.IsMouseOnScreen(scene.Playfield.Camera))
             return;
         
         HighlightedGameObject = null;
@@ -65,7 +65,7 @@ public class SceneDebugWindow : DebugWindow
             }
         }
 
-        if (JoyPad.GetMouseState().LeftButton == ButtonState.Pressed)
+        if (InputManager.GetMouseState().LeftButton == ButtonState.Pressed)
         {
             SelectedGameObject = HighlightedGameObject;
         }

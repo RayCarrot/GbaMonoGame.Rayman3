@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
-using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework.Input;
@@ -481,7 +480,7 @@ public class Rayman3 : GbaGame
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
         // Toggle showing debug collision screen
-        if (JoyPad.CheckSingle(Keys.T))
+        if (InputManager.CheckSingle(Keys.T))
         {
             if (Frame.Current is IHasPlayfield { Playfield: { } playfield })
                 playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
