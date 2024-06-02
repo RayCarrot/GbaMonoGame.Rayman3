@@ -143,11 +143,6 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private void SetPowers(Power powers)
-    {
-        GameInfo.Powers |= powers;
-    }
-
     private bool CheckInput(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
@@ -1513,6 +1508,11 @@ public sealed partial class Rayman : MovableActor
             yield return fist;
         if (BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
             yield return secondFist;
+    }
+
+    public void SetPowers(Power powers)
+    {
+        GameInfo.Powers |= powers;
     }
 
     public override void Init()

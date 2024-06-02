@@ -149,7 +149,8 @@ public partial class Rayman
 
         Idle_BasketBall_Right = 173,
         Idle_BasketBall_Left = 174,
-
+        NewPower_Right = 175,
+        NewPower_Left = 176,
         Idle_Grimace_Right = 177,
         Idle_Grimace_Left = 178,
         Walk_Multiplayer_Right = 179,

@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.Engine2d;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
+using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 

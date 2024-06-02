@@ -24,7 +24,22 @@ public class FramesDebugMenu : DebugMenu
         }),
         new("Levels", null, 
             GameInfo.Levels.
-            Select((_, i) => new FrameMenuItem(((MapId)i).ToString(), () => LevelFactory.Create((MapId)i))).
+            Select((_, i) => new FrameMenuItem(((MapId)i).ToString(), () =>
+            {
+                // New power levels have to have the previous map id set before loading
+                GameInfo.MapId = (MapId)i switch
+                {
+                    MapId.Power1 => MapId.WoodLight_M2,
+                    MapId.Power2 => MapId.BossMachine,
+                    MapId.Power3 => MapId.EchoingCaves_M2,
+                    MapId.Power4 => MapId.BossRockAndLava,
+                    MapId.Power5 => MapId.SanctuaryOfStoneAndFire_M3,
+                    MapId.Power6 => MapId.BossScaleMan,
+                    _ => GameInfo.MapId
+                };
+
+                return LevelFactory.Create((MapId)i);
+            })).
             ToArray()),
     };
 

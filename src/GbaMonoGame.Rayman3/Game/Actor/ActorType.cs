@@ -38,6 +38,8 @@ public enum ActorType
 
     Murfy = 64,
 
+    Ly = 78,
+
     KegDebris = 82,
 
     MurfyStone = 92,

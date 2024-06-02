@@ -343,6 +343,8 @@ public class Rayman3 : GbaGame
 
             { ActorType.Murfy, (instanceId, scene, resource) => new Murfy(instanceId, scene, resource) },
 
+            { ActorType.Ly, (instanceId, scene, resource) => new Ly(instanceId, scene, resource) },
+
             { ActorType.KegDebris, (instanceId, scene, resource) => new KegDebris(instanceId, scene, resource) },
             
             { ActorType.MurfyStone, (instanceId, scene, resource) => new MurfyStone(instanceId, scene, resource) },

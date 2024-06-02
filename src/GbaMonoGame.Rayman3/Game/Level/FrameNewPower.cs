@@ -10,7 +10,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
 
     public FrameNewPower(MapId mapId)
     {
-        MapId = mapId;
+        OriginalMapId = GameInfo.MapId;
         GameInfo.SetNextMapId(mapId);
     }
 
@@ -18,7 +18,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
 
     #region Private Properties
 
-    private MapId MapId { get; }
+    private MapId OriginalMapId { get; }
     private Scene2D Scene { get; set; }
     private ushort Timer { get; set; }
     private bool HasStoppedMusic { get; set; }
@@ -86,8 +86,8 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
             Scene.AddDialog(new FogDialog(Scene.Playfield), false, false);
         }
 
-        // Why is this code here?
-        GameInfo.SetNextMapId(MapId);
+        // Re-init with the original map id
+        GameInfo.SetNextMapId(OriginalMapId);
         GameInfo.InitLevel(LevelType.Normal);
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame;
@@ -25,6 +26,8 @@ public class SimpleJoyPad
 
     private GbaInput[] ReplayData { get; set; }
     private int ReplayDataIndex { get; set; }
+
+    public bool IsReplayFinished => Inputs == GbaInput.None;
 
     public void SetReplayData(GbaInput[] replayData)
     {

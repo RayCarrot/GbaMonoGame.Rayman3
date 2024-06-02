@@ -31,7 +31,7 @@ public static class FrameManager
     public static void Step()
     {
         // Scan for new button inputs
-        JoyPad.Current.Scan();
+        JoyPad.Scan();
 
         // The game doesn't clear sprites here, but rather in places such as the animation player.
         // For us this however makes more sense, so we always start each frame fresh.

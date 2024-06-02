@@ -319,12 +319,12 @@ public class CameraSideScroller : CameraActor2D
 
             case Message.Cam_1039:
                 field20_0x32 = 0;
-                TargetY = (byte)param;
+                TargetY = (byte)param; // TODO: Int
                 return true;
 
             case Message.Cam_1040:
                 field20_0x32 = 1;
-                TargetY = (byte)param;
+                TargetY = (byte)param; // TODO: Int
                 return true;
 
             case Message.Cam_SetPosition:
