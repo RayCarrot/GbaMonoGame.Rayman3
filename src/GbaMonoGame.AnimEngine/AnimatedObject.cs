@@ -51,6 +51,8 @@ public class AnimatedObject : AObject
 
     public uint VisibleSpriteChannels { get; set; }
 
+    public bool IsBackSprite { get; set; }
+
     public Vector2 ScreenPos { get; set; }
 
     public bool FlipX { get; set; }
@@ -391,7 +393,7 @@ public class AnimatedObject : AObject
                     // is more complicated. If the object is dynamic then it loads
                     // in the data to vram first, then for all sprites it adds an
                     // entry to the list of object attributes in OAM memory.
-                    Gfx.AddSprite(new Sprite()
+                    Sprite sprite = new()
                     {
                         Texture = Engine.TextureCache.GetOrCreateObject(
                             pointer: Resource.Offset, 
@@ -406,7 +408,12 @@ public class AnimatedObject : AObject
                         AffineMatrix = affineMatrix,
                         Alpha = IsAlphaBlendEnabled ? Alpha : null,
                         Camera = Camera
-                    });
+                    };
+
+                    if (IsBackSprite)
+                        Gfx.AddBackSprite(sprite);
+                    else
+                        Gfx.AddSprite(sprite);
                     break;
 
                 case AnimationChannelType.Sound:

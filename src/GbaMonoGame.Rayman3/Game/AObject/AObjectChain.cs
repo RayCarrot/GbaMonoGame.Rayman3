@@ -28,6 +28,11 @@ public class AObjectChain : AnimatedObject
     public bool[] PriosBuffer { get; set; }
     public bool[] Prios { get; set; }
 
+    public void SetCurrentPriority(bool prio)
+    {
+        PriosBuffer[BufferIndex] = prio;
+    }
+
     public void Init(int linksCount, Vector2 position, int baseAnimation, bool enablePriorityManagement)
     {
         ChildrenCount = linksCount - 1;
@@ -84,8 +89,7 @@ public class AObjectChain : AnimatedObject
         Timer = timer;
         IsDelayMode = isDelayMode;
 
-        if (EnablePriorityManagement && Prios[0])
-            throw new NotImplementedException();
+        IsBackSprite = EnablePriorityManagement && Prios[0];
 
         base.Execute(soundEventCallback);
 
@@ -101,8 +105,7 @@ public class AObjectChain : AnimatedObject
 
             ScreenPos = ChildrenScreenPositions[i];
 
-            if (EnablePriorityManagement && Prios[i + 1])
-                throw new NotImplementedException();
+            IsBackSprite = EnablePriorityManagement && Prios[i + 1];
 
             base.Execute(soundEventCallback);
         }

@@ -23,13 +23,25 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> Sprites { get; } = new();
 
+    /// <summary>
+    /// Same as <see cref="Sprites"/>, but for sprites which are added in
+    /// last. Sometimes the game adds sprites at the end of OAM to make
+    /// sure they get a different priority.
+    /// </summary>
+    private static List<Sprite> BackSprites { get; } = new();
+
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];
     public static IEnumerable<GfxScreen> GetScreens() => Screens.Values;
     public static void ClearScreens() => Screens.Clear();
 
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
-    public static void ClearSprites() => Sprites.Clear();
+    public static void AddBackSprite(Sprite sprite) => BackSprites.Add(sprite);
+    public static void ClearSprites()
+    {
+        Sprites.Clear();
+        BackSprites.Clear();
+    }
 
     /// <summary>
     /// The equivalent of BLD on GBA. This is not implemented on the N-Gage.
@@ -46,6 +58,8 @@ public static class Gfx
                 screen.Draw(renderer);
 
             // Draw sprites
+            foreach (Sprite sprite in BackSprites.Where(x => x.Priority == i))
+                sprite.Draw(renderer);
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
         }
