@@ -4,9 +4,12 @@ public class FiniteStateMachine
 {
     private Fsm CurrentAction { get; set; }
 
-    public void ChangeAction(Fsm newAction)
+    public void ChangeAction(Fsm newAction) => ChangeAction(newAction, true);
+    public void ChangeAction(Fsm newAction, bool unInit)
     {
-        CurrentAction?.Invoke(FsmAction.UnInit);
+        if (unInit)
+            CurrentAction?.Invoke(FsmAction.UnInit);
+        
         CurrentAction = newAction;
         CurrentAction?.Invoke(FsmAction.Init);
     }
