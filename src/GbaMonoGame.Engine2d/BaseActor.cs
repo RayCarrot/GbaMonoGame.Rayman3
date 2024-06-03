@@ -6,10 +6,11 @@ namespace GbaMonoGame.Engine2d;
 
 public abstract class BaseActor : GameObject
 {
-    // NOTE: The game allows actors to pass in "user-defined" AObject classes. However the game handles this in a rather
-    //       ugly way where it will by default assume it's of type AnimatedObject, so the class then has to override all
-    //       of this behavior. We however only use a single AnimatedObject in the engine, thus making this cleaner.
-    protected BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    protected BaseActor(int instanceId, Scene2D scene, ActorResource actorResource) 
+        : this(instanceId, scene, actorResource, new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)) { }
+
+    protected BaseActor(int instanceId, Scene2D scene, ActorResource actorResource, AnimatedObject animatedObject) 
+        : base(instanceId, scene, actorResource)
     {
         ActorModel = actorResource.Model;
         IsSolid = ActorModel.IsSolid;
@@ -17,14 +18,14 @@ public abstract class BaseActor : GameObject
         ReceivesDamage = ActorModel.ReceivesDamage;
         Type = actorResource.Type;
         HasMoved = true;
+        AnimatedObject = animatedObject;
 
-        AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)
-        {
-            CurrentAnimation = 0,
-            SpritePriority = ActorDrawPriority,
-            YPriority = 32,
-            Camera = scene.Playfield.Camera,
-        };
+        // Initialize the animated object. In the original game this is optional since the
+        // animated object can be user defined and set to another AObject type.
+        animatedObject.CurrentAnimation = 0;
+        animatedObject.SpritePriority = ActorDrawPriority;
+        animatedObject.YPriority = 32;
+        animatedObject.Camera = scene.Playfield.Camera;
 
         _viewBox = new Box(ActorModel.ViewBox);
     }

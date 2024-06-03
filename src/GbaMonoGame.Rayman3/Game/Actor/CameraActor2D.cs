@@ -8,7 +8,7 @@ public abstract class CameraActor2D : CameraActor
 
     public override bool IsActorFramed(BaseActor actor)
     {
-        // NOTE: The game only does this if it is framed, but we do it anyways
+        // NOTE: The game only does this if it is framed, but we do it anyway
         //       as to make debugging the game easier.
         actor.AnimatedObject.ScreenPos = actor.Position - Scene.Playfield.Camera.Position;
 
