@@ -11,6 +11,7 @@ public class TransitionsFX
     public float FadeCoefficient { get; set; }
     public float BrightnessCoefficient { get; set; } = 1;
 
+    // TODO: Should maybe be renamed and reversed to "IsFadingIn" and "IsFadingOut". Code in FrameNewPower is more readable then.
     public bool IsFadeOutFinished => BrightnessCoefficient == 1;
     public bool IsFadeInFinished => FadeCoefficient == 0;
 

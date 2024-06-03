@@ -22,7 +22,6 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
     private Scene2D Scene { get; set; }
     private ushort Timer { get; set; }
     private bool HasStoppedMusic { get; set; }
-    private byte field7_0x15 { get; set; }
 
     #endregion
 
@@ -36,6 +35,23 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
 
     Scene2D IHasScene.Scene => Scene;
     TgxPlayfield IHasPlayfield.Playfield => Scene.Playfield;
+
+    #endregion
+
+    #region Private Methods
+
+    private void CheckForEndOfLevel()
+    {
+        // TODO: On N-Gage it has additional code here. The very first replay frame it forces a re-scan of the JoyPad,
+        //       essentially skipping the first replay frame. Why is this needed? Because of port differences, but if
+        //       so do we need to do something similar?
+
+        if (JoyPad.IsReplayFinished)
+        {
+            Timer = 1;
+            Scene.MainActor.ProcessMessage(this, Message.Main_Stop);
+        }
+    }
 
     #endregion
 
@@ -62,9 +78,6 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
         Timer = 0;
         HasStoppedMusic = false;
         
-        if (Engine.Settings.Platform == Platform.NGage)
-            field7_0x15 = 0;
-
         Scene.AddDialog(new TextBoxDialog(), false, false);
 
         SoundEngineInterface.SetNbVoices(10);
@@ -111,7 +124,39 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
         LevelMusicManager.Step();
 
-        // TODO: Implement ending level
+        if (Timer == 0)
+        {
+            CheckForEndOfLevel();
+        }
+        else
+        {
+            Timer++;
+
+            if (TransitionsFX.IsFadeOutFinished)
+            {
+                // Begin fade out after 1 second
+                if (Timer == 61)
+                {
+                    TransitionsFX.FadeOutInit(1 / 16f);
+                }
+                else if (Timer > 61)
+                {
+                    // Stop music
+                    if (!HasStoppedMusic)
+                    {
+                        SoundEventsManager.StopAllSongs();
+                        HasStoppedMusic = true;
+                    }
+                    // End level
+                    else
+                    {
+                        GameInfo.UpdateLastCompletedLevel();
+                        GameInfo.Save(GameInfo.CurrentSlot);
+                        GameInfo.LoadLevel(GameInfo.GetNextLevelId());
+                    }
+                }
+            }
+        }
     }
 
     #endregion
