@@ -4,7 +4,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-public partial class RaymanSparkle
+public partial class ChainedSparkles
 {
     private void FUN_08060930(FsmAction action)
     {

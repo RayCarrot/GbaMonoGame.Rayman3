@@ -130,14 +130,14 @@ public partial class Ly
                         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__NewPower_Mix06);
                         ((Rayman)Scene.MainActor).ActionId = Rayman.Action.NewPower_Right;
 
-                        RaymanSparkle sparkle = Scene.CreateProjectile<RaymanSparkle>(ActorType.RaymanSparkle);
+                        ChainedSparkles sparkle = Scene.CreateProjectile<ChainedSparkles>(ActorType.ChainedSparkles);
                         if (sparkle != null)
                         {
                             sparkle.InitNewPower();
                             sparkle.AreSparklesFacingLeft = false;
                         }
 
-                        sparkle = Scene.CreateProjectile<RaymanSparkle>(ActorType.RaymanSparkle);
+                        sparkle = Scene.CreateProjectile<ChainedSparkles>(ActorType.ChainedSparkles);
                         if (sparkle != null)
                         {
                             sparkle.InitNewPower();

@@ -343,7 +343,7 @@ public class Rayman3 : GbaGame
 
             { ActorType.Murfy, (instanceId, scene, resource) => new Murfy(instanceId, scene, resource) },
 
-            { ActorType.RaymanSparkle, (instanceId, scene, resource) => new RaymanSparkle(instanceId, scene, resource) },
+            { ActorType.ChainedSparkles, (instanceId, scene, resource) => new ChainedSparkles(instanceId, scene, resource) },
 
             { ActorType.Ly, (instanceId, scene, resource) => new Ly(instanceId, scene, resource) },
 

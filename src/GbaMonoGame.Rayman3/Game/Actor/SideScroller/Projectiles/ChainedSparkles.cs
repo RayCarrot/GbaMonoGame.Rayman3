@@ -3,9 +3,9 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-public sealed partial class RaymanSparkle : BaseActor
+public sealed partial class ChainedSparkles : BaseActor
 {
-    public RaymanSparkle(int instanceId, Scene2D scene, ActorResource actorResource) 
+    public ChainedSparkles(int instanceId, Scene2D scene, ActorResource actorResource) 
         : base(instanceId, scene, actorResource, new AObjectChain(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic))
     {
         AnimatedObject.Init(6, Position, 0, true);
