@@ -40,8 +40,6 @@ public class AnimatedObject : AObject
 
     public AnimatedObjectResource Resource { get; }
 
-    public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
-
     // Flags
     public bool IsSoundEnabled { get; set; }
     public bool IsDynamic { get; set; } // TODO: If not dynamic we might want to pre-load the sprites?

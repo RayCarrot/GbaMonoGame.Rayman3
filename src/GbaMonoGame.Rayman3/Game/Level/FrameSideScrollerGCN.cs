@@ -61,7 +61,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
         UserInfo.ProcessMessage(this, (Message)1081); // TODO: Implement and name message
 
         // Create pause dialog, but don't add yet
-        PauseDialog = new PauseDialog();
+        PauseDialog = new PauseDialog(Scene);
 
         Scene.AddDialog(UserInfo, false, false);
         Scene.Init();
@@ -81,7 +81,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
         {
             case 0:
                 // Add fog
-                Fog = new FogDialog(Scene.Playfield);
+                Fog = new FogDialog(Scene);
                 Scene.AddDialog(Fog, false, false);
                 break;
             

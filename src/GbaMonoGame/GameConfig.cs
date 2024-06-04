@@ -24,6 +24,7 @@ public class GameConfig
         NGageWindowPosition = null;
         InternalResolution = null;
         PlayfieldCameraScale = 1;
+        HudCameraScale = 1;
         DynamicPlayfieldCameraScale = true;
         SfxVolume = 1;
         MusicVolume = 1;
@@ -50,6 +51,7 @@ public class GameConfig
     [JsonPropertyName("nGageWindowPosition")] public Point? NGageWindowPosition { get; set; }
     [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
     [JsonPropertyName("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
+    [JsonPropertyName("hudCameraScale")] public float HudCameraScale { get; set; }
     [JsonPropertyName("dynamicPlayfieldCameraScale")] public bool DynamicPlayfieldCameraScale { get; set; } // TODO: Implement
     // TODO: Option for HUD scale
 

@@ -11,7 +11,7 @@ public class FairyGlade_M2 : FrameSideScroller
     {
         base.Init();
 
-        Scene.AddDialog(new TextBoxDialog(), false, false);
+        Scene.AddDialog(new TextBoxDialog(Scene), false, false);
 
         // TODO: Add config option for scrolling on N-Gage
         if (Engine.Settings.Platform == Platform.GBA)

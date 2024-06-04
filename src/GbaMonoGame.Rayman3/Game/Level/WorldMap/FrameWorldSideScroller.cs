@@ -74,7 +74,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         }
 
         // Create pause dialog, but don't add yet
-        PauseDialog = new PauseDialog();
+        PauseDialog = new PauseDialog(Scene);
 
         Scene.Init();
         // NOTE: The game calls vsync, steps the playfield and executes the animations here, but we do

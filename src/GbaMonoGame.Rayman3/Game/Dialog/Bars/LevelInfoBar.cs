@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public class LevelInfoBar : Bar
 {
-    public LevelInfoBar()
+    public LevelInfoBar(Scene2D scene) : base(scene)
     {
         LevelMaps = new[]
         {
@@ -87,8 +87,9 @@ public class LevelInfoBar : Bar
             IsFramed = true,
             SpritePriority = 0,
             YPriority = 0,
-            ScreenPos = new Vector2(85, Engine.ScreenCamera.Resolution.Y + 8),
+            ScreenPos = new Vector2(85, Scene.HudCamera.Resolution.Y + 8),
             CurrentAnimation = 10,
+            Camera = Scene.HudCamera,
         };
 
         CollectedLumsDigit1 = new AnimatedObject(resource, false)
@@ -101,8 +102,9 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 77,
                 Platform.NGage => 44,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 6),
+            }, Scene.HudCamera.Resolution.Y - 6),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         CollectedLumsDigit2 = new AnimatedObject(resource, false)
@@ -115,8 +117,9 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 86,
                 Platform.NGage => 53,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 6),
+            }, Scene.HudCamera.Resolution.Y - 6),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalLumsDigit1 = new AnimatedObject(resource, false)
@@ -129,8 +132,9 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 101,
                 Platform.NGage => 68,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 6),
+            }, Scene.HudCamera.Resolution.Y - 6),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalLumsDigit2 = new AnimatedObject(resource, false)
@@ -143,8 +147,9 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 110,
                 Platform.NGage => 77,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 6),
+            }, Scene.HudCamera.Resolution.Y - 6),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         CollectedCagesDigit = new AnimatedObject(resource, false)
@@ -157,8 +162,9 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 151,
                 Platform.NGage => 112,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 7),
+            }, Scene.HudCamera.Resolution.Y - 7),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalCagesDigit = new AnimatedObject(resource, false)
@@ -171,15 +177,17 @@ public class LevelInfoBar : Bar
                 Platform.GBA => 166,
                 Platform.NGage => 127,
                 _ => throw new UnsupportedPlatformException()
-            }, Engine.ScreenCamera.Resolution.Y - 7),
+            }, Scene.HudCamera.Resolution.Y - 7),
             CurrentAnimation = 0,
+            Camera = Scene.HudCamera,
         };
 
         LevelName = new SpriteTextObject()
         {
             Color = TextColor.LevelName,
             FontSize = FontSize.Font16,
-            ScreenPos = new Vector2(Engine.ScreenCamera.Resolution.X / 2, Engine.ScreenCamera.Resolution.Y - 32),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X / 2, Scene.HudCamera.Resolution.Y - 32),
+            Camera = Scene.HudCamera,
         };
     }
 
@@ -313,15 +321,15 @@ public class LevelInfoBar : Bar
         if (DrawStep != BarDrawStep.Hide)
         {
             // Set x position to support widescreen
-            float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
+            float xPos = (Scene.HudCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
 
             LevelName.ScreenPos = new Vector2(
-                x: Engine.ScreenCamera.Resolution.X / 2 - LevelName.GetStringWidth() / 2f,
-                y: Engine.ScreenCamera.Resolution.Y - 32 + YOffset);
+                x: Scene.HudCamera.Resolution.X / 2 - LevelName.GetStringWidth() / 2f,
+                y: Scene.HudCamera.Resolution.Y - 32 + YOffset);
 
             Canvas.ScreenPos = new Vector2(
                 x: xPos + 85,
-                y: Engine.ScreenCamera.Resolution.Y + 8 + YOffset);
+                y: Scene.HudCamera.Resolution.Y + 8 + YOffset);
 
             CollectedLumsDigit1.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -330,7 +338,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 44,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 6 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 6 + YOffset);
 
             CollectedLumsDigit2.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -339,7 +347,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 53,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 6 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 6 + YOffset);
 
             TotalLumsDigit1.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -348,7 +356,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 68,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 6 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 6 + YOffset);
 
             TotalLumsDigit2.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -357,7 +365,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 77,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 6 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 6 + YOffset);
 
             CollectedCagesDigit.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -366,7 +374,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 112,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 7 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 7 + YOffset);
 
             TotalCagesDigit.ScreenPos = new Vector2(
                 x: xPos + Engine.Settings.Platform switch
@@ -375,7 +383,7 @@ public class LevelInfoBar : Bar
                     Platform.NGage => 127,
                     _ => throw new UnsupportedPlatformException()
                 }, 
-                y: Engine.ScreenCamera.Resolution.Y - 7 + YOffset);
+                y: Scene.HudCamera.Resolution.Y - 7 + YOffset);
 
             animationPlayer.PlayFront(Canvas);
 

@@ -36,7 +36,7 @@ public class SpriteTextObject : AObject
 
         foreach (byte c in TextBytes)
         {
-            Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, SpritePriority, AffineMatrix, Color, Engine.ScreenCamera));
+            Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, SpritePriority, AffineMatrix, Color, Camera));
         }
     }
 }

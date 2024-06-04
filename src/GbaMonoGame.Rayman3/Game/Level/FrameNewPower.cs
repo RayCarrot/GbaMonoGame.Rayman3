@@ -78,7 +78,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
         Timer = 0;
         HasStoppedMusic = false;
         
-        Scene.AddDialog(new TextBoxDialog(), false, false);
+        Scene.AddDialog(new TextBoxDialog(Scene), false, false);
 
         SoundEngineInterface.SetNbVoices(10);
 
@@ -96,7 +96,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
         }
         else if (GameInfo.MapId == MapId.Power2)
         {
-            Scene.AddDialog(new FogDialog(Scene.Playfield), false, false);
+            Scene.AddDialog(new FogDialog(Scene), false, false);
         }
 
         // Re-init with the original map id

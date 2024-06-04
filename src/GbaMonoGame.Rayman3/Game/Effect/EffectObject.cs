@@ -27,7 +27,7 @@ namespace GbaMonoGame.Rayman3
                 Center = false,
                 AffineMatrix = new AffineMatrix(0, size),
                 Color = color,
-                Camera = Engine.ScreenCamera,
+                Camera = Camera,
             });
         }
     }

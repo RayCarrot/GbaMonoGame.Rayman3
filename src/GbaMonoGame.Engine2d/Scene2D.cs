@@ -15,6 +15,7 @@ public class Scene2D
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
+        HudCamera = new HudCamera(Engine.GameViewPort);
 
         Flag_2 = true;
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
@@ -46,6 +47,7 @@ public class Scene2D
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
+        HudCamera = new HudCamera(Engine.GameViewPort);
 
         Flag_2 = true;
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
@@ -66,6 +68,7 @@ public class Scene2D
     }
 
     public CameraActor Camera { get; }
+    public HudCamera HudCamera { get; }
     public List<Dialog> Dialogs { get; }
     public List<bool> DialogFlags { get; }
     public AnimationPlayer AnimationPlayer { get; }

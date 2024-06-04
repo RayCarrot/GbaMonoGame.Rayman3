@@ -8,6 +8,12 @@ namespace GbaMonoGame.Rayman3;
 
 public class TextBoxDialog : Dialog
 {
+    #region Constructor
+
+    public TextBoxDialog(Scene2D scene) : base(scene) { }
+
+    #endregion
+
     #region Private Properties
 
     private AnimatedObject Canvas { get; set; }
@@ -380,6 +386,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(0, -OffsetY),
+            Camera = Scene.HudCamera,
         };
 
         AnimatedObjectResource raymanIconResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.TextBoxRaymanIconAnimations);
@@ -388,6 +395,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            Camera = Scene.HudCamera,
         };
 
         if (Engine.Settings.Platform == Platform.GBA)
@@ -401,6 +409,7 @@ public class TextBoxDialog : Dialog
                     ScreenPos = new Vector2(38, 7 - OffsetY),
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
+                    Camera = Scene.HudCamera,
                 },
                 new SpriteTextObject()
                 {
@@ -409,6 +418,7 @@ public class TextBoxDialog : Dialog
                     ScreenPos = new Vector2(38, 21 - OffsetY),
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
+                    Camera = Scene.HudCamera,
                 }
             };
         }
@@ -424,6 +434,7 @@ public class TextBoxDialog : Dialog
                     ScreenPos = new Vector2(38, 7 - OffsetY),
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
+                    Camera = Scene.HudCamera,
                 },
                 new SpriteTextObject()
                 {
@@ -432,6 +443,7 @@ public class TextBoxDialog : Dialog
                     ScreenPos = new Vector2(38, 21 - OffsetY),
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
+                    Camera = Scene.HudCamera,
                 },
                 new SpriteTextObject()
                 {
@@ -440,6 +452,7 @@ public class TextBoxDialog : Dialog
                     ScreenPos = new Vector2(38, 35 - OffsetY),
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
+                    Camera = Scene.HudCamera,
                 }
             };
         }
@@ -454,6 +467,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            Camera = Scene.HudCamera,
         };
 
         // NOTE: The game only creates the two icons below if map id is not certain levels. We can ignore that as it's probably for vram allocation.
@@ -463,6 +477,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            Camera = Scene.HudCamera,
         };
 
         AnimatedObjectResource teensiesIconResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.TextBoxTeensiesIconAnimations);
@@ -471,6 +486,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            Camera = Scene.HudCamera,
         };
     }
 
@@ -486,7 +502,7 @@ public class TextBoxDialog : Dialog
         }
 
         // Set x position to support widescreen
-        float xPos = (Engine.ScreenCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
+        float xPos = (Scene.HudCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
 
         Canvas.ScreenPos = new Vector2(xPos, -OffsetY);
 

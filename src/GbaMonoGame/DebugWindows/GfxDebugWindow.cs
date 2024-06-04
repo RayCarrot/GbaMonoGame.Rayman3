@@ -12,17 +12,31 @@ public class GfxDebugWindow : DebugWindow
     {
         ImGui.SeparatorText("General");
 
-        float scale = Engine.Config.PlayfieldCameraScale;
-        if (ImGui.SliderFloat("Scale", ref scale, 0.5f, 2))
+        float playfieldCameraScale = Engine.Config.PlayfieldCameraScale;
+        if (ImGui.SliderFloat("Playfield camera scale", ref playfieldCameraScale, 0.5f, 2))
         {
-            Engine.Config.PlayfieldCameraScale = scale;
+            Engine.Config.PlayfieldCameraScale = playfieldCameraScale;
             Engine.SaveConfig();
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Reset"))
+        if (ImGui.Button("Reset##Playfield"))
         {
             Engine.Config.PlayfieldCameraScale = 1;
+            Engine.SaveConfig();
+        }
+
+        float hudCameraScale = Engine.Config.HudCameraScale;
+        if (ImGui.SliderFloat("HUD camera scale", ref hudCameraScale, 0.5f, 2))
+        {
+            Engine.Config.HudCameraScale = hudCameraScale;
+            Engine.SaveConfig();
+        }
+
+        ImGui.SameLine();
+        if (ImGui.Button("Reset##HUD"))
+        {
+            Engine.Config.HudCameraScale = 1;
             Engine.SaveConfig();
         }
 

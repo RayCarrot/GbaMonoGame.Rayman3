@@ -8,6 +8,6 @@ public class MenhirHills_M1 : FrameSideScroller
     {
         base.Init();
 
-        Scene.AddDialog(new TextBoxDialog(), false, false);
+        Scene.AddDialog(new TextBoxDialog(Scene), false, false);
     }
 }

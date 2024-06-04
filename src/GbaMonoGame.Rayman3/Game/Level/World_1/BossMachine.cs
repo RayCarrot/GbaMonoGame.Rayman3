@@ -8,7 +8,7 @@ public class BossMachine : FrameSideScroller
     {
         base.Init();
 
-        TextBoxDialog textBox = new();
+        TextBoxDialog textBox = new(Scene);
         Scene.AddDialog(textBox, false, false);
         textBox.SetCutsceneCharacter(TextBoxCutsceneCharacter.Murfy);
         textBox.SetText(13);

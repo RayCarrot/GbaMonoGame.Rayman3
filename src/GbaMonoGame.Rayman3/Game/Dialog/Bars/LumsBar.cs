@@ -5,6 +5,8 @@ namespace GbaMonoGame.Rayman3;
 
 public class LumsBar : Bar
 {
+    public LumsBar(Scene2D scene) : base(scene) { }
+
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
     private int CollectedLumsDigitValue1 { get; set; }
@@ -40,45 +42,50 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 24,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 77, 8),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 77, 8),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         CollectedLumsDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 52, 24),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 52, 24),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         CollectedLumsDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 40, 24),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 40, 24),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalLumsDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 22, 24),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 22, 24),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalLumsDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10, 24),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 24),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
     }
 
@@ -164,11 +171,11 @@ public class LumsBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            LumsIcon.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 77, 8 - YOffset);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 52, 24 - YOffset);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 40, 24 - YOffset);
-            TotalLumsDigit1.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 22, 24 - YOffset);
-            TotalLumsDigit2.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10, 24 - YOffset);
+            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 77, 8 - YOffset);
+            CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 52, 24 - YOffset);
+            CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 40, 24 - YOffset);
+            TotalLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 22, 24 - YOffset);
+            TotalLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 24 - YOffset);
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;

@@ -6,12 +6,12 @@ namespace GbaMonoGame.Rayman3;
 
 public class UserInfoWorld : Dialog
 {
-    public UserInfoWorld(Scene2D scene, bool hasBlueLum)
+    public UserInfoWorld(Scene2D scene, bool hasBlueLum) : base(scene)
     {
         LifeBar = new LifeBar(scene);
-        LevelInfoBar = new LevelInfoBar();
-        Lums1000Bar = new Lums1000Bar();
-        Cages50Bar = new Cages50Bar();
+        LevelInfoBar = new LevelInfoBar(scene);
+        Lums1000Bar = new Lums1000Bar(scene);
+        Cages50Bar = new Cages50Bar(scene);
 
         if (hasBlueLum)
         {

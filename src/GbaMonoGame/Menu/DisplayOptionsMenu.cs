@@ -94,6 +94,33 @@ public class DisplayOptionsMenu : Menu
         PlayfieldCameraScale = OriginalPlayfieldCameraScale == -1
             ? Array.IndexOf(AvailablePlayfieldCameraScales, 1.00f)
             : OriginalPlayfieldCameraScale;
+
+        AvailableHudCameraScales = new[]
+        {
+            0.90f,
+            0.95f,
+            1.00f,
+            1.05f,
+            1.10f,
+            1.15f,
+            1.20f,
+            1.25f,
+            1.30f,
+            1.35f,
+            1.40f,
+            1.45f,
+            1.50f,
+            1.60f,
+            1.70f,
+            1.80f,
+            1.90f,
+            2.00f,
+        };
+        AvailableHudCameraScaleNames = AvailableHudCameraScales.Select(x => $"{x:0.00}").ToArray();
+        OriginalHudCameraScale = Array.IndexOf(AvailableHudCameraScales, Engine.Config.HudCameraScale);
+        HudCameraScale = OriginalHudCameraScale == -1
+            ? Array.IndexOf(AvailableHudCameraScales, 1.00f)
+            : OriginalHudCameraScale;
     }
 
     private GbaGame Game { get; }
@@ -147,6 +174,11 @@ public class DisplayOptionsMenu : Menu
     private int OriginalPlayfieldCameraScale { get; set; }
     private int PlayfieldCameraScale { get; set; }
 
+    private string[] AvailableHudCameraScaleNames { get; }
+    private float[] AvailableHudCameraScales { get; }
+    private int OriginalHudCameraScale { get; set; }
+    private int HudCameraScale { get; set; }
+
     public override void Update(MenuManager menu)
     {
         menu.SetColumns(1);
@@ -176,6 +208,9 @@ public class DisplayOptionsMenu : Menu
         menu.Text("Camera scale");
         PlayfieldCameraScale = menu.Selection(AvailablePlayfieldCameraScaleNames, PlayfieldCameraScale);
 
+        menu.Text("HUD scale");
+        HudCameraScale = menu.Selection(AvailableHudCameraScaleNames, HudCameraScale);
+
         menu.SetColumns(1);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
 
@@ -184,7 +219,8 @@ public class DisplayOptionsMenu : Menu
                           WindowResolutionScale != OriginalWindowResolutionScale||
                           InternalResolutionSelectedIndex != OriginalInternalResolutionSelectedIndex ||
                           DynamicPlayfieldCameraScale != OriginalDynamicPlayfieldCameraScale ||
-                          PlayfieldCameraScale != OriginalPlayfieldCameraScale;
+                          PlayfieldCameraScale != OriginalPlayfieldCameraScale||
+                          HudCameraScale != OriginalHudCameraScale;
 
         if (menu.Button("Apply changes", hasChanges))
         {
@@ -194,6 +230,7 @@ public class DisplayOptionsMenu : Menu
             Engine.Config.InternalResolution = AvailableInternalResolutions[InternalResolutionSelectedIndex];
             Engine.Config.DynamicPlayfieldCameraScale = DynamicPlayfieldCameraScale;
             Engine.Config.PlayfieldCameraScale = AvailablePlayfieldCameraScales[PlayfieldCameraScale];
+            Engine.Config.HudCameraScale = AvailableHudCameraScales[HudCameraScale];
             Engine.GameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
 
             if (WindowResolutionScale != 0)

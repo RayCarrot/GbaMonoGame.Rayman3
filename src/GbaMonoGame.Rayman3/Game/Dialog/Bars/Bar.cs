@@ -4,6 +4,11 @@ namespace GbaMonoGame.Rayman3;
 
 public abstract class Bar
 {
+    protected Bar(Scene2D scene)
+    {
+        Scene = scene;
+    }
+
     protected static readonly int[] BounceData =
     {
         0, -3, -5, -6, -5, -3,
@@ -19,7 +24,8 @@ public abstract class Bar
         0,
     };
 
-    
+    public Scene2D Scene { get; }
+
     public int Mode { get; set; }
     public BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
 

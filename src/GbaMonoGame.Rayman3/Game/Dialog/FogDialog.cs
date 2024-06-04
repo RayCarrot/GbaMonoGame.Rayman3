@@ -10,9 +10,9 @@ namespace GbaMonoGame.Rayman3;
 //       handled differently, probably with multiple fog objects filling the width of the screen.
 public class FogDialog : Dialog
 {
-    public FogDialog(TgxPlayfield playfield)
+    public FogDialog(Scene2D scene) : base(scene)
     {
-        Playfield = playfield;
+        Playfield = scene.Playfield;
         ShouldDraw = true;
     }
 

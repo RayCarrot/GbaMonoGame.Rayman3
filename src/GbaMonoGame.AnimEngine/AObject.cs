@@ -27,5 +27,7 @@ public abstract class AObject
         }
     }
 
+    public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
+
     public abstract void Execute(Action<short> soundEventCallback);
 }

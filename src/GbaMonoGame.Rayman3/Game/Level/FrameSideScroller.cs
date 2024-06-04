@@ -143,7 +143,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             MapId.TheCanopy_M2 or 
             MapId.Bonus1)
         {
-            Fog = new FogDialog(Scene.Playfield);
+            Fog = new FogDialog(Scene);
             Scene.AddDialog(Fog, false, false);
         }
         else
@@ -157,7 +157,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             MapId.ChallengeLy2 or 
             MapId.ChallengeLyGCN)
         {
-            LyTimer = new LyTimerDialog();
+            LyTimer = new LyTimerDialog(Scene);
             Scene.AddDialog(LyTimer, false, false);
         }
         else
@@ -170,7 +170,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.AddDialog(UserInfo, false, false);
 
         // Create pause dialog, but don't add yet
-        PauseDialog = new PauseDialog();
+        PauseDialog = new PauseDialog(Scene);
 
         Scene.Init();
         Scene.Playfield.Step();

@@ -5,6 +5,8 @@ namespace GbaMonoGame.Rayman3;
 
 public class CagesBar : Bar
 {
+    public CagesBar(Scene2D scene) : base(scene) { }
+
     private int WaitTimer { get; set; }
     private int XOffset { get; set; }
     private int CollectedCagesDigitValue { get; set; }
@@ -28,27 +30,30 @@ public class CagesBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 22,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 44, 41),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44, 41),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         CollectedCagesDigit = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 28, 45),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 28, 45),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         TotalCagesDigit = new AnimatedObject(resource, false)
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10, 45),
+            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 45),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
     }
 
@@ -127,9 +132,9 @@ public class CagesBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            CageIcon.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
-            CollectedCagesDigit.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);
-            TotalCagesDigit.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 10 + XOffset, TotalCagesDigit.ScreenPos.Y);
+            CageIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
+            CollectedCagesDigit.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);
+            TotalCagesDigit.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10 + XOffset, TotalCagesDigit.ScreenPos.Y);
 
             CollectedCagesDigit.CurrentAnimation = CollectedCagesDigitValue;
 

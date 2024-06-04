@@ -54,7 +54,7 @@ public class World : FrameWorldSideScroller
 
         BlockPause = true;
 
-        TextBox = new TextBoxDialog();
+        TextBox = new TextBoxDialog(Scene);
         Scene.AddDialog(TextBox, false, false);
 
         CurrentExStepAction = StepEx_MoveInCurtains;

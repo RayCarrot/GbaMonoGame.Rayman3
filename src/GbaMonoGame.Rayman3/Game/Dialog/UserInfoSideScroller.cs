@@ -5,16 +5,16 @@ namespace GbaMonoGame.Rayman3;
 
 public class UserInfoSideScroller : Dialog
 {
-    public UserInfoSideScroller(Scene2D scene, bool hasBlueLum)
+    public UserInfoSideScroller(Scene2D scene, bool hasBlueLum) : base(scene)
     {
         LifeBar = new LifeBar(scene);
 
         if (GameInfo.MapId == MapId._1000Lums)
-            Lums1000Bar = new Lums1000Bar();
+            Lums1000Bar = new Lums1000Bar(scene);
         else
-            LumsBar = new LumsBar();
+            LumsBar = new LumsBar(scene);
 
-        CagesBar = new CagesBar();
+        CagesBar = new CagesBar(scene);
 
         if (hasBlueLum)
         {

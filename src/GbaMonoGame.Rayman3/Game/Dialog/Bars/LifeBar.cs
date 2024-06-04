@@ -6,12 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public class LifeBar : Bar
 {
-    public LifeBar(Scene2D scene)
-    {
-        Scene = scene;
-    }
-
-    private Scene2D Scene { get; }
+    public LifeBar(Scene2D scene) : base(scene) { }
 
     private int WaitTimer { get; set; }
     private int YOffset { get; set; }
@@ -40,6 +35,7 @@ public class LifeBar : Bar
             ScreenPos = new Vector2(-4, 0),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
         
         LifeDigit1 = new AnimatedObject(resource, false)
@@ -49,6 +45,7 @@ public class LifeBar : Bar
             ScreenPos = new Vector2(49, 20),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
         
         LifeDigit2 = new AnimatedObject(resource, false)
@@ -58,6 +55,7 @@ public class LifeBar : Bar
             ScreenPos = new Vector2(61, 20),
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
     }
 

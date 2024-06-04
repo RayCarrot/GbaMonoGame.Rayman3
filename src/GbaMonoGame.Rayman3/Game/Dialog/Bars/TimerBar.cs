@@ -7,6 +7,8 @@ namespace GbaMonoGame.Rayman3;
 
 public class TimerBar : Bar
 {
+    public TimerBar(Scene2D scene) : base(scene) { }
+
     private AnimatedObject TimerFrame { get; set; }
     private AnimatedObject[] Digits { get; set; }
     private int NGage_Value { get; set; }
@@ -18,9 +20,10 @@ public class TimerBar : Bar
         TimerFrame = new AnimatedObject(resource, false)
         {
             CurrentAnimation = 14,
-            ScreenPos = new Vector2(82, 20),
+            ScreenPos = new Vector2(82, 20), // TODO: Would look nicer if centered on screen when you change resolution
             SpritePriority = 0,
             YPriority = 0,
+            Camera = Scene.HudCamera,
         };
 
         Digits = new AnimatedObject[6];
@@ -41,6 +44,7 @@ public class TimerBar : Bar
                 } + 8, 18),
                 SpritePriority = 0,
                 YPriority = 0,
+                Camera = Scene.HudCamera,
             };
         }
     }

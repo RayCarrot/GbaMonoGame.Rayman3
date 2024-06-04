@@ -14,7 +14,7 @@ public class ChallengeLy : FrameSideScroller
         base.Init();
 
         if (GameInfo.MapId != MapId.ChallengeLyGCN)
-            Scene.AddDialog(new TextBoxDialog(), false, false);
+            Scene.AddDialog(new TextBoxDialog(Scene), false, false);
 
         GameInfo.RemainingTime = GameInfo.MapId != MapId.ChallengeLyGCN ? 4200 : 3900;
         UserInfo.HideBars();
