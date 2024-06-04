@@ -1364,7 +1364,8 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_CollectedWhiteLum:
-                // TODO: Implement
+                if (!RSMultiplayer.IsActive)
+                    GameInfo.ModifyLives(1);
                 return false;
 
             case Message.Main_CollectedBigYellowLum:

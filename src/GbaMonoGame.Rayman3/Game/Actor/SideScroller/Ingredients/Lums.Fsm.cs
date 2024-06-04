@@ -112,7 +112,9 @@ public partial class Lums
                             break;
 
                         case Action.WhiteLum:
-                            // TODO: Implement
+                            GameInfo.HasCollectedWhiteLum = true;
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumSlvr_Mix02);
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumSlvr_Mix02);
                             break;
 
                         case Action.BigYellowLum:

@@ -44,7 +44,7 @@ public sealed partial class Lums : BaseActor
                 {
                     AnimatedObject.BasePaletteIndex = 1;
 
-                    if (GameInfo.field22_0x1b)
+                    if (GameInfo.HasCollectedWhiteLum)
                         ProcessMessage(this, Message.Destroy);
                 }
 

@@ -25,7 +25,7 @@ public static class GameInfo
     public static int RemainingTime { get; set; }
     public static bool field7_0x7 { get; set; }
     public static byte field12_0xf { get; set; }
-    public static bool field22_0x1b { get; set; }
+    public static bool HasCollectedWhiteLum { get; set; }
     public static Power Powers { get; set; }
     public static Cheat Cheats { get; set; }
     public static ActorSoundFlags ActorSoundFlags { get; set; } // Defines if actor type has made sound this frame to avoid repeated sounds
@@ -48,7 +48,7 @@ public static class GameInfo
         LoadedCages = 0;
         Powers = Power.None;
         Cheats = Cheat.None;
-        field22_0x1b = field7_0x7;
+        HasCollectedWhiteLum = false;
         field7_0x7 = true;
         field12_0xf = 0;
         ResetPersistentInfo();
@@ -446,7 +446,7 @@ public static class GameInfo
         LastGreenLumAlive = 0;
         NextMapId = mapId;
         GreenLums = 0;
-        field22_0x1b = false;
+        HasCollectedWhiteLum = false;
         SetPowerBasedOnMap((MapId)PersistentInfo.LastCompletedLevel);
 
         switch (mapId)
