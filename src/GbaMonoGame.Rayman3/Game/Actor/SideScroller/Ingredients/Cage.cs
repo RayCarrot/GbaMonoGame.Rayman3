@@ -30,7 +30,29 @@ public sealed partial class Cage : InteractableActor
         if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
-        // TODO: Handle messages 1043 and 1025
-        return false;
+        switch (message)
+        {
+            case Message.Main_Damaged1:
+                BaseActor actor = (BaseActor)param;
+                HitAction = actor.IsFacingLeft ? 3 : 0;
+                Fsm.ChangeAction(Fsm_Damaged);
+                HitPoints--;
+                return false;
+
+            case Message.Hit:
+                RaymanBody raymanBody = (RaymanBody)param;
+
+                HitAction = raymanBody.IsFacingLeft ? 3 : 0;
+
+                if (raymanBody.BodyPartType is RaymanBody.RaymanBodyPartType.SuperFist or RaymanBody.RaymanBodyPartType.SecondSuperFist)
+                {
+                    Fsm.ChangeAction(Fsm_Damaged);
+                    HitPoints--;
+                }
+                return false;
+
+            default:
+                return false;
+        }
     }
 }
