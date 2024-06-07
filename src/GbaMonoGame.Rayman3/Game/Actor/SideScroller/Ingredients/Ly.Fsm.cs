@@ -16,7 +16,7 @@ public partial class Ly
 
             case FsmAction.Step:
                 TextBox = Scene.GetDialog<TextBoxDialog>();
-                Fsm.ChangeAction(Fsm_Idle);
+                State.MoveTo(Fsm_Idle);
                 break;
 
             case FsmAction.UnInit:
@@ -35,7 +35,7 @@ public partial class Ly
 
             case FsmAction.Step:
                 if (Scene.IsDetectedMainActor(this))
-                    Fsm.ChangeAction(Fsm_Talk);
+                    State.MoveTo(Fsm_Talk);
                 break;
 
             case FsmAction.UnInit:
@@ -86,7 +86,7 @@ public partial class Ly
                     TextBox.MoveToNextText();
 
                 if (TextBox.IsFinished)
-                    Fsm.ChangeAction(Fsm_GivePower);
+                    State.MoveTo(Fsm_GivePower);
                 break;
 
             case FsmAction.UnInit:
@@ -149,7 +149,7 @@ public partial class Ly
                 }
 
                 if (IsActionFinished && ActionId == Action.GivePower5)
-                    Fsm.ChangeAction(Fsm_RaymanReceivePower);
+                    State.MoveTo(Fsm_RaymanReceivePower);
                 break;
 
             case FsmAction.UnInit:
@@ -177,7 +177,7 @@ public partial class Ly
                 }
 
                 if (Timer > 150)
-                    Fsm.ChangeAction(Fsm_Leave);
+                    State.MoveTo(Fsm_Leave);
                 break;
 
             case FsmAction.UnInit:
@@ -196,7 +196,7 @@ public partial class Ly
 
             case FsmAction.Step:
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Idle);
+                    State.MoveTo(Fsm_Idle);
                 break;
 
             case FsmAction.UnInit:

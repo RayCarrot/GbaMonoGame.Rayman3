@@ -21,14 +21,14 @@ public partial class Cage
                 if (HitPoints != PrevHitPoints)
                 {
                     PrevHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_Damaged);
+                    State.MoveTo(Fsm_Damaged);
                     return;
                 }
 
                 // Change idle state after 2 seconds
                 if (Timer >= 120)
                 {
-                    Fsm.ChangeAction(Fsm_Blink);
+                    State.MoveTo(Fsm_Blink);
                     return;
                 }
                 break;
@@ -55,14 +55,14 @@ public partial class Cage
                 if (HitPoints != PrevHitPoints)
                 {
                     PrevHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_Damaged);
+                    State.MoveTo(Fsm_Damaged);
                     return;
                 }
 
                 // Go back to the default idle animation when finished
                 if (IsActionFinished)
                 {
-                    Fsm.ChangeAction(Fsm_Idle);
+                    State.MoveTo(Fsm_Idle);
                     return;
                 }
                 break;
@@ -87,13 +87,13 @@ public partial class Cage
                 if (IsActionFinished && HitPoints != PrevHitPoints)
                 {
                     PrevHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_Destroyed);
+                    State.MoveTo(Fsm_Destroyed);
                     return;
                 }
 
                 if (IsActionFinished)
                 {
-                    Fsm.ChangeAction(Fsm_IdleDamaged);
+                    State.MoveTo(Fsm_IdleDamaged);
                     return;
                 }
                 break;
@@ -123,7 +123,7 @@ public partial class Cage
                 if (IsActionFinished && ActionId is 2 or 5 or 8 or 11)
                 {
                     PrevHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_Destroyed);
+                    State.MoveTo(Fsm_Destroyed);
                     return;
                 }
                 break;
@@ -147,7 +147,7 @@ public partial class Cage
 
             case FsmAction.Step:
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Idle);
+                    State.MoveTo(Fsm_Idle);
                 break;
 
             case FsmAction.UnInit:

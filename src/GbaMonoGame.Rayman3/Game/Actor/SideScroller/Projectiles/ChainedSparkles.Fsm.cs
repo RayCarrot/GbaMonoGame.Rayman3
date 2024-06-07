@@ -60,7 +60,7 @@ public partial class ChainedSparkles
                 if (Timer > 125)
                 {
                     ProcessMessage(this, Message.Destroy);
-                    Fsm.ChangeAction(Fsm_NewPower);
+                    State.MoveTo(Fsm_NewPower);
                 }
                 break;
 

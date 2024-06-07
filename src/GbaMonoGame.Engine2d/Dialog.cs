@@ -9,11 +9,11 @@ public abstract class Dialog : Object
         Scene = scene;
     }
 
-    protected FiniteStateMachine Fsm { get; } = new();
+    protected FiniteStateMachine State { get; } = new();
 
     public Scene2D Scene { get; }
 
-    public void Step() => Fsm.Step();
+    public void Step() => State.Step();
     public abstract void Load();
     public virtual void Init() { }
     public abstract void Draw(AnimationPlayer animationPlayer);

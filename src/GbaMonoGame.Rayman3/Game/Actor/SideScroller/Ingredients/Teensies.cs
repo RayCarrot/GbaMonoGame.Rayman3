@@ -27,16 +27,16 @@ public sealed partial class Teensies : ActionActor
             else
             {
                 ActionId = IsFacingRight ? Action.Init_Master_Right : Action.Init_Master_Left;
-                Fsm.ChangeAction(Fsm_WaitMaster);
+                State.MoveTo(Fsm_WaitMaster);
             }
         }
         else if (ActionId is Action.Init_Victory_Right or Action.Init_Victory_Left)
         {
-            Fsm.ChangeAction(Fsm_VictoryDance);
+            State.MoveTo(Fsm_VictoryDance);
         }
         else
         {
-            Fsm.ChangeAction(Fsm_Idle);
+            State.MoveTo(Fsm_Idle);
         }
     }
 

@@ -25,7 +25,7 @@ public partial class KegDebris
                 });
 
                 if (Timer > 60 && !Scene.Camera.IsActorFramed(this))
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:

@@ -19,7 +19,7 @@ public partial class Piranha
                 Timer++;
                 
                 if (Scene.IsDetectedMainActor(this) && Timer > 120)
-                    Fsm.ChangeAction(Fsm_Move);
+                    State.MoveTo(Fsm_Move);
                 break;
 
             case FsmAction.UnInit:
@@ -50,9 +50,9 @@ public partial class Piranha
                 }
 
                 if (HitPoints == 0)
-                    Fsm.ChangeAction(Fsm_Dying);
+                    State.MoveTo(Fsm_Dying);
                 else if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Wait);   
+                    State.MoveTo(Fsm_Wait);   
                 break;
 
             case FsmAction.UnInit:
@@ -76,7 +76,7 @@ public partial class Piranha
                 PhysicalType type = Scene.GetPhysicalType(Position);
 
                 if (type == PhysicalTypeValue.Water)
-                    Fsm.ChangeAction(Fsm_Wait);
+                    State.MoveTo(Fsm_Wait);
                 break;
 
             case FsmAction.UnInit:

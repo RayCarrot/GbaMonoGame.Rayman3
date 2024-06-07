@@ -21,15 +21,15 @@ public partial class RedPirate
         // Killed
         if (HitPoints == 0)
         {
-            Fsm.ChangeAction(Fsm_Dying);
+            State.MoveTo(Fsm_Dying);
             return false;
         }
 
         // Taken damage
-        if (HitPoints < PrevHitPoints && !Fsm.EqualsAction(Fsm_Hit))
+        if (HitPoints < PrevHitPoints && !State.EqualsState(Fsm_Hit))
         {
             PrevHitPoints = HitPoints;
-            Fsm.ChangeAction(Fsm_Hit);
+            State.MoveTo(Fsm_Hit);
             return false;
         }
 
@@ -37,7 +37,7 @@ public partial class RedPirate
         if (HitPoints < PrevHitPoints)
         {
             PrevHitPoints = HitPoints;
-            Fsm.ChangeAction(Fsm_HitKnockBack);
+            State.MoveTo(Fsm_HitKnockBack);
             return false;
         }
 
@@ -65,7 +65,7 @@ public partial class RedPirate
 
                 // Wait for landing to finish
                 if (IsActionFinished && ActionId is Action.Land_Right or Action.Land_Left)
-                    Fsm.ChangeAction(Fsm_Idle);
+                    State.MoveTo(Fsm_Idle);
                 break;
 
             case FsmAction.UnInit:
@@ -93,14 +93,14 @@ public partial class RedPirate
                 // 180 frames and not detected main actor...
                 if (GameTime.ElapsedFrames - IdleDetectionTimer > 180 && !Scene.IsDetectedMainActor(this))
                 {
-                    Fsm.ChangeAction(Fsm_Walk);
+                    State.MoveTo(Fsm_Walk);
                     return;
                 }
 
                 // 75 frames and detected main actor...
                 if (GameTime.ElapsedFrames - AttackTimer > 75 && Scene.IsDetectedMainActor(this))
                 {
-                    Fsm.ChangeAction(Fsm_Attack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -132,7 +132,7 @@ public partial class RedPirate
                 Walk();
 
                 if (Scene.IsDetectedMainActor(this))
-                    Fsm.ChangeAction(Fsm_Attack);
+                    State.MoveTo(Fsm_Attack);
                 break;
 
             case FsmAction.UnInit:
@@ -171,7 +171,7 @@ public partial class RedPirate
                 }
 
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Idle);
+                    State.MoveTo(Fsm_Idle);
                 break;
 
             case FsmAction.UnInit:
@@ -204,7 +204,7 @@ public partial class RedPirate
                 {
                     StartInvulnerability();
                     Ammo = 2;
-                    Fsm.ChangeAction(Fsm_Attack);
+                    State.MoveTo(Fsm_Attack);
                 }
                 break;
 
@@ -241,14 +241,14 @@ public partial class RedPirate
                     (type.IsSolid && KnockBackPosition.Y + 16 < Position.Y))
                 {
                     Ammo = 1;
-                    Fsm.ChangeAction(Fsm_Dying);
+                    State.MoveTo(Fsm_Dying);
                     return;
                 }
                 
                 if (type.IsSolid)
                 {
                     Ammo = 1;
-                    Fsm.ChangeAction(Fsm_ReturnFromKnockBack);
+                    State.MoveTo(Fsm_ReturnFromKnockBack);
                     return;
                 }
                 break;
@@ -274,7 +274,7 @@ public partial class RedPirate
                     IsFacingLeft && Position.X < KnockBackPosition.X)
                 {
                     Position = new Vector2(KnockBackPosition.X, Position.Y);
-                    Fsm.ChangeAction(Fsm_Attack);
+                    State.MoveTo(Fsm_Attack);
                 }
                 break;
 

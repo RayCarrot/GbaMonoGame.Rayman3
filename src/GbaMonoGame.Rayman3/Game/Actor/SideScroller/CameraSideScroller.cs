@@ -12,7 +12,7 @@ public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller(Scene2D scene) : base(scene)
     {
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
 
         TargetY = 120;
         field20_0x32 = 1;
@@ -285,7 +285,7 @@ public class CameraSideScroller : CameraActor2D
                 if (!mainCluster.IsOnLimit(Edge.Left) && 
                     !mainCluster.IsOnLimit(Edge.Right) && 
                     LinkedObject.IsFacingRight != IsFacingRight)
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
 
                 if (field16_0x2e == 4)
                 {
@@ -335,11 +335,11 @@ public class CameraSideScroller : CameraActor2D
                 if (param is Vector2 pos)
                     Scene.Playfield.Camera.Position = pos;
                 
-                Fsm.ChangeAction(null);
+                State.MoveTo(null);
                 return true;
 
             case Message.Cam_Unlock:
-                Fsm.ChangeAction(Fsm_Default);
+                State.MoveTo(Fsm_Default);
                 return true;
 
             default:

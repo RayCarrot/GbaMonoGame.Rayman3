@@ -42,7 +42,7 @@ public partial class FlowerFire
 
             case FsmAction.Step:
                 if (AnimatedObject.EndOfAnimation)
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:

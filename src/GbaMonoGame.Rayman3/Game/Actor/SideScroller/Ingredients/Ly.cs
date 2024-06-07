@@ -7,7 +7,7 @@ public sealed partial class Ly : MovableActor
 {
     public Ly(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        Fsm.ChangeAction(Fsm_Init);
+        State.MoveTo(Fsm_Init);
     }
 
     public TextBoxDialog TextBox { get; set; }

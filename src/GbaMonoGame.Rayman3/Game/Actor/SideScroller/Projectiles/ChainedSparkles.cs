@@ -20,13 +20,13 @@ public sealed partial class ChainedSparkles : BaseActor
         {
             AreSparklesFacingLeft = true;
             field13_0x38 = 0xFFFF;
-            Fsm.ChangeAction(FUN_08060f58);
+            State.MoveTo(FUN_08060f58);
         }
         else
         {
             AreSparklesFacingLeft = false;
             field13_0x38 = 360;
-            Fsm.ChangeAction(FUN_08060930);
+            State.MoveTo(FUN_08060930);
         }
     }
 
@@ -41,7 +41,7 @@ public sealed partial class ChainedSparkles : BaseActor
 
     public void InitNewPower()
     {
-        Fsm.ChangeAction(Fsm_NewPower, unInit: false);
+        State.SetTo(Fsm_NewPower);
     }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)

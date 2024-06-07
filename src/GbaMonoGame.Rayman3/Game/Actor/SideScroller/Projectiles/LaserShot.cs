@@ -6,6 +6,6 @@ public sealed partial class LaserShot : MovableActor
 {
     public LaserShot(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 }

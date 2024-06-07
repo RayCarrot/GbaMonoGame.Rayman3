@@ -8,7 +8,7 @@ public sealed partial class Depart : ActionActor
     {
         // The behavior to end a level with the sign facing to the right is unused in the final version of the game
         MessageToSend = (Action)actorResource.FirstActionId == Action.EndLevel ? Message.Main_LevelEnd : Message.Main_LevelExit;
-        Fsm.ChangeAction(Fsm_Idle);
+        State.MoveTo(Fsm_Idle);
     }
 
     public Message MessageToSend { get; }

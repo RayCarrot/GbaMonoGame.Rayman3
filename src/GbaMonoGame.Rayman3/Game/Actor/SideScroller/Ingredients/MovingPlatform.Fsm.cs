@@ -131,7 +131,7 @@ public partial class MovingPlatform
                 // Burn if we have a fire projectile
                 if (Fire != null)
                 {
-                    Fsm.ChangeAction(Fsm_Burn);
+                    State.MoveTo(Fsm_Burn);
                     return;
                 }
 
@@ -139,19 +139,19 @@ public partial class MovingPlatform
                 if (InitialAction == Action.WaitForContactWithReturn && IsActivated && mainActor.Position.X < ReturnXPosition)
                 {
                     PreviousPhysicalType = PhysicalTypeValue.None;
-                    Fsm.ChangeAction(Fsm_MoveReverse);
+                    State.MoveTo(Fsm_MoveReverse);
                     return;
                 }
 
                 if (IsDirectionalType(CurrentDirectionalType) && IsActivated)
                 {
-                    Fsm.ChangeAction(Fsm_Move);
+                    State.MoveTo(Fsm_Move);
                     return;
                 }
 
                 if (CurrentDirectionalType == PhysicalTypeValue.MovingPlatform_FullStop)
                 {
-                    Fsm.ChangeAction(Fsm_Stop);
+                    State.MoveTo(Fsm_Stop);
                     return;
                 }
                 break;
@@ -259,13 +259,13 @@ public partial class MovingPlatform
 
                     CurrentDirectionalType = PhysicalTypeValue.MovingPlatform_Stop;
                     PreviousPhysicalType = PhysicalTypeValue.None;
-                    Fsm.ChangeAction(Fsm_Move);
+                    State.MoveTo(Fsm_Move);
                     return;
                 }
 
                 if (IsDirectionalType(CurrentDirectionalType) && IsActivated)
                 {
-                    Fsm.ChangeAction(Fsm_MoveReverse);
+                    State.MoveTo(Fsm_MoveReverse);
                     return;
                 }
                 break;
@@ -520,7 +520,7 @@ public partial class MovingPlatform
 
                 if (CurrentDirectionalType == AcceleratedInfos[currentActionId].NextType)
                 {
-                    Fsm.ChangeAction(Fsm_MoveAccelerated);
+                    State.MoveTo(Fsm_MoveAccelerated);
                     return;
                 }
                 break;

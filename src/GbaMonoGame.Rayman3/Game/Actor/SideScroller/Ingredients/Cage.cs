@@ -12,7 +12,7 @@ public sealed partial class Cage : InteractableActor
         CageId = GameInfo.LoadedCages;
         GameInfo.LoadedCages++;
 
-        Fsm.ChangeAction(Fsm_Idle);
+        State.MoveTo(Fsm_Idle);
 
         if (GameInfo.HasCollectedCage(CageId, GameInfo.MapId))
             ProcessMessage(this, Message.Destroy);
@@ -35,7 +35,7 @@ public sealed partial class Cage : InteractableActor
             case Message.Damaged:
                 BaseActor actor = (BaseActor)param;
                 HitAction = actor.IsFacingLeft ? 3 : 0;
-                Fsm.ChangeAction(Fsm_Damaged);
+                State.MoveTo(Fsm_Damaged);
                 HitPoints--;
                 return false;
 
@@ -46,7 +46,7 @@ public sealed partial class Cage : InteractableActor
 
                 if (raymanBody.BodyPartType is RaymanBody.RaymanBodyPartType.SuperFist or RaymanBody.RaymanBodyPartType.SecondSuperFist)
                 {
-                    Fsm.ChangeAction(Fsm_Damaged);
+                    State.MoveTo(Fsm_Damaged);
                     HitPoints--;
                 }
                 return false;

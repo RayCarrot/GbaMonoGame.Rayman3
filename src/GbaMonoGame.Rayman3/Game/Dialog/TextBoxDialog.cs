@@ -161,7 +161,7 @@ public class TextBoxDialog : Dialog
                 if (OffsetY <= 0)
                 {
                     OffsetY = 0;
-                    Fsm.ChangeAction(Fsm_WaitForNextText);
+                    State.MoveTo(Fsm_WaitForNextText);
                 }
                 break;
 
@@ -184,7 +184,7 @@ public class TextBoxDialog : Dialog
                 {
                     NextText = false;
                     CurrentTextLine += TextObjects.Length;
-                    Fsm.ChangeAction(Fsm_TransitionTextOut);
+                    State.MoveTo(Fsm_TransitionTextOut);
                 }
                 break;
 
@@ -222,7 +222,7 @@ public class TextBoxDialog : Dialog
                             IsFinished = true;
                         }
 
-                        Fsm.ChangeAction(Fsm_TransitionTextIn);
+                        State.MoveTo(Fsm_TransitionTextIn);
                     }
                 }
                 break;
@@ -279,7 +279,7 @@ public class TextBoxDialog : Dialog
                         textObj.AffineMatrix = new AffineMatrix(1, 0, 0, TextTransitionValue);
 
                     if (finished)
-                        Fsm.ChangeAction(Fsm_WaitForNextText);
+                        State.MoveTo(Fsm_WaitForNextText);
                 }
                 break;
 
@@ -302,7 +302,7 @@ public class TextBoxDialog : Dialog
                 if (OffsetY >= 45)
                 {
                     OffsetY = 45;
-                    Fsm.ChangeAction(null);
+                    State.MoveTo(null);
                 }
                 break;
 
@@ -348,22 +348,22 @@ public class TextBoxDialog : Dialog
     public void MoveInOurOut(bool moveIn)
     {
         if (moveIn)
-            Fsm.ChangeAction(Fsm_MoveIn);
+            State.MoveTo(Fsm_MoveIn);
         else
-            Fsm.ChangeAction(Fsm_MoveOut);
+            State.MoveTo(Fsm_MoveOut);
     }
 
     public void MoveToNextText()
     {
-        if (Fsm.EqualsAction(Fsm_WaitForNextText))
+        if (State.EqualsState(Fsm_WaitForNextText))
             NextText = true;
     }
 
-    public bool CanSkip() => Fsm.EqualsAction(Fsm_WaitForNextText);
+    public bool CanSkip() => State.EqualsState(Fsm_WaitForNextText);
 
     public void Skip()
     {
-        if (!Fsm.EqualsAction(Fsm_WaitForNextText))
+        if (!State.EqualsState(Fsm_WaitForNextText))
             return;
 
         CurrentTextLine = 0;
@@ -371,7 +371,7 @@ public class TextBoxDialog : Dialog
         ShouldPlayRaymanSound = true;
         ShouldPlayedMurfySound = true;
         IsFinished = true;
-        Fsm.ChangeAction(Fsm_TransitionTextIn);
+        State.MoveTo(Fsm_TransitionTextIn);
     }
 
     public bool IsOnScreen() => OffsetY < 45;

@@ -17,7 +17,7 @@ public partial class Arrive
                 if (Scene.IsDetectedMainActor(this))
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
-                    Fsm.ChangeAction(Fsm_EndLevel);
+                    State.MoveTo(Fsm_EndLevel);
                 }
                 break;
 

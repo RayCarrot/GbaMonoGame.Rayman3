@@ -2,32 +2,43 @@
 
 public class FiniteStateMachine
 {
-    private Fsm CurrentAction { get; set; }
+    private Fsm CurrentState { get; set; }
 
-    public void ChangeAction(Fsm newAction) => ChangeAction(newAction, true);
-    public void ChangeAction(Fsm newAction, bool unInit)
+    /// <summary>
+    /// Sets the current state without uninitializing the previous one
+    /// </summary>
+    /// <param name="state">The new state</param>
+    public void SetTo(Fsm state)
     {
-        if (unInit)
-            CurrentAction?.Invoke(FsmAction.UnInit);
-        
-        CurrentAction = newAction;
-        CurrentAction?.Invoke(FsmAction.Init);
+        CurrentState = state;
+        CurrentState?.Invoke(FsmAction.Init);
+    }
+
+    /// <summary>
+    /// Moves to a new state
+    /// </summary>
+    /// <param name="state">The new state</param>
+    public void MoveTo(Fsm state)
+    {
+        CurrentState?.Invoke(FsmAction.UnInit);
+        CurrentState = state;
+        CurrentState?.Invoke(FsmAction.Init);
     }
 
     public void Step()
     {
-        CurrentAction?.Invoke(FsmAction.Step);
+        CurrentState?.Invoke(FsmAction.Step);
     }
 
-    public bool EqualsAction(Fsm action)
+    public bool EqualsState(Fsm state)
     {
-        return CurrentAction == action;
+        return CurrentState == state;
     }
 
     public delegate void Fsm(FsmAction action);
 
     public override string ToString()
     {
-        return CurrentAction?.Method.Name ?? "None";
+        return CurrentState?.Method.Name ?? "None";
     }
 }

@@ -27,7 +27,7 @@ public class GameCubeMenu : Frame
     private AnimationPlayer AnimationPlayer { get; set; }
     private TransitionsFX TransitionsFX { get; set; }
     private GameCubeMenuData Data { get; set; }
-    public FiniteStateMachine Fsm { get; } = new();
+    public FiniteStateMachine State { get; } = new();
 
     private bool UseJoyBus { get; set; }
     private JoyBus JoyBus { get; set; }
@@ -131,7 +131,7 @@ public class GameCubeMenu : Frame
 
                 if (Timer >= 240)
                 {
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -165,7 +165,7 @@ public class GameCubeMenu : Frame
                     // TODO: Handle file not existing
                     MapInfos = FileFactory.Read<GameCubeMapInfos>(Engine.Context, filePath);
 
-                    Fsm.ChangeAction(Fsm_SelectMap);
+                    State.MoveTo(Fsm_SelectMap);
                     return;
                 }
 
@@ -185,7 +185,7 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
@@ -193,7 +193,7 @@ public class GameCubeMenu : Frame
                 if (JoyBus.IsConnected)
                 {
                     WaitingForConnection = false;
-                    Fsm.ChangeAction(Fsm_Connected);
+                    State.MoveTo(Fsm_Connected);
                     return;
                 }
                 break;
@@ -218,12 +218,12 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
                 ShowPleaseConnectText();
-                Fsm.ChangeAction(Fsm_WaitForConnection);
+                State.MoveTo(Fsm_WaitForConnection);
                 break;
 
             case FsmAction.UnInit:
@@ -275,7 +275,7 @@ public class GameCubeMenu : Frame
                 // Lost connection
                 if (JoyBus.CheckForLostConnection())
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -295,14 +295,14 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
                 // Error
                 if (JoyBus.HasReceivedData && JoyBus.IsConnected && !isValid)
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -310,7 +310,7 @@ public class GameCubeMenu : Frame
                 if (JoyBus.HasReceivedData && JoyBus.IsConnected)
                 {
                     GbaUnlockFlags = gbaUnlockFlags;
-                    Fsm.ChangeAction(Fsm_DownloadMapInfo);
+                    State.MoveTo(Fsm_DownloadMapInfo);
                     return;
                 }
 
@@ -318,7 +318,7 @@ public class GameCubeMenu : Frame
                 if (!JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -350,7 +350,7 @@ public class GameCubeMenu : Frame
                 // Lost connection
                 if (JoyBus.CheckForLostConnection())
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -358,7 +358,7 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
@@ -366,21 +366,21 @@ public class GameCubeMenu : Frame
                 if (!JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
 
                 // Error
                 if (JoyBus.ErrorState == 0xFF)
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
                 // Finished downloading map info
                 if (JoyBus.RemainingSize == 0)
                 {
-                    Fsm.ChangeAction(Fsm_DownloadMapInfoAck);
+                    State.MoveTo(Fsm_DownloadMapInfoAck);
                     return;
                 }
                 break;
@@ -408,7 +408,7 @@ public class GameCubeMenu : Frame
                 // Lost connection
                 if (JoyBus.CheckForLostConnection())
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -416,21 +416,21 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
                 // Select map - Received download acknowledgement
                 if (JoyBus.HasReceivedData && JoyBus.ReceivedData == 0x22222222)
                 {
-                    Fsm.ChangeAction(Fsm_SelectMap);
+                    State.MoveTo(Fsm_SelectMap);
                     return;
                 }
 
                 // Error - received invalid data
                 if (JoyBus.HasReceivedData)
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -438,7 +438,7 @@ public class GameCubeMenu : Frame
                 if (!JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -484,7 +484,7 @@ public class GameCubeMenu : Frame
                 // Lost connection
                 if (UseJoyBus && JoyBus.CheckForLostConnection())
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -567,13 +567,13 @@ public class GameCubeMenu : Frame
                 if (JoyPad.CheckSingle(GbaInput.B))
                 {
                     IsActive = false;
-                    Fsm.ChangeAction(Fsm_Exit);
+                    State.MoveTo(Fsm_Exit);
                     return;
                 }
 
                 if (hasSelectedMap)
                 {
-                    Fsm.ChangeAction(Fsm_DownloadMap);
+                    State.MoveTo(Fsm_DownloadMap);
                     return;
                 }
 
@@ -581,7 +581,7 @@ public class GameCubeMenu : Frame
                 if (UseJoyBus && !JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -617,7 +617,7 @@ public class GameCubeMenu : Frame
                 // Lost connection
                 if (JoyBus.CheckForLostConnection())
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
@@ -633,21 +633,21 @@ public class GameCubeMenu : Frame
                 {
                     JoyBus.Disconnect();
                     JoyBus.Connect();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
 
                 // Error
                 if (JoyBus.ErrorState == 0xFF)
                 {
-                    Fsm.ChangeAction(Fsm_ConnectionLost);
+                    State.MoveTo(Fsm_ConnectionLost);
                     return;
                 }
 
                 // Finished downloading map
                 if (JoyBus.RemainingSize == 0)
                 {
-                    Fsm.ChangeAction(Fsm_DownloadMapAck);
+                    State.MoveTo(Fsm_DownloadMapAck);
                     return;
                 }
 
@@ -655,7 +655,7 @@ public class GameCubeMenu : Frame
                 if (!JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -686,12 +686,12 @@ public class GameCubeMenu : Frame
 
                     if (JoyBus.ReceivedData == 0x22222222)
                     {
-                        Fsm.ChangeAction(Fsm_WaitForConnection);
+                        State.MoveTo(Fsm_WaitForConnection);
                         return;
                     }
                     else
                     {
-                        Fsm.ChangeAction(Fsm_ConnectionLost);
+                        State.MoveTo(Fsm_ConnectionLost);
                         return;
                     }
                 }
@@ -700,7 +700,7 @@ public class GameCubeMenu : Frame
                 if (!JoyBus.IsConnected)
                 {
                     ShowPleaseConnectText();
-                    Fsm.ChangeAction(Fsm_WaitForConnection);
+                    State.MoveTo(Fsm_WaitForConnection);
                     return;
                 }
                 break;
@@ -777,7 +777,7 @@ public class GameCubeMenu : Frame
         WheelRotation = 0;
         WaitingForConnection = false;
         IsActive = true;
-        Fsm.ChangeAction(Fsm_PreInit);
+        State.MoveTo(Fsm_PreInit);
     }
 
     public override void UnInit()
@@ -790,7 +790,7 @@ public class GameCubeMenu : Frame
 
     public override void Step()
     {
-        Fsm.Step();
+        State.Step();
 
         WheelRotation += 4;
 
@@ -812,12 +812,12 @@ public class GameCubeMenu : Frame
             foreach (SpriteTextObject text in Data.ReusableTexts)
                 AnimationPlayer.Play(text);
         }
-        else if (Fsm.EqualsAction(Fsm_DownloadMap))
+        else if (State.EqualsState(Fsm_DownloadMap))
         {
             AnimationPlayer.Play(Data.ReusableTexts[0]);
             AnimationPlayer.Play(Data.ReusableTexts[1]);
         }
-        else if (Fsm.EqualsAction(Fsm_SelectMap))
+        else if (State.EqualsState(Fsm_SelectMap))
         {
             if (IsShowingLyChallengeUnlocked)
             {
@@ -837,7 +837,7 @@ public class GameCubeMenu : Frame
 
         AnimationPlayer.Play(Data.TotalLumsText);
 
-        if (WaitingForConnection || Fsm.EqualsAction(Fsm_DownloadMap) || Fsm.EqualsAction(Fsm_SelectMap) || Fsm.EqualsAction(Fsm_DownloadMapAck))
+        if (WaitingForConnection || State.EqualsState(Fsm_DownloadMap) || State.EqualsState(Fsm_SelectMap) || State.EqualsState(Fsm_DownloadMapAck))
             AnimationPlayer.Play(Data.StatusText);
 
         TransitionsFX.StepAll();

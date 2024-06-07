@@ -30,7 +30,7 @@ public sealed partial class Barrel : MovableActor
         BarrelSplash = null;
         LastHitBodyPartType = null;
 
-        Fsm.ChangeAction(Fsm_WaitForHit);
+        State.MoveTo(Fsm_WaitForHit);
     }
 
     public bool MoveOnWater { get; }
@@ -56,12 +56,12 @@ public sealed partial class Barrel : MovableActor
                 if (MoveOnWater && 
                     bodyPartType is RaymanBody.RaymanBodyPartType.SuperFist or RaymanBody.RaymanBodyPartType.SecondSuperFist)
                 {
-                    Fsm.ChangeAction(Fsm_FallIntoWater);
+                    State.MoveTo(Fsm_FallIntoWater);
                 }
 
-                if (Fsm.EqualsAction(Fsm_WaitForHit))
+                if (State.EqualsState(Fsm_WaitForHit))
                     LastHitBodyPartType = bodyPartType;
-                else if (Fsm.EqualsAction(Fsm_Hit) && bodyPartType != LastHitBodyPartType)
+                else if (State.EqualsState(Fsm_Hit) && bodyPartType != LastHitBodyPartType)
                     // In the game this is 0xFE and 0xFF is null, but we use -1 since we just need a different value
                     LastHitBodyPartType = (RaymanBody.RaymanBodyPartType?)-1;
 

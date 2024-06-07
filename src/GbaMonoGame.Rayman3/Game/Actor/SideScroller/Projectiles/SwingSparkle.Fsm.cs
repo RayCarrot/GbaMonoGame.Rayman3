@@ -32,7 +32,7 @@ public partial class SwingSparkle
                     Value = rayman.PreviousXSpeed - 30;
 
                 if (finished)
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:

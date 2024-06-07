@@ -32,21 +32,21 @@ public partial class Teensies
                 if (Scene.IsDetectedMainActor(this) && InitialActionId is Action.Init_World1_Right or Action.Init_World1_Left)
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
-                    Fsm.ChangeAction(Fsm_World1IntroText);
+                    State.MoveTo(Fsm_World1IntroText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && requirementMet)
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
-                    Fsm.ChangeAction(Fsm_ShowRequirementMetText);
+                    State.MoveTo(Fsm_ShowRequirementMetText);
                     return;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && !requirementMet)
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
-                    Fsm.ChangeAction(Fsm_ShowRequirementNotMetText);
+                    State.MoveTo(Fsm_ShowRequirementNotMetText);
                     return;
                 }
                 break;
@@ -80,9 +80,9 @@ public partial class Teensies
                 if (TextBox.IsFinished)
                 {
                     if (IsWorldFinished() && IsEnoughCagesTaken())
-                        Fsm.ChangeAction(Fsm_ShowRequirementMetText);
+                        State.MoveTo(Fsm_ShowRequirementMetText);
                     else
-                        Fsm.ChangeAction(Fsm_ShowRequirementNotMetText);
+                        State.MoveTo(Fsm_ShowRequirementNotMetText);
                 }
                 break;
 
@@ -122,7 +122,7 @@ public partial class Teensies
                 }
 
                 if (!TextBox.IsOnScreen())
-                    Fsm.ChangeAction(Fsm_ExitedRequirementMetText);
+                    State.MoveTo(Fsm_ExitedRequirementMetText);
                 break;
 
             case FsmAction.UnInit:
@@ -168,7 +168,7 @@ public partial class Teensies
                 {
                     TextBox.MoveInOurOut(false);
                     Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
-                    Fsm.ChangeAction(Fsm_WaitExitRequirementNotMetText);
+                    State.MoveTo(Fsm_WaitExitRequirementNotMetText);
                     return;
                 }
                 
@@ -194,7 +194,7 @@ public partial class Teensies
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!TextBox.IsOnScreen())
-                    Fsm.ChangeAction(Fsm_ExitedRequirementNotMetText);
+                    State.MoveTo(Fsm_ExitedRequirementNotMetText);
                 break;
 
             case FsmAction.UnInit:
@@ -217,7 +217,7 @@ public partial class Teensies
                 SetMasterAction();
 
                 if (HasLeftMainActorView())
-                    Fsm.ChangeAction(Fsm_WaitMaster);
+                    State.MoveTo(Fsm_WaitMaster);
                 break;
 
             case FsmAction.UnInit:

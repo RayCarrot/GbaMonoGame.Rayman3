@@ -8,7 +8,7 @@ public sealed partial class Piranha : MovableActor
     public Piranha(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         InitPos = Position;
-        Fsm.ChangeAction(Fsm_Wait);
+        State.MoveTo(Fsm_Wait);
     }
 
     public Vector2 InitPos { get; }

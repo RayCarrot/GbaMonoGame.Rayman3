@@ -9,7 +9,7 @@ public sealed partial class RaymanBody : MovableActor
     {
         Rayman = Scene.MainActor;
         AnimatedObject.YPriority = 18;
-        Fsm.ChangeAction(Fsm_Wait);
+        State.MoveTo(Fsm_Wait);
     }
 
     public MovableActor Rayman { get; set; }
@@ -42,7 +42,7 @@ public sealed partial class RaymanBody : MovableActor
         switch (message)
         {
             case Message.RaymanBody_FinishedAttack:
-                if (!Fsm.EqualsAction(Fsm_MoveBackwards))
+                if (!State.EqualsState(Fsm_MoveBackwards))
                 {
                     if (BodyPartType == RaymanBodyPartType.Torso)
                         ActionId = IsFacingRight ? 15 : 16;
@@ -50,7 +50,7 @@ public sealed partial class RaymanBody : MovableActor
                         ActionId = BaseActionId + (IsFacingRight ? 4 : 3);
 
                     ChangeAction();
-                    Fsm.ChangeAction(Fsm_MoveBackwards);
+                    State.MoveTo(Fsm_MoveBackwards);
                 }
                 SpawnHitEffect();
                 return false;

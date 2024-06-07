@@ -38,7 +38,7 @@ public abstract class BaseActor : GameObject
     public int Type { get; }
     public AnimatedObject AnimatedObject { get; }
 
-    public FiniteStateMachine Fsm { get; } = new();
+    public FiniteStateMachine State { get; } = new();
 
     public virtual int ActionId { get; set; }
     public bool IsActionFinished => AnimatedObject.EndOfAnimation;
@@ -100,7 +100,7 @@ public abstract class BaseActor : GameObject
 
     public virtual void DoBehavior()
     {
-        Fsm.Step();
+        State.Step();
     }
 
     public virtual void Step() { }
@@ -114,7 +114,7 @@ public abstract class BaseActor : GameObject
     {
         base.DrawDebugLayout(debugLayout, textureManager);
 
-        ImGui.Text($"State: {Fsm}");
+        ImGui.Text($"State: {State}");
         ImGui.Text($"Direction: {(IsFacingLeft ? "Left" : "Right")}");
         ImGui.Text($"Y-prio: {AnimatedObject.YPriority}");
         ImGui.Text($"Animation: {AnimatedObject.CurrentAnimation}");

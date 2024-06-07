@@ -51,7 +51,7 @@ public partial class LaserShot
                 }
 
                 if (finished)
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:

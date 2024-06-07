@@ -7,6 +7,6 @@ public sealed partial class LavaSplash : MovableActor
     public LavaSplash(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.YPriority = 5;
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 }

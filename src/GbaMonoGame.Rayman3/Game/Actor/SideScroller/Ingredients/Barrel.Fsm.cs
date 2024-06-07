@@ -19,7 +19,7 @@ public partial class Barrel
                 if (LastHitBodyPartType != null)
                 {
                     InitialHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_Hit);
+                    State.MoveTo(Fsm_Hit);
                 }
                 break;
 
@@ -50,7 +50,7 @@ public partial class Barrel
                 if ((GameInfo.Powers & Power.DoubleFist) != 0 && HitPoints != InitialHitPoints && MoveOnWater)
                 {
                     InitialHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_FallIntoWater);
+                    State.MoveTo(Fsm_FallIntoWater);
                     return;
                 }
 
@@ -58,7 +58,7 @@ public partial class Barrel
                 if ((GameInfo.Powers & Power.DoubleFist) != 0 && HitPoints != InitialHitPoints && !MoveOnWater)
                 {
                     InitialHitPoints = HitPoints;
-                    Fsm.ChangeAction(Fsm_FallToBreak);
+                    State.MoveTo(Fsm_FallToBreak);
                     return;
                 }
 
@@ -67,7 +67,7 @@ public partial class Barrel
                 {
                     HitPoints = 100;
                     InitialHitPoints = 100;
-                    Fsm.ChangeAction(Fsm_WaitForHit);
+                    State.MoveTo(Fsm_WaitForHit);
                     return;
                 }
                 break;
@@ -89,7 +89,7 @@ public partial class Barrel
 
             case FsmAction.Step:
                 if (Scene.GetPhysicalType(Position).IsSolid)
-                    Fsm.ChangeAction(Fsm_Break);
+                    State.MoveTo(Fsm_Break);
                 break;
 
             case FsmAction.UnInit:
@@ -109,7 +109,7 @@ public partial class Barrel
 
             case FsmAction.Step:
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_WaitForHit);
+                    State.MoveTo(Fsm_WaitForHit);
                 break;
 
             case FsmAction.UnInit:
@@ -143,7 +143,7 @@ public partial class Barrel
                 }
 
                 if (Scene.GetPhysicalType(Position + new Vector2(0, -16)) == PhysicalTypeValue.Water)
-                    Fsm.ChangeAction(Fsm_LandInWater);
+                    State.MoveTo(Fsm_LandInWater);
                 break;
 
             case FsmAction.UnInit:
@@ -181,7 +181,7 @@ public partial class Barrel
                     BarrelSplash.Position = Position;
 
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_WaitInWater);
+                    State.MoveTo(Fsm_WaitInWater);
                 break;
 
             case FsmAction.UnInit:
@@ -219,7 +219,7 @@ public partial class Barrel
                     BarrelSplash.Position = new Vector2(Position.X + 4, InitialWaterPosition.Y - 10);
 
                 if (linkedMovement)
-                    Fsm.ChangeAction(Fsm_MoveForwardInWater);
+                    State.MoveTo(Fsm_MoveForwardInWater);
                 break;
 
             case FsmAction.UnInit:
@@ -263,14 +263,14 @@ public partial class Barrel
 
                 if (Scene.GetPhysicalType(physicalPos).IsSolid)
                 {
-                    Fsm.ChangeAction(Fsm_StopMoving);
+                    State.MoveTo(Fsm_StopMoving);
                     return;
                 }
                 
                 if (hasMainActorMovedBack)
                 {
                     MoveRight = !MoveRight;
-                    Fsm.ChangeAction(Fsm_MoveBackwardsInWater);
+                    State.MoveTo(Fsm_MoveBackwardsInWater);
                     return;    
                 }
                 break;
@@ -309,7 +309,7 @@ public partial class Barrel
                 if (Scene.GetPhysicalType(physicalPos).IsSolid)
                 {
                     MoveRight = !MoveRight;
-                    Fsm.ChangeAction(Fsm_WaitInWater);
+                    State.MoveTo(Fsm_WaitInWater);
                 }
                 break;
 

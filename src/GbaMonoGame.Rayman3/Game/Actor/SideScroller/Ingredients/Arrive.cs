@@ -12,15 +12,15 @@ public sealed partial class Arrive : ActionActor
             (GameInfo.MapId == MapId.ChallengeLy2 && !GameInfo.PersistentInfo.FinishedLyChallenge2))
         {
             LinkedActor = actorResource.Links[0];
-            Fsm.ChangeAction(Fsm_IdleWithLink);
+            State.MoveTo(Fsm_IdleWithLink);
         }
         else if (GameInfo.MapId == MapId.ChallengeLyGCN)
         {
-            Fsm.ChangeAction(Fsm_IdleWithLink);
+            State.MoveTo(Fsm_IdleWithLink);
         }
         else
         {
-            Fsm.ChangeAction(Fsm_Idle);
+            State.MoveTo(Fsm_Idle);
         }
     }
 

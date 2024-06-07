@@ -9,6 +9,6 @@ public sealed partial class BarrelSplash : BaseActor
         AnimatedObject.CurrentAnimation = 0;
         AnimatedObject.YPriority = 31;
 
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 }

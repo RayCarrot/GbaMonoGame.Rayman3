@@ -7,7 +7,7 @@ public sealed partial class KegDebris : ActionActor
     public KegDebris(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Timer = 0;
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 
     public byte Timer { get; set; }

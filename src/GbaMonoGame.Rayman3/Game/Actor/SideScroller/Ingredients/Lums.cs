@@ -68,7 +68,7 @@ public sealed partial class Lums : BaseActor
 
         if (!RSMultiplayer.IsActive)
         {
-            Fsm.ChangeAction(Fsm_Idle);
+            State.MoveTo(Fsm_Idle);
 
             if (ActionId == Action.GreenLum)
             {
@@ -81,7 +81,7 @@ public sealed partial class Lums : BaseActor
         }
         else
         {
-            Fsm.ChangeAction(FUN_0805e844);
+            State.MoveTo(FUN_0805e844);
             BossDespawnTimer = -1;
             LumId = instanceId;
             MultiplayerInfo.TagInfo.SaveLumPosition(instanceId, actorResource);
@@ -159,7 +159,7 @@ public sealed partial class Lums : BaseActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (!Fsm.EqualsAction(FUN_0805ed40) && !Fsm.EqualsAction(FUN_0805e6b8) && !Fsm.EqualsAction(FUN_0805e83c))
+        if (!State.EqualsState(FUN_0805ed40) && !State.EqualsState(FUN_0805e6b8) && !State.EqualsState(FUN_0805e83c))
         {
             if (Scene.Camera.IsActorFramed(this))
             {

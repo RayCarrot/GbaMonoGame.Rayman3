@@ -52,7 +52,7 @@ public sealed partial class LevelCurtain : ActionActor
         {
             if (GameInfo.World1LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Unlocked);
+                State.MoveTo(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus1)
                     IsLocked = true;
@@ -60,14 +60,14 @@ public sealed partial class LevelCurtain : ActionActor
             else
             {
                 IsLocked = true;
-                Fsm.ChangeAction(Fsm_Locked);
+                State.MoveTo(Fsm_Locked);
             }
         }
         else if (MapId == MapId.Bonus2)
         {
             if (GameInfo.World2LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Unlocked);
+                State.MoveTo(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus2)
                     IsLocked = true;
@@ -75,14 +75,14 @@ public sealed partial class LevelCurtain : ActionActor
             else
             {
                 IsLocked = true;
-                Fsm.ChangeAction(Fsm_Locked);
+                State.MoveTo(Fsm_Locked);
             }
         }
         else if (MapId == MapId.Bonus3)
         {
             if (GameInfo.World3LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Unlocked);
+                State.MoveTo(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus3)
                     IsLocked = true;
@@ -90,14 +90,14 @@ public sealed partial class LevelCurtain : ActionActor
             else
             {
                 IsLocked = true;
-                Fsm.ChangeAction(Fsm_Locked);
+                State.MoveTo(Fsm_Locked);
             }
         }
         else if (MapId == MapId.Bonus4)
         {
             if (GameInfo.World4LumsCompleted())
             {
-                Fsm.ChangeAction(Fsm_Unlocked);
+                State.MoveTo(Fsm_Unlocked);
 
                 if (!GameInfo.PersistentInfo.UnlockedBonus4)
                     IsLocked = true;
@@ -105,7 +105,7 @@ public sealed partial class LevelCurtain : ActionActor
             else
             {
                 IsLocked = true;
-                Fsm.ChangeAction(Fsm_Locked);
+                State.MoveTo(Fsm_Locked);
             }
         }
         else
@@ -114,12 +114,12 @@ public sealed partial class LevelCurtain : ActionActor
                 MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN ||
                 (MapId == MapId._1000Lums && GameInfo.GetTotalCollectedYellowLums() >= 999))
             {
-                Fsm.ChangeAction(Fsm_Unlocked);
+                State.MoveTo(Fsm_Unlocked);
             }
             else
             {
                 IsLocked = true;
-                Fsm.ChangeAction(Fsm_Locked);
+                State.MoveTo(Fsm_Locked);
             }
         }
 

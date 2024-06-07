@@ -6,7 +6,7 @@ public sealed partial class Urchin : InteractableActor
 {
     public Urchin(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 
     public override void Step()

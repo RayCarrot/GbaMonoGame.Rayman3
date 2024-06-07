@@ -16,7 +16,7 @@ public sealed partial class Murfy : MovableActor
         if (Engine.Settings.Platform == Platform.NGage)
             NGage_Byte_8E = 1;
 
-        Fsm.ChangeAction(Fsm_PreInit);
+        State.MoveTo(Fsm_PreInit);
     }
 
     public BaseActor TargetActor { get; set; }
@@ -155,7 +155,7 @@ public sealed partial class Murfy : MovableActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (Fsm.EqualsAction(Fsm_Init))
+        if (State.EqualsState(Fsm_Init))
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__MurfHeli_Mix01);
         }

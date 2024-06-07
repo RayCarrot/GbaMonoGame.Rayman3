@@ -45,7 +45,7 @@ public partial class RaymanBody
                 else
                 {
                     ActionId = BaseActionId + (IsFacingRight ? 4 : 3);
-                    Fsm.ChangeAction(Fsm_MoveBackwards);
+                    State.MoveTo(Fsm_MoveBackwards);
                     return false;
                 }
             }
@@ -64,9 +64,9 @@ public partial class RaymanBody
 
             case FsmAction.Step:
                 if (BodyPartType == RaymanBodyPartType.HitEffect)
-                    Fsm.ChangeAction(Fsm_HitEffect);
+                    State.MoveTo(Fsm_HitEffect);
                 else if (ActionId != 0)
-                    Fsm.ChangeAction(Fsm_MoveForward);
+                    State.MoveTo(Fsm_MoveForward);
                 break;
 
             case FsmAction.UnInit:
@@ -107,7 +107,7 @@ public partial class RaymanBody
                     if (Speed.Y < 2)
                     {
                         ActionId = IsFacingRight ? 15 : 16;
-                        Fsm.ChangeAction(Fsm_MoveBackwards);
+                        State.MoveTo(Fsm_MoveBackwards);
                     }
                 }
                 // Turn around fist or foot
@@ -116,12 +116,12 @@ public partial class RaymanBody
                     if (IsFacingRight && Speed.X < 2)
                     {
                         ActionId = BaseActionId + 4;
-                        Fsm.ChangeAction(Fsm_MoveBackwards);
+                        State.MoveTo(Fsm_MoveBackwards);
                     }
                     else if (IsFacingLeft && Speed.X > -2)
                     {
                         ActionId = BaseActionId + 3;
-                        Fsm.ChangeAction(Fsm_MoveBackwards);
+                        State.MoveTo(Fsm_MoveBackwards);
                     }
                 }
                 break;
@@ -211,7 +211,7 @@ public partial class RaymanBody
 
                 if (remainingDist < 25)
                 {
-                    Fsm.ChangeAction(Fsm_Wait);
+                    State.MoveTo(Fsm_Wait);
                     return;
                 }
                 break;
@@ -242,7 +242,7 @@ public partial class RaymanBody
 
             case FsmAction.Step:
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Wait);
+                    State.MoveTo(Fsm_Wait);
                 break;
 
             case FsmAction.UnInit:

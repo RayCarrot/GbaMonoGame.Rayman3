@@ -7,7 +7,7 @@ public abstract class CameraActor : Object
         Scene = scene;
     }
 
-    protected FiniteStateMachine Fsm { get; } = new();
+    protected FiniteStateMachine State { get; } = new();
 
     public Scene2D Scene { get; }
     public MovableActor LinkedObject { get; set; }
@@ -19,7 +19,7 @@ public abstract class CameraActor : Object
 
     public virtual void Step()
     {
-        Fsm.Step();
+        State.Step();
     }
 
     public abstract void SetFirstPosition();

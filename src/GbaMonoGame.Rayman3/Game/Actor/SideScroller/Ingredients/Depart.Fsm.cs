@@ -14,7 +14,7 @@ public partial class Depart
                 if (Scene.IsDetectedMainActor(this))
                 {
                     Scene.MainActor.ProcessMessage(this, MessageToSend);
-                    Fsm.ChangeAction(null);
+                    State.MoveTo(null);
                 }
                 break;
 

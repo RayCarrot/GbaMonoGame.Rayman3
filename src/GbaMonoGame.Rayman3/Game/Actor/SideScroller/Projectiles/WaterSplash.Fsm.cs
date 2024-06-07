@@ -24,7 +24,7 @@ public partial class WaterSplash
                 }
 
                 if (IsActionFinished)
-                    Fsm.ChangeAction(Fsm_Default);
+                    State.MoveTo(Fsm_Default);
                 break;
 
             case FsmAction.UnInit:

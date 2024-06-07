@@ -231,11 +231,11 @@ public sealed partial class MovingPlatform : MovableActor
 
         // Only the normal move state is used in the game
         if (InitialAction is Action.Unused_Left or Action.Unused_Right or Action.Unused_Up or Action.Unused_Down)
-            Fsm.ChangeAction(null);
+            State.MoveTo(null);
         else if (InitialAction is Action.MoveAccelerated_Left or Action.MoveAccelerated_Right or Action.MoveAccelerated_Up or Action.MoveAccelerated_Down)
-            Fsm.ChangeAction(Fsm_MoveAccelerated);
+            State.MoveTo(Fsm_MoveAccelerated);
         else
-            Fsm.ChangeAction(Fsm_Move);
+            State.MoveTo(Fsm_Move);
     }
 
     public void Destroy()
@@ -243,7 +243,7 @@ public sealed partial class MovingPlatform : MovableActor
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumTimer_Mix02);
 
         if (ResurrectsImmediately)
-            Fsm.ChangeAction(Fsm_Respawn);
+            State.MoveTo(Fsm_Respawn);
         else
             ProcessMessage(this, Message.Destroy);
     }

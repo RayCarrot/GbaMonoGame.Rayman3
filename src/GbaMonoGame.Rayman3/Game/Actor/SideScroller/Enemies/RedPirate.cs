@@ -62,6 +62,6 @@ public sealed partial class RedPirate : PirateBaseActor
         Ammo = 0;
         AttackTimer = 0;
         DoubleHitTimer = 0;
-        Fsm.ChangeAction(Fsm_Fall);
+        State.MoveTo(Fsm_Fall);
     }
 }

@@ -14,19 +14,19 @@ public sealed partial class Keg : MovableActor
 
         if ((Action)actorResource.FirstActionId == Action.Fall)
         {
-            Fsm.ChangeAction(Fsm_WaitingToFall);
+            State.MoveTo(Fsm_WaitingToFall);
             InitialPos = Position;
             Timer = 0;
         }
         else if (GameInfo.MapId == MapId.BossMachine)
         {
-            Fsm.ChangeAction(Fsm_InitBossMachine);
+            State.MoveTo(Fsm_InitBossMachine);
             InitialPos = Position;
             Timer = 30;
         }
         else
         {
-            Fsm.ChangeAction(Fsm_Idle);
+            State.MoveTo(Fsm_Idle);
             InitialPos = Position;
         }
     }
@@ -72,16 +72,16 @@ public sealed partial class Keg : MovableActor
         switch (message)
         {
             case Message.ThrowObjectUp:
-                Fsm.ChangeAction(Fsm_ThrownUp);
+                State.MoveTo(Fsm_ThrownUp);
                 return false;
 
             case Message.ThrowObjectForward:
-                Fsm.ChangeAction(Fsm_ThrownForward);
+                State.MoveTo(Fsm_ThrownForward);
                 return false;
 
             case Message.DropObject:
-                if (!Fsm.EqualsAction(FUN_08063fe4))
-                    Fsm.ChangeAction(Fsm_Drop);
+                if (!State.EqualsState(FUN_08063fe4))
+                    State.MoveTo(Fsm_Drop);
                 return false;
 
             case Message.Damaged:
@@ -92,7 +92,7 @@ public sealed partial class Keg : MovableActor
                 if (explosion != null)
                     explosion.Position = Position - new Vector2(0, 8);
                 
-                Fsm.ChangeAction(Fsm_Respawn);
+                State.MoveTo(Fsm_Respawn);
                 return false;
 
             // TODO: Implement
@@ -107,7 +107,7 @@ public sealed partial class Keg : MovableActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (Fsm.EqualsAction(Fsm_Respawn))
+        if (State.EqualsState(Fsm_Respawn))
         {
             AnimatedObject.IsFramed = Timer > 180 && 
                                       Scene.Camera.IsActorFramed(this) &&

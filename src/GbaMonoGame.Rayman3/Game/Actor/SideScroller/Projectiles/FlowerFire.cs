@@ -9,7 +9,7 @@ public sealed partial class FlowerFire : BaseActor
         AnimatedObject.CurrentAnimation = 0;
         AnimatedObject.YPriority = 15;
 
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 
     public byte Timer { get; set; }
@@ -32,7 +32,7 @@ public sealed partial class FlowerFire : BaseActor
         switch (message)
         {
             case Message.FlowerFire_End:
-                Fsm.ChangeAction(Fsm_End);
+                State.MoveTo(Fsm_End);
                 return false;
 
             default:

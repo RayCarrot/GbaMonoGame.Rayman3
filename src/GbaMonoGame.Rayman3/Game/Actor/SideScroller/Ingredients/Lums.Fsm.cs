@@ -57,7 +57,7 @@ public partial class Lums
                 }
 
                 if (collected)
-                    Fsm.ChangeAction(Fsm_Collected);
+                    State.MoveTo(Fsm_Collected);
                 break;
 
             case FsmAction.UnInit:
@@ -147,11 +147,11 @@ public partial class Lums
                 {
                     if (ActionId == Action.BlueLum && GameInfo.MapId != MapId.BossRockAndLava)
                     {
-                        Fsm.ChangeAction(FUN_0805e6b8);
+                        State.MoveTo(FUN_0805e6b8);
                     }
                     else
                     {
-                        Fsm.ChangeAction(Fsm_Idle);
+                        State.MoveTo(Fsm_Idle);
 
                         // N-Gage doesn't do this for some reason
                         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId == MapId.BossRockAndLava)

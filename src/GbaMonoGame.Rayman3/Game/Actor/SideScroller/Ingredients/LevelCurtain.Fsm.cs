@@ -61,7 +61,7 @@ public partial class LevelCurtain
                         !((World)Frame.Current).UserInfo.Hide)
                     {
                         Scene.MainActor.ProcessMessage(this, Message.Main_Stop);
-                        Fsm.ChangeAction(Fsm_EnterCurtain);
+                        State.MoveTo(Fsm_EnterCurtain);
                     }
                     else
                     {
@@ -118,7 +118,7 @@ public partial class LevelCurtain
                     }
                     else
                     {
-                        Fsm.ChangeAction(Fsm_TransitionToLevel);
+                        State.MoveTo(Fsm_TransitionToLevel);
                     }
                 }
                 break;
@@ -140,7 +140,7 @@ public partial class LevelCurtain
 
             case FsmAction.Step:
                 if (!((World)Frame.Current).IsTransitioningOut())
-                    Fsm.ChangeAction(Fsm_Unlocked);
+                    State.MoveTo(Fsm_Unlocked);
                 break;
 
             case FsmAction.UnInit:

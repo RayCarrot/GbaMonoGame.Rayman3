@@ -9,7 +9,7 @@ public sealed partial class SwingSparkle : BaseActor
     {
         AnimatedObject.CurrentAnimation = actorResource.FirstActionId;
         AnimatedObject.YPriority = 48;
-        Fsm.ChangeAction(Fsm_Default);
+        State.MoveTo(Fsm_Default);
     }
 
     public float Value { get; set; }
