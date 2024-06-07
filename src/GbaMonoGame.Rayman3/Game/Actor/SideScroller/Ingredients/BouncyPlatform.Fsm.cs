@@ -44,7 +44,7 @@ public partial class BouncyPlatform
                 else if (ActionId == Action.Trap && Scene.IsHitMainActor(this))
                 {
                     Scene.MainActor.ReceiveDamage(AttackPoints);
-                    Scene.MainActor.ProcessMessage(this, Message.Main_Damaged1, this);
+                    Scene.MainActor.ProcessMessage(this, Message.Damaged, this);
                     ActionId = Action.EndTrap;
                 }
 

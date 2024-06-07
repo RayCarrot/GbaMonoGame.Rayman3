@@ -8,6 +8,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Rayman
 {
+    // FUN_08020ee0
     // TODO: Name
     private bool FsmStep_Inlined_FUN_1004c544()
     {
@@ -2638,6 +2639,408 @@ public partial class Rayman
             case FsmAction.UnInit:
                 if (Engine.Settings.Platform != Platform.NGage)
                     ActionId = IsFacingRight ? Action.BouncyJump_Right : Action.BouncyJump_Left;
+                break;
+        }
+    }
+
+    private void Fsm_PickUpObject(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(Rayman3SoundEvent.Play__OnoEfor2_Mix03);
+                ActionId = IsFacingRight ? Action.PickUpObject_Right : Action.PickUpObject_Left;
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_Inlined_FUN_1004c544())
+                    return;
+
+                // Sync the objects position with Rayman
+                Vector2 objOffset = AnimatedObject.CurrentFrame switch
+                {
+                    0 => new Vector2(23, 19),
+                    1 => new Vector2(23, 19),
+                    2 => new Vector2(23, 19),
+                    3 => new Vector2(23, 18),
+                    4 => new Vector2(23, 18),
+                    5 => new Vector2(25, 16),
+                    6 => new Vector2(30, 4),
+                    7 => new Vector2(23, -15),
+                    8 => new Vector2(15, -15),
+                    9 => new Vector2(11, -15),
+                    10 => new Vector2(1, -15),
+                    11 => new Vector2(-3, -1),
+                    12 => new Vector2(-3, 3),
+                    13 => new Vector2(-3, 2),
+                    14 => new Vector2(-3, 0),
+                    15 => new Vector2(-3, -2),
+                    _ => throw new Exception("Invalid frame index")
+                };
+
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(objOffset.X + 6, objOffset.Y - 22);
+                else
+                    AttachedObject.Position = Position + new Vector2(-objOffset.X - 4, objOffset.Y - 22);
+
+                OffsetCarryingObject();
+
+                if (IsActionFinished)
+                    Fsm.ChangeAction(Fsm_CarryObject);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_CatchObject(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(Rayman3SoundEvent.Play__OnoEfor2_Mix03);
+                ActionId = IsFacingRight ? Action.CatchObject_Right : Action.CatchObject_Left;
+
+                if (IsActionFinished)
+                {
+                    if (IsFacingRight)
+                        AttachedObject.Position = new Vector2(Position.X + 8, AttachedObject.Position.Y);
+                    else
+                        AttachedObject.Position = new Vector2(Position.X - 8, AttachedObject.Position.Y);
+                }
+
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_Inlined_FUN_1004c544())
+                    return;
+
+                // Sync the objects position with Rayman
+                float objYOffset = AnimatedObject.CurrentFrame switch
+                {
+                    0 => -36,
+                    1 => -27,
+                    2 => 0,
+                    3 => 7,
+                    4 => 8,
+                    5 => 8,
+                    6 => 6,
+                    7 => 0,
+                    8 => 0,
+                    9 => 0,
+                    10 => 0,
+                    _ => throw new Exception("Invalid frame index")
+                };
+
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(6, objYOffset - 20);
+                else
+                    AttachedObject.Position = Position + new Vector2(-4, objYOffset - 20);
+
+                OffsetCarryingObject();
+
+                if (IsActionFinished)
+                    Fsm.ChangeAction(Fsm_CarryObject);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_CarryObject(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = IsFacingRight ? Action.CarryObject_Right : Action.CarryObject_Left;
+
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(4, -22);
+                else
+                    AttachedObject.Position = Position + new Vector2(-4, -22);
+
+                OffsetCarryingObject();
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_FUN_08020ee0())
+                    return;
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.CarryObject_Left;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                        throw new NotImplementedException();
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.CarryObject_Right;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                        throw new NotImplementedException();
+                }
+
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(6, -22);
+                else
+                    AttachedObject.Position = Position + new Vector2(-4, -22);
+
+                // Sync the objects position with Rayman
+                float objYOffset = AnimatedObject.CurrentFrame switch
+                {
+                    0 or 1 => -22,
+                    2 or 3 or 4 or 5 => -23,
+                    6 or 7 => -22,
+                    8 or 9 or 10 => -21,
+                    _ => -22
+                };
+
+                AttachedObject.Position = new Vector2(AttachedObject.Position.X, Position.Y + objYOffset);
+
+                OffsetCarryingObject();
+
+                // Walk
+                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                {
+                    Fsm.ChangeAction(Fsm_WalkWithObject);
+                    return;
+                }
+
+                // Throw
+                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                {
+                    Fsm.ChangeAction(Fsm_ThrowObject);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_WalkWithObject(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.WalkWithObject_Right : Action.WalkWithObject_Left;
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_FUN_08020ee0())
+                    return;
+
+                // Change direction
+                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                {
+                    ActionId = Action.WalkWithObject_Left;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                        throw new NotImplementedException();
+                }
+                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                {
+                    ActionId = Action.WalkWithObject_Right;
+                    ChangeAction();
+
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+                        throw new NotImplementedException();
+                }
+
+                // Sync the objects position with Rayman
+                Vector2 objOffset = AnimatedObject.CurrentFrame switch
+                {
+                    0 => new Vector2(0, 0),
+                    1 => new Vector2(0, 2),
+                    2 => new Vector2(-1, 4),
+                    3 => new Vector2(-2, 4),
+                    4 => new Vector2(-3, 2),
+                    5 => new Vector2(-4, 0),
+                    6 => new Vector2(-4, -2),
+                    7 => new Vector2(-3, -3),
+                    8 => new Vector2(-1, -3),
+                    9 => new Vector2(0, -3),
+                    10 => new Vector2(0, 0),
+                    11 => new Vector2(0, 2),
+                    12 => new Vector2(-1, 4),
+                    13 => new Vector2(-2, 4),
+                    14 => new Vector2(-3, 2),
+                    15 => new Vector2(-4, 0),
+                    16 => new Vector2(-4, -2),
+                    17 => new Vector2(-3, -3),
+                    18 => new Vector2(-1, -3),
+                    19 => new Vector2(0, -3),
+                    _ => throw new Exception("Invalid frame index")
+                };
+
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(objOffset.X + 8, objOffset.Y - 22);
+                else
+                    AttachedObject.Position = Position + new Vector2(-objOffset.X - 4, objOffset.Y - 22);
+
+                if (Speed.Y > 1)
+                {
+                    AttachedObject.ProcessMessage(this, Message.DropObject);
+                    AttachedObject = null;
+                }
+
+                OffsetCarryingObject();
+
+                // TODO: There's a bug here which causes a crash. Same in the original game. If falling it might still enter this state with attached obj null.
+                // Stop walking
+                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right))
+                {
+                    Fsm.ChangeAction(Fsm_CarryObject);
+                    return;
+                }
+
+                // Throw
+                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                {
+                    Fsm.ChangeAction(Fsm_ThrowObject);
+                    return;
+                }
+
+                // Falling
+                if (Speed.Y > 1)
+                {
+                    Fsm.ChangeAction(Fsm_Fall);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_ThrowObject(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(Rayman3SoundEvent.Play__OnoThrow_Mix02);
+
+                if (CheckSingleInput(GbaInput.A))
+                    ActionId = IsFacingRight ? Action.ThrowObjectUp_Right : Action.ThrowObjectUp_Left;
+                else
+                    ActionId = IsFacingRight ? Action.ThrowObjectForward_Right : Action.ThrowObjectForward_Left;
+
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_FUN_08020ee0())
+                    return;
+
+                if (ActionId is Action.ThrowObjectForward_Right or Action.ThrowObjectForward_Left)
+                {
+                    if (AnimatedObject.CurrentFrame == 0)
+                    {
+                        if (AttachedObject != null) // This check is only on N-Gage, but we need it to avoid null exception when animation ends
+                        {
+                            if (IsFacingRight)
+                                AttachedObject.Position = Position + new Vector2(6, -22);
+                            else
+                                AttachedObject.Position = Position + new Vector2(-4, -22);
+                        }
+                    }
+                    else if (AnimatedObject.CurrentFrame is >= 1 and < 7)
+                    {
+                        // Sync the objects position with Rayman
+                        Vector2 objOffset = AnimatedObject.CurrentFrame switch
+                        {
+                            0 => new Vector2(0, 0),
+                            1 => new Vector2(-3, -20),
+                            2 => new Vector2(-31, -12),
+                            3 => new Vector2(-40, -10),
+                            4 => new Vector2(-38, -10),
+                            5 => new Vector2(-33, -10),
+                            6 => new Vector2(-13, -20),
+                            _ => throw new Exception("Invalid frame index")
+                        };
+
+                        if (IsFacingRight)
+                            AttachedObject.Position = Position + new Vector2(objOffset.X, objOffset.Y - 20);
+                        else
+                            AttachedObject.Position = Position + new Vector2(-objOffset.X, objOffset.Y - 20);
+                    }
+                    else if (AttachedObject != null)
+                    {
+                        PlaySound(Rayman3SoundEvent.Play__GenWoosh_LumSwing_Mix03);
+                        AttachedObject.ProcessMessage(this, Message.ThrowObjectForward);
+                        AttachedObject = null;
+                    }
+                }
+                else
+                {
+                    if (AnimatedObject.CurrentFrame < 7)
+                    {
+                        if (AttachedObject != null) // This check is only on N-Gage, but we need it to avoid null exception when animation ends
+                        {
+                            // Sync the objects position with Rayman
+                            float objYOffset = AnimatedObject.CurrentFrame switch
+                            {
+                                0 => 0,
+                                1 => 3,
+                                2 => 4,
+                                3 => 9,
+                                4 => 2,
+                                5 => -11,
+                                6 => -40,
+                                _ => throw new Exception("Invalid frame index")
+                            };
+
+                            if (IsFacingRight)
+                                AttachedObject.Position = Position + new Vector2(6, objYOffset - 22);
+                            else
+                                AttachedObject.Position = Position + new Vector2(-4, objYOffset - 22);
+                        }
+                    }
+                    else if (AttachedObject != null)
+                    {
+                        AttachedObject.ProcessMessage(this, Message.ThrowObjectUp);
+                        AttachedObject = null;
+                    }
+                }
+
+                OffsetCarryingObject();
+
+                if (IsActionFinished)
+                {
+                    Fsm.ChangeAction(Fsm_Default);
+                    return;
+                }
+
+                if (CheckInput2(GbaInput.B) &&
+                    CanAttackWithFist(2) &&
+                    field23_0x98 == 0 &&
+                    ActionId is Action.ThrowObjectUp_Right or Action.ThrowObjectUp_Left &&
+                    AnimatedObject.CurrentFrame > 6)
+                {
+                    Fsm.ChangeAction(Fsm_ChargeAttack);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
                 break;
         }
     }

@@ -16,11 +16,19 @@ public enum ActorType
     Cage = 13,
     LevelCurtain = 14,
 
+    BreakableDoor = 17, // TODO: Implement
     Keg = 18,
     Barrel = 19,
 
+    GreenPirate = 23, // TODO: Implement
+    BluePirate = 24, // TODO: Implement
+    SilverPirate = 25, // TODO: Implement
+    HelicopterBomb = 26, // TODO: Implement
+
     BarrelSplash = 29,
     Depart = 30,
+
+    Caterpillar = 35, // TODO: Implement
 
     Butterfly = 37,
 
@@ -44,6 +52,8 @@ public enum ActorType
 
     KegDebris = 82,
 
+    BossMachine = 84, // TODO: Implement
+
     MurfyStone = 92,
 
     Teensies = 95,
@@ -52,4 +62,5 @@ public enum ActorType
     Arrive = 101,
 
     MovingUnusedPlatform = 106, // Unused
+    RotatedHelicopterBomb = 107, // TODO: Implement
 }

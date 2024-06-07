@@ -11,11 +11,11 @@ public partial class Keg
     public enum Action
     {
         // TODO: Name the remaining ones
-        Action0 = 0,
+        Idle = 0,
         Fall = 1,
-        Action2 = 2,
-        Action3 = 3,
-        Action4 = 4,
+        ThrownUp = 2,
+        ThrownForward_Right = 3,
+        ThrownForward_Left = 4,
         Action5 = 5,
         Action6 = 6,
         Action7 = 7,
@@ -23,11 +23,11 @@ public partial class Keg
         Action9 = 9,
         Action10 = 10,
         WaitToFall = 11,
-        Action12 = 12,
+        Respawn = 12,
         Action13 = 13,
         Action14 = 14,
         Action15 = 15,
-        Action16 = 16,
+        Drop = 16,
         Action17 = 17,
         Action18 = 18,
     }

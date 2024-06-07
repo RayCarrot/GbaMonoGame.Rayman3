@@ -29,7 +29,7 @@ public partial class LaserShot
                     if (hitActor != null && hitActor != Scene.MainActor)
                     {
                         hitActor.ReceiveDamage(AttackPoints);
-                        hitActor.ProcessMessage(this, Message.Main_Damaged1);
+                        hitActor.ProcessMessage(this, Message.Damaged);
                         Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
                         hitActor.ProcessMessage(this, Message.Hit);
                         
@@ -43,7 +43,7 @@ public partial class LaserShot
                     {
                         Scene.MainActor.ReceiveDamage(AttackPoints);
                         Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
-                        Scene.MainActor.ProcessMessage(this, Message.Main_Damaged1);
+                        Scene.MainActor.ProcessMessage(this, Message.Damaged);
                         
                         if (explosion != null)
                             explosion.Position = Position;

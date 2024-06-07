@@ -598,6 +598,18 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
+    private void OffsetCarryingObject()
+    {
+        if (AttachedObject != null && AttachedObject.Type != (int)ActorType.Keg)
+        {
+            if (AttachedObject.Type == (int)ActorType.Caterpillar)
+                AttachedObject.Position -= new Vector2(0, 16);
+
+            if (IsFacingLeft)
+                AttachedObject.Position -= new Vector2(8, 0);
+        }
+    }
+
     private bool ManageHit()
     {
         if (RSMultiplayer.IsActive || (GameInfo.Cheats & Cheat.Invulnerable) != 0)
@@ -1381,7 +1393,23 @@ public sealed partial class Rayman : MovableActor
                 Fsm.ChangeAction(Fsm_EndMap);
                 return false;
 
-            case Message.Main_Damaged1:
+            case Message.Main_PickUpObject:
+                if (Fsm.EqualsAction(Fsm_Walk) || Fsm.EqualsAction(Fsm_Crawl))
+                {
+                    AttachedObject = (BaseActor)param;
+                    Fsm.ChangeAction(Fsm_PickUpObject);
+                }
+                return false;
+
+            case Message.Main_CatchObject:
+                if (Fsm.EqualsAction(Fsm_Default) || Fsm.EqualsAction(Fsm_Walk))
+                {
+                    AttachedObject = (BaseActor)param;
+                    Fsm.ChangeAction(Fsm_CatchObject);
+                }
+                return false;
+
+            case Message.Damaged:
             case Message.Main_Damaged2:
             case Message.Main_Damaged3:
             case Message.Main_Damaged4:

@@ -32,7 +32,7 @@ public sealed partial class Cage : InteractableActor
 
         switch (message)
         {
-            case Message.Main_Damaged1:
+            case Message.Damaged:
                 BaseActor actor = (BaseActor)param;
                 HitAction = actor.IsFacingLeft ? 3 : 0;
                 Fsm.ChangeAction(Fsm_Damaged);

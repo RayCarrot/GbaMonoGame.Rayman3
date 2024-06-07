@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -66,16 +67,7 @@ public partial class Keg
                     if (Scene.IsHitMainActor(this))
                         Scene.MainActor.ReceiveDamage(AttackPoints);
 
-                    Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
-
-                    if (AnimatedObject.IsFramed)
-                    {
-                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__BangGen1_Mix07);
-                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BangGen1_Mix07);
-                    }
-
-                    if (explosion != null)
-                        explosion.Position = Position - new Vector2(0, 8);
+                    SpawnExplosion(false);
 
                     Position = InitialPos;
                     
@@ -89,6 +81,266 @@ public partial class Keg
         }
     }
 
+    private void Fsm_Idle(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Idle;
+                break;
+
+            case FsmAction.Step:
+                if (Scene.IsDetectedMainActor(this) && ((Rayman)Scene.MainActor).AttachedObject == null)
+                    Scene.MainActor.ProcessMessage(this, Message.Main_PickUpObject, this);
+
+                if (Scene.IsDetectedMainActor(this) && ((Rayman)Scene.MainActor).AttachedObject == this)
+                    Fsm.ChangeAction(Fsm_PickedUp);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_PickedUp(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Idle;
+                break;
+
+            case FsmAction.Step:
+                // Do nothing
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_Drop(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Drop;
+                break;
+
+            case FsmAction.Step:
+                bool landed = false;
+
+                if (IsTouchingMap || Speed.Y == 0)
+                {
+                    SpawnExplosion(true);
+                    landed = true;
+                }
+
+                if (landed && GameInfo.MapId == MapId.BossMachine)
+                {
+                    Fsm.ChangeAction(Fsm_InitBossMachine);
+                    return;
+                }
+
+                if (landed)
+                {
+                    Fsm.ChangeAction(Fsm_Respawn);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_ThrownUp(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.ThrownUp;
+                break;
+
+            case FsmAction.Step:
+                Box detectionBox = GetDetectionBox();
+                Vector2 mapPos = new(Position.X, detectionBox.MaxY);
+
+                if (Scene.IsDetectedMainActor(this) &&
+                    ((Rayman)Scene.MainActor).AttachedObject == null &&
+                    Speed.Y > 0)
+                {
+                    Scene.MainActor.ProcessMessage(this, Message.Main_CatchObject, this);
+                }
+
+                bool landed = IsTouchingMap || Scene.GetPhysicalType(mapPos).IsSolid;
+
+                if (Scene.IsHitActor(this) is { } hitObj)
+                {
+                    if ((ActorType)hitObj.Type is 
+                        ActorType.BossMachine or 
+                        ActorType.Cage)
+                    {
+                        hitObj.ProcessMessage(this, Message.Damaged, this);
+                        landed = true;
+                    }
+                    else if ((ActorType)hitObj.Type is 
+                             ActorType.RedPirate or 
+                             ActorType.SilverPirate or 
+                             ActorType.BluePirate or 
+                             ActorType.GreenPirate or 
+                             ActorType.HelicopterBomb or 
+                             ActorType.RotatedHelicopterBomb)
+                    {
+                        hitObj.ReceiveDamage(50);
+                        hitObj.ProcessMessage(this, Message.Hit, this);
+                        landed = true;
+                    }
+                }
+
+                if (landed)
+                    SpawnExplosion(true);
+
+                if (Scene.IsDetectedMainActor(this) && ((Rayman)Scene.MainActor).AttachedObject == this && Speed.Y > 0)
+                {
+                    Fsm.ChangeAction(Fsm_PickedUp);
+                    return;
+                }
+
+                if (landed && GameInfo.MapId == MapId.BossMachine)
+                {
+                    Fsm.ChangeAction(Fsm_InitBossMachine);
+                    return;
+                }
+
+                if (landed)
+                {
+                    Fsm.ChangeAction(Fsm_Respawn);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_ThrownForward(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Scene.MainActor.IsFacingRight ? Action.ThrownForward_Right : Action.ThrownForward_Left;
+                break;
+
+            case FsmAction.Step:
+                bool landed = false;
+                if (Scene.IsHitActor(this) is { } hitObj)
+                {
+                    if ((ActorType)hitObj.Type is 
+                        ActorType.BreakableDoor or 
+                        ActorType.BossMachine or 
+                        ActorType.Cage)
+                    {
+                        hitObj.ProcessMessage(this, Message.Damaged);
+                        landed = true;
+                    }
+                    else if ((ActorType)hitObj.Type is 
+                             ActorType.RedPirate or 
+                             ActorType.SilverPirate or 
+                             ActorType.BluePirate or 
+                             ActorType.GreenPirate or 
+                             ActorType.HelicopterBomb or 
+                             ActorType.RotatedHelicopterBomb)
+                    {
+                        hitObj.ReceiveDamage(50);
+                        hitObj.ProcessMessage(this, Message.Hit, this);
+                        landed = true;
+                    }
+                }
+
+                if (IsTouchingMap)
+                    landed = true;
+
+                if (landed)
+                    SpawnExplosion(true);
+
+                if (landed && GameInfo.MapId == MapId.BossMachine)
+                {
+                    Fsm.ChangeAction(Fsm_InitBossMachine);
+                    return;
+                }
+
+                if (landed)
+                {
+                    Fsm.ChangeAction(Fsm_Respawn);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_Respawn(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                Position = InitialPos;
+                Timer = 0;
+                ActionId = Action.Respawn;
+                break;
+
+            case FsmAction.Step:
+                Position = InitialPos;
+                Timer++;
+
+                if (ActionId != Action.Idle && Timer > 180)
+                {
+                    // Respawn if no linked objects, or a linked object is alive
+                    bool shouldRespawn = true;
+                    foreach (byte? link in Links)
+                    {
+                        if (link == null)
+                            break;
+
+                        shouldRespawn = false;
+
+                        if (Scene.GetGameObject(link.Value).IsEnabled)
+                        {
+                            shouldRespawn = true;
+                            break;
+                        }
+                    }
+
+                    if (shouldRespawn)
+                        ActionId = Action.Idle;
+                    else
+                        ProcessMessage(this, Message.Destroy);
+                }
+                else if (ActionId == Action.Idle && Timer == 182 && AnimatedObject.IsFramed)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
+                }
+
+                if (Timer > 240)
+                    Fsm.ChangeAction(Fsm_Idle);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     // TODO: Implement
-    private void FUN_08063bd4(FsmAction action) { }
+    private void Fsm_InitBossMachine(FsmAction action) { }
+    private void FUN_08063fe4(FsmAction action) { }
 }

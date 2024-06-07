@@ -36,8 +36,12 @@ public enum Message
     Main_CollectedBigBlueLum = 1016,
 
     Main_LevelEnd = 1019,
-
-    Main_Damaged1 = 1025,
+    Main_PickUpObject = 1020,
+    Main_CatchObject = 1021,
+    ThrowObjectUp = 1022,
+    ThrowObjectForward = 1023,
+    DropObject = 1024,
+    Damaged = 1025,
 
     Cam_1027 = 1027, // TODO: Name
 
