@@ -630,7 +630,8 @@ public sealed partial class Rayman : MovableActor
 
             if (AttachedObject != null)
             {
-                // TODO: If keg, sphere or caterpillar then send message
+                if ((ActorType)AttachedObject.Type is ActorType.Keg or ActorType.Caterpillar or ActorType.Sphere)
+                    AttachedObject.ProcessMessage(this, Message.DropObject);
                 AttachedObject = null;
             }
 
@@ -1149,7 +1150,8 @@ public sealed partial class Rayman : MovableActor
 
             if (AttachedObject != null)
             {
-                // TODO: If keg, sphere or caterpillar then send message
+                if ((ActorType)AttachedObject.Type is ActorType.Keg or ActorType.Caterpillar or ActorType.Sphere)
+                    AttachedObject.ProcessMessage(this, Message.DropObject);
                 AttachedObject = null;
             }
 
@@ -1437,10 +1439,8 @@ public sealed partial class Rayman : MovableActor
                 else if (message == Message.Main_Damaged4)
                     Flag1_C = true;
 
-                if (AttachedObject != null)
-                {
-                    // TODO: If keg, sphere or caterpillar then send message
-                }
+                if (AttachedObject != null && (ActorType)AttachedObject.Type is ActorType.Keg or ActorType.Caterpillar or ActorType.Sphere)
+                    AttachedObject.ProcessMessage(this, Message.DropObject);
 
                 AttachedObject = (BaseActor)sender;
 

@@ -20,6 +20,8 @@ public enum ActorType
     Keg = 18,
     Barrel = 19,
 
+    Sphere = 21,
+
     GreenPirate = 23, // TODO: Implement
     BluePirate = 24, // TODO: Implement
     SilverPirate = 25, // TODO: Implement

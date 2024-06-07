@@ -3482,7 +3482,7 @@ public partial class Rayman
 
                 if (AttachedObject != null)
                 {
-                    AttachedObject.ProcessMessage(this, (Message)1024); // TODO: Implement
+                    AttachedObject.ProcessMessage(this, Message.DropObject);
                     AttachedObject = null;
                 }
                 break;
