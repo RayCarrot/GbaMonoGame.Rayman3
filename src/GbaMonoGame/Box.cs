@@ -60,7 +60,26 @@ public readonly struct Box
     public Box Offset(Vector2 offset) => new(MinX + offset.X, MinY + offset.Y, MaxX + offset.X, MaxY + offset.Y);
     public Box FlipX() => new(MaxX * -1, MinY, MinX * -1, MaxY);
     public Box FlipY() => new(MinX, MaxY * -1, MaxX, MinX * -1);
-    public bool Intersects(Box otherBox) => otherBox.MinX < MaxX && MinX < otherBox.MaxX && otherBox.MinY < MaxY && MinY < otherBox.MaxY;
+    public bool Intersects(Box otherBox)
+    {
+        float largestXMin = otherBox.MinX;
+        if (largestXMin < MinX)
+            largestXMin = MinX;
+
+        float largestYMin = otherBox.MinY;
+        if (largestYMin < MinY)
+            largestYMin = MinY;
+
+        float smallestXMax = otherBox.MaxX;
+        if (MaxX < smallestXMax)
+            smallestXMax = MaxX;
+
+        float smallestYMax = otherBox.MaxY;
+        if (MaxY < smallestYMax)
+            smallestYMax = MaxY;
+
+        return largestXMin < smallestXMax && largestYMin < smallestYMax;
+    }
     public bool Contains(Vector2 position) => MinX <= position.X && position.X < MaxX && MinY <= position.Y && position.Y < MaxY;
 
     public Rectangle ToRectangle() => new((int)MinX, (int)MinY, (int)Width, (int)Height);
