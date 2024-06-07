@@ -9,7 +9,7 @@ public sealed partial class RaymanBody : MovableActor
     {
         Rayman = Scene.MainActor;
         AnimatedObject.YPriority = 18;
-        State.MoveTo(Fsm_Wait);
+        State.SetTo(Fsm_Wait);
     }
 
     public MovableActor Rayman { get; set; }

@@ -14,19 +14,19 @@ public sealed partial class Keg : MovableActor
 
         if ((Action)actorResource.FirstActionId == Action.Fall)
         {
-            State.MoveTo(Fsm_WaitingToFall);
+            State.SetTo(Fsm_WaitingToFall);
             InitialPos = Position;
             Timer = 0;
         }
         else if (GameInfo.MapId == MapId.BossMachine)
         {
-            State.MoveTo(Fsm_InitBossMachine);
+            State.SetTo(Fsm_InitBossMachine);
             InitialPos = Position;
             Timer = 30;
         }
         else
         {
-            State.MoveTo(Fsm_Idle);
+            State.SetTo(Fsm_Idle);
             InitialPos = Position;
         }
     }

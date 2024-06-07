@@ -12,7 +12,7 @@ public class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller(Scene2D scene) : base(scene)
     {
-        State.MoveTo(Fsm_Default);
+        State.SetTo(Fsm_Default);
 
         TargetY = 120;
         field20_0x32 = 1;

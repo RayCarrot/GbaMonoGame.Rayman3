@@ -68,7 +68,7 @@ public sealed partial class Rayman : MovableActor
             }
         }
 
-        State.MoveTo(Fsm_LevelStart);
+        State.SetTo(Fsm_LevelStart);
     }
 
     public ActorResource Resource { get; }

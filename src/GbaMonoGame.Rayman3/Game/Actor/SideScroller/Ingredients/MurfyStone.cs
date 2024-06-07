@@ -9,7 +9,7 @@ public sealed partial class MurfyStone : BaseActor
         MurfyId = actorResource.Links[0];
         AnimatedObject.YPriority = 63;
         Timer = 181;
-        State.MoveTo(Fsm_Default);
+        State.SetTo(Fsm_Default);
     }
 
     public int? MurfyId { get; }

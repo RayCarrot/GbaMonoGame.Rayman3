@@ -8,7 +8,7 @@ public sealed partial class BreakableDoor : InteractableActor
     public BreakableDoor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.YPriority = 63;
-        State.MoveTo(Fsm_Idle);
+        State.SetTo(Fsm_Idle);
     }
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)

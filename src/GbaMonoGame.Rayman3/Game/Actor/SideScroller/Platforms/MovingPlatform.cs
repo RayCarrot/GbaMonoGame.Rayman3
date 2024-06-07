@@ -231,11 +231,11 @@ public sealed partial class MovingPlatform : MovableActor
 
         // Only the normal move state is used in the game
         if (InitialAction is Action.Unused_Left or Action.Unused_Right or Action.Unused_Up or Action.Unused_Down)
-            State.MoveTo(null);
+            State.SetTo(null);
         else if (InitialAction is Action.MoveAccelerated_Left or Action.MoveAccelerated_Right or Action.MoveAccelerated_Up or Action.MoveAccelerated_Down)
-            State.MoveTo(Fsm_MoveAccelerated);
+            State.SetTo(Fsm_MoveAccelerated);
         else
-            State.MoveTo(Fsm_Move);
+            State.SetTo(Fsm_Move);
     }
 
     public void Destroy()

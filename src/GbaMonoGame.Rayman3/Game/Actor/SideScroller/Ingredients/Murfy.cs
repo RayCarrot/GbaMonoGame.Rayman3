@@ -16,7 +16,7 @@ public sealed partial class Murfy : MovableActor
         if (Engine.Settings.Platform == Platform.NGage)
             NGage_Byte_8E = 1;
 
-        State.MoveTo(Fsm_PreInit);
+        State.SetTo(Fsm_PreInit);
     }
 
     public BaseActor TargetActor { get; set; }

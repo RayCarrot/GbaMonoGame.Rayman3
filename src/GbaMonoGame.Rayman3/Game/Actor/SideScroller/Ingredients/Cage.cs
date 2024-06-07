@@ -12,7 +12,7 @@ public sealed partial class Cage : InteractableActor
         CageId = GameInfo.LoadedCages;
         GameInfo.LoadedCages++;
 
-        State.MoveTo(Fsm_Idle);
+        State.SetTo(Fsm_Idle);
 
         if (GameInfo.HasCollectedCage(CageId, GameInfo.MapId))
             ProcessMessage(this, Message.Destroy);

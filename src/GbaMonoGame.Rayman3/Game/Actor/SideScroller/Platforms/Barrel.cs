@@ -30,7 +30,7 @@ public sealed partial class Barrel : MovableActor
         BarrelSplash = null;
         LastHitBodyPartType = null;
 
-        State.MoveTo(Fsm_WaitForHit);
+        State.SetTo(Fsm_WaitForHit);
     }
 
     public bool MoveOnWater { get; }

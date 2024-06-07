@@ -20,13 +20,13 @@ public sealed partial class ChainedSparkles : BaseActor
         {
             AreSparklesFacingLeft = true;
             field13_0x38 = 0xFFFF;
-            State.MoveTo(FUN_08060f58);
+            State.SetTo(FUN_08060f58);
         }
         else
         {
             AreSparklesFacingLeft = false;
             field13_0x38 = 360;
-            State.MoveTo(FUN_08060930);
+            State.SetTo(FUN_08060930);
         }
     }
 

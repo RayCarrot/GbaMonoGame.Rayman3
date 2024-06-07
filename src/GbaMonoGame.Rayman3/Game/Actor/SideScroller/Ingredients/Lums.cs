@@ -68,7 +68,7 @@ public sealed partial class Lums : BaseActor
 
         if (!RSMultiplayer.IsActive)
         {
-            State.MoveTo(Fsm_Idle);
+            State.SetTo(Fsm_Idle);
 
             if (ActionId == Action.GreenLum)
             {
@@ -81,7 +81,7 @@ public sealed partial class Lums : BaseActor
         }
         else
         {
-            State.MoveTo(FUN_0805e844);
+            State.SetTo(FUN_0805e844);
             BossDespawnTimer = -1;
             LumId = instanceId;
             MultiplayerInfo.TagInfo.SaveLumPosition(instanceId, actorResource);

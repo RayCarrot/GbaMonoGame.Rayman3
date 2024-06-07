@@ -7,7 +7,7 @@ public sealed partial class BouncyPlatform : InteractableActor
     public BouncyPlatform(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         HasTrap = actorResource.FirstActionId != 0;
-        State.MoveTo(Fsm_Idle);
+        State.SetTo(Fsm_Idle);
     }
 
     public bool HasTrap { get; }
