@@ -386,7 +386,8 @@ public class Scene2D
                 continue;
 
             // Check for collision
-            if (actorToCheck.ReceivesDamage && 
+            if (actorToCheck != actor && 
+                actorToCheck.ReceivesDamage && 
                 actorToCheck is InteractableActor interactableActor && 
                 interactableActor.GetVulnerabilityBox().Intersects(attackBox))
                 return interactableActor;
