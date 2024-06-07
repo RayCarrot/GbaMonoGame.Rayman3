@@ -26,7 +26,7 @@ public partial class RedPirate
         }
 
         // Taken damage
-        if (HitPoints < PrevHitPoints && !State.EqualsState(Fsm_Hit))
+        if (HitPoints < PrevHitPoints && State != Fsm_Hit)
         {
             PrevHitPoints = HitPoints;
             State.MoveTo(Fsm_Hit);

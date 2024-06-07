@@ -355,15 +355,15 @@ public class TextBoxDialog : Dialog
 
     public void MoveToNextText()
     {
-        if (State.EqualsState(Fsm_WaitForNextText))
+        if (State == Fsm_WaitForNextText)
             NextText = true;
     }
 
-    public bool CanSkip() => State.EqualsState(Fsm_WaitForNextText);
+    public bool CanSkip() => State == Fsm_WaitForNextText;
 
     public void Skip()
     {
-        if (!State.EqualsState(Fsm_WaitForNextText))
+        if (State != Fsm_WaitForNextText)
             return;
 
         CurrentTextLine = 0;

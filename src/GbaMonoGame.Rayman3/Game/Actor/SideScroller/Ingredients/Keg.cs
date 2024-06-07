@@ -80,7 +80,7 @@ public sealed partial class Keg : MovableActor
                 return false;
 
             case Message.DropObject:
-                if (!State.EqualsState(FUN_08063fe4))
+                if (State != FUN_08063fe4)
                     State.MoveTo(Fsm_Drop);
                 return false;
 
@@ -107,7 +107,7 @@ public sealed partial class Keg : MovableActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (State.EqualsState(Fsm_Respawn))
+        if (State == Fsm_Respawn)
         {
             AnimatedObject.IsFramed = Timer > 180 && 
                                       Scene.Camera.IsActorFramed(this) &&

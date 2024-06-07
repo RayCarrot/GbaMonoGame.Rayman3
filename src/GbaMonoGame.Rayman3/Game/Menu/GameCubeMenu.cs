@@ -812,12 +812,12 @@ public class GameCubeMenu : Frame
             foreach (SpriteTextObject text in Data.ReusableTexts)
                 AnimationPlayer.Play(text);
         }
-        else if (State.EqualsState(Fsm_DownloadMap))
+        else if (State == Fsm_DownloadMap)
         {
             AnimationPlayer.Play(Data.ReusableTexts[0]);
             AnimationPlayer.Play(Data.ReusableTexts[1]);
         }
-        else if (State.EqualsState(Fsm_SelectMap))
+        else if (State == Fsm_SelectMap)
         {
             if (IsShowingLyChallengeUnlocked)
             {
@@ -837,7 +837,7 @@ public class GameCubeMenu : Frame
 
         AnimationPlayer.Play(Data.TotalLumsText);
 
-        if (WaitingForConnection || State.EqualsState(Fsm_DownloadMap) || State.EqualsState(Fsm_SelectMap) || State.EqualsState(Fsm_DownloadMapAck))
+        if (WaitingForConnection || State == Fsm_DownloadMap || State == Fsm_SelectMap || State == Fsm_DownloadMapAck)
             AnimationPlayer.Play(Data.StatusText);
 
         TransitionsFX.StepAll();

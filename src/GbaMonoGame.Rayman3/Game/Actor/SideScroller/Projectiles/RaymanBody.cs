@@ -42,7 +42,7 @@ public sealed partial class RaymanBody : MovableActor
         switch (message)
         {
             case Message.RaymanBody_FinishedAttack:
-                if (!State.EqualsState(Fsm_MoveBackwards))
+                if (State != Fsm_MoveBackwards)
                 {
                     if (BodyPartType == RaymanBodyPartType.Torso)
                         ActionId = IsFacingRight ? 15 : 16;

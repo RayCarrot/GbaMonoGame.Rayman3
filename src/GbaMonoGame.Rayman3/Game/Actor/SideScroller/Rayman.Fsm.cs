@@ -64,38 +64,38 @@ public partial class Rayman
         }
 
         if (IsLocalPlayer &&
-            !State.EqualsState(Fsm_Jump) &&
-            !State.EqualsState(FUN_0802ce54) &&
-            !State.EqualsState(FUN_080284ac) &&
-            !State.EqualsState(FUN_08033b34) &&
-            !State.EqualsState(FUN_080287d8) &&
+            State != Fsm_Jump &&
+            State != FUN_0802ce54 &&
+            State != FUN_080284ac &&
+            State != FUN_08033b34 &&
+            State != FUN_080287d8 &&
             !IsInFrontOfLevelCurtain)
         {
             Message message;
 
-            if (!State.EqualsState(FUN_0802ddac) &&
+            if (State != FUN_0802ddac &&
                 CheckInput(GbaInput.Down) &&
-                (Speed.Y > 0 || State.EqualsState(Fsm_Crouch)) &&
-                !State.EqualsState(Fsm_Climb))
+                (Speed.Y > 0 || State == Fsm_Crouch) &&
+                State != Fsm_Climb)
             {
                 field18_0x93 = 70;
                 message = Message.Cam_1040;
             }
-            else if (CheckInput(GbaInput.Up) && (State.EqualsState(Fsm_Default) || State.EqualsState(Fsm_HangOnEdge)))
+            else if (CheckInput(GbaInput.Up) && (State == Fsm_Default || State == Fsm_HangOnEdge))
             {
                 field18_0x93 = 160;
                 message = Message.Cam_1040;
             }
-            else if (State.EqualsState(Fsm_Helico) && field27_0x9c == 0)
+            else if (State == Fsm_Helico && field27_0x9c == 0)
             {
                 message = Message.Cam_1039;
             }
-            else if (State.EqualsState(Fsm_Swing))
+            else if (State == Fsm_Swing)
             {
                 field18_0x93 = 65;
                 message = Message.Cam_1040;
             }
-            else if (State.EqualsState(Fsm_Climb) || State.EqualsState(FUN_0802ddac))
+            else if (State == Fsm_Climb || State == FUN_0802ddac)
             {
                 field18_0x93 = 112;
                 message = Message.Cam_1040;
@@ -128,10 +128,10 @@ public partial class Rayman
     private bool FsmStep_DoInTheAir()
     {
         if (ManageHit() &&
-            (State.EqualsState(Fsm_StopHelico) ||
-             State.EqualsState(Fsm_Helico) ||
-             State.EqualsState(Fsm_Jump) ||
-             State.EqualsState(Fsm_JumpSlide)) &&
+            (State == Fsm_StopHelico ||
+             State == Fsm_Helico ||
+             State == Fsm_Jump ||
+             State == Fsm_JumpSlide) &&
             ActionId is not (
                 Action.Damage_Knockback_Right or
                 Action.Damage_Knockback_Left or

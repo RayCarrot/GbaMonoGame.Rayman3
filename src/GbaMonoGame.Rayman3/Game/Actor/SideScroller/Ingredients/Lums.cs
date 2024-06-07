@@ -159,7 +159,7 @@ public sealed partial class Lums : BaseActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (!State.EqualsState(FUN_0805ed40) && !State.EqualsState(FUN_0805e6b8) && !State.EqualsState(FUN_0805e83c))
+        if (State != FUN_0805ed40 && State != FUN_0805e6b8 && State != FUN_0805e83c)
         {
             if (Scene.Camera.IsActorFramed(this))
             {

@@ -1,6 +1,8 @@
 ﻿namespace GbaMonoGame;
 
+#pragma warning disable CS0660, CS0661
 public class FiniteStateMachine
+#pragma warning restore CS0660, CS0661
 {
     private Fsm CurrentState { get; set; }
 
@@ -30,9 +32,17 @@ public class FiniteStateMachine
         CurrentState?.Invoke(FsmAction.Step);
     }
 
-    public bool EqualsState(Fsm state)
+    public static bool operator ==(FiniteStateMachine stateMachine, Fsm state)
     {
-        return CurrentState == state;
+        if (stateMachine is null)
+            return false;
+
+        return stateMachine.CurrentState == state;
+    }
+
+    public static bool operator !=(FiniteStateMachine stateMachine, Fsm state)
+    {
+        return !(stateMachine == state);
     }
 
     public delegate void Fsm(FsmAction action);

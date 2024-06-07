@@ -155,7 +155,7 @@ public sealed partial class Murfy : MovableActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (State.EqualsState(Fsm_Init))
+        if (State == Fsm_Init)
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__MurfHeli_Mix01);
         }

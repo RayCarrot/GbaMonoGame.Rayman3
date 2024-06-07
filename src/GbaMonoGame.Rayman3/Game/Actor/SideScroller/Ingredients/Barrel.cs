@@ -59,9 +59,9 @@ public sealed partial class Barrel : MovableActor
                     State.MoveTo(Fsm_FallIntoWater);
                 }
 
-                if (State.EqualsState(Fsm_WaitForHit))
+                if (State == Fsm_WaitForHit)
                     LastHitBodyPartType = bodyPartType;
-                else if (State.EqualsState(Fsm_Hit) && bodyPartType != LastHitBodyPartType)
+                else if (State == Fsm_Hit && bodyPartType != LastHitBodyPartType)
                     // In the game this is 0xFE and 0xFF is null, but we use -1 since we just need a different value
                     LastHitBodyPartType = (RaymanBody.RaymanBodyPartType?)-1;
 

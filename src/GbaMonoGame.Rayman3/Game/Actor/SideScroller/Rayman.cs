@@ -124,7 +124,7 @@ public sealed partial class Rayman : MovableActor
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; } // Bool?
 
-    public bool IsInDefaultState => State.EqualsState(Fsm_Default);
+    public bool IsInDefaultState => State == Fsm_Default;
 
     // Disable collision when debug mode is on
     public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
@@ -1144,7 +1144,7 @@ public sealed partial class Rayman : MovableActor
 
         if (HitPoints == 0 || type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.Lava or PhysicalTypeValue.Water or PhysicalTypeValue.MoltenLava)
         {
-            if (State.EqualsState(FUN_080284ac) && type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
+            if (State == FUN_080284ac && type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
                 return false;
 
             if (AttachedObject != null)
@@ -1296,9 +1296,9 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_LinkMovement:
-                if (!State.EqualsState(Fsm_Dying))
+                if (State != Fsm_Dying)
                 {
-                    if (State.EqualsState(Fsm_Jump) && Speed.Y < 1)
+                    if (State == Fsm_Jump && Speed.Y < 1)
                         return false;
 
                     MovableActor actorToLink = ((MovableActor)param);
@@ -1310,7 +1310,7 @@ public sealed partial class Rayman : MovableActor
                         Position = new Vector2(Position.X, actorToLinkBox.MinY);
                     }
 
-                    if (State.EqualsState(Fsm_HangOnEdge))
+                    if (State == Fsm_HangOnEdge)
                         State.MoveTo(Fsm_Default);
                 }
                 return false;
@@ -1323,17 +1323,17 @@ public sealed partial class Rayman : MovableActor
             case Message.Main_BeginBounce:
                 if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                 {
-                    if (State.EqualsState(Fsm_Swing) || 
-                        State.EqualsState(Fsm_Dying) || 
-                        State.EqualsState(FUN_1005dea0) || 
-                        State.EqualsState(FUN_1005dfa4) || 
-                        State.EqualsState(FUN_1005e04c))
+                    if (State == Fsm_Swing || 
+                        State == Fsm_Dying || 
+                        State == FUN_1005dea0 || 
+                        State == FUN_1005dfa4 || 
+                        State == FUN_1005e04c)
                         return false;
                 }
                 else
                 {
-                    if (State.EqualsState(Fsm_Swing) || 
-                        State.EqualsState(Fsm_Dying))
+                    if (State == Fsm_Swing || 
+                        State == Fsm_Dying)
                         return false;
                 }
 
@@ -1341,7 +1341,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_Bounce:
-                if (State.EqualsState(Fsm_Bounce))
+                if (State == Fsm_Bounce)
                 {
                     Flag1_5 = true;
                     return false;
@@ -1349,9 +1349,9 @@ public sealed partial class Rayman : MovableActor
 
                 if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                 {
-                    if (State.EqualsState(FUN_1005dea0) ||
-                        State.EqualsState(FUN_1005dfa4) ||
-                        State.EqualsState(FUN_1005e04c))
+                    if (State == FUN_1005dea0 ||
+                        State == FUN_1005dfa4 ||
+                        State == FUN_1005e04c)
                         return false;
                 }
 
@@ -1394,7 +1394,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_PickUpObject:
-                if (State.EqualsState(Fsm_Walk) || State.EqualsState(Fsm_Crawl))
+                if (State == Fsm_Walk || State == Fsm_Crawl)
                 {
                     AttachedObject = (BaseActor)param;
                     State.MoveTo(Fsm_PickUpObject);
@@ -1402,7 +1402,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_CatchObject:
-                if (State.EqualsState(Fsm_Default) || State.EqualsState(Fsm_Walk))
+                if (State == Fsm_Default || State == Fsm_Walk)
                 {
                     AttachedObject = (BaseActor)param;
                     State.MoveTo(Fsm_CatchObject);
@@ -1413,7 +1413,7 @@ public sealed partial class Rayman : MovableActor
             case Message.Main_Damaged2:
             case Message.Main_Damaged3:
             case Message.Main_Damaged4:
-                if (State.EqualsState(Fsm_HitKnockback) || State.EqualsState(Fsm_Dying) || State.EqualsState(Fsm_EndMap) || InvulnerabilityDuration != 0)
+                if (State == Fsm_HitKnockback || State == Fsm_Dying || State == Fsm_EndMap || InvulnerabilityDuration != 0)
                     return false;
 
                 if (LinkedMovementActor != null)
@@ -1444,7 +1444,7 @@ public sealed partial class Rayman : MovableActor
 
                 AttachedObject = (BaseActor)sender;
 
-                if (State.EqualsState(Fsm_Climb))
+                if (State == Fsm_Climb)
                     Flag2_1 = true;
 
                 State.MoveTo(Fsm_HitKnockback);
@@ -1468,7 +1468,7 @@ public sealed partial class Rayman : MovableActor
                 AttachedObject = (BaseActor)param;
                 BaseActor senderObj = (BaseActor)sender;
 
-                if (State.EqualsState(Fsm_Swing))
+                if (State == Fsm_Swing)
                     return false;
 
                 if (Position.X < senderObj.Position.X)
@@ -1486,7 +1486,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_AllowCoyoteJump:
-                if (!State.EqualsState(Fsm_Jump) && !State.EqualsState(Fsm_JumpSlide))
+                if (State != Fsm_Jump && State != Fsm_JumpSlide)
                     CanSafetyJump = true;
                 return false;
 
@@ -1495,7 +1495,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_ExitCutscene:
-                if (State.EqualsState(FUN_08027b80) || State.EqualsState(Fsm_Cutscene))
+                if (State == FUN_08027b80 || State == Fsm_Cutscene)
                 {
                     if (IsOnClimbableVertical() != 0)
                         State.MoveTo(Fsm_Climb);
@@ -1505,7 +1505,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_EnterLevelCurtain:
-                if (!State.EqualsState(Fsm_EnterLevelCurtain))
+                if (State != Fsm_EnterLevelCurtain)
                     State.MoveTo(Fsm_EnterLevelCurtain);
                 return false;
 
@@ -1522,7 +1522,7 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_LockedLevelCurtain:
-                if (!State.EqualsState(Fsm_LockedLevelCurtain))
+                if (State != Fsm_LockedLevelCurtain)
                     State.MoveTo(Fsm_LockedLevelCurtain);
                 return false;
 
