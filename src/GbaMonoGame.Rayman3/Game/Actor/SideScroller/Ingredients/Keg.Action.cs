@@ -28,7 +28,7 @@ public partial class Keg
         Action14 = 14,
         Action15 = 15,
         Drop = 16,
-        Action17 = 17,
-        Action18 = 18,
+        EjectFromDispenser = 17,
+        Bounce = 18,
     }
 }

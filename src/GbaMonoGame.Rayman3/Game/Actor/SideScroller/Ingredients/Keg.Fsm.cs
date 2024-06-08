@@ -1,4 +1,6 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -77,6 +79,55 @@ public partial class Keg
 
             case FsmAction.UnInit:
                 Timer = 0;
+                break;
+        }
+    }
+
+    private void Fsm_InitBossMachine(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                Timer = 0;
+                AnimatedObject.SpritePriority = 3;
+                ActionId = Action.Respawn;
+
+                if (Engine.Settings.Platform == Platform.GBA)
+                    Position = new Vector2(63, 86);
+                else if (Engine.Settings.Platform == Platform.NGage)
+                    Position = new Vector2(63, 134);
+                else
+                    throw new UnsupportedPlatformException();
+                break;
+            
+            case FsmAction.Step:
+                Timer++;
+
+                if (Timer == 60 &&
+                    // TODO: This is probably a typo in the game code. On GBA this has been optimized away since it's
+                    //       always 0. Most likely it should check the position of the main actor. But then it wouldn't
+                    //       work since this only happens when timer is 60, which is only once...
+                    Math.Abs(Position.X - Position.X) < 180)
+                {
+                    ActionId = Action.EjectFromDispenser;
+                }
+                else if (ActionId == Action.EjectFromDispenser && Speed.Y == 0)
+                {
+                    if (AnimatedObject.IsFramed)
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__WoodImp_Mix03);
+
+                    ActionId = Action.Bounce;
+                    Timer = 0;
+                }
+
+                if (Timer != 0 && ActionId == Action.Bounce && Speed.Y == 0)
+                    State.MoveTo(Fsm_Idle);
+                break;
+
+            case FsmAction.UnInit:
+                if (AnimatedObject.IsFramed)
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__WoodImp_Mix03);
+                AnimatedObject.SpritePriority = 1;
                 break;
         }
     }
@@ -341,6 +392,5 @@ public partial class Keg
     }
 
     // TODO: Implement
-    private void Fsm_InitBossMachine(FsmAction action) { }
     private void FUN_08063fe4(FsmAction action) { }
 }
