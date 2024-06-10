@@ -85,6 +85,8 @@ public class Scene2D
     public bool Flag_5 { get; set; }
     public bool NGage_Flag_6 { get; set; }
 
+    public Vector2 Resolution => Playfield.Camera.Resolution;
+
     public MovableActor MainActor => (MovableActor)(RSMultiplayer.IsActive ? GetGameObject(RSMultiplayer.MachineId) : GetGameObject(0));
 
     // TODO: This causes ResurrectActors to stop working. Perhaps we should still use

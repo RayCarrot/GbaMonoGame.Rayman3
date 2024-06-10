@@ -84,9 +84,9 @@ public static class LevelMusicManager
     public static void PlaySpecialMusicIfDetected(GameObject obj)
     {
         Box objBox = new(
-            minX: obj.Position.X - Engine.ScreenCamera.Resolution.X,
-            minY: obj.Position.Y - Engine.ScreenCamera.Resolution.Y / 2,
-            maxX: obj.Position.X + Engine.ScreenCamera.Resolution.X,
+            minX: obj.Position.X - Engine.GameViewPort.OriginalGameResolution.X,
+            minY: obj.Position.Y - Engine.GameViewPort.OriginalGameResolution.Y / 2,
+            maxX: obj.Position.X + Engine.GameViewPort.OriginalGameResolution.X,
             maxY: obj.Position.Y + 5);
 
         if (Flag_0)

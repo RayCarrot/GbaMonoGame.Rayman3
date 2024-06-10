@@ -137,7 +137,6 @@ public class KnotManager
             knot = Knots[knotX + knotY * KnotsWidth];
         }
 
-
         if (knot == CurrentKnot)
             return false;
 

@@ -46,7 +46,7 @@ public class TgxCamera2D : TgxCamera
                 Vector2 scrollFactor;
 
                 // If it's not scaled to the main playfield camera we have to update the scroll factor
-                if (cluster.Camera != this && Engine.ScreenCamera.Resolution != Engine.GameViewPort.OriginalGameResolution)
+                if (cluster.Camera != this && Engine.GameViewPort.GameResolution != Engine.GameViewPort.OriginalGameResolution)
                 {
                     // Determine if the cluster wraps horizontally. We assume that none of them wrap vertically.
                     bool wrapX = cluster.GetLayers().Any(x => x.PixelWidth < cluster.Size.X);

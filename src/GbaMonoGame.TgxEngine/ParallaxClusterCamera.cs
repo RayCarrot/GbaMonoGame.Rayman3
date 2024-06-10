@@ -18,9 +18,9 @@ public class ParallaxClusterCamera : GfxCamera
         // most closely matches how they were meant to be rendered. But since you can
         // play in higher internal resolution (like for widescreen) we have to make
         // sure it doesn't exceed the size of the smallest tile layer.
-        Vector2 res = Engine.ScreenCamera.Resolution;
+        Vector2 res = Engine.GameViewPort.GameResolution;
 
-        if (Engine.ScreenCamera.Resolution == Engine.GameViewPort.OriginalGameResolution)
+        if (Engine.GameViewPort.GameResolution == Engine.GameViewPort.OriginalGameResolution)
             return res;
 
         float maxX = Cluster.GetLayers().Min(x => x.PixelWidth);
@@ -43,7 +43,7 @@ public class ParallaxClusterCamera : GfxCamera
                 res = new Vector2(maxY * res.X / res.Y, maxY);
         }
 
-        if (res != Engine.ScreenCamera.Resolution)
+        if (res != Engine.GameViewPort.GameResolution)
             Logger.Debug("Set cluster with size {0} camera resolution to {1}", Cluster.Size, res);
 
         return res;

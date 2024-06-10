@@ -85,7 +85,7 @@ public class CircleWindowEffectObject : EffectObject
             DrawCirclePart(tex, pos + new Vector2(Radius, Radius), true, true); // Bottom-right
         }
 
-        Vector2 res = Engine.ScreenCamera.Resolution;
+        Vector2 res = Engine.GameViewPort.GameResolution;
 
         // Draw black around circle to fill screen
         DrawRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top

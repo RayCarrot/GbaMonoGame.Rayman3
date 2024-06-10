@@ -40,9 +40,9 @@ public sealed partial class CameraSideScroller : CameraActor2D
 
     // Handle scaling by centering the target offsets within the new scaled view area
     private float ScaledHorizontalOffset => HorizontalOffset +
-                                            (Scene.Playfield.Camera.Resolution.X - Engine.GameViewPort.GameResolution.X) / 2;
+                                            (Scene.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
     private float ScaledTargetY => TargetY + 
-                                   (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y) / 2;
+                                   (Scene.Resolution.Y - Engine.GameViewPort.OriginalGameResolution.Y) / 2;
     
     public float HorizontalOffset { get; set; }
     public float TargetX { get; set; }
@@ -66,7 +66,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
     private void UpdateTargetX()
     {
         if (LinkedObject.IsFacingLeft)
-            TargetX = Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset;
+            TargetX = Scene.Resolution.X - ScaledHorizontalOffset;
         else
             TargetX = ScaledHorizontalOffset;
     }
@@ -169,7 +169,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
 
             case Message.Cam_MoveToLinkedObject:
                 float xOffset = LinkedObject.IsFacingLeft
-                    ? Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset
+                    ? Scene.Resolution.X - ScaledHorizontalOffset
                     : ScaledHorizontalOffset;
                 float yOffset = TargetY;
 
@@ -228,7 +228,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
         {
             pos = LinkedObject.Position;
         }
-        else if (LinkedObject.Position.X < Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < Scene.Resolution.X - ScaledHorizontalOffset && LinkedObject.IsFacingLeft)
         {
             pos = LinkedObject.Position;
         }
@@ -243,7 +243,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
             else
             {
                 if (LinkedObject.IsFacingLeft)
-                    xOffset = ScaledHorizontalOffset - Scene.Playfield.Camera.Resolution.X;
+                    xOffset = ScaledHorizontalOffset - Scene.Resolution.X;
                 else
                     xOffset = -ScaledHorizontalOffset;
             }

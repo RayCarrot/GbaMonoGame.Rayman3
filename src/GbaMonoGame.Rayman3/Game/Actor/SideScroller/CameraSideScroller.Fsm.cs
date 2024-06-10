@@ -73,8 +73,8 @@ public partial class CameraSideScroller
                              ScaledHorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
                              ScaledHorizontalOffset <= LinkedObject.ScreenPosition.X) ||
                           (LinkedObject.IsFacingLeft &&
-                           Scene.Playfield.Camera.Resolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
-                           Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
+                           Scene.Resolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
+                           Scene.Resolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
                         {
                             // If timer is greater than 2, slow down the speed if it's absolute greater than 1
                             if (Timer > 2 && Math.Abs(Speed.X) > 1)
@@ -100,7 +100,7 @@ public partial class CameraSideScroller
                 // Do not follow Y (unless near the edge). Used when jumping for example.
                 if (FollowYMode == FollowMode.DoNotFollow)
                 {
-                    float yOff = (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y);
+                    float yOff = Scene.Resolution.Y - Engine.GameViewPort.OriginalGameResolution.Y;
 
                     if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
                         (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))
