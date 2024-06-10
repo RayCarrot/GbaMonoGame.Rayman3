@@ -10,18 +10,18 @@ public partial class LaserShot
         {
             case FsmAction.Init:
                 // ???
-                AnimatedObject.ScreenPos = new Vector2(0, AnimatedObject.ScreenPos.Y);
+                ScreenPosition = new Vector2(0, ScreenPosition.Y);
                 Speed = new Vector2(1.525879E-05f, Speed.Y);
                 break;
 
             case FsmAction.Step:
-                bool finished = (AnimatedObject.ScreenPos.X >= Engine.GameViewPort.GameResolution.X && Speed.X > 0) || 
-                                (AnimatedObject.ScreenPos.X < 0 && Speed.X < 0) ||
+                bool finished = (ScreenPosition.X >= Scene.Resolution.X && Speed.X > 0) || 
+                                (ScreenPosition.X < 0 && Speed.X < 0) ||
                                 Speed.X == 0 ||
                                 // TODO: Have these match resolution? In the original game they're the same on both
                                 //       GBA and N-Gage. Though they seem to be GBA res with a margin of 10.
-                                AnimatedObject.ScreenPos.Y <= -10 || 
-                                AnimatedObject.ScreenPos.Y >= 170;
+                                ScreenPosition.Y <= -10 ||
+                                ScreenPosition.Y >= 170;
 
                 if (ActionId is Action.Shot1Enemy_Right or Action.Shot1Enemy_Left)
                 {
@@ -56,7 +56,7 @@ public partial class LaserShot
 
             case FsmAction.UnInit:
                 // ???
-                AnimatedObject.ScreenPos = new Vector2(0, AnimatedObject.ScreenPos.Y);
+                ScreenPosition = new Vector2(0, ScreenPosition.Y);
                 Speed = new Vector2(1.525879E-05f, Speed.Y);
                 
                 ProcessMessage(this, Message.Destroy);
