@@ -39,7 +39,7 @@ public partial class Ly
                 break;
 
             case FsmAction.UnInit:
-                Scene.Camera.ProcessMessage(this, Message.Cam_1040, (byte)160);
+                Scene.Camera.ProcessMessage(this, Message.Cam_FollowPositionY, 160);
                 break;
         }
     }
@@ -90,7 +90,7 @@ public partial class Ly
                 break;
 
             case FsmAction.UnInit:
-                Scene.Camera.ProcessMessage(this, Message.Cam_1040, (byte)120);
+                Scene.Camera.ProcessMessage(this, Message.Cam_FollowPositionY, 120);
                 TextBox.MoveInOurOut(false);
                 break;
         }

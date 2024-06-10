@@ -85,6 +85,7 @@ public sealed partial class Rayman : MovableActor
     public bool IsSliding => SlideType != null && Math.Abs(PreviousXSpeed) > 1.5f;
     public int PrevHitPoints { get; set; }
     public float PrevSpeedY { get; set; }
+    public int CameraTargetY { get; set; }
 
     public bool Debug_NoClip { get; set; } // Custom no-clip mode
 
@@ -119,7 +120,6 @@ public sealed partial class Rayman : MovableActor
 
     // Unknown fields
     public byte field16_0x91 { get; set; }
-    public byte field18_0x93 { get; set; }
     public byte field22_0x97 { get; set; }
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; } // Bool?
@@ -1574,7 +1574,7 @@ public sealed partial class Rayman : MovableActor
         PreviousXSpeed = 0;
         SlideType = null;
         AttachedObject = null;
-        field18_0x93 = 0;
+        CameraTargetY = 0;
         //field13_0x8c = 0;
         //field14_0x8e = 0;
         //field25_0x9a = HitPoints;

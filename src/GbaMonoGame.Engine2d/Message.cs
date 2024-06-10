@@ -42,7 +42,7 @@ public enum Message
     ThrowObjectForward = 1023,
     DropObject = 1024,
     Damaged = 1025,
-
+    Cam_1026 = 1026, // TODO: Name
     Cam_1027 = 1027, // TODO: Name
 
     Main_LevelExit = 1031,
@@ -50,8 +50,9 @@ public enum Message
     Main_CollectedCage = 1033,
     FlowerFire_End = 1034,
 
-    Cam_1039 = 1039, // TODO: Name
-    Cam_1040 = 1040, // TODO: Name
+    Cam_DoNotFollowPositionY = 1039,
+    Cam_FollowPositionY = 1040,
+    Cam_FollowPositionYUntilNearby = 1041,
 
     Hit = 1043,
     Main_BeginSwing = 1044,
@@ -60,8 +61,11 @@ public enum Message
     Main_AllowCoyoteJump = 1048,
     Murfy_Spawn = 1049,
 
-    Main_Stop = 1057,
+    Cam_Shake = 1054,
+    Cam_MoveToTarget = 1055,
 
+    Main_Stop = 1057,
+    Cam_MoveToLinkedObject = 1058,
     Main_ExitCutscene = 1059,
 
     Cam_SetPosition = 1062,

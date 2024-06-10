@@ -12,7 +12,7 @@ public partial class Rayman
     // TODO: Name
     private bool FsmStep_Inlined_FUN_1004c544()
     {
-        if (!FsmStep_Inlined_FUN_1004c1f4())
+        if (!FsmStep_CheckDeath())
             return false;
 
         CheckSlide();
@@ -41,9 +41,7 @@ public partial class Rayman
         return true;
     }
 
-    // FUN_08020bd4
-    // TODO: Name
-    private bool FsmStep_Inlined_FUN_1004c1f4()
+    private bool FsmStep_CheckDeath()
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -53,12 +51,7 @@ public partial class Rayman
 
             if (field16_0x91 > 60)
             {
-                cam.HorizontalOffset = Engine.Settings.Platform switch
-                {
-                    Platform.GBA => 40,
-                    Platform.NGage => 25,
-                    _ => throw new UnsupportedPlatformException()
-                };
+                cam.HorizontalOffset = CameraOffset.Default;
                 Flag1_D = false;
             }
         }
@@ -78,35 +71,35 @@ public partial class Rayman
                 (Speed.Y > 0 || State == Fsm_Crouch) &&
                 State != Fsm_Climb)
             {
-                field18_0x93 = 70;
-                message = Message.Cam_1040;
+                CameraTargetY = 70;
+                message = Message.Cam_FollowPositionY;
             }
             else if (CheckInput(GbaInput.Up) && (State == Fsm_Default || State == Fsm_HangOnEdge))
             {
-                field18_0x93 = 160;
-                message = Message.Cam_1040;
+                CameraTargetY = 160;
+                message = Message.Cam_FollowPositionY;
             }
             else if (State == Fsm_Helico && field27_0x9c == 0)
             {
-                message = Message.Cam_1039;
+                message = Message.Cam_DoNotFollowPositionY;
             }
             else if (State == Fsm_Swing)
             {
-                field18_0x93 = 65;
-                message = Message.Cam_1040;
+                CameraTargetY = 65;
+                message = Message.Cam_FollowPositionY;
             }
             else if (State == Fsm_Climb || State == FUN_0802ddac)
             {
-                field18_0x93 = 112;
-                message = Message.Cam_1040;
+                CameraTargetY = 112;
+                message = Message.Cam_FollowPositionY;
             }
             else
             {
-                field18_0x93 = 120;
-                message = Message.Cam_1040;
+                CameraTargetY = 120;
+                message = Message.Cam_FollowPositionY;
             }
 
-            cam.ProcessMessage(this, message, field18_0x93);
+            cam.ProcessMessage(this, message, CameraTargetY);
         }
 
         if (field23_0x98 != 0)
@@ -141,7 +134,7 @@ public partial class Rayman
             ActionId = IsFacingRight ? Action.Damage_Knockback_Right : Action.Damage_Knockback_Left;
         }
 
-        return FsmStep_Inlined_FUN_1004c1f4();
+        return FsmStep_CheckDeath();
     }
 
     // TODO: Name
@@ -150,7 +143,7 @@ public partial class Rayman
         if (Engine.Settings.Platform == Platform.GBA)
         {
             CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
-            cam.HorizontalOffset = 120;
+            cam.HorizontalOffset = CameraOffset.Center;
         }
 
         if (field23_0x98 != 0)
@@ -170,7 +163,7 @@ public partial class Rayman
     // TODO: Name
     private bool FsmStep_FUN_08020ee0()
     {
-        if (!FsmStep_Inlined_FUN_1004c1f4())
+        if (!FsmStep_CheckDeath())
             return false;
 
         CheckSlide();
@@ -212,36 +205,21 @@ public partial class Rayman
                 CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
                 if (GameInfo.MapId == MapId.TheCanopy_M2)
                 {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 120,
-                        Platform.NGage => 88,
-                        _ => throw new UnsupportedPlatformException()
-                    };
+                    cam.HorizontalOffset = CameraOffset.Center;
                 }
                 else
                 {
                     if (!RSMultiplayer.IsActive)
-                        cam.HorizontalOffset = Engine.Settings.Platform switch
-                        {
-                            Platform.GBA => 40,
-                            Platform.NGage => 25,
-                            _ => throw new UnsupportedPlatformException()
-                        };
+                        cam.HorizontalOffset = CameraOffset.Default;
                     else if (IsLocalPlayer)
-                        cam.HorizontalOffset = 95;
+                        cam.HorizontalOffset = CameraOffset.Multiplayer;
                 }
 
                 if (IsLocalPlayer)
                     cam.ProcessMessage(this, Message.Cam_1027);
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 120,
-                        Platform.NGage => 88,
-                        _ => throw new UnsupportedPlatformException()
-                    };
+                    cam.HorizontalOffset = CameraOffset.Center;
                 break;
 
             case FsmAction.Step:
@@ -495,21 +473,8 @@ public partial class Rayman
                 {
                     CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
-                    switch (Engine.Settings.Platform)
-                    {
-                        case Platform.GBA:
-                            if (cam.HorizontalOffset == 120)
-                                cam.HorizontalOffset = 40;
-                            break;
-
-                        case Platform.NGage:
-                            if (cam.HorizontalOffset == 88)
-                                cam.HorizontalOffset = 25;
-                            break;
-
-                        default:
-                            throw new UnsupportedPlatformException();
-                    }
+                    if (cam.HorizontalOffset == CameraOffset.Center)
+                        cam.HorizontalOffset = CameraOffset.Default;
                 }
                 break;
         }
@@ -868,10 +833,10 @@ public partial class Rayman
                 }
 
                 NextActionId = null;
-                field18_0x93 = 70;
+                CameraTargetY = 70;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1039, field18_0x93);
+                    cam.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, CameraTargetY);
 
                 Timer = GameTime.ElapsedFrames;
                 SlideType = null;
@@ -883,7 +848,7 @@ public partial class Rayman
                     return;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1039, (byte)130);
+                    cam.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, 130);
 
                 if (ActionId is Action.Jump_Right or Action.Jump_Left &&
                     CheckReleasedInput2(GbaInput.A) && 
@@ -1718,19 +1683,9 @@ public partial class Rayman
                         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
                         if (IsFacingRight)
-                        {
-                            if (Speed.X < 0)
-                                cam.HorizontalOffset = 151;
-                            else
-                                cam.HorizontalOffset = 25;
-                        }
+                            cam.HorizontalOffset = Speed.X < 0 ? CameraOffset.DefaultReversed : CameraOffset.Default;
                         else
-                        {
-                            if (Speed.X < 0)
-                                cam.HorizontalOffset = 25;
-                            else
-                                cam.HorizontalOffset = 151;
-                        }
+                            cam.HorizontalOffset = Speed.X < 0 ? CameraOffset.Default : CameraOffset.DefaultReversed;
                     }
                 }
                 else
@@ -1783,7 +1738,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && AttachedObject?.Type == (int)ActorType.Plum && IsLocalPlayer)
                     {
                         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
-                        cam.HorizontalOffset = 45;
+                        cam.HorizontalOffset = CameraOffset.DefaultBigger;
                     }
                 }
 
@@ -1962,11 +1917,11 @@ public partial class Rayman
 
                     if (RSMultiplayer.IsActive)
                     {
-                        cam.HorizontalOffset = 95;
+                        cam.HorizontalOffset = CameraOffset.Multiplayer;
                     }
                     else
                     {
-                        cam.HorizontalOffset = 25;
+                        cam.HorizontalOffset = CameraOffset.Default;
                         Flag1_D = true;
                         field16_0x91 = 0;
                     }
@@ -2030,12 +1985,7 @@ public partial class Rayman
                     }
                     else if (Timer > 50 && !RSMultiplayer.IsActive)
                     {
-                        cam.HorizontalOffset = Engine.Settings.Platform switch
-                        {
-                            Platform.GBA => 40,
-                            Platform.NGage => 25,
-                            _ => throw new UnsupportedPlatformException()
-                        };
+                        cam.HorizontalOffset = CameraOffset.Default;
                         Timer = 0;
                     }
                 }
@@ -2060,12 +2010,7 @@ public partial class Rayman
                     }
                     else if (Timer > 50 && !RSMultiplayer.IsActive)
                     {
-                        cam.HorizontalOffset = Engine.Settings.Platform switch
-                        {
-                            Platform.GBA => 40,
-                            Platform.NGage => 25,
-                            _ => throw new UnsupportedPlatformException()
-                        };
+                        cam.HorizontalOffset = CameraOffset.Default;
                         Timer = 0;
                     }
                 }
@@ -2073,7 +2018,7 @@ public partial class Rayman
                 {
                     // Center camera, only on GBA
                     if (Engine.Settings.Platform == Platform.GBA)
-                        cam.HorizontalOffset = 120;
+                        cam.HorizontalOffset = CameraOffset.Center;
 
                     Timer = 0;
                 }
@@ -2208,12 +2153,7 @@ public partial class Rayman
 
             case FsmAction.UnInit:
                 if (!RSMultiplayer.IsActive)
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 40,
-                        Platform.NGage => 25,
-                        _ => throw new UnsupportedPlatformException()
-                    };
+                    cam.HorizontalOffset = CameraOffset.Default;
 
                 if (!CheckSingleInput(GbaInput.B) && IsLocalPlayer)
                     cam.ProcessMessage(this, Message.Cam_1027);
@@ -2434,50 +2374,23 @@ public partial class Rayman
                     }
                 }
 
-                if (AnimatedObject.CurrentFrame < 19)
-                {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 40,
-                        Platform.NGage => 25,
-                        _ => throw new UnsupportedPlatformException()
-                    };
-                }
-                else
-                {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 200,
-                        Platform.NGage => 151,
-                        _ => throw new UnsupportedPlatformException()
-                    };
-                }
+                cam.HorizontalOffset = AnimatedObject.CurrentFrame < 19 ? CameraOffset.Default : CameraOffset.DefaultReversed;
 
                 CreateSwingProjectiles();
                 PlaySound(Rayman3SoundEvent.Play__LumMauve_Mix02);
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c1f4())
+                if (!FsmStep_CheckDeath())
                     return;
 
                 if (AnimatedObject.CurrentFrame == 19 && Timer == 0)
                 {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 200,
-                        Platform.NGage => 151,
-                        _ => throw new UnsupportedPlatformException()
-                    };
+                    cam.HorizontalOffset = CameraOffset.DefaultReversed;
                 }
                 else if (AnimatedObject.CurrentFrame == 39 && Timer == 128)
                 {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 40,
-                        Platform.NGage => 25,
-                        _ => throw new UnsupportedPlatformException()
-                    };
+                    cam.HorizontalOffset = CameraOffset.Default;
                 }
 
                 if (Flag2_1)
@@ -2590,24 +2503,7 @@ public partial class Rayman
 
                 Flag2_1 = false;
 
-                if (GameInfo.MapId == MapId.TheCanopy_M2)
-                {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 120,
-                        Platform.NGage => 88,
-                        _ => throw new UnsupportedPlatformException()
-                    };
-                }
-                else
-                {
-                    cam.HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 40,
-                        Platform.NGage => 25,
-                        _ => throw new UnsupportedPlatformException()
-                    };
-                }
+                cam.HorizontalOffset = GameInfo.MapId == MapId.TheCanopy_M2 ? CameraOffset.Center : CameraOffset.Default;
                 break;
         }
     }
@@ -3544,8 +3440,8 @@ public partial class Rayman
                 else if (Scene.GetPhysicalType(Position).IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
                 {
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
-                    field18_0x93 = 120;
-                    Scene.Camera.ProcessMessage(this, Message.Cam_1040, field18_0x93);
+                    CameraTargetY = 120;
+                    Scene.Camera.ProcessMessage(this, Message.Cam_FollowPositionY, CameraTargetY);
                 }
                 else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
                 {
@@ -3598,8 +3494,8 @@ public partial class Rayman
                 else if (Scene.GetPhysicalType(Position).IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
                 {
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
-                    field18_0x93 = 120;
-                    Scene.Camera.ProcessMessage(this, Message.Cam_1040, field18_0x93);
+                    CameraTargetY = 120;
+                    Scene.Camera.ProcessMessage(this, Message.Cam_FollowPositionY, CameraTargetY);
                 }
                 else if (ActionId is Action.Land_Right or Action.Land_Left && IsActionFinished)
                 {
@@ -3622,12 +3518,7 @@ public partial class Rayman
                 ActionId = Action.EnterCurtain_Right;
 
                 CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
-                cam.HorizontalOffset = Engine.Settings.Platform switch
-                {
-                    Platform.GBA => 120,
-                    Platform.NGage => 88,
-                    _ => throw new UnsupportedPlatformException()
-                };
+                cam.HorizontalOffset = CameraOffset.Center;
                 break;
 
             case FsmAction.Step:

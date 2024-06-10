@@ -1,38 +1,32 @@
 ﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine;
 using GbaMonoGame.Engine2d;
-using GbaMonoGame.TgxEngine;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.Rayman3;
 
 // TODO: Can probably rewrite some of this to use floats and be smoother
-public class CameraSideScroller : CameraActor2D
+public sealed partial class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller(Scene2D scene) : base(scene)
     {
         State.SetTo(Fsm_Default);
 
-        TargetY = 120;
-        field20_0x32 = 1;
+        PreviousLinkedObjectPosition = Vector2.Zero;
 
-        if (!RSMultiplayer.IsActive)
-        {
-            HorizontalOffset = Engine.Settings.Platform switch
-            {
-                Platform.GBA => 40,
-                Platform.NGage => 25,
-                _ => throw new UnsupportedPlatformException()
-            };
-        }
-        else
-        {
-            HorizontalOffset = 95;
-        }
+        if (LinkedObject != null)
+            PreviousLinkedObjectPosition = LinkedObject.Position;
+
+        Speed = new Vector2(0, Speed.Y);
+        Timer = 0;
+        TargetY = 120;
+        FollowYMode = FollowMode.Follow;
+        ShakeTargetTime = 0;
+
+        HorizontalOffset = RSMultiplayer.IsActive ? CameraOffset.Multiplayer : CameraOffset.Default;
     }
 
-    private static readonly float[] UnknownTable =
+    private static readonly float[] ShakeTable =
     {
         1.00f, 2.00f, 4.00f, 6.00f,
         6.00f, 6.00f, 6.00f, 6.00f,
@@ -50,21 +44,22 @@ public class CameraSideScroller : CameraActor2D
     private float ScaledTargetY => TargetY + 
                                    (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y) / 2;
     
-    public byte HorizontalOffset { get; set; }
+    public float HorizontalOffset { get; set; }
     public float TargetX { get; set; }
     public float TargetY { get; set; }
+    public FollowMode FollowYMode { get; set; }
+    public byte field16_0x2e { get; set; }
     public Vector2 PreviousLinkedObjectPosition { get; set; }
     public bool IsFacingRight { get; set; }
     public uint Timer { get; set; }
     public Vector2 Speed { get; set; }
 
-    // Unknown
-    public ushort field12_0x28 { get; set; }
-    public ushort field13_0x2a { get; set; }
-    public byte field16_0x2e { get; set; }
-    public byte field18_0x30 { get; set; }
-    public byte field20_0x32 { get; set; } // TODO: Enum? ScrollYMode?
-    public byte field21_0x33 { get; set; }
+    public Vector2 MoveTargetPos { get; set; }
+
+    public int ShakeTargetTime { get; set; }
+    public ushort ShakeTimer { get; set; }
+    public byte UnknownShakeValue { get; set; }
+    public bool HasStartedShake { get; set; }
 
     public bool Debug_FreeMoveCamera { get; set; } // Custom free move camera
 
@@ -76,233 +71,44 @@ public class CameraSideScroller : CameraActor2D
             TargetX = ScaledHorizontalOffset;
     }
 
-    // What does this function do?
-    private Vector2 FUN_0801d7b0(Vector2 speed)
+    private Vector2 VerticalShake(Vector2 speed)
     {
-        if (field12_0x28 == 0)
-            return speed;
-
-        field13_0x2a++;
-
-        int index = field18_0x30 * 2;
-
-        if (field13_0x2a == (field18_0x30 + 1) * (field12_0x28 / 16)) // TODO: Different on N-Gage
+        if (ShakeTargetTime != 0)
         {
-            field18_0x30++;
-            index = field18_0x30 * 2;
-        }
-        else if (field13_0x2a > field18_0x30 * (field12_0x28 / 16))
-        {
-            index++;
-        }
+            ShakeTimer++;
 
-        if (field12_0x28 - 1 <= field13_0x2a)
-            field12_0x28 = 0;
+            int index = (UnknownShakeValue % 128) * 2;
 
-        if (field21_0x33 != 0 || (field13_0x2a & 7) == 4)
-        {
-            field21_0x33 = 1;
+            if (ShakeTimer == (UnknownShakeValue + 1) * (ShakeTargetTime / 16))
+            {
+                UnknownShakeValue++;
+                index = (UnknownShakeValue % 128) * 2;
+            }
+            else if (ShakeTimer > UnknownShakeValue * (ShakeTargetTime / 16))
+            {
+                index++;
+            }
+            
+            index %= 256;
 
-            if ((field13_0x2a & 7) == 0)
-                return speed + new Vector2(0, UnknownTable[index]);
-            else if ((field13_0x2a & 7) == 4)
-                return speed + new Vector2(0, -UnknownTable[index]);
+            // Check to stop the shake
+            if (ShakeTargetTime - 1 <= ShakeTimer)
+                ShakeTargetTime = 0;
+
+            if (HasStartedShake || (ShakeTimer & 7) == 4)
+            {
+                HasStartedShake = true;
+
+                // Down
+                if ((ShakeTimer & 7) == 0)
+                    return speed + new Vector2(0, ShakeTable[index]);
+                // Up
+                else if ((ShakeTimer & 7) == 4)
+                    return speed + new Vector2(0, -ShakeTable[index]);
+            }
         }
 
         return speed;
-    }
-
-    private void Fsm_Default(FsmAction action)
-    {
-        switch (action)
-        {
-            case FsmAction.Init:
-                if (LinkedObject != null)
-                {
-                    PreviousLinkedObjectPosition = LinkedObject.Position;
-                    IsFacingRight = LinkedObject.IsFacingRight;
-
-                    UpdateTargetX();
-                    Speed = new Vector2(TargetX < LinkedObject.ScreenPosition.X ? 1 : -1, Speed.Y);
-                }
-
-                Timer = 0;
-                break;
-
-            case FsmAction.Step:
-                // Reset speed y
-                Speed = new Vector2(Speed.X, 0);
-                
-                UpdateTargetX();
-
-                float linkedObjDeltaX = LinkedObject.Position.X - PreviousLinkedObjectPosition.X;
-
-                // If we're within 4 pixels of the target...
-                if (Math.Abs(LinkedObject.ScreenPosition.X - TargetX) <= 4)
-                {
-                    // Follow the linked object's movement
-                    Speed = new Vector2(linkedObjDeltaX, Speed.Y);
-                }
-                // If far away from the target...
-                else
-                {
-                    Timer++;
-
-                    // Reset speed x if we're switching direction to move
-                    if ((LinkedObject.ScreenPosition.X < TargetX && Speed.X > 0) ||
-                        (LinkedObject.ScreenPosition.X > TargetX && Speed.X < 0))
-                    {
-                        Speed = new Vector2(0, Speed.Y);
-                    }
-
-                    float dir = LinkedObject.ScreenPosition.X > TargetX ? 1 : -1;
-
-                    // If the linked object is moving faster than 2...
-                    if (Math.Abs(linkedObjDeltaX) > 2)
-                    {
-                        // Move the camera alongside the linked object with a speed of 6
-                        Speed = new Vector2(dir * 6, Speed.Y);
-                    }
-                    // If the linked object is moving and
-                    // the timer is greater than or equal to 3 and
-                    // the absolute camera speed is less than 4...
-                    else if (LinkedObject.Speed.X != 0 && Timer >= 3 && Math.Abs(Speed.X) < 4)
-                    {
-                        // Move the camera with a speed of 0.5 and reset the timer
-                        Speed += new Vector2(dir * 0.5f, 0);
-                        Timer = 0;
-                    }
-                    // If the linked object is not moving...
-                    else if (LinkedObject.Speed.X == 0)
-                    {
-                        // If the linked object is within 40 pixels of the horizontal offset...
-                        if ((LinkedObject.IsFacingRight && 
-                             ScaledHorizontalOffset + 40 > LinkedObject.ScreenPosition.X &&
-                             ScaledHorizontalOffset <= LinkedObject.ScreenPosition.X) ||
-                          (LinkedObject.IsFacingLeft &&
-                           Scene.Playfield.Camera.Resolution.X - 40 - ScaledHorizontalOffset < LinkedObject.ScreenPosition.X &&
-                           Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset > LinkedObject.ScreenPosition.X))
-                        {
-                            // If timer is greater than 2, slow down the speed if it's absolute greater than 1
-                            if (Timer > 2 && Math.Abs(Speed.X) > 1)
-                            {
-                                Speed -= new Vector2(dir * 0.5f, 0);
-                                Timer = 0;
-                            }
-                        }
-                        else
-                        {
-                            // If the timer is greater than 5, increase the speed if it's absolute less than 4
-                            if (Timer > 5 && Math.Abs(Speed.X) < 4)
-                            {
-                                Speed += new Vector2(dir * 0.5f, 0);
-                                Timer = 0;
-                            }
-                        }
-                    }
-                }
-
-                float linkedObjDeltaY = LinkedObject.Position.Y - PreviousLinkedObjectPosition.Y;
-
-                // Do not follow Y (unless near the edge). Used when jumping for example.
-                if (field20_0x32 == 0)
-                {
-                    float yOff = (Scene.Playfield.Camera.Resolution.Y - Engine.GameViewPort.GameResolution.Y);
-
-                    if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
-                        (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))
-                    {
-                        Speed = new Vector2(Speed.X, linkedObjDeltaY);
-                    }
-
-                }
-                // Follow Y, the default
-                else
-                {
-                    if (Math.Abs(LinkedObject.ScreenPosition.Y - ScaledTargetY) <= 4)
-                    {
-                        Speed = new Vector2(Speed.X, linkedObjDeltaY);
-
-                        if (field20_0x32 == 2)
-                            field20_0x32 = 0;
-                    }
-                    else
-                    {
-                        if (ScaledTargetY < LinkedObject.ScreenPosition.Y)
-                        {
-                            if (linkedObjDeltaY >= 2)
-                            {
-                                Speed = new Vector2(Speed.X, 5);
-                            }
-                            else if (LinkedObject.ScreenPosition.Y - ScaledTargetY >= 21)
-                            {
-                                Speed = new Vector2(Speed.X, 3);
-                            }
-                            else if (linkedObjDeltaY >= 1)
-                            {
-                                Speed = new Vector2(Speed.X, 2);
-                            }
-                            else
-                            {
-                                Speed = new Vector2(Speed.X, 1);
-                            }
-                        }
-                        else
-                        {
-                            if (linkedObjDeltaY <= -2)
-                            {
-                                Speed = new Vector2(Speed.X, -5);
-                            }
-                            else if (LinkedObject.ScreenPosition.Y - ScaledTargetY <= -21)
-                            {
-                                Speed = new Vector2(Speed.X, -3);
-                            }
-                            else if (linkedObjDeltaY <= -1)
-                            {
-                                Speed = new Vector2(Speed.X, -2);
-                            }
-                            else
-                            {
-                                Speed = new Vector2(Speed.X, -1);
-                            }
-                        }
-                    }
-                }
-
-                Speed = FUN_0801d7b0(Speed);
-
-                // Clamp speed
-                Speed = new Vector2(Math.Clamp(Speed.X, -7, 7), Math.Clamp(Speed.Y, -7, 7));
-
-                TgxCamera2D tgxCam = ((TgxPlayfield2D)Scene.Playfield).Camera;
-                TgxCluster mainCluster = tgxCam.GetMainCluster();
-
-                tgxCam.Position += Speed;
-                
-                PreviousLinkedObjectPosition = LinkedObject.Position;
-
-                // Reset if changed direction
-                if (!mainCluster.IsOnLimit(Edge.Left) && 
-                    !mainCluster.IsOnLimit(Edge.Right) && 
-                    LinkedObject.IsFacingRight != IsFacingRight)
-                    State.MoveTo(Fsm_Default);
-
-                if (field16_0x2e == 4)
-                {
-                    HorizontalOffset = Engine.Settings.Platform switch
-                    {
-                        Platform.GBA => 40,
-                        Platform.NGage => 25,
-                        _ => throw new UnsupportedPlatformException()
-                    };
-                    field16_0x2e = 1;
-                }
-                break;
-            
-            case FsmAction.UnInit:
-                // Do nothing
-                break;
-        }
     }
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
@@ -310,21 +116,74 @@ public class CameraSideScroller : CameraActor2D
         if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
-        // TODO: Implement remaining messages
         switch (message)
         {
+            // TODO: How can this be triggered? The captor can't send message to the camera...
+            case Message.Captor_Trigger_SendMessageWithCaptorParam:
+                throw new NotImplementedException();
+                return true;
+
+            case Message.Cam_1026:
+                field16_0x2e = 4;
+                HorizontalOffset = CameraOffset.Center;
+                return true;
+
             case Message.Cam_1027:
                 field16_0x2e = 1;
                 return true;
 
-            case Message.Cam_1039:
-                field20_0x32 = 0;
-                TargetY = (byte)param; // TODO: Int
+            case Message.Cam_DoNotFollowPositionY:
+                FollowYMode = FollowMode.DoNotFollow;
+                TargetY = (int)param;
                 return true;
 
-            case Message.Cam_1040:
-                field20_0x32 = 1;
-                TargetY = (byte)param; // TODO: Int
+            case Message.Cam_FollowPositionY:
+                FollowYMode = FollowMode.Follow;
+                TargetY = (int)param;
+                return true;
+
+            case Message.Cam_FollowPositionYUntilNearby:
+                FollowYMode = FollowMode.FollowUntilNearby;
+                TargetY = (int)param;
+                return true;
+
+            case Message.Cam_Shake:
+                ShakeTargetTime = (int)param;
+                HasStartedShake = false;
+                ShakeTimer = 0;
+                UnknownShakeValue = 0;
+                return true;
+
+            case Message.Cam_MoveToTarget:
+                MoveTargetPos = (Vector2)param;
+                
+                if (MoveTargetPos.X < 0)
+                    MoveTargetPos = new Vector2(0, MoveTargetPos.Y);
+                if (MoveTargetPos.Y < 0)
+                    MoveTargetPos = new Vector2(MoveTargetPos.X, 0);
+
+                Timer = 5;
+
+                State.MoveTo(Fsm_MoveToTarget);
+                return true;
+
+            case Message.Cam_MoveToLinkedObject:
+                float xOffset = LinkedObject.IsFacingLeft
+                    ? Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset
+                    : ScaledHorizontalOffset;
+                float yOffset = TargetY;
+
+                MoveTargetPos = new Vector2(LinkedObject.Position.X - xOffset, LinkedObject.Position.Y - yOffset);
+
+                if (MoveTargetPos.X < 0)
+                    MoveTargetPos = new Vector2(0, MoveTargetPos.Y);
+                if (MoveTargetPos.Y < 0)
+                    MoveTargetPos = new Vector2(MoveTargetPos.X, 0);
+
+                if ((int)param != 1)
+                    Timer = 6;
+
+                State.MoveTo(Fsm_MoveToTarget);
                 return true;
 
             case Message.Cam_SetPosition:
@@ -334,7 +193,7 @@ public class CameraSideScroller : CameraActor2D
             case Message.Cam_Lock:
                 if (param is Vector2 pos)
                     Scene.Playfield.Camera.Position = pos;
-                
+
                 State.MoveTo(null);
                 return true;
 
@@ -362,39 +221,34 @@ public class CameraSideScroller : CameraActor2D
 
     public override void SetFirstPosition()
     {
-        Vector2 pos;
+        IsFacingRight = LinkedObject.IsFacingRight;
 
-        if (LinkedObject.Position.X < ScaledHorizontalOffset && !LinkedObject.IsFacingLeft)
+        Vector2 pos;
+        if (LinkedObject.Position.X < ScaledHorizontalOffset && LinkedObject.IsFacingRight)
         {
-            pos = new Vector2(0, LinkedObject.Position.Y);
+            pos = LinkedObject.Position;
         }
-        else if (LinkedObject.Position.X < (Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset) && LinkedObject.IsFacingLeft)
+        else if (LinkedObject.Position.X < Scene.Playfield.Camera.Resolution.X - ScaledHorizontalOffset && LinkedObject.IsFacingLeft)
         {
-            pos = new Vector2(0, LinkedObject.Position.Y);
+            pos = LinkedObject.Position;
         }
         else
         {
+            float xOffset;
             if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
             {
-                HorizontalOffset = Engine.Settings.Platform switch
-                {
-                    Platform.GBA => 120,
-                    Platform.NGage => 88,
-                    _ => throw new UnsupportedPlatformException()
-                };
-                pos = new Vector2(LinkedObject.Position.X - ScaledHorizontalOffset, LinkedObject.Position.Y);
+                HorizontalOffset = CameraOffset.Center;
+                xOffset = -ScaledHorizontalOffset;
             }
             else
             {
-                if (!LinkedObject.IsFacingLeft)
-                {
-                    pos = new Vector2(LinkedObject.Position.X - ScaledHorizontalOffset, LinkedObject.Position.Y);
-                }
+                if (LinkedObject.IsFacingLeft)
+                    xOffset = ScaledHorizontalOffset - Scene.Playfield.Camera.Resolution.X;
                 else
-                {
-                    pos = new Vector2(LinkedObject.Position.X + ScaledHorizontalOffset - Scene.Playfield.Camera.Resolution.X, LinkedObject.Position.Y);
-                }
+                    xOffset = -ScaledHorizontalOffset;
             }
+
+            pos = LinkedObject.Position + new Vector2(xOffset, 0);
         }
 
         pos.Y = Math.Max(pos.Y - 120, 0);
@@ -413,5 +267,12 @@ public class CameraSideScroller : CameraActor2D
 
         ImGui.Text($"Speed: {Speed.X} x {Speed.Y}");
         ImGui.Text($"Target: {TargetX} x {TargetY}");
+    }
+
+    public enum FollowMode
+    {
+        DoNotFollow = 0,
+        Follow = 1,
+        FollowUntilNearby = 2,
     }
 }
