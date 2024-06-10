@@ -232,7 +232,7 @@ public partial class Keg
                 if (Scene.IsHitActor(this) is { } hitObj)
                 {
                     if ((ActorType)hitObj.Type is 
-                        ActorType.BossMachine or 
+                        ActorType.Machine or 
                         ActorType.Cage)
                     {
                         hitObj.ProcessMessage(this, Message.Damaged, this);
@@ -294,7 +294,7 @@ public partial class Keg
                 {
                     if ((ActorType)hitObj.Type is 
                         ActorType.BreakableDoor or 
-                        ActorType.BossMachine or 
+                        ActorType.Machine or 
                         ActorType.Cage)
                     {
                         hitObj.ProcessMessage(this, Message.Damaged);

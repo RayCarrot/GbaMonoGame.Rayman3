@@ -54,7 +54,7 @@ public enum ActorType
 
     KegDebris = 82,
 
-    BossMachine = 84, // TODO: Implement
+    Machine = 84, // TODO: Implement
 
     MurfyStone = 92,
 
