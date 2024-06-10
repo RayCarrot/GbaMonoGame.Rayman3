@@ -57,7 +57,7 @@ public class CircleWindowEffectObject : EffectObject
             FlipY = flipY,
             Priority = SpritePriority,
             Color = Color.Black,
-            Camera = Engine.ScreenCamera,
+            Camera = Camera,
         });
     }
 
@@ -70,8 +70,7 @@ public class CircleWindowEffectObject : EffectObject
         if (Engine.Settings.Platform == Platform.NGage)
             return;
 
-        // TODO: Could maybe write this a bit cleaner, but essentially the position is in the tgx camera, so we need to use those coordinates
-        Vector2 pos = CirclePosition / Engine.Config.PlayfieldCameraScale;
+        Vector2 pos = CirclePosition;
 
         pos -= new Vector2(Radius);
 
@@ -85,7 +84,7 @@ public class CircleWindowEffectObject : EffectObject
             DrawCirclePart(tex, pos + new Vector2(Radius, Radius), true, true); // Bottom-right
         }
 
-        Vector2 res = Engine.GameViewPort.GameResolution;
+        Vector2 res = Camera.Resolution;
 
         // Draw black around circle to fill screen
         DrawRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top

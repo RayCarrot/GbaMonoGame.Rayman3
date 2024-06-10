@@ -119,6 +119,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideOut_Mix01);
         }
 
+        CircleEffect.Camera = Scene.Playfield.Camera;
         CircleEffect.Radius = CircleFXTimer;
         CircleEffect.CirclePosition = Scene.MainActor.ScreenPosition - new Vector2(0, 32);
     }
