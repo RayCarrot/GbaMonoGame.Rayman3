@@ -10,7 +10,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
 {
     public CameraSideScroller(Scene2D scene) : base(scene)
     {
-        State.SetTo(Fsm_Default);
+        State.SetTo(Fsm_Follow);
 
         PreviousLinkedObjectPosition = Vector2.Zero;
 
@@ -180,7 +180,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
                 if (MoveTargetPos.Y < 0)
                     MoveTargetPos = new Vector2(MoveTargetPos.X, 0);
 
-                if ((int)param != 1)
+                if (param is not true)
                     Timer = 6;
 
                 State.MoveTo(Fsm_MoveToTarget);
@@ -198,7 +198,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
                 return true;
 
             case Message.Cam_Unlock:
-                State.MoveTo(Fsm_Default);
+                State.MoveTo(Fsm_Follow);
                 return true;
 
             default:

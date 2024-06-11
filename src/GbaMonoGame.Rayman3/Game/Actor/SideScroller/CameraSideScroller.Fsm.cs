@@ -1,11 +1,12 @@
 ﻿using System;
+using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Rayman3;
 
 public partial class CameraSideScroller
 {
-    private void Fsm_Default(FsmAction action)
+    private void Fsm_Follow(FsmAction action)
     {
         switch (action)
         {
@@ -170,6 +171,7 @@ public partial class CameraSideScroller
                 TgxCamera2D tgxCam = ((TgxPlayfield2D)Scene.Playfield).Camera;
                 TgxCluster mainCluster = tgxCam.GetMainCluster();
 
+                // Move camera
                 tgxCam.Position += Speed;
 
                 PreviousLinkedObjectPosition = LinkedObject.Position;
@@ -178,7 +180,7 @@ public partial class CameraSideScroller
                 if (!mainCluster.IsOnLimit(Edge.Left) &&
                     !mainCluster.IsOnLimit(Edge.Right) &&
                     LinkedObject.IsFacingRight != IsFacingRight)
-                    State.MoveTo(Fsm_Default);
+                    State.MoveTo(Fsm_Follow);
 
                 if (field16_0x2e == 4)
                 {
@@ -193,21 +195,77 @@ public partial class CameraSideScroller
         }
     }
 
-    // TODO: Implement
     private void Fsm_MoveToTarget(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-
+                {
+                    TgxCamera2D tgxCam = ((TgxPlayfield2D)Scene.Playfield).Camera;
+                    Vector2 pos = tgxCam.Position;
+                    float dist = Vector2.Distance(MoveTargetPos, pos);
+                    Speed = (MoveTargetPos - pos) / dist;
+                    Speed *= 4;
+                }
                 break;
 
             case FsmAction.Step:
+                {
+                    TgxCamera2D tgxCam = ((TgxPlayfield2D)Scene.Playfield).Camera;
+                    TgxCluster mainCluster = tgxCam.GetMainCluster();
+                    Vector2 pos = tgxCam.Position;
 
+                    // Reset X
+                    if (Speed.X > 0)
+                    {
+                        if (pos.X + Speed.X > MoveTargetPos.X || mainCluster.IsOnLimit(Edge.Right))
+                            Speed = new Vector2(0, RSMultiplayer.IsActive ? Speed.Y : 0);
+                    }
+                    else if (Speed.X < 0)
+                    {
+                        if (pos.X + Speed.X < MoveTargetPos.X || mainCluster.IsOnLimit(Edge.Left))
+                            Speed = new Vector2(0, RSMultiplayer.IsActive ? Speed.Y : 0);
+                    }
+
+                    if (RSMultiplayer.IsActive)
+                    {
+                        // Reset Y
+                        if (Speed.Y > 0)
+                        {
+                            if (pos.Y + Speed.Y > MoveTargetPos.Y || mainCluster.IsOnLimit(Edge.Bottom))
+                                Speed = new Vector2(Speed.X, 0);
+                        }
+                        else if (Speed.Y < 0)
+                        {
+                            if (pos.Y + Speed.Y < MoveTargetPos.Y || mainCluster.IsOnLimit(Edge.Top))
+                                Speed = new Vector2(Speed.X, 0);
+                        }
+                    }
+
+                    Speed = VerticalShake(Speed);
+
+                    // Clamp speed - weird that it's 8 and not 7, a typo in the original code?
+                    Speed = new Vector2(Math.Clamp(Speed.X, -8, 8), Math.Clamp(Speed.Y, -8, 8));
+
+                    // Move camera
+                    tgxCam.Position += Speed;
+
+                    // Reached target
+                    if ((Timer == 6 && Speed.X == 0) ||
+                        (RSMultiplayer.IsActive && Speed == Vector2.Zero))
+                    {
+                        Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
+                        State.MoveTo(Fsm_Follow);
+                        return;
+                    }
+
+                    if (Timer == 7)
+                        Timer = 6;
+                }
                 break;
 
             case FsmAction.UnInit:
-
+                // Do nothing
                 break;
         }
     }
