@@ -1,0 +1,117 @@
+﻿using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+using GbaMonoGame.Engine2d;
+
+namespace GbaMonoGame.Rayman3;
+
+public sealed partial class Machine : MovableActor
+{
+    public Machine(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    {
+        Resource = actorResource;
+
+        if ((Action)actorResource.FirstActionId == Action.CannonIdle1)
+        {
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MachMotr_Mix01, this);
+            BossHealth = 4;
+            AnimatedObject.YPriority = 62;
+        }
+        else
+        {
+            BossHealth = -1;
+            AnimatedObject.YPriority = 63;
+        }
+
+        CogDestroyed = false;
+        MurfySpawned = false;
+        TextBox = null;
+        State.SetTo(Fsm_Init);
+    }
+
+    // For some reason this array has 10 entries, but only 8 are ever used
+    private static Vector2[] ExplosionOffsets { get; } =
+    {
+        new(-5, 5),
+        new(7, 12),
+        new(-20, 50),
+        new(40, 22),
+        new(-55, 43),
+        new(30, 60),
+        new(-10, 18),
+        new(5, 55),
+        new(-34, 20),
+        new(60, 32),
+    };
+
+    public ActorResource Resource { get; }
+    public TextBoxDialog TextBox { get; set; }
+    public Machine Parent { get; set; }
+    public int BossHealth { get; set; }
+    public byte Rotation { get; set; }
+    public bool CogDestroyed { get; set; }
+    public ushort Timer { get; set; }
+    public bool MurfySpawned { get; set; } // Unused
+
+    private void InitTextBox()
+    {
+        MurfySpawned = false;
+        TextBox = Scene.GetDialog<TextBoxDialog>();
+        TextBox.MoveInOurOut(true);
+        Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
+    }
+
+    private void UnInitTextBox()
+    {
+        Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
+        TextBox = null;
+    }
+
+    private void ManageTextBox()
+    {
+        if (!TextBox.IsFinished)
+        {
+            if (JoyPad.CheckSingle(GbaInput.A))
+                TextBox.MoveToNextText();
+        }
+        else
+        {
+            TextBox.MoveInOurOut(false);
+            Timer = 0;
+            GameInfo.field7_0x7 = false;
+        }
+    }
+
+    private void SpawnHelicopterBomb()
+    {
+        // TODO: Implement
+    }
+
+    protected override bool ProcessMessageImpl(object sender, Message message, object param)
+    {
+        if (base.ProcessMessageImpl(sender, message, param))
+            return false;
+
+        switch (message)
+        {
+            case Message.Damaged:
+                if (State == Fsm_CogWheelSpinning)
+                {
+                    CogDestroyed = true;
+                    Parent.ProcessMessage(this, Message.Machine_CogDestroyed);
+                }
+                return false;
+
+            case Message.Murfy_Spawn: // Unused
+                MurfySpawned = true;
+                return false;
+
+            case Message.Machine_CogDestroyed:
+                BossHealth--;
+                // TODO: Update boss bar
+                return false;
+
+            default:
+                return false;
+        }
+    }
+}

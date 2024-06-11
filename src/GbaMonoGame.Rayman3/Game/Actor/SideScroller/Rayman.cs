@@ -124,7 +124,11 @@ public sealed partial class Rayman : MovableActor
     public byte field23_0x98 { get; set; }
     public byte field27_0x9c { get; set; } // Bool?
 
+    // TODO: Maybe we should just make the state methods public to avoid this?
     public bool IsInDefaultState => State == Fsm_Default;
+    public bool IsInCutsceneState => State == Fsm_Cutscene;
+    public bool IsInDyingState => State == Fsm_Dying;
+    public bool IsInEndMapState => State == Fsm_EndMap;
 
     // Disable collision when debug mode is on
     public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
