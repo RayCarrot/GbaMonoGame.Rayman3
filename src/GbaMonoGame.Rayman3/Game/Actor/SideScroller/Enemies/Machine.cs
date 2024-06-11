@@ -107,7 +107,7 @@ public sealed partial class Machine : MovableActor
 
             case Message.Machine_CogDestroyed:
                 BossHealth--;
-                // TODO: Update boss bar
+                ((FrameSideScroller)Frame.Current).UserInfo.AddBossDamage();
                 return false;
 
             default:

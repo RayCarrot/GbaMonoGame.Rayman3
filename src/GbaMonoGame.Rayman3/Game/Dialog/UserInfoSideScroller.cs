@@ -28,7 +28,7 @@ public class UserInfoSideScroller : Dialog
 
         if (GameInfo.MapId == MapId.BossMachine)
         {
-            // TODO: Boss bar
+            BossBar = new BossMachineBar(scene);
         }
         else if (GameInfo.MapId == MapId.BossRockAndLava)
         {
@@ -63,6 +63,7 @@ public class UserInfoSideScroller : Dialog
     private LifeBar LifeBar { get; }
     private LumsBar LumsBar { get; }
     private Lums1000Bar Lums1000Bar { get; }
+    private Bar BossBar { get; }
     private CagesBar CagesBar { get; }
 
     private Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
@@ -83,6 +84,11 @@ public class UserInfoSideScroller : Dialog
     public void AddCages(int count)
     {
         CagesBar.AddCages(count);
+    }
+
+    public void AddBossDamage()
+    {
+        BossBar.Set();
     }
 
     public void HideBars()
@@ -116,10 +122,15 @@ public class UserInfoSideScroller : Dialog
         LifeBar.Load();
         GetLumsBar().Load();
         CagesBar.Load();
+        // TODO: Blue lums bar
+        // TODO: Switch bar
+        BossBar?.Load();
 
         LifeBar.Set();
         GetLumsBar().Set();
         CagesBar.Set();
+        // TODO: Blue lums bar
+        // TODO: Switch bar
     }
 
     public override void Init() { }
@@ -129,5 +140,8 @@ public class UserInfoSideScroller : Dialog
         LifeBar.Draw(animationPlayer);
         GetLumsBar().Draw(animationPlayer);
         CagesBar.Draw(animationPlayer);
+        // TODO: Blue lums bar
+        // TODO: Switch bar
+        BossBar?.Draw(animationPlayer);
     }
 }
