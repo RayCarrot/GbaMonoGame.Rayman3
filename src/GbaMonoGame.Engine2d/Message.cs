@@ -66,7 +66,7 @@ public enum Message
 
     Main_Stop = 1057,
     Cam_MoveToLinkedObject = 1058,
-    Main_ExitCutscene = 1059,
+    Main_ExitStopOrCutscene = 1059,
 
     Cam_SetPosition = 1062,
 

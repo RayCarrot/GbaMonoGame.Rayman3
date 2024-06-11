@@ -172,7 +172,7 @@ public partial class Ly
 
                 if (Scene.MainActor.IsActionFinished && ((Rayman)Scene.MainActor).ActionId == Rayman.Action.NewPower_Right)
                 {
-                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                     SetPowerAndReplayData();
                 }
 

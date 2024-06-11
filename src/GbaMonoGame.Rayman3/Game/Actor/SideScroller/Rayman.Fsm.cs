@@ -60,8 +60,8 @@ public partial class Rayman
             State != Fsm_Jump &&
             State != FUN_0802ce54 &&
             State != FUN_080284ac &&
-            State != FUN_08033b34 &&
-            State != FUN_080287d8 &&
+            State != Fsm_EnterLevelCurtain &&
+            State != Fsm_LockedLevelCurtain &&
             !IsInFrontOfLevelCurtain)
         {
             Message message;
@@ -1896,7 +1896,7 @@ public partial class Rayman
                     ActionId is Action.Damage_Shock_Right or Action.Damage_Shock_Left)
                 {
                     ActionId = IsFacingRight ? Action.Damage_Hit_Right : Action.Damage_Hit_Left;
-                    State.MoveTo(FUN_1005bf7c);
+                    State.MoveTo(Fsm_Hit);
                     return;
                 }
 
@@ -3557,14 +3557,10 @@ public partial class Rayman
     // TODO: Implement all of these
     private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }
-    private void FUN_08033b34(FsmAction action) { }
-    private void FUN_080287d8(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
     private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }
-    private void FUN_1005bf7c(FsmAction action) { }
-    private void FUN_08027b80(FsmAction action) { }
     private void FUN_1005dea0(FsmAction action) { }
     private void FUN_1005dfa4(FsmAction action) { }
     private void FUN_1005e04c(FsmAction action) { }

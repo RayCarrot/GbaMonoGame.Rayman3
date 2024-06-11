@@ -112,7 +112,7 @@ public partial class Teensies
                     if (TextBox.IsFinished)
                     {
                         TextBox.MoveInOurOut(false);
-                        Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+                        Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                         IsMovingOutTextBox = true;
                     }
                     else if (JoyPad.CheckSingle(GbaInput.A))
@@ -167,7 +167,7 @@ public partial class Teensies
                 if (TextBox.IsFinished)
                 {
                     TextBox.MoveInOurOut(false);
-                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                     State.MoveTo(Fsm_WaitExitRequirementNotMetText);
                     return;
                 }

@@ -273,7 +273,7 @@ public class World : FrameWorldSideScroller
         {
             if (MurfyTimer > 90)
             {
-                Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+                Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                 
                 if (Engine.Settings.Platform == Platform.NGage)
                     Scene.Camera.ProcessMessage(this, Message.Cam_Unlock);
@@ -329,7 +329,7 @@ public class World : FrameWorldSideScroller
     {
         if (TransitionsFX.IsFadeInFinished)
         {
-            Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+            Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
             CurrentExStepAction = null;
         }
     }

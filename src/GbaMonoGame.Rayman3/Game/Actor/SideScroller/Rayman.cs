@@ -1494,8 +1494,8 @@ public sealed partial class Rayman : MovableActor
                 State.MoveTo(Fsm_Stop);
                 return false;
 
-            case Message.Main_ExitCutscene:
-                if (State == FUN_08027b80 || State == Fsm_Cutscene)
+            case Message.Main_ExitStopOrCutscene:
+                if (State == Fsm_Stop || State == Fsm_Cutscene)
                 {
                     if (IsOnClimbableVertical() != 0)
                         State.MoveTo(Fsm_Climb);

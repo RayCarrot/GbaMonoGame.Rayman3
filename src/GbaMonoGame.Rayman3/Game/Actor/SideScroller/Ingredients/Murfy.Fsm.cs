@@ -347,7 +347,7 @@ public partial class Murfy
                 if (GameInfo.MapId is MapId.ChallengeLy1 or MapId.ChallengeLy2)
                     Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
                 else if (TargetActor == Scene.MainActor)
-                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitCutscene);
+                    Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                 break;
         }
     }
