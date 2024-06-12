@@ -33,7 +33,10 @@ public class BossMachineBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        if (Mode != 1)
-            animationPlayer.PlayFront(BossHealthBar);
+        if (Mode == 1) 
+            return;
+        
+        BossHealthBar.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 60, 24);
+        animationPlayer.PlayFront(BossHealthBar);
     }
 }
