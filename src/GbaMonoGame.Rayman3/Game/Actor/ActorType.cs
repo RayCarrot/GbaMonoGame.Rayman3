@@ -20,12 +20,12 @@ public enum ActorType
     Keg = 18,
     Barrel = 19,
 
-    Sphere = 21,
+    Sphere = 21, // TODO: Implement
 
     GreenPirate = 23, // TODO: Implement
     BluePirate = 24, // TODO: Implement
     SilverPirate = 25, // TODO: Implement
-    HelicopterBomb = 26, // TODO: Implement
+    HelicopterBomb = 26,
 
     BarrelSplash = 29,
     Depart = 30,
@@ -62,7 +62,8 @@ public enum ActorType
 
     Urchin = 100,
     Arrive = 101,
+    SpikyBomb = 102,
 
     MovingUnusedPlatform = 106, // Unused
-    RotatedHelicopterBomb = 107, // TODO: Implement
+    RotatedHelicopterBomb = 107,
 }

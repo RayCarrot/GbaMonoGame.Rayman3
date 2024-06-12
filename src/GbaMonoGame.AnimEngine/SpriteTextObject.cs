@@ -36,6 +36,7 @@ public class SpriteTextObject : AObject
 
         foreach (byte c in TextBytes)
         {
+            // TODO: Option to always draw with the highest resolution font (but scale to fit original size)
             Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, SpritePriority, AffineMatrix, Color, Camera));
         }
     }

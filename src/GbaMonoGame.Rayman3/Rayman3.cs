@@ -328,6 +328,8 @@ public class Rayman3 : GbaGame
             { ActorType.Keg, (instanceId, scene, resource) => new Keg(instanceId, scene, resource) },
             { ActorType.Barrel, (instanceId, scene, resource) => new Barrel(instanceId, scene, resource) },
 
+            { ActorType.HelicopterBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },
+
             { ActorType.BarrelSplash, (instanceId, scene, resource) => new BarrelSplash(instanceId, scene, resource) },
             { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
 
@@ -358,8 +360,10 @@ public class Rayman3 : GbaGame
 
             { ActorType.Urchin, (instanceId, scene, resource) => new Urchin(instanceId, scene, resource) },
             { ActorType.Arrive, (instanceId, scene, resource) => new Arrive(instanceId, scene, resource) },
+            { ActorType.SpikyBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },
 
             { ActorType.MovingUnusedPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
+            { ActorType.RotatedHelicopterBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },
         }, x => ((ActorType)x).ToString());
         Dictionary<MapId, LevelFactory.CreateLevel> levelCreations = new()
         {

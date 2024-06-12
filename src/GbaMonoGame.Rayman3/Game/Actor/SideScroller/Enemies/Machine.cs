@@ -83,7 +83,19 @@ public sealed partial class Machine : MovableActor
 
     private void SpawnHelicopterBomb()
     {
-        // TODO: Implement
+        FlyingBomb helicopterBomb = Scene.CreateProjectile<FlyingBomb>(ActorType.RotatedHelicopterBomb);
+        if (helicopterBomb != null)
+        {
+            helicopterBomb.Position = Position + new Vector2(-60, 10);
+            helicopterBomb.CurrentDirectionalType = null;
+        }
+
+        Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
+        if (explosion != null)
+        {
+            explosion.AnimatedObject.CurrentAnimation = 1;
+            explosion.Position = Position + new Vector2(-45, 0);
+        }
     }
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
