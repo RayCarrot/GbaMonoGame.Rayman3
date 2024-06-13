@@ -307,6 +307,24 @@ public class Rayman3 : GbaGame
 
     protected override void LoadGame()
     {
+        SoundEventsManager.SetCallBacks(new SoundEventsManager.CallBackSet(
+            getObjectPosition: x =>
+            {
+                if (x is not GameObject obj)
+                    return Vector2.Zero;
+
+                return new Vector2(obj.Position.X, 0);
+            },
+            getMikePosition: x =>
+            {
+                if (x is not GameObject obj)
+                    return Vector2.Zero;
+
+                TgxCamera cam = obj.Scene.Playfield.Camera;
+                return new Vector2(cam.Position.X + cam.Resolution.X / 2, 0);
+            },
+            getSwitchIndex: () => 0));
+
         // TODO: Implement the rest
         ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {

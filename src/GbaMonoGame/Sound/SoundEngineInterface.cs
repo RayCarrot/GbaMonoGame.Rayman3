@@ -23,6 +23,8 @@ public static class SoundEngineInterface
 
     private static readonly MidiParams _midiParams;
 
+    public const float MinPan = -128;
+    public const float MaxPan = 127;
     public const float MaxVolume = 128;
 
     public static void SetNbVoices(byte newNbOfVoices)
