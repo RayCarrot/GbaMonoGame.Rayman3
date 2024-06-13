@@ -16,7 +16,7 @@ public enum ActorType
     Cage = 13,
     LevelCurtain = 14,
 
-    BreakableDoor = 17, // TODO: Implement
+    BreakableDoor = 17,
     Keg = 18,
     Barrel = 19,
 
@@ -54,7 +54,7 @@ public enum ActorType
 
     KegDebris = 82,
 
-    Machine = 84, // TODO: Implement
+    Machine = 84,
 
     MurfyStone = 92,
 
@@ -66,4 +66,5 @@ public enum ActorType
 
     MovingUnusedPlatform = 106, // Unused
     RotatedHelicopterBomb = 107,
+    Leaf = 108,
 }
