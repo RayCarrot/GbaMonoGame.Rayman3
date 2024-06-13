@@ -361,18 +361,18 @@ public static class SoundEventsManager
 
                 switch (evt.Type)
                 {
-                    case SoundEvent.SoundEventType.PlaySong:
+                    case SoundEvent.SoundEventType.Play:
                         SoundResource res = GetSoundResource(evt.ResourceId);
 
                         if (res != null)
                             CreateSong(soundEventId, res, evt, obj);
                         break;
 
-                    case SoundEvent.SoundEventType.StopSong:
+                    case SoundEvent.SoundEventType.Stop:
                         ReplaceSong(evt.StopEventId, -1, evt.FadeOutTime, obj);
                         break;
 
-                    case SoundEvent.SoundEventType.StopAndSetNext:
+                    case SoundEvent.SoundEventType.StopAndGo:
                         ReplaceSong(evt.StopEventId, evt.NextEventId, evt.FadeOutTime, obj);
                         break;
                 }
