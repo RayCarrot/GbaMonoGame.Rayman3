@@ -88,12 +88,12 @@ public partial class MenuAll
 
     private void Step_Multiplayer()
     {
-        if (JoyPad.CheckSingle(GbaInput.Up) || JoyPad.CheckSingle(GbaInput.Down))
+        if (JoyPad.IsButtonJustPressed(GbaInput.Up) || JoyPad.IsButtonJustPressed(GbaInput.Down))
         {
             SelectOption(SelectedOption == 0 ? 1 : 0, true);
             Data.MultiplayerModeSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + SelectedOption;
         }
-        else if (JoyPad.CheckSingle(GbaInput.B))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.B))
         {
             NextStepAction = Step_InitializeTransitionToSelectGameMode;
             CurrentStepAction = Step_TransitionOutOfMultiplayer;
@@ -101,7 +101,7 @@ public partial class MenuAll
             TransitionOutCursorAndStem();
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
-        else if (JoyPad.CheckSingle(GbaInput.A))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {
             Data.Cursor.CurrentAnimation = 16;
 
@@ -197,7 +197,7 @@ public partial class MenuAll
 
         // TODO: Implement
 
-        if (JoyPad.CheckSingle(GbaInput.B))
+        if (JoyPad.IsButtonJustPressed(GbaInput.B))
         {
             RSMultiplayer.Init();
             InititialGameTime = GameTime.ElapsedFrames;

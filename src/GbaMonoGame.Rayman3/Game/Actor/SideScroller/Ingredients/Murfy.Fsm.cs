@@ -8,7 +8,7 @@ public partial class Murfy
 {
     private bool FsmStep_AdvanceText()
     {
-        if (JoyPad.CheckSingle(GbaInput.A))
+        if (JoyPad.IsButtonJustPressed(GbaInput.A))
             TextBox.MoveToNextText();
 
         if (TextBox.IsFinished)

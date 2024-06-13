@@ -510,7 +510,7 @@ public class Rayman3 : GbaGame
     protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
     {
         // Toggle showing debug collision screen
-        if (InputManager.CheckSingle(Keys.T))
+        if (InputManager.IsButtonJustPressed(Keys.T))
         {
             if (Frame.Current is IHasPlayfield { Playfield: { } playfield })
                 playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;

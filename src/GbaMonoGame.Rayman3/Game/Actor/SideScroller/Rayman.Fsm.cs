@@ -24,7 +24,7 @@ public partial class Rayman
             return false;
         }
 
-        if (CheckSingleInput(GbaInput.A) && SlideType != null)
+        if (IsButtonJustPressed(GbaInput.A) && SlideType != null)
         {
             State.MoveTo(Fsm_JumpSlide);
             return false;
@@ -67,14 +67,14 @@ public partial class Rayman
             Message message;
 
             if (State != FUN_0802ddac &&
-                CheckInput(GbaInput.Down) &&
+                IsButtonPressed(GbaInput.Down) &&
                 (Speed.Y > 0 || State == Fsm_Crouch) &&
                 State != Fsm_Climb)
             {
                 CameraTargetY = 70;
                 message = Message.Cam_FollowPositionY;
             }
-            else if (CheckInput(GbaInput.Up) && (State == Fsm_Default || State == Fsm_HangOnEdge))
+            else if (IsButtonPressed(GbaInput.Up) && (State == Fsm_Default || State == Fsm_HangOnEdge))
             {
                 CameraTargetY = 160;
                 message = Message.Cam_FollowPositionY;
@@ -175,7 +175,7 @@ public partial class Rayman
             return false;
         }
 
-        if (CheckSingleInput(GbaInput.A) && SlideType != null)
+        if (IsButtonJustPressed(GbaInput.A) && SlideType != null)
         {
             State.MoveTo(Fsm_JumpSlide);
             return false;
@@ -309,7 +309,7 @@ public partial class Rayman
                 Timer++;
 
                 // Look up when pressing up
-                if (CheckInput(GbaInput.Up))
+                if (IsButtonPressed(GbaInput.Up))
                 {
                     if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && SlideType == null)
                     {
@@ -368,7 +368,7 @@ public partial class Rayman
                     }
                 }
 
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Walk_Left;
                     ChangeAction();
@@ -376,7 +376,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Walk_Right;
                     ChangeAction();
@@ -386,7 +386,7 @@ public partial class Rayman
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A) && Flag2_2)
+                if (IsButtonJustPressed(GbaInput.A) && Flag2_2)
                 {
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     State.MoveTo(Fsm_Jump);
@@ -394,7 +394,7 @@ public partial class Rayman
                 }
                 
                 // Crouch
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     NextActionId = IsFacingRight ? Action.CrouchDown_Right : Action.CrouchDown_Left;
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
@@ -411,7 +411,7 @@ public partial class Rayman
                 }
                 
                 // Walk
-                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                if (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right))
                 {
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     State.MoveTo(Fsm_Walk);
@@ -419,7 +419,7 @@ public partial class Rayman
                 }
                 
                 // Punch
-                if (field23_0x98 == 0 && CheckSingleInput(GbaInput.B) && CanAttackWithFist(2))
+                if (field23_0x98 == 0 && IsButtonJustPressed(GbaInput.B) && CanAttackWithFist(2))
                 {
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     State.MoveTo(Fsm_ChargeAttack);
@@ -516,7 +516,7 @@ public partial class Rayman
                 }
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Walk_Left;
                     ChangeAction();
@@ -524,7 +524,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Walk_Right;
                     ChangeAction();
@@ -534,21 +534,21 @@ public partial class Rayman
                 }
 
                 // Walk
-                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                if (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right))
                 {
                     State.MoveTo(Fsm_Walk);
                     return;
                 }
                 
                 // Crouch
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     State.MoveTo(Fsm_Crouch);
                     return;
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A))
+                if (IsButtonJustPressed(GbaInput.A))
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
@@ -562,7 +562,7 @@ public partial class Rayman
                 }
 
                 // Punch
-                if (CheckInput2(GbaInput.B) && CanAttackWithFist(2))
+                if (IsButtonPressed2(GbaInput.B) && CanAttackWithFist(2))
                 {
                     State.MoveTo(Fsm_ChargeAttack);
                     return;
@@ -660,7 +660,7 @@ public partial class Rayman
                 // Change walking direction
                 if (ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left)
                 {
-                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                    if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                     {
                         ActionId = Action.Walk_LookAround_Left;
                         ChangeAction();
@@ -668,7 +668,7 @@ public partial class Rayman
                         if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
-                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                    else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                     {
                         ActionId = Action.Walk_LookAround_Right;
                         ChangeAction();
@@ -679,7 +679,7 @@ public partial class Rayman
                 }
                 else
                 {
-                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                    if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                     {
                         ActionId = Action.Walk_Left;
                         ChangeAction();
@@ -687,7 +687,7 @@ public partial class Rayman
                         if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                             throw new NotImplementedException();
                     }
-                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                    else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                     {
                         ActionId = Action.Walk_Right;
                         ChangeAction();
@@ -697,11 +697,11 @@ public partial class Rayman
                     }
                 }
 
-                if (CheckInput2(GbaInput.B))
+                if (IsButtonPressed2(GbaInput.B))
                 {
                     Charge++;
                 }
-                else if (CheckSingleReleasedInput(GbaInput.B) && field23_0x98 == 0)
+                else if (IsButtonJustReleased(GbaInput.B) && field23_0x98 == 0)
                 {
                     Charge = 0;
 
@@ -756,7 +756,7 @@ public partial class Rayman
                 }
 
                 // Return if released the left or right inputs
-                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) &&
+                if (IsButtonReleased(GbaInput.Left) && IsButtonReleased(GbaInput.Right) &&
                     ActionId is
                         Action.Walk_Right or Action.Walk_Left or
                         Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
@@ -766,7 +766,7 @@ public partial class Rayman
                 }
 
                 // Return and shout for Globox if looking for him when released the left and right inputs
-                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) &&
+                if (IsButtonReleased(GbaInput.Left) && IsButtonReleased(GbaInput.Right) &&
                     ActionId is Action.Walk_LookAround_Right or Action.Walk_LookAround_Left)
                 {
                     NextActionId = IsFacingRight ? Action.Idle_Shout_Right : Action.Idle_Shout_Left;
@@ -775,14 +775,14 @@ public partial class Rayman
                 }
 
                 // Crawl
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     State.MoveTo(Fsm_Crawl);
                     return;
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A))
+                if (IsButtonJustPressed(GbaInput.A))
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
@@ -804,7 +804,7 @@ public partial class Rayman
                 }
 
                 // Charge punch
-                if (field23_0x98 == 0 && Charge > 10 && CheckInput(GbaInput.B) && CanAttackWithFist(2))
+                if (field23_0x98 == 0 && Charge > 10 && IsButtonPressed(GbaInput.B) && CanAttackWithFist(2))
                 {
                     State.MoveTo(Fsm_ChargeAttack);
                     return;
@@ -851,7 +851,7 @@ public partial class Rayman
                     cam.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, 130);
 
                 if (ActionId is Action.Jump_Right or Action.Jump_Left &&
-                    CheckReleasedInput2(GbaInput.A) && 
+                    IsButtonReleased2(GbaInput.A) && 
                     MechModel.Speed.Y < -4 && 
                     !Flag2_0)
                 {
@@ -885,7 +885,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c == 0)
                 {
                     State.MoveTo(Fsm_Helico);
                     return;
@@ -963,13 +963,13 @@ public partial class Rayman
                 }
 
                 // Helico
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0 && GameTime.ElapsedFrames - Timer >= 6)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c == 0 && GameTime.ElapsedFrames - Timer >= 6)
                 {
                     State.MoveTo(Fsm_Helico);
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0 && GameTime.ElapsedFrames - Timer >= 6)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c != 0 && GameTime.ElapsedFrames - Timer >= 6)
                 {
                     State.MoveTo(FUN_0802ddac);
                     return;
@@ -1028,7 +1028,7 @@ public partial class Rayman
                 }
 
                 // Move down
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     HangOnEdgeDelay = 30;
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
@@ -1037,7 +1037,7 @@ public partial class Rayman
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A))
+                if (IsButtonJustPressed(GbaInput.A))
                 {
                     HangOnEdgeDelay = 30;
                     State.MoveTo(Fsm_Jump);
@@ -1045,7 +1045,7 @@ public partial class Rayman
                 }
 
                 // Attack
-                if (CheckInput2(GbaInput.B) && CanAttackWithFoot())
+                if (IsButtonPressed2(GbaInput.B) && CanAttackWithFoot())
                 {
                     State.MoveTo(Fsm_ChargeAttack);
                     return;
@@ -1082,19 +1082,19 @@ public partial class Rayman
                 SlowdownAirSpeed();
                 AttackInTheAir();
 
-                if (CheckSingleInput(GbaInput.A) && CanSafetyJump)
+                if (IsButtonJustPressed(GbaInput.A) && CanSafetyJump)
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
                 }
                 
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c == 0)
                 {
                     State.MoveTo(Fsm_Helico);
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c != 0)
                 {
                     State.MoveTo(FUN_0802ddac);
                     return;
@@ -1179,7 +1179,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                if (IsButtonJustPressed(GbaInput.A) || IsButtonJustPressed(GbaInput.B))
                 {
                     State.MoveTo(Fsm_StopHelico);
                     return;
@@ -1259,7 +1259,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c != 0)
                 {
                     State.MoveTo(FUN_0802ddac);
                     return;
@@ -1321,7 +1321,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B) || Timer > 50)
+                if (IsButtonJustPressed(GbaInput.A) || IsButtonJustPressed(GbaInput.B) || Timer > 50)
                 {
                     State.MoveTo(Fsm_StopHelico);
                     return;
@@ -1447,7 +1447,7 @@ public partial class Rayman
                     topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
@@ -1455,7 +1455,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
@@ -1465,14 +1465,14 @@ public partial class Rayman
                 }
 
                 // Let go of down and stop crouching
-                if (CheckReleasedInput(GbaInput.Down) && !topType.IsSolid)
+                if (IsButtonReleased(GbaInput.Down) && !topType.IsSolid)
                 {
                     State.MoveTo(Fsm_Default);
                     return;
                 }
 
                 // Crawl
-                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                if (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right))
                 {
                     State.MoveTo(Fsm_Crawl);
                     return;
@@ -1486,7 +1486,7 @@ public partial class Rayman
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A) && !topType.IsSolid && Flag2_2)
+                if (IsButtonJustPressed(GbaInput.A) && !topType.IsSolid && Flag2_2)
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
@@ -1547,7 +1547,7 @@ public partial class Rayman
                     topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
@@ -1555,7 +1555,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
@@ -1577,28 +1577,28 @@ public partial class Rayman
                 }
 
                 // Walk
-                if (CheckReleasedInput(GbaInput.Down) && (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right)) && !topType.IsSolid)
+                if (IsButtonReleased(GbaInput.Down) && (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right)) && !topType.IsSolid)
                 {
                     State.MoveTo(Fsm_Walk);
                     return;
                 }
 
                 // Stopped crouching/crawling
-                if (CheckReleasedInput(GbaInput.Down) && CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right) && !topType.IsSolid)
+                if (IsButtonReleased(GbaInput.Down) && IsButtonReleased(GbaInput.Left) && IsButtonReleased(GbaInput.Right) && !topType.IsSolid)
                 {
                     State.MoveTo(Fsm_Default);
                     return;
                 }
 
                 // Crouch
-                if (CheckReleasedInput(GbaInput.Right) && CheckReleasedInput(GbaInput.Left))
+                if (IsButtonReleased(GbaInput.Right) && IsButtonReleased(GbaInput.Left))
                 {
                     State.MoveTo(Fsm_Crouch);
                     return;
                 }
 
                 // Jump
-                if (CheckSingleInput(GbaInput.A) && !topType.IsSolid)
+                if (IsButtonJustPressed(GbaInput.A) && !topType.IsSolid)
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
@@ -1699,12 +1699,12 @@ public partial class Rayman
                     Action.HangOnEdge_ChargeAttack_Right or Action.HangOnEdge_ChargeAttack_Left or
                     Action.HangOnEdge_BeginAttack_Right or Action.HangOnEdge_BeginAttack_Left))
                 {
-                    if (CheckInput(GbaInput.Left))
+                    if (IsButtonPressed(GbaInput.Left))
                     {
                         if (IsFacingRight)
                             AnimatedObject.FlipX = true;
                     }
-                    else if (CheckInput(GbaInput.Right))
+                    else if (IsButtonPressed(GbaInput.Right))
                     {
                         if (IsFacingLeft)
                             AnimatedObject.FlipX = false;
@@ -1769,7 +1769,7 @@ public partial class Rayman
                 int type = 0;
 
                 // Stop charging and perform attack
-                if (CheckReleasedInput2(GbaInput.B))
+                if (IsButtonReleased2(GbaInput.B))
                 {
                     if (Timer == 0)
                         Timer = GameTime.ElapsedFrames;
@@ -1955,7 +1955,7 @@ public partial class Rayman
 
                 // Keep the same frame across all climbing animations
                 int animFrame = AnimatedObject.CurrentFrame;
-                bool jump = CheckSingleInput(GbaInput.A);
+                bool jump = IsButtonJustPressed(GbaInput.A);
 
                 int climbHoriontal = IsOnClimbableHorizontal();
                 int climbVertical = IsOnClimbableVertical();
@@ -1964,9 +1964,9 @@ public partial class Rayman
 
                 MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
 
-                if (CheckInput(GbaInput.Left))
+                if (IsButtonPressed(GbaInput.Left))
                 {
-                    if (CheckSingleInput2(GbaInput.Left))
+                    if (IsButtonJustPressed2(GbaInput.Left))
                         Timer = 0;
 
                     if (climbHoriontal is 4 or 6)
@@ -1989,9 +1989,9 @@ public partial class Rayman
                         Timer = 0;
                     }
                 }
-                else if (CheckInput(GbaInput.Right))
+                else if (IsButtonPressed(GbaInput.Right))
                 {
-                    if (CheckSingleInput2(GbaInput.Right))
+                    if (IsButtonJustPressed2(GbaInput.Right))
                         Timer = 0;
 
                     if (climbHoriontal is 4 or 5)
@@ -2023,7 +2023,7 @@ public partial class Rayman
                     Timer = 0;
                 }
 
-                if (CheckInput(GbaInput.Up) && climbVertical is 1 or 2)
+                if (IsButtonPressed(GbaInput.Up) && climbVertical is 1 or 2)
                 {
                     if (!RSMultiplayer.IsActive)
                     {
@@ -2040,7 +2040,7 @@ public partial class Rayman
                         AnimatedObject.CurrentFrame = animFrame;
                     }
                 }
-                else if (CheckInput(GbaInput.Down) && climbVertical is 1 or 3)
+                else if (IsButtonPressed(GbaInput.Down) && climbVertical is 1 or 3)
                 {
                     if (!RSMultiplayer.IsActive)
                     {
@@ -2061,18 +2061,18 @@ public partial class Rayman
                 {
                     MechModel.Speed = new Vector2(MechModel.Speed.X, 0);
 
-                    if (CheckInput(GbaInput.Left) && ActionId != Action.Climb_Side_Left && Speed.X != 0)
+                    if (IsButtonPressed(GbaInput.Left) && ActionId != Action.Climb_Side_Left && Speed.X != 0)
                     {
                         ActionId = Action.Climb_Side_Left;
                         AnimatedObject.CurrentFrame = animFrame;
                     }
-                    else if (CheckInput(GbaInput.Right) && ActionId != Action.Climb_Side_Right && Speed.X != 0)
+                    else if (IsButtonPressed(GbaInput.Right) && ActionId != Action.Climb_Side_Right && Speed.X != 0)
                     {
                         ActionId = Action.Climb_Side_Right;
                         AnimatedObject.CurrentFrame = animFrame;
                     }
 
-                    if (CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                    if (IsButtonPressed(GbaInput.Down) && climbVertical is not (1 or 3))
                     {
                         type = Scene.GetPhysicalType(Position + new Vector2(0, 32));
                     }
@@ -2080,9 +2080,9 @@ public partial class Rayman
 
                 if (Speed == Vector2.Zero)
                 {
-                    if (CheckInput(GbaInput.Left) && IsFacingRight)
+                    if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                         AnimatedObject.FlipX = true;
-                    else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                    else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                         AnimatedObject.FlipX = false;
 
                     if (ActionId == NextActionId)
@@ -2107,7 +2107,7 @@ public partial class Rayman
                 }
 
                 // Punch
-                if (CheckInput2(GbaInput.B) && CanAttackWithFist(1))
+                if (IsButtonPressed2(GbaInput.B) && CanAttackWithFist(1))
                 {
                     ActionId = IsFacingRight ? Action.Climb_BeginChargeFist_Right : Action.Climb_BeginChargeFist_Left;
                     State.MoveTo(Fsm_ChargeAttack);
@@ -2115,35 +2115,35 @@ public partial class Rayman
                 }
 
                 // Jump left
-                if (jump && CheckInput(GbaInput.Left) && climbHoriontal is not (4 or 6))
+                if (jump && IsButtonPressed(GbaInput.Left) && climbHoriontal is not (4 or 6))
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
                 }
 
                 // Jump right
-                if (jump && CheckInput(GbaInput.Right) && climbHoriontal is not (4 or 5))
+                if (jump && IsButtonPressed(GbaInput.Right) && climbHoriontal is not (4 or 5))
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
                 }
 
                 // Jump up
-                if (jump && CheckInput(GbaInput.Up) && climbVertical is not (1 or 2))
+                if (jump && IsButtonPressed(GbaInput.Up) && climbVertical is not (1 or 2))
                 {
                     State.MoveTo(Fsm_Jump);
                     return;
                 }
 
                 // Move down
-                if (type.IsSolid && CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                if (type.IsSolid && IsButtonPressed(GbaInput.Down) && climbVertical is not (1 or 3))
                 {
                     State.MoveTo(Fsm_Fall);
                     return;
                 }
 
                 // Jump down
-                if (jump && CheckInput(GbaInput.Down) && climbVertical is not (1 or 3))
+                if (jump && IsButtonPressed(GbaInput.Down) && climbVertical is not (1 or 3))
                 {
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                     State.MoveTo(Fsm_Fall);
@@ -2155,7 +2155,7 @@ public partial class Rayman
                 if (!RSMultiplayer.IsActive)
                     cam.HorizontalOffset = CameraOffset.Default;
 
-                if (!CheckSingleInput(GbaInput.B) && IsLocalPlayer)
+                if (!IsButtonJustPressed(GbaInput.B) && IsLocalPlayer)
                     cam.ProcessMessage(this, Message.Cam_1027);
 
                 if (ActionId == NextActionId)
@@ -2186,7 +2186,7 @@ public partial class Rayman
                 }
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
@@ -2196,7 +2196,7 @@ public partial class Rayman
                         throw new NotImplementedException();
                     }
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
@@ -2208,14 +2208,14 @@ public partial class Rayman
                 }
 
                 // Move
-                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                if (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right))
                 {
                     State.MoveTo(Fsm_HangMove);
                     return;
                 }
 
                 // Move down
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     Position += new Vector2(0, Constants.TileSize);
                     IsHanging = false;
@@ -2234,7 +2234,7 @@ public partial class Rayman
                 }
 
                 // Attack
-                if (CheckSingleInput(GbaInput.B) && CanAttackWithFoot())
+                if (IsButtonJustPressed(GbaInput.B) && CanAttackWithFoot())
                 {
                     State.MoveTo(Fsm_ChargeAttack);
                     return;
@@ -2268,7 +2268,7 @@ public partial class Rayman
                 }
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
@@ -2278,7 +2278,7 @@ public partial class Rayman
                         throw new NotImplementedException();
                     }
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
@@ -2290,7 +2290,7 @@ public partial class Rayman
                 }
 
                 // Stop moving
-                if (!CheckInput(GbaInput.Left) && !CheckInput(GbaInput.Right))
+                if (!IsButtonPressed(GbaInput.Left) && !IsButtonPressed(GbaInput.Right))
                 {
                     NextActionId = IsFacingRight ? Action.Hang_EndMove_Right : Action.Hang_EndMove_Left;
                     State.MoveTo(Fsm_Hang);
@@ -2298,7 +2298,7 @@ public partial class Rayman
                 }
 
                 // Move down
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     Position += new Vector2(0, Constants.TileSize);
                     IsHanging = false;
@@ -2317,7 +2317,7 @@ public partial class Rayman
                 }
 
                 // Attack
-                if (CheckSingleInput(GbaInput.B) && CanAttackWithFoot())
+                if (IsButtonJustPressed(GbaInput.B) && CanAttackWithFoot())
                 {
                     State.MoveTo(Fsm_ChargeAttack);
                     return;
@@ -2482,7 +2482,7 @@ public partial class Rayman
                     }
                 }
 
-                if (CheckSingleInput(GbaInput.A) && !Scene.GetPhysicalType(Position).IsSolid)
+                if (IsButtonJustPressed(GbaInput.A) && !Scene.GetPhysicalType(Position).IsSolid)
                     State.MoveTo(Fsm_Jump);
                 break;
 
@@ -2670,7 +2670,7 @@ public partial class Rayman
                     return;
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.CarryObject_Left;
                     ChangeAction();
@@ -2678,7 +2678,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.CarryObject_Right;
                     ChangeAction();
@@ -2707,14 +2707,14 @@ public partial class Rayman
                 OffsetCarryingObject();
 
                 // Walk
-                if (CheckInput(GbaInput.Left) || CheckInput(GbaInput.Right))
+                if (IsButtonPressed(GbaInput.Left) || IsButtonPressed(GbaInput.Right))
                 {
                     State.MoveTo(Fsm_WalkWithObject);
                     return;
                 }
 
                 // Throw
-                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                if (IsButtonJustPressed(GbaInput.A) || IsButtonJustPressed(GbaInput.B))
                 {
                     State.MoveTo(Fsm_ThrowObject);
                     return;
@@ -2741,7 +2741,7 @@ public partial class Rayman
                     return;
 
                 // Change direction
-                if (CheckInput(GbaInput.Left) && IsFacingRight)
+                if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
                 {
                     ActionId = Action.WalkWithObject_Left;
                     ChangeAction();
@@ -2749,7 +2749,7 @@ public partial class Rayman
                     if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
                         throw new NotImplementedException();
                 }
-                else if (CheckInput(GbaInput.Right) && IsFacingLeft)
+                else if (IsButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.WalkWithObject_Right;
                     ChangeAction();
@@ -2799,14 +2799,14 @@ public partial class Rayman
 
                 // TODO: There's a bug here which causes a crash. Same in the original game. If falling it might still enter this state with attached obj null.
                 // Stop walking
-                if (CheckReleasedInput(GbaInput.Left) && CheckReleasedInput(GbaInput.Right))
+                if (IsButtonReleased(GbaInput.Left) && IsButtonReleased(GbaInput.Right))
                 {
                     State.MoveTo(Fsm_CarryObject);
                     return;
                 }
 
                 // Throw
-                if (CheckSingleInput(GbaInput.A) || CheckSingleInput(GbaInput.B))
+                if (IsButtonJustPressed(GbaInput.A) || IsButtonJustPressed(GbaInput.B))
                 {
                     State.MoveTo(Fsm_ThrowObject);
                     return;
@@ -2833,7 +2833,7 @@ public partial class Rayman
             case FsmAction.Init:
                 PlaySound(Rayman3SoundEvent.Play__OnoThrow_Mix02);
 
-                if (CheckSingleInput(GbaInput.A))
+                if (IsButtonJustPressed(GbaInput.A))
                     ActionId = IsFacingRight ? Action.ThrowObjectUp_Right : Action.ThrowObjectUp_Left;
                 else
                     ActionId = IsFacingRight ? Action.ThrowObjectForward_Right : Action.ThrowObjectForward_Left;
@@ -2924,7 +2924,7 @@ public partial class Rayman
                     return;
                 }
 
-                if (CheckInput2(GbaInput.B) &&
+                if (IsButtonPressed2(GbaInput.B) &&
                     CanAttackWithFist(2) &&
                     field23_0x98 == 0 &&
                     ActionId is Action.ThrowObjectUp_Right or Action.ThrowObjectUp_Left &&
@@ -3258,12 +3258,12 @@ public partial class Rayman
                         return;
                 }
 
-                if (CheckInput(GbaInput.Left))
+                if (IsButtonPressed(GbaInput.Left))
                 {
                     if (IsFacingRight)
                         AnimatedObject.FlipX = true;
                 }
-                else if (CheckInput(GbaInput.Right))
+                else if (IsButtonPressed(GbaInput.Right))
                 {
                     if (IsFacingLeft)
                         AnimatedObject.FlipX = false;
@@ -3287,13 +3287,13 @@ public partial class Rayman
                     return;
                 }
 
-                if (HitPoints != 0 && CheckSingleInput(GbaInput.A) && field27_0x9c == 0)
+                if (HitPoints != 0 && IsButtonJustPressed(GbaInput.A) && field27_0x9c == 0)
                 {
                     State.MoveTo(Fsm_Helico);
                     return;
                 }
 
-                if (HitPoints != 0 && CheckSingleInput(GbaInput.A) && field27_0x9c != 0)
+                if (HitPoints != 0 && IsButtonJustPressed(GbaInput.A) && field27_0x9c != 0)
                 {
                     State.MoveTo(FUN_0802ddac);
                     return;

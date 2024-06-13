@@ -117,7 +117,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
         LevelMusicManager.Step();
 
-        if (JoyPad.CheckSingle(GbaInput.Start) && !BlockPause)
+        if (JoyPad.IsButtonJustPressed(GbaInput.Start) && !BlockPause)
         {
             GameTime.IsPaused = true;
             // TODO: Go to pause state

@@ -21,13 +21,13 @@ public class SimpleJoyPad
         [GbaInput.L] = Keys.Q,
     };
 
-    private GbaInput Inputs { get; set; }
-    private GbaInput NewInputs { get; set; }
+    private GbaInput KeyStatus { get; set; }
+    private GbaInput KeyTriggers { get; set; } // Just pressed
 
     private GbaInput[] ReplayData { get; set; }
     private int ReplayDataIndex { get; set; }
 
-    public bool IsReplayFinished => Inputs == GbaInput.None;
+    public bool IsReplayFinished => KeyStatus == GbaInput.None;
 
     public void SetReplayData(GbaInput[] replayData)
     {
@@ -45,7 +45,7 @@ public class SimpleJoyPad
 
             foreach (KeyValuePair<GbaInput, Keys> input in GbaButtonMapping)
             {
-                if (InputManager.Check(input.Value))
+                if (InputManager.IsButtonPressed(input.Value))
                     inputs |= input.Key;
             }
         }
@@ -65,11 +65,12 @@ public class SimpleJoyPad
         if ((inputs & (GbaInput.Up | GbaInput.Down)) == (GbaInput.Up | GbaInput.Down))
             inputs &= ~(GbaInput.Up | GbaInput.Down);
 
-        NewInputs = inputs ^ Inputs;
-        Inputs = inputs;
+        KeyTriggers = inputs ^ KeyStatus;
+        KeyStatus = inputs;
     }
 
-    public bool Check(GbaInput gbaInput) => (Inputs & gbaInput) != 0;
-    public bool CheckSingle(GbaInput gbaInput) => (gbaInput & Inputs & NewInputs) != 0;
-    public bool CheckSingleReleased(GbaInput gbaInput) => (gbaInput & ~Inputs & NewInputs) != 0;
+    public bool IsButtonPressed(GbaInput gbaInput) => (KeyStatus & gbaInput) != 0;
+    public bool IsButtonReleased(GbaInput gbaInput) => (KeyStatus & gbaInput) == 0;
+    public bool IsButtonJustPressed(GbaInput gbaInput) => (gbaInput & KeyStatus & KeyTriggers) != 0;
+    public bool IsButtonJustReleased(GbaInput gbaInput) => (gbaInput & ~KeyStatus & KeyTriggers) != 0;
 }

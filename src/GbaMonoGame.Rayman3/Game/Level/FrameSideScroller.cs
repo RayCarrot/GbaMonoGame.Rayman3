@@ -230,7 +230,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
                 GameInfo.RemainingTime--;
         }
 
-        if (JoyPad.CheckSingle(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
+        if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
         {
             GameTime.IsPaused = true;
             // TODO: Go to pause state

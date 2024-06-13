@@ -191,7 +191,7 @@ public partial class MenuAll
                     }
                 }
                 // Move start/erase to start
-                else if ((JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L)) && Data.Cursor.CurrentAnimation != 16)
+                else if ((JoyPad.IsButtonJustPressed(GbaInput.Left) || JoyPad.IsButtonJustPressed(GbaInput.L)) && Data.Cursor.CurrentAnimation != 16)
                 {
                     if (StartEraseCursorTargetIndex != 0)
                     {
@@ -201,7 +201,7 @@ public partial class MenuAll
                     }
                 }
                 // Move start/erase to erase
-                else if ((JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R)) && Data.Cursor.CurrentAnimation != 16)
+                else if ((JoyPad.IsButtonJustPressed(GbaInput.Right) || JoyPad.IsButtonJustPressed(GbaInput.R)) && Data.Cursor.CurrentAnimation != 16)
                 {
                     if (StartEraseCursorTargetIndex != 1)
                     {
@@ -211,7 +211,7 @@ public partial class MenuAll
                     }
                 }
                 // Move up
-                else if (JoyPad.CheckSingle(GbaInput.Up) && Data.Cursor.CurrentAnimation != 16)
+                else if (JoyPad.IsButtonJustPressed(GbaInput.Up) && Data.Cursor.CurrentAnimation != 16)
                 {
                     if (SelectedOption == 0)
                         SelectOption(2, true);
@@ -219,7 +219,7 @@ public partial class MenuAll
                         SelectOption(SelectedOption - 1, true);
                 }
                 // Move down
-                else if (JoyPad.CheckSingle(GbaInput.Down) && Data.Cursor.CurrentAnimation != 16)
+                else if (JoyPad.IsButtonJustPressed(GbaInput.Down) && Data.Cursor.CurrentAnimation != 16)
                 {
                     if (SelectedOption == 2)
                         SelectOption(0, true);
@@ -227,7 +227,7 @@ public partial class MenuAll
                         SelectOption(SelectedOption + 1, true);
                 }
                 // Select slot
-                else if (JoyPad.CheckSingle(GbaInput.A) && Data.Cursor.CurrentAnimation != 16)
+                else if (JoyPad.IsButtonJustPressed(GbaInput.A) && Data.Cursor.CurrentAnimation != 16)
                 {
                     Data.Cursor.CurrentAnimation = 16;
 
@@ -277,7 +277,7 @@ public partial class MenuAll
 
             case 3:
                 // Move left
-                if (JoyPad.CheckSingle(GbaInput.Left) || JoyPad.CheckSingle(GbaInput.L))
+                if (JoyPad.IsButtonJustPressed(GbaInput.Left) || JoyPad.IsButtonJustPressed(GbaInput.L))
                 {
                     if (StartEraseCursorTargetIndex != 0)
                     {
@@ -288,7 +288,7 @@ public partial class MenuAll
                     }
                 }
                 // Move right
-                else if (JoyPad.CheckSingle(GbaInput.Right) || JoyPad.CheckSingle(GbaInput.R))
+                else if (JoyPad.IsButtonJustPressed(GbaInput.Right) || JoyPad.IsButtonJustPressed(GbaInput.R))
                 {
                     if (StartEraseCursorTargetIndex != 1)
                     {
@@ -299,7 +299,7 @@ public partial class MenuAll
                     }
                 }
                 // Erase slot
-                else if (JoyPad.CheckSingle(GbaInput.A))
+                else if (JoyPad.IsButtonJustPressed(GbaInput.A))
                 {
                     EraseSaveStage = 4;
                     TransitionValue = 0;
@@ -338,7 +338,7 @@ public partial class MenuAll
                 break;
         }
 
-        if (JoyPad.CheckSingle(GbaInput.B) && TransitionsFX.IsFadeOutFinished && !IsLoadingSlot)
+        if (JoyPad.IsButtonJustPressed(GbaInput.B) && TransitionsFX.IsFadeOutFinished && !IsLoadingSlot)
         {
             if (EraseSaveStage == 0)
             {

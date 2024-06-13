@@ -82,7 +82,7 @@ public partial class Ly
                     ActionId = Action.IdleActive;
                 }
 
-                if (JoyPad.CheckSingle(GbaInput.A) && !TextBox.IsFinished && ActionId != Action.BeginTalk)
+                if (JoyPad.IsButtonJustPressed(GbaInput.A) && !TextBox.IsFinished && ActionId != Action.BeginTalk)
                     TextBox.MoveToNextText();
 
                 if (TextBox.IsFinished)

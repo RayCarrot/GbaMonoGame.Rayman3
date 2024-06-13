@@ -265,7 +265,7 @@ public partial class MenuAll
         }
         else
         {
-            if (JoyPad.CheckSingle(GbaInput.Up) && Data.Cursor.CurrentAnimation == 0)
+            if (JoyPad.IsButtonJustPressed(GbaInput.Up) && Data.Cursor.CurrentAnimation == 0)
             {
                 if (SelectedOption == 0)
                     SelectOption(2, true);
@@ -274,7 +274,7 @@ public partial class MenuAll
 
                 Data.OptionsSelection.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
             }
-            else if (JoyPad.CheckSingle(GbaInput.Down) && Data.Cursor.CurrentAnimation == 0)
+            else if (JoyPad.IsButtonJustPressed(GbaInput.Down) && Data.Cursor.CurrentAnimation == 0)
             {
                 if (SelectedOption == 2)
                     SelectOption(0, true);
@@ -283,14 +283,14 @@ public partial class MenuAll
 
                 Data.OptionsSelection.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
             }
-            else if (JoyPad.CheckSingle(GbaInput.B) && Data.Cursor.CurrentAnimation == 0)
+            else if (JoyPad.IsButtonJustPressed(GbaInput.B) && Data.Cursor.CurrentAnimation == 0)
             {
                 NextStepAction = Step_InitializeTransitionToSelectGameMode;
                 CurrentStepAction = Step_TransitionOutOfOptions;
                 TransitionOutCursorAndStem();
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
             }
-            else if (JoyPad.CheckSingle(GbaInput.A) && Data.Cursor.CurrentAnimation == 0)
+            else if (JoyPad.IsButtonJustPressed(GbaInput.A) && Data.Cursor.CurrentAnimation == 0)
             {
                 Data.Cursor.CurrentAnimation = 16;
 

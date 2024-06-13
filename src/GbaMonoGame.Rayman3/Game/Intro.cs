@@ -281,7 +281,7 @@ public class Intro : Frame, IHasPlayfield
         if (Engine.Settings.Platform == Platform.NGage)
         {
             // TODO: Check every button input
-            if (JoyPad.Check(GbaInput.Start))
+            if (JoyPad.IsButtonPressed(GbaInput.Start))
                 IsSkipping = true;
 
             if (IsSkipping)
@@ -346,13 +346,13 @@ public class Intro : Frame, IHasPlayfield
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
-            if (JoyPad.Check(GbaInput.Start) && ScrollY <= 863)
+            if (JoyPad.IsButtonPressed(GbaInput.Start) && ScrollY <= 863)
                 IsSkipping = true;
         }
         else if (Engine.Settings.Platform == Platform.NGage)
         {
             // TODO: Check every button input
-            if (JoyPad.Check(GbaInput.Start))
+            if (JoyPad.IsButtonPressed(GbaInput.Start))
                 IsSkipping = true;
         }
         else
@@ -398,7 +398,7 @@ public class Intro : Frame, IHasPlayfield
         AnimationPlayer.PlayFront(BlackLumAndLogoObj);
 
         // TODO: Check every button input on N-Gage
-        if (JoyPad.Check(GbaInput.Start))
+        if (JoyPad.IsButtonPressed(GbaInput.Start))
         {
             Gfx.Fade = 1;
             FrameManager.SetNextFrame(Menu);

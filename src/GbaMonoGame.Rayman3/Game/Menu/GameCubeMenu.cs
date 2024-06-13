@@ -182,7 +182,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Exit
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -215,7 +215,7 @@ public class GameCubeMenu : Frame
                 break;
 
             case FsmAction.Step:
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -292,7 +292,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Exit
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -355,7 +355,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Exit
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -413,7 +413,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Exit
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -492,7 +492,7 @@ public class GameCubeMenu : Frame
 
                 if (IsShowingLyChallengeUnlocked)
                 {
-                    if (JoyPad.CheckSingle(GbaInput.Start) || JoyPad.CheckSingle(GbaInput.A))
+                    if (JoyPad.IsButtonJustPressed(GbaInput.Start) || JoyPad.IsButtonJustPressed(GbaInput.A))
                     {
                         IsShowingLyChallengeUnlocked = false;
                         Data.StatusText.Text = "";
@@ -503,7 +503,7 @@ public class GameCubeMenu : Frame
                 else
                 {
                     // Select map
-                    if (JoyPad.CheckSingle(GbaInput.Start) || JoyPad.CheckSingle(GbaInput.A))
+                    if (JoyPad.IsButtonJustPressed(GbaInput.Start) || JoyPad.IsButtonJustPressed(GbaInput.A))
                     {
                         // Make sure map is unlocked
                         if (IsMapUnlocked(SelectedMap))
@@ -539,7 +539,7 @@ public class GameCubeMenu : Frame
                     }
 
                     // Move up
-                    if (JoyPad.CheckSingle(GbaInput.Up) && SelectedMap != 0)
+                    if (JoyPad.IsButtonJustPressed(GbaInput.Up) && SelectedMap != 0)
                     {
                         SelectedMap--;
                         if (MapScroll > SelectedMap)
@@ -551,7 +551,7 @@ public class GameCubeMenu : Frame
                     }
 
                     // Move down
-                    if (JoyPad.CheckSingle(GbaInput.Down) && SelectedMap < MapInfos.MapsCount - 1)
+                    if (JoyPad.IsButtonJustPressed(GbaInput.Down) && SelectedMap < MapInfos.MapsCount - 1)
                     {
                         SelectedMap++;
                         if (MapScroll + 2 < SelectedMap)
@@ -564,7 +564,7 @@ public class GameCubeMenu : Frame
                 }
 
                 // Exit
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     IsActive = false;
                     State.MoveTo(Fsm_Exit);
@@ -629,7 +629,7 @@ public class GameCubeMenu : Frame
                 Data.StatusText.Text = percentageString;
 
                 // Stop download
-                if (JoyPad.CheckSingle(GbaInput.B))
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
                 {
                     JoyBus.Disconnect();
                     JoyBus.Connect();

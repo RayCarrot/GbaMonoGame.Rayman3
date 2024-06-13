@@ -147,11 +147,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckInput(GbaInput input)
+    private bool IsButtonPressed(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return JoyPad.Check(input);
+            return JoyPad.IsButtonPressed(input);
         }
         else
         {
@@ -159,11 +159,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckInput2(GbaInput input)
+    private bool IsButtonPressed2(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return JoyPad.Check(input);
+            return JoyPad.IsButtonPressed(input);
         }
         else
         {
@@ -171,11 +171,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckSingleInput(GbaInput input)
+    private bool IsButtonJustPressed(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return JoyPad.CheckSingle(input);
+            return JoyPad.IsButtonJustPressed(input);
         }
         else
         {
@@ -183,11 +183,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckSingleInput2(GbaInput input)
+    private bool IsButtonJustPressed2(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return JoyPad.CheckSingle(input);
+            return JoyPad.IsButtonJustPressed(input);
         }
         else
         {
@@ -195,11 +195,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckSingleReleasedInput(GbaInput input)
+    private bool IsButtonJustReleased(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return JoyPad.CheckSingleReleased(input);
+            return JoyPad.IsButtonJustReleased(input);
         }
         else
         {
@@ -207,11 +207,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckReleasedInput(GbaInput input)
+    private bool IsButtonReleased(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return !JoyPad.Check(input);
+            return JoyPad.IsButtonReleased(input);
         }
         else
         {
@@ -219,11 +219,11 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool CheckReleasedInput2(GbaInput input)
+    private bool IsButtonReleased2(GbaInput input)
     {
         if (!RSMultiplayer.IsActive)
         {
-            return !JoyPad.Check(input);
+            return JoyPad.IsButtonReleased(input);
         }
         else
         {
@@ -423,12 +423,12 @@ public sealed partial class Rayman : MovableActor
 
         MechModel.Speed = new Vector2(PreviousXSpeed, 5.62501525879f);
 
-        if (CheckInput(GbaInput.Left))
+        if (IsButtonPressed(GbaInput.Left))
         {
             if (PreviousXSpeed > -3)
                 PreviousXSpeed -= 0.12109375f;
         }
-        else if (CheckInput(GbaInput.Right))
+        else if (IsButtonPressed(GbaInput.Right))
         {
             if (PreviousXSpeed < 3)
                 PreviousXSpeed += 0.12109375f;
@@ -454,21 +454,21 @@ public sealed partial class Rayman : MovableActor
         {
             PreviousXSpeed -= 0.12109375f;
 
-            if (CheckInput(GbaInput.Right))
+            if (IsButtonPressed(GbaInput.Right))
                 PreviousXSpeed -= 0.015625f;
         }
         else if (SlideType?.Value is PhysicalTypeValue.SlideAngle30Right1 or PhysicalTypeValue.SlideAngle30Right2)
         {
             PreviousXSpeed += 0.12109375f;
 
-            if (CheckInput(GbaInput.Left))
+            if (IsButtonPressed(GbaInput.Left))
                 PreviousXSpeed += 0.015625f;
         }
     }
 
     private void MoveInTheAir(float speedX)
     {
-        if (CheckInput(GbaInput.Left))
+        if (IsButtonPressed(GbaInput.Left))
         {
             if (IsFacingRight)
                 AnimatedObject.FlipX = true;
@@ -478,7 +478,7 @@ public sealed partial class Rayman : MovableActor
             if (speedX <= -3)
                 speedX = -3;
         }
-        else if (CheckInput(GbaInput.Right))
+        else if (IsButtonPressed(GbaInput.Right))
         {
             if (IsFacingLeft)
                 AnimatedObject.FlipX = false;
@@ -569,7 +569,7 @@ public sealed partial class Rayman : MovableActor
             ActionId = IsFacingRight ? Action.ThrowFistInAir_Right : Action.ThrowFistInAir_Left;
         }
 
-        if (CheckSingleInput(GbaInput.B))
+        if (IsButtonJustPressed(GbaInput.B))
         {
             if (CanAttackWithFist(1))
             {
@@ -711,7 +711,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (IsFacingRight)
             {
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Right)
                         ActionId = Action.Sliding_Crouch_Right;
@@ -724,7 +724,7 @@ public sealed partial class Rayman : MovableActor
             }
             else
             {
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Left)
                         ActionId = Action.Sliding_Crouch_Left;
@@ -740,7 +740,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (IsFacingRight)
             {
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Right)
                         ActionId = Action.Sliding_Crouch_Right;
@@ -753,7 +753,7 @@ public sealed partial class Rayman : MovableActor
             }
             else
             {
-                if (CheckInput(GbaInput.Down))
+                if (IsButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Left)
                         ActionId = Action.Sliding_Crouch_Left;
@@ -1229,7 +1229,7 @@ public sealed partial class Rayman : MovableActor
 
     private void ToggleNoClip()
     {
-        if (InputManager.CheckSingle(Keys.Z)) // TODO: Do not hard-code this key
+        if (InputManager.IsButtonJustPressed(Keys.Z)) // TODO: Do not hard-code this key
         {
             Debug_NoClip = !Debug_NoClip;
 
@@ -1250,16 +1250,16 @@ public sealed partial class Rayman : MovableActor
 
     private void DoNoClipBehavior()
     {
-        int speed = JoyPad.Check(GbaInput.A) ? 7 : 4;
+        int speed = JoyPad.IsButtonPressed(GbaInput.A) ? 7 : 4;
 
-        if (JoyPad.Check(GbaInput.Up))
+        if (JoyPad.IsButtonPressed(GbaInput.Up))
             Position -= new Vector2(0, speed);
-        else if (JoyPad.Check(GbaInput.Down))
+        else if (JoyPad.IsButtonPressed(GbaInput.Down))
             Position += new Vector2(0, speed);
 
-        if (JoyPad.Check(GbaInput.Left))
+        if (JoyPad.IsButtonPressed(GbaInput.Left))
             Position -= new Vector2(speed, 0);
-        else if (JoyPad.Check(GbaInput.Right))
+        else if (JoyPad.IsButtonPressed(GbaInput.Right))
             Position += new Vector2(speed, 0);
     }
 

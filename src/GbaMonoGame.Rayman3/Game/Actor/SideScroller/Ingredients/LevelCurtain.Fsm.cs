@@ -17,9 +17,9 @@ public partial class LevelCurtain
             case FsmAction.Step:
                 if (Scene.IsDetectedMainActor(this))
                 {
-                    if ((JoyPad.CheckSingle(GbaInput.Up) || JoyPad.CheckSingle(GbaInput.A)) &&
-                        !JoyPad.Check(GbaInput.Left) &&
-                        !JoyPad.Check(GbaInput.Right) &&
+                    if ((JoyPad.IsButtonJustPressed(GbaInput.Up) || JoyPad.IsButtonJustPressed(GbaInput.A)) && 
+                        JoyPad.IsButtonReleased(GbaInput.Left) &&
+                        JoyPad.IsButtonReleased(GbaInput.Right) &&
                         !((World)Frame.Current).UserInfo.Hide)
                     {
                         MovableActor mainActor = Scene.MainActor;
@@ -55,9 +55,9 @@ public partial class LevelCurtain
                     ((World)Frame.Current).UserInfo.SetLevelInfoBar(InitialActionId);
                     Scene.MainActor.ProcessMessage(this, Message.Main_BeginInFrontOfLevelCurtain);
 
-                    if ((JoyPad.Check(GbaInput.Up) || JoyPad.Check(GbaInput.A)) &&
-                        !JoyPad.Check(GbaInput.Left) &&
-                        !JoyPad.Check(GbaInput.Right) &&
+                    if ((JoyPad.IsButtonPressed(GbaInput.Up) || JoyPad.IsButtonPressed(GbaInput.A)) &&
+                        JoyPad.IsButtonReleased(GbaInput.Left) &&
+                        JoyPad.IsButtonReleased(GbaInput.Right) &&
                         !((World)Frame.Current).UserInfo.Hide)
                     {
                         Scene.MainActor.ProcessMessage(this, Message.Main_Stop);

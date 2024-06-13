@@ -74,7 +74,7 @@ public partial class Teensies
                 if (IsActionFinished)
                     ActionId = Random.GetNumber(3) * 2 + (IsFacingRight ? Action.Init_World1_Right : Action.Init_World1_Left);
 
-                if (JoyPad.CheckSingle(GbaInput.A))
+                if (JoyPad.IsButtonJustPressed(GbaInput.A))
                     TextBox.MoveToNextText();
 
                 if (TextBox.IsFinished)
@@ -115,7 +115,7 @@ public partial class Teensies
                         Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                         IsMovingOutTextBox = true;
                     }
-                    else if (JoyPad.CheckSingle(GbaInput.A))
+                    else if (JoyPad.IsButtonJustPressed(GbaInput.A))
                     {
                         TextBox.MoveToNextText();
                     }
@@ -172,7 +172,7 @@ public partial class Teensies
                     return;
                 }
                 
-                if (JoyPad.CheckSingle(GbaInput.A))
+                if (JoyPad.IsButtonJustPressed(GbaInput.A))
                     TextBox.MoveToNextText();
                 break;
 

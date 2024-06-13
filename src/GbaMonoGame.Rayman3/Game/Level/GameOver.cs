@@ -241,7 +241,7 @@ public class GameOver : Frame
                 if (Rayman.EndOfAnimation)
                     NextRaymanIdleAnimation();
 
-                if (JoyPad.CheckSingle(GbaInput.A))
+                if (JoyPad.IsButtonJustPressed(GbaInput.A))
                 {
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);
                     Mode = GameOverMode.Continue;

@@ -10,7 +10,7 @@ public partial class MenuAll
 
     private void Step_SelectLanguage()
     {
-        if (JoyPad.CheckSingle(GbaInput.Up))
+        if (JoyPad.IsButtonJustPressed(GbaInput.Up))
         {
             if (SelectedOption == 0)
                 SelectedOption = 9;
@@ -22,7 +22,7 @@ public partial class MenuAll
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
-        else if (JoyPad.CheckSingle(GbaInput.Down))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.Down))
         {
             if (SelectedOption == 9)
                 SelectedOption = 0;
@@ -34,7 +34,7 @@ public partial class MenuAll
             // TODO: Game passes in 0 as obj here, but that's probably a mistake
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
-        else if (JoyPad.CheckSingle(GbaInput.A))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {
             CurrentStepAction = Step_TransitionOutOfLanguage;
 

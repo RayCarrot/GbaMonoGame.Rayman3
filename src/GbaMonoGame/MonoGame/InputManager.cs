@@ -17,9 +17,10 @@ public static class InputManager
 
     public static Vector2 MouseOffset { get; set; }
 
-    public static bool Check(Keys input) => KeyboardState.IsKeyDown(input);
-    public static bool CheckSingle(Keys input) => KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
-    public static bool CheckSingleReleased(Keys input) => KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
+    public static bool IsButtonPressed(Keys input) => KeyboardState.IsKeyDown(input);
+    public static bool IsButtonReleased(Keys input) => KeyboardState.IsKeyUp(input);
+    public static bool IsButtonJustPressed(Keys input) => KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
+    public static bool IsButtonJustReleased(Keys input) => KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
 
     public static bool IsMouseOnScreen(GfxCamera camera) => camera.IsVisible(GetMousePosition(camera));
     public static Vector2 GetMousePosition(GfxCamera camera) => camera.ToWorldPosition(MouseState.Position.ToVector2() + MouseOffset);

@@ -311,7 +311,7 @@ public abstract class Act : Frame
         else
         {
             // Skip cutscene
-            if (!IsAutomatic && JoyPad.CheckSingle(GbaInput.Start)) // TODO: N-Gage checks other input?
+            if (!IsAutomatic && JoyPad.IsButtonJustPressed(GbaInput.Start)) // TODO: N-Gage checks other input?
             {
                 CurrentFrameIndex = ActResource.LastFrameIndex;
                 TransitionsFX.FadeOutInit(1 / 16f);
@@ -327,7 +327,7 @@ public abstract class Act : Frame
             {
                 TransitionTextIn();
             }
-            else if (!IsAutomatic && JoyPad.CheckSingle(GbaInput.A)) // TODO: N-Gage allows a lot more buttons here
+            else if (!IsAutomatic && JoyPad.IsButtonJustPressed(GbaInput.A)) // TODO: N-Gage allows a lot more buttons here
             {
                 if (ActResource.Frames.Value[CurrentFrameIndex].TextId == -1 ||
                     CurrentTextLine >= CurrentText.Length)

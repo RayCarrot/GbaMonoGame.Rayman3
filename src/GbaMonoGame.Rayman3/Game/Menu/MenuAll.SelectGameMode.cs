@@ -162,19 +162,19 @@ public partial class MenuAll
 
     private void Step_SelectGameMode()
     {
-        if (JoyPad.CheckSingle(GbaInput.Up))
+        if (JoyPad.IsButtonJustPressed(GbaInput.Up))
         {
             SelectOption(SelectedOption == 0 ? 2 : SelectedOption - 1, true);
 
             Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
         }
-        else if (JoyPad.CheckSingle(GbaInput.Down))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.Down))
         {
             SelectOption(SelectedOption == 2 ? 0 : SelectedOption + 1, true);
 
             Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
         }
-        else if (JoyPad.CheckSingle(GbaInput.A))
+        else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {
             Data.Cursor.CurrentAnimation = 16;
 

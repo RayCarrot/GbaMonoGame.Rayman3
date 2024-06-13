@@ -70,7 +70,7 @@ public sealed partial class Machine : MovableActor
     {
         if (!TextBox.IsFinished)
         {
-            if (JoyPad.CheckSingle(GbaInput.A))
+            if (JoyPad.IsButtonJustPressed(GbaInput.A))
                 TextBox.MoveToNextText();
         }
         else

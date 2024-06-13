@@ -155,7 +155,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameViewPort.Resize(GetResolution().ToVector2(), InputManager.Check(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
+        Engine.GameViewPort.Resize(GetResolution().ToVector2(), InputManager.IsButtonPressed(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
         SaveWindowState();
         Engine.SaveConfig();
     }
@@ -304,7 +304,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         InputManager.Update();
 
         // Toggle full-screen
-        if (InputManager.Check(Keys.LeftAlt) && InputManager.CheckSingle(Keys.Enter))
+        if (InputManager.IsButtonPressed(Keys.LeftAlt) && InputManager.IsButtonJustPressed(Keys.Enter))
         {
             Engine.Config.IsFullscreen = !_graphics.IsFullScreen;
             SaveWindowState();
@@ -329,13 +329,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             else
             {
                 // Use arrow keys to select game
-                if (InputManager.CheckSingle(Keys.Up))
+                if (InputManager.IsButtonJustPressed(Keys.Up))
                 {
                     _selectedGameInstallationIndex--;
                     if (_selectedGameInstallationIndex < 0)
                         _selectedGameInstallationIndex = _gameInstallations.Count - 1;
                 }
-                else if (InputManager.CheckSingle(Keys.Down))
+                else if (InputManager.IsButtonJustPressed(Keys.Down))
                 {
                     _selectedGameInstallationIndex++;
                     if (_selectedGameInstallationIndex > _gameInstallations.Count - 1)
@@ -343,7 +343,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
                 }
 
                 // Select with space or enter (but not when alt is pressed due to fullscreen toggle)
-                if (!InputManager.Check(Keys.LeftAlt) && (InputManager.CheckSingle(Keys.Space) || InputManager.CheckSingle(Keys.Enter)))
+                if (InputManager.IsButtonReleased(Keys.LeftAlt) && (InputManager.IsButtonJustPressed(Keys.Space) || InputManager.IsButtonJustPressed(Keys.Enter)))
                     LoadEngine(_gameInstallations[_selectedGameInstallationIndex]);
             }
             
@@ -381,7 +381,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle debug mode
-        if (InputManager.CheckSingle(Keys.Tab))
+        if (InputManager.IsButtonJustPressed(Keys.Tab))
         {
             DebugMode = !DebugMode;
 
@@ -400,7 +400,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Toggle pause
-        if (!_showMenu && InputManager.Check(Keys.LeftControl) && InputManager.CheckSingle(Keys.P))
+        if (!_showMenu && InputManager.IsButtonPressed(Keys.LeftControl) && InputManager.IsButtonJustPressed(Keys.P))
         {
             if (!IsPaused)
                 Pause();
@@ -409,13 +409,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Speed up game
-        if (!_showMenu && InputManager.Check(Keys.LeftShift))
+        if (!_showMenu && InputManager.IsButtonPressed(Keys.LeftShift))
             SetFramerate(Framerate * 4);
-        else if (InputManager.CheckSingleReleased(Keys.LeftShift))
+        else if (InputManager.IsButtonJustReleased(Keys.LeftShift))
             SetFramerate(Framerate);
 
         // Toggle menu
-        if (!_menu.IsTransitioningOut && InputManager.CheckSingle(Keys.Escape))
+        if (!_menu.IsTransitioningOut && InputManager.IsButtonJustPressed(Keys.Escape))
         {
             if (!_showMenu)
             {
@@ -430,7 +430,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
 
         // Run one frame
-        if (!_showMenu && InputManager.Check(Keys.LeftControl) && InputManager.CheckSingle(Keys.F))
+        if (!_showMenu && InputManager.IsButtonPressed(Keys.LeftControl) && InputManager.IsButtonJustPressed(Keys.F))
         {
             IsPaused = false;
             RunSingleFrame = true;

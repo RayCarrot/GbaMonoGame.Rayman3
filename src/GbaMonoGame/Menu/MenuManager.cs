@@ -203,21 +203,21 @@ public class MenuManager
         if (!IsTransitioningText)
         {
             // Run standard controls
-            if (InputManager.CheckSingle(Keys.Down))
+            if (InputManager.IsButtonJustPressed(Keys.Down))
             {
                 if (CurrentSelectionIndex >= SelectableElementsCount - 1)
                     CurrentSelectionIndex = 0;
                 else
                     CurrentSelectionIndex++;
             }
-            else if (InputManager.CheckSingle(Keys.Up))
+            else if (InputManager.IsButtonJustPressed(Keys.Up))
             {
                 if (CurrentSelectionIndex <= 0)
                     CurrentSelectionIndex = SelectableElementsCount - 1;
                 else
                     CurrentSelectionIndex--;
             }
-            else if (InputManager.CheckSingle(Keys.Back))
+            else if (InputManager.IsButtonJustPressed(Keys.Back))
             {
                 GoBack();
             }
@@ -336,7 +336,7 @@ public class MenuManager
             SelectableElementsCount++;
         NextLine(pos);
 
-        return CurrentSelectionIndex == index && !IsTransitioningText && InputManager.CheckSingle(Keys.Space);
+        return CurrentSelectionIndex == index && !IsTransitioningText && InputManager.IsButtonJustPressed(Keys.Space);
     }
 
     public int Selection(string[] options, int selectedOption)
@@ -349,13 +349,13 @@ public class MenuManager
         {
             text = $"< {text} >";
 
-            if (InputManager.CheckSingle(Keys.Left))
+            if (InputManager.IsButtonJustPressed(Keys.Left))
             {
                 selectedOption--;
                 if (selectedOption < 0)
                     selectedOption = options.Length - 1;
             }
-            else if (InputManager.CheckSingle(Keys.Right))
+            else if (InputManager.IsButtonJustPressed(Keys.Right))
             {
                 selectedOption++;
                 if (selectedOption >= options.Length)

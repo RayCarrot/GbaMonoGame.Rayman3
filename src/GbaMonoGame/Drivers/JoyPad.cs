@@ -12,7 +12,8 @@ public static class JoyPad
 
     public static void Scan() => Current.Scan();
 
-    public static bool Check(GbaInput gbaInput) => Current.Check(gbaInput);
-    public static bool CheckSingle(GbaInput gbaInput) => Current.CheckSingle(gbaInput);
-    public static bool CheckSingleReleased(GbaInput gbaInput) => Current.CheckSingleReleased(gbaInput);
+    public static bool IsButtonPressed(GbaInput gbaInput) => Current.IsButtonPressed(gbaInput);
+    public static bool IsButtonReleased(GbaInput gbaInput) => Current.IsButtonReleased(gbaInput);
+    public static bool IsButtonJustPressed(GbaInput gbaInput) => Current.IsButtonJustPressed(gbaInput);
+    public static bool IsButtonJustReleased(GbaInput gbaInput) => Current.IsButtonJustReleased(gbaInput);
 }
