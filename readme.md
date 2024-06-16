@@ -6,7 +6,7 @@ This project is a recreation of Rayman 3 GBA to [MonoGame](https://monogame.net)
 ## GbaEngine
 The original game uses [Ubisoft's GbaEngine](https://raymanpc.com/wiki/en/GbaEngine), an engine which was written in C and built from Ubisoft's GBC engine. The engine is object-oriented, which makes it work well for a C# re-creation, and consists of several, mostly independent, modules.
 
-This is the structure of the original engine, as seen in the version of it used by Rayman 3. Later versions, and ones in different branches (developed by different Ubisoft studios) have several changed.
+This is the structure of the original engine, as seen in the version of it used by Rayman 3. Later versions, and ones in different branches (developed by different Ubisoft studios) have several changes.
 
 #### GbaCommon
 - **GbaSDK** - reusable code for any GBA game, such as display drivers, a graphics engine for allocating tiles in an optimized way and network code for multiplayer.
@@ -16,6 +16,7 @@ This is the structure of the original engine, as seen in the version of it used 
 - **GbaAnimation** -  different types of animated objects which can be played with the animation player as well as palette and sprite managers.
 - **GbaTileGraphics** - playfield, along with different types of game layers, and cameras for scrolling.
 - **Gba2DPlatform** - components for a 2D platformer, such as actors, captors, scenes, knots and more.
+- **Gba3d** - components for 3D rendering through software (only used in the game credits)
 
 #### GbaSpecific
 - **Rayman2** - game project
