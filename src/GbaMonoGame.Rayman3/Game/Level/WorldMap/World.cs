@@ -23,7 +23,7 @@ public class World : FrameWorldSideScroller
     private int PaletteFadeTimer { get; set; }
     private bool FinishedTransitioningOut { get; set; }
 
-    public void InitTransitionIn()
+    public void InitEntering()
     {
         FinishedTransitioningOut = false;
         PaletteFade.Fade = 1;
@@ -34,7 +34,7 @@ public class World : FrameWorldSideScroller
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
     }
 
-    public void InitTransitionOut()
+    public void InitExiting()
     {
         CurrentExStepAction = StepEx_FadeOut;
         PaletteFadeTimer = PaletteFade.MaxFadeTime;
@@ -177,7 +177,7 @@ public class World : FrameWorldSideScroller
             SpritePriority = 0,
         };
 
-        InitTransitionIn();
+        InitEntering();
 
         // We have to show the palette fade already now or we have one game frame with the level visible
         Scene.AnimationPlayer.PlayFront(PaletteFade);

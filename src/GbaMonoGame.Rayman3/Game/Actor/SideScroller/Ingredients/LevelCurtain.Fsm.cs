@@ -134,7 +134,7 @@ public partial class LevelCurtain
         switch (action)
         {
             case FsmAction.Init:
-                ((World)Frame.Current).InitTransitionOut();
+                ((World)Frame.Current).InitExiting();
                 ActionId = InitialActionId;
                 break;
 

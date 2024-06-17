@@ -3100,7 +3100,7 @@ public partial class Rayman
                         case MapId.World2:
                         case MapId.World3:
                         case MapId.World4:
-                            ((World)Frame.Current).InitTransitionOut();
+                            ((World)Frame.Current).InitExiting();
                             break;
 
                         case MapId.WorldMap:
