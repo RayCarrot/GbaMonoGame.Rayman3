@@ -5,9 +5,6 @@ using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Rayman3;
 
-// TODO: Rendering currently doesn't work like it should. The game has sprites wrap around at 512 because of the x position
-//       in the OAM being a 9-bit signed value. However, we want to allow resolutions wider than 512, so this should be
-//       handled differently, probably with multiple fog objects filling the width of the screen.
 public class FogDialog : Dialog
 {
     public FogDialog(Scene2D scene) : base(scene)
@@ -17,7 +14,7 @@ public class FogDialog : Dialog
     }
 
     private TgxPlayfield Playfield { get; }
-    private AnimatedObject Fog { get; set; }
+    private AObjectFog Fog { get; set; }
     private bool ShouldDraw { get; set; }
     private float ScrollX { get; set; }
     private int ScrollSpeed { get; set; }
@@ -28,11 +25,8 @@ public class FogDialog : Dialog
     {
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.FogAnimations);
 
-        Fog = new AnimatedObject(resource, resource.IsDynamic)
+        Fog = new AObjectFog(resource)
         {
-            IsFramed = true,
-            CurrentAnimation = 0,
-            ScreenPos = new Vector2(0, 128),
             SpritePriority = 0,
             YPriority = 63,
             IsAlphaBlendEnabled = true,
@@ -56,12 +50,18 @@ public class FogDialog : Dialog
 
         if (height - 32 < camPos.Y + Playfield.Camera.Resolution.Y)
         {
-            Fog.ScreenPos = new Vector2(512 - (camPos.X + ScrollX) % 512, height - camPos.Y - 32);
+            // What the game does:
+            // Fog.ScreenPos = new Vector2(512 - (camPos.X + ScrollX) % 512, height - camPos.Y - 32);
+            Fog.ScreenPos = new Vector2(-(camPos.X + ScrollX) % AObjectFog.Width, height - camPos.Y - 32);
+            
             animationPlayer.Play(Fog);
         }
 
         ScrollX += ScrollSpeed / 8f; // NOTE: Game scrolls every 8 frames
-        if (ScrollX > 512)
-            ScrollX = 0;
+        
+        // What the game does:
+        // if (ScrollX > 512)
+        //     ScrollX = 0;
+        ScrollX %= AObjectFog.Width;
     }
 }
