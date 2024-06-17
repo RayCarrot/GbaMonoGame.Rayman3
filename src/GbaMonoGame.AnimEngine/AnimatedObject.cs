@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.AnimEngine;
@@ -143,53 +141,7 @@ public class AnimatedObject : AObject
             data: resource.Palettes.Palettes[spriteDefine.PaletteIndex],
             createObjFunc: p => new Palette(p));
 
-        Constants.Size shape = Constants.GetSpriteShape(spriteDefine.SpriteShape, spriteDefine.SpriteSize);
-        Texture2D tex = new(Engine.GraphicsDevice, shape.Width, shape.Height);
-        Color[] texColors = new Color[tex.Width * tex.Height];
-        byte[] tileSet = resource.SpriteTable.Data;
-        int tileSetIndex = spriteDefine.TileIndex * 0x20;
-        bool is8Bit = resource.Is8Bit;
-
-        int absTileY = 0;
-
-        // TODO: Optimize like how we did with TiledTexture2D. Perhaps class SpriteTexture2D which inherits from it?
-        for (int tileY = 0; tileY < shape.TilesHeight; tileY++)
-        {
-            int absTileX = 0;
-
-            for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
-            {
-                for (int y = 0; y < Constants.TileSize; y++)
-                {
-                    for (int x = 0; x < Constants.TileSize; x++)
-                    {
-                        int absX = absTileX + x;
-                        int absY = absTileY + y;
-
-                        int colorIndex = tileSet[tileSetIndex];
-
-                        if (!is8Bit)
-                            colorIndex = BitHelpers.ExtractBits(colorIndex, 4, x % 2 == 0 ? 0 : 4);
-
-                        // 0 is transparent, so ignore
-                        if (colorIndex != 0)
-                        {
-                            // Set the pixel
-                            texColors[absY * tex.Width + absX] = palette.Colors[colorIndex];
-                        }
-
-                        if (is8Bit || x % 2 == 1)
-                            tileSetIndex++;
-                    }
-                }
-
-                absTileX += Constants.TileSize;
-            }
-
-            absTileY += Constants.TileSize;
-        }
-
-        tex.SetData(texColors);
+        SpriteTexture2D tex = new(resource, spriteDefine.SpriteShape, spriteDefine.SpriteSize, palette, spriteDefine.TileIndex);
 
         if (Engine.Config.DumpSprites)
         {
