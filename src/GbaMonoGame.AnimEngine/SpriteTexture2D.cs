@@ -1,5 +1,4 @@
-﻿using BinarySerializer;
-using BinarySerializer.Nintendo.GBA;
+﻿using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -16,45 +15,42 @@ public class SpriteTexture2D : Texture2D
         Color[] texColors = new Color[Width * Height];
         byte[] tileSet = resource.SpriteTable.Data;
         int tileSetIndex = tileIndex * 0x20;
-        bool is8Bit = resource.Is8Bit;
 
-        int absTileY = 0;
-
-        // TODO: Optimize like how we did with TiledTexture2D - but run stopwatch to make sure it's actually faster
-        for (int tileY = 0; tileY < shape.TilesHeight; tileY++)
+        if (resource.Is8Bit)
         {
-            int absTileX = 0;
+            int absTileY = 0;
 
-            for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
+            for (int tileY = 0; tileY < shape.TilesHeight; tileY++)
             {
-                for (int y = 0; y < Constants.TileSize; y++)
+                int absTileX = 0;
+
+                for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
                 {
-                    for (int x = 0; x < Constants.TileSize; x++)
-                    {
-                        int absX = absTileX + x;
-                        int absY = absTileY + y;
+                    DrawHelpers.DrawTile_8bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex, palette);
 
-                        int colorIndex = tileSet[tileSetIndex];
-
-                        if (!is8Bit)
-                            colorIndex = BitHelpers.ExtractBits(colorIndex, 4, x % 2 == 0 ? 0 : 4);
-
-                        // 0 is transparent, so ignore
-                        if (colorIndex != 0)
-                        {
-                            // Set the pixel
-                            texColors[absY * Width + absX] = palette.Colors[colorIndex];
-                        }
-
-                        if (is8Bit || x % 2 == 1)
-                            tileSetIndex++;
-                    }
+                    absTileX += Constants.TileSize;
                 }
 
-                absTileX += Constants.TileSize;
+                absTileY += Constants.TileSize;
             }
+        }
+        else
+        {
+            int absTileY = 0;
 
-            absTileY += Constants.TileSize;
+            for (int tileY = 0; tileY < shape.TilesHeight; tileY++)
+            {
+                int absTileX = 0;
+
+                for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
+                {
+                    DrawHelpers.DrawTile_4bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex, palette, 0);
+
+                    absTileX += Constants.TileSize;
+                }
+
+                absTileY += Constants.TileSize;
+            }
         }
 
         SetData(texColors);
