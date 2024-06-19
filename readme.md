@@ -21,7 +21,7 @@ This is the structure of the original engine, as seen in the version of it used 
 #### GbaSpecific
 - **Rayman2** - game project
 
-A mockup of the source code file structure has been made under [gbaengine/structure](gbaengine/structure). It uses file names from all of the known prototype builds of the game. Since the paths are from different versions this might not be accurate to how it is structured in the final game. For example, `ProjectileIterator` is not used in the final game since projectiles are merged with always actors.
+Mockups of the source code file structures for all dated Rayman 3 prototypes, as well as other known prototypes for the same engine, have been made under [gbaengine/structure](gbaengine/structure).
 
 ### ROM
 The majority of the game data in the ROM is stored as resource blocks in a data table. Each resource has a list of dependencies, which are additional resources that it links to. [BinarySerializer.Ubisoft.GbaEngine](https://github.com/BinarySerializer/BinarySerializer.Ubisoft.GbaEngine) is being used to deserialize this data from the ROM.
