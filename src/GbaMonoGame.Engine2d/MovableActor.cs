@@ -203,8 +203,55 @@ public abstract class MovableActor : InteractableActor
         // Moving up
         if (Speed.Y < 0)
         {
-            // TODO: Implement
-            Logger.NotImplemented("Not implemented extended map collision when moving up");
+            // Get top-center type
+            PhysicalType type = Scene.GetPhysicalType(detectionBox.TopCenter);
+
+            if (!type.IsSolid)
+            {
+                // Get top-right type
+                type = Scene.GetPhysicalType(detectionBox.TopRight);
+
+                if (!type.IsSolid)
+                {
+                    type = Scene.GetPhysicalType(detectionBox.TopLeft);
+
+                    if (type.IsSolid)
+                    {
+                        PhysicalType otherType = Scene.GetPhysicalType(detectionBox.TopLeft + new Vector2(0, Constants.TileSize));
+
+                        if (otherType.IsSolid)
+                            type = PhysicalTypeValue.None;
+                    }
+                }
+                else
+                {
+                    PhysicalType otherType = Scene.GetPhysicalType(detectionBox.TopRight + new Vector2(0, Constants.TileSize));
+
+                    if (otherType.IsSolid)
+                        type = PhysicalTypeValue.None;
+
+                    if (!type.IsSolid)
+                    {
+                        type = Scene.GetPhysicalType(detectionBox.TopLeft + new Vector2(0, Constants.TileSize * 2));
+
+                        if (type.IsSolid)
+                        {
+                            otherType = Scene.GetPhysicalType(detectionBox.TopLeft + new Vector2(0, Constants.TileSize * 3));
+
+                            if (otherType.IsSolid)
+                                type = PhysicalTypeValue.None;
+                        }
+                    }
+                }
+            }
+
+            // If found a solid type, then move out of tile downwards
+            if (type.IsFullySolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+            {
+                Speed += new Vector2(0, Constants.TileSize - MathHelpers.Mod(detectionBox.MinY, Constants.TileSize));
+                Position += new Vector2(0, Constants.TileSize - MathHelpers.Mod(detectionBox.MinY, Constants.TileSize));
+                IsTouchingMap = true;
+            }
         }
         // Moving down or not moving vertically
         else
