@@ -51,7 +51,31 @@ public readonly struct Box
     public float Height => MaxY - MinY;
 
     [JsonIgnore]
-    public Vector2 Center => new(Width / 2 + MinX, Height / 2 + MinY);
+    public float CenterX => Width / 2 + MinX;
+    [JsonIgnore]
+    public float CenterY => Height / 2 + MinY;
+
+    [JsonIgnore]
+    public Vector2 TopLeft => new(MinX, MinY);
+    [JsonIgnore]
+    public Vector2 TopCenter => new(CenterX, MinY);
+    [JsonIgnore]
+    public Vector2 TopRight => new(MaxX, MinY);
+
+    [JsonIgnore]
+    public Vector2 MiddleLeft => new(MinX, CenterY);
+    [JsonIgnore]
+    public Vector2 Center => new(CenterX, CenterY);
+    [JsonIgnore]
+    public Vector2 MiddleRight => new(MaxX, CenterY);
+
+    [JsonIgnore]
+    public Vector2 BottomLeft => new(MinX, MaxY);
+    [JsonIgnore]
+    public Vector2 BottomCenter => new(CenterX, MaxY);
+    [JsonIgnore]
+    public Vector2 BottomRight => new(MaxX, MaxY);
+
     [JsonIgnore]
     public Vector2 Position => new(MinX, MinY);
     [JsonIgnore]
