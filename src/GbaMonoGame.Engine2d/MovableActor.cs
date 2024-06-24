@@ -114,6 +114,8 @@ public abstract class MovableActor : InteractableActor
         return true;
     }
 
+    // The game doesn't have this helper, but I created it to attempt to make the below code more readable. Sadly
+    // this method can't always be used, so maybe it's not so useful after all...
     private void PushOutOfTile(float position, Direction direction, bool resetSpeed = false)
     {
         Vector2 delta = direction switch
@@ -139,7 +141,7 @@ public abstract class MovableActor : InteractableActor
         IsTouchingMap = true;
     }
 
-    private void CheckMapCollisionX()
+    private void CheckMapCollision_BasicXOnly()
     {
         Box detectionBox = GetDetectionBox();
 
@@ -159,7 +161,7 @@ public abstract class MovableActor : InteractableActor
         }
     }
 
-    private void CheckMapCollisionY()
+    private void CheckMapCollision_BasicYOnly()
     {
         Box detectionBox = GetDetectionBox();
 
@@ -179,26 +181,26 @@ public abstract class MovableActor : InteractableActor
         }
     }
 
-    private void CheckMapCollisionXY()
+    private void CheckMapCollision_Basic()
     {
         // The game doesn't call these, but rather re-implements them. Code
         // appears identical though, so might as well. The game probably does
         // it for performance reasons.
-        CheckMapCollisionY();
-        CheckMapCollisionX();
+        CheckMapCollision_BasicYOnly();
+        CheckMapCollision_BasicXOnly();
     }
 
-    private void CheckMapCollisionExtendedX()
+    private void CheckMapCollision_Large()
     {
         throw new NotImplementedException();
     }
 
-    private void CheckMapCollisionExtendedY()
+    private void CheckMapCollision_Complex()
     {
         throw new NotImplementedException();
     }
 
-    private void CheckMapCollisionExtendedXY()
+    private void CheckMapCollision_ComplexWithAngles()
     {
         Box detectionBox = GetDetectionBox();
 
@@ -462,28 +464,28 @@ public abstract class MovableActor : InteractableActor
 
                 switch (MapCollisionType)
                 {
-                    case ActorMapCollisionType.CheckX:
-                        CheckMapCollisionX();
+                    case ActorMapCollisionType.BasicXOnly:
+                        CheckMapCollision_BasicXOnly();
                         break;
 
-                    case ActorMapCollisionType.CheckY:
-                        CheckMapCollisionY();
+                    case ActorMapCollisionType.BasicYOnly:
+                        CheckMapCollision_BasicYOnly();
                         break;
 
-                    case ActorMapCollisionType.CheckXY:
-                        CheckMapCollisionXY();
+                    case ActorMapCollisionType.Basic:
+                        CheckMapCollision_Basic();
                         break;
 
-                    case ActorMapCollisionType.CheckExtendedX:
-                        CheckMapCollisionExtendedX();
+                    case ActorMapCollisionType.Large:
+                        CheckMapCollision_Large();
                         break;
 
-                    case ActorMapCollisionType.CheckExtendedY:
-                        CheckMapCollisionExtendedY();
+                    case ActorMapCollisionType.Complex:
+                        CheckMapCollision_Complex();
                         break;
 
-                    case ActorMapCollisionType.CheckExtendedXY:
-                        CheckMapCollisionExtendedXY();
+                    case ActorMapCollisionType.ComplexWithAngles:
+                        CheckMapCollision_ComplexWithAngles();
                         break;
                 }
             }
