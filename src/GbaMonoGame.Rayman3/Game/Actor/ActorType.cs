@@ -34,8 +34,10 @@ public enum ActorType
 
     Butterfly = 37,
 
-    PurpleLum = 47,
+    WoodenShieldedHoodboom = 44,
 
+    PurpleLum = 47,
+    Grenade = 48,
     SwingSparkle = 49,
     BreakableGround = 50, // TODO: Implement
 
