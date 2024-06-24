@@ -13,9 +13,9 @@ public static class DrawHelpers
     {
         int imgBufferOffset = yPos * width + xPos;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x += 2)
+            for (int x = 0; x < Tile.Size; x += 2)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -34,18 +34,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset += width - Constants.TileSize;
+            imgBufferOffset += width - Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_4bpp_FlipX(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal, int palOffset)
     {
-        int imgBufferOffset = yPos * width + xPos + Constants.TileSize - 1;
+        int imgBufferOffset = yPos * width + xPos + Tile.Size - 1;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x += 2)
+            for (int x = 0; x < Tile.Size; x += 2)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -64,18 +64,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset += width + Constants.TileSize;
+            imgBufferOffset += width + Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_4bpp_FlipY(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal, int palOffset)
     {
-        int imgBufferOffset = (yPos + Constants.TileSize - 1) * width + xPos;
+        int imgBufferOffset = (yPos + Tile.Size - 1) * width + xPos;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x += 2)
+            for (int x = 0; x < Tile.Size; x += 2)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -94,18 +94,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset -= width + Constants.TileSize;
+            imgBufferOffset -= width + Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_4bpp_FlipXY(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal, int palOffset)
     {
-        int imgBufferOffset = (yPos + Constants.TileSize - 1) * width + xPos + Constants.TileSize - 1;
+        int imgBufferOffset = (yPos + Tile.Size - 1) * width + xPos + Tile.Size - 1;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x += 2)
+            for (int x = 0; x < Tile.Size; x += 2)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -124,7 +124,7 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset -= width - Constants.TileSize;
+            imgBufferOffset -= width - Tile.Size;
         }
     }
 
@@ -137,9 +137,9 @@ public static class DrawHelpers
     {
         int imgBufferOffset = yPos * width + xPos;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x++)
+            for (int x = 0; x < Tile.Size; x++)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -151,18 +151,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset += width - Constants.TileSize;
+            imgBufferOffset += width - Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_8bpp_FlipX(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal)
     {
-        int imgBufferOffset = yPos * width + xPos + Constants.TileSize - 1;
+        int imgBufferOffset = yPos * width + xPos + Tile.Size - 1;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x++)
+            for (int x = 0; x < Tile.Size; x++)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -174,18 +174,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset += width + Constants.TileSize;
+            imgBufferOffset += width + Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_8bpp_FlipY(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal)
     {
-        int imgBufferOffset = (yPos + Constants.TileSize - 1) * width + xPos;
+        int imgBufferOffset = (yPos + Tile.Size - 1) * width + xPos;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x++)
+            for (int x = 0; x < Tile.Size; x++)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -197,18 +197,18 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset -= width + Constants.TileSize;
+            imgBufferOffset -= width + Tile.Size;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawTile_8bpp_FlipXY(Color[] texColors, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex, Palette pal)
     {
-        int imgBufferOffset = (yPos + Constants.TileSize - 1) * width + xPos + Constants.TileSize - 1;
+        int imgBufferOffset = (yPos + Tile.Size - 1) * width + xPos + Tile.Size - 1;
 
-        for (int y = 0; y < Constants.TileSize; y++)
+        for (int y = 0; y < Tile.Size; y++)
         {
-            for (int x = 0; x < Constants.TileSize; x++)
+            for (int x = 0; x < Tile.Size; x++)
             {
                 int value = tileSet[tileSetIndex];
 
@@ -220,7 +220,7 @@ public static class DrawHelpers
                 tileSetIndex++;
             }
 
-            imgBufferOffset -= width - Constants.TileSize;
+            imgBufferOffset -= width - Tile.Size;
         }
     }
 

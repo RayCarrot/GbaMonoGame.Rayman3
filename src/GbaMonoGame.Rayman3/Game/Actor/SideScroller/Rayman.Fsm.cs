@@ -1365,19 +1365,19 @@ public partial class Rayman
                 {
                     Vector2 pos = Position;
 
-                    pos += new Vector2(0, Constants.TileSize);
+                    pos += new Vector2(0, Tile.Size);
                     if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
                         return;
 
-                    pos += new Vector2(0, Constants.TileSize);
+                    pos += new Vector2(0, Tile.Size);
                     if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
                         return;
 
-                    pos += new Vector2(0, Constants.TileSize);
+                    pos += new Vector2(0, Tile.Size);
                     if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
                         return;
 
-                    pos += new Vector2(0, Constants.TileSize);
+                    pos += new Vector2(0, Tile.Size);
                     if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.None)
                         return;
 
@@ -2217,7 +2217,7 @@ public partial class Rayman
                 // Move down
                 if (IsButtonPressed(GbaInput.Down))
                 {
-                    Position += new Vector2(0, Constants.TileSize);
+                    Position += new Vector2(0, Tile.Size);
                     IsHanging = false;
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                     State.MoveTo(Fsm_Fall);
@@ -2300,7 +2300,7 @@ public partial class Rayman
                 // Move down
                 if (IsButtonPressed(GbaInput.Down))
                 {
-                    Position += new Vector2(0, Constants.TileSize);
+                    Position += new Vector2(0, Tile.Size);
                     IsHanging = false;
                     PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
                     State.MoveTo(Fsm_Fall);

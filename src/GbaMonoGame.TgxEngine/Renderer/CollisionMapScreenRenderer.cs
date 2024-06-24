@@ -29,24 +29,24 @@ public class CollisionMapScreenRenderer : IScreenRenderer
     {
         Rectangle rect = new(position.ToPoint(), GetSize(screen).ToPoint());
 
-        int xStart = (Math.Max(0, rect.Left) - rect.X) / Constants.TileSize;
-        int yStart = (Math.Max(0, rect.Top) - rect.Y) / Constants.TileSize;
-        int xEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.X, rect.Right) - rect.X) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.Y, rect.Bottom) - rect.Y) / Constants.TileSize);
+        int xStart = (Math.Max(0, rect.Left) - rect.X) / Tile.Size;
+        int yStart = (Math.Max(0, rect.Top) - rect.Y) / Tile.Size;
+        int xEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.X, rect.Right) - rect.X) / Tile.Size);
+        int yEnd = (int)Math.Ceiling((Math.Min(Camera.Resolution.Y, rect.Bottom) - rect.Y) / Tile.Size);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
 
-    public Vector2 GetSize(GfxScreen screen) => new(Width * Constants.TileSize, Height * Constants.TileSize);
+    public Vector2 GetSize(GfxScreen screen) => new(Width * Tile.Size, Height * Tile.Size);
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
         Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
-        float absTileY = position.Y + visibleTilesArea.Y * Constants.TileSize;
+        float absTileY = position.Y + visibleTilesArea.Y * Tile.Size;
 
         for (int tileY = visibleTilesArea.Top; tileY < visibleTilesArea.Bottom; tileY++)
         {
-            float absTileX = position.X + visibleTilesArea.X * Constants.TileSize;
+            float absTileX = position.X + visibleTilesArea.X * Tile.Size;
 
             for (int tileX = visibleTilesArea.Left; tileX < visibleTilesArea.Right; tileX++)
             {
@@ -60,15 +60,15 @@ public class CollisionMapScreenRenderer : IScreenRenderer
                         sourceRectangle: new Rectangle((type % CollisionTileSetWidth) * CollisionTileSize, (type / CollisionTileSetWidth) * CollisionTileSize, CollisionTileSize, CollisionTileSize), 
                         rotation: 0,
                         origin: Vector2.Zero, 
-                        scale: new Vector2(Constants.TileSize / (float)CollisionTileSize),
+                        scale: new Vector2(Tile.Size / (float)CollisionTileSize),
                         effects: SpriteEffects.None,
                         color: color);
                 }
 
-                absTileX += Constants.TileSize;
+                absTileX += Tile.Size;
             }
 
-            absTileY += Constants.TileSize;
+            absTileY += Tile.Size;
         }
     }
 }

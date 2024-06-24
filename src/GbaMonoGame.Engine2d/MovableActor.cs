@@ -39,7 +39,7 @@ public abstract class MovableActor : InteractableActor
             otherDetectionBox.MinY > actorDetectionBox.MinY &&
             otherDetectionBox.MaxY > actorDetectionBox.MaxY &&
             // TODO: Should we remove this? Only there in base engine because of limitations.
-            height < Constants.TileSize)
+            height < Tile.Size)
         {
             Speed -= new Vector2(0, height);
             Position -= new Vector2(0, height);
@@ -95,8 +95,8 @@ public abstract class MovableActor : InteractableActor
         float width = intersectBox.Width;
 
         // TODO: Should we remove this? Only there in base engine because of limitations.
-        if (width > Constants.TileSize - 1)
-            width = Constants.TileSize - 1;
+        if (width > Tile.Size - 1)
+            width = Tile.Size - 1;
 
         if (Position.X > otherDetectionBox.Center.X)
         {
@@ -276,17 +276,17 @@ public abstract class MovableActor : InteractableActor
                 }
                 else if (type.IsAngledSolid)
                 {
-                    float tileHeight = Constants.TileSize - type.GetAngleSolidHeight(detectionBox.CenterX);
+                    float tileHeight = Tile.Size - type.GetAngleSolidHeight(detectionBox.CenterX);
 
                     if (Speed.Y == 0)
                     {
-                        Position += new Vector2(0, tileHeight - MathHelpers.Mod(detectionBox.MaxY, Constants.TileSize));
+                        Position += new Vector2(0, tileHeight - MathHelpers.Mod(detectionBox.MaxY, Tile.Size));
                         Speed = new Vector2(Speed.X, 0);
                         IsTouchingMap = true;
                     }
-                    else if (MathHelpers.Mod(detectionBox.MaxY, Constants.TileSize) > tileHeight)
+                    else if (MathHelpers.Mod(detectionBox.MaxY, Tile.Size) > tileHeight)
                     {
-                        Position -= new Vector2(0, MathHelpers.Mod(detectionBox.MaxY, Constants.TileSize) - tileHeight);
+                        Position -= new Vector2(0, MathHelpers.Mod(detectionBox.MaxY, Tile.Size) - tileHeight);
                         Speed = new Vector2(Speed.X, 0);
                         IsTouchingMap = true;
                     }
@@ -346,17 +346,17 @@ public abstract class MovableActor : InteractableActor
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Constants.TileSize));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY - Tile.Size));
 
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Tile.Size));
 
         if (typeX.IsAngledSolid)
             return;
 
-        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Constants.TileSize * 2));
+        typeX = Scene.GetPhysicalType(new Vector2(detectionBox.Center.X, detectionBox.MaxY + Tile.Size * 2));
 
         if (typeX.IsAngledSolid)
             return;
@@ -364,13 +364,13 @@ public abstract class MovableActor : InteractableActor
         // Moving up or still
         if (Speed.Y <= 0)
         {
-            float y = detectionBox.MinY + Constants.TileSize;
-            int count = (int)(detectionBox.Height / Constants.TileSize) - 1;
+            float y = detectionBox.MinY + Tile.Size;
+            int count = (int)(detectionBox.Height / Tile.Size) - 1;
 
             for (int i = 0; i < count; i++)
             {
                 typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
-                y += Constants.TileSize;
+                y += Tile.Size;
 
                 if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Grab && typeX.Value != PhysicalTypeValue.Passthrough)
                     break;
@@ -383,13 +383,13 @@ public abstract class MovableActor : InteractableActor
 
             if (!typeX.IsFullySolid || typeX.Value == PhysicalTypeValue.Grab || typeX.Value == PhysicalTypeValue.Passthrough)
             {
-                float y = detectionBox.MinY + Constants.TileSize;
-                int count = (int)(detectionBox.Height / Constants.TileSize) - 1;
+                float y = detectionBox.MinY + Tile.Size;
+                int count = (int)(detectionBox.Height / Tile.Size) - 1;
 
                 for (int i = 0; i < count; i++)
                 {
                     typeX = Scene.GetPhysicalType(new Vector2(detectionX, y));
-                    y += Constants.TileSize;
+                    y += Tile.Size;
 
                     if (typeX.IsFullySolid && typeX.Value != PhysicalTypeValue.Grab && typeX.Value != PhysicalTypeValue.Passthrough)
                         break;

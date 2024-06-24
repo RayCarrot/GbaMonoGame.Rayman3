@@ -389,7 +389,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (type.Value is PhysicalTypeValue.Slide or PhysicalTypeValue.GrabSlide)
             {
-                pos -= new Vector2(0, Constants.TileSize);
+                pos -= new Vector2(0, Tile.Size);
                 PhysicalType type2 = Scene.GetPhysicalType(pos);
 
                 if (type2.Value is 
@@ -587,7 +587,7 @@ public sealed partial class Rayman : MovableActor
     private void CheckForTileDamage()
     {
         Box box = GetVulnerabilityBox();
-        box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - Constants.TileSize);
+        box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - Tile.Size);
 
         if (Scene.GetPhysicalType(new Vector2(box.MaxX, box.MaxY)) == PhysicalTypeValue.Damage ||
             Scene.GetPhysicalType(new Vector2(box.MaxX, box.Center.Y)) == PhysicalTypeValue.Damage ||
@@ -668,17 +668,17 @@ public sealed partial class Rayman : MovableActor
             return false;
 
         Vector2 topPos = Position;
-        Vector2 bottomPos = Position + new Vector2(0, Constants.TileSize);;
+        Vector2 bottomPos = Position + new Vector2(0, Tile.Size);;
 
         if (Speed.X < 0)
         {
-            topPos -= new Vector2(Constants.TileSize * 2, 0);
-            bottomPos -= new Vector2(Constants.TileSize, 0);
+            topPos -= new Vector2(Tile.Size * 2, 0);
+            bottomPos -= new Vector2(Tile.Size, 0);
         }
         else
         {
-            topPos += new Vector2(Constants.TileSize * 2, 0);
-            bottomPos += new Vector2(Constants.TileSize, 0);
+            topPos += new Vector2(Tile.Size * 2, 0);
+            bottomPos += new Vector2(Tile.Size, 0);
         }
 
         PhysicalType topType = Scene.GetPhysicalType(topPos);
@@ -687,8 +687,8 @@ public sealed partial class Rayman : MovableActor
         if (topType == PhysicalTypeValue.SlideJump)
             return bottomType.IsSolid;
 
-        topPos += new Vector2(Constants.TileSize, 0);
-        bottomPos += new Vector2(Constants.TileSize, 0);
+        topPos += new Vector2(Tile.Size, 0);
+        bottomPos += new Vector2(Tile.Size, 0);
 
         topType = Scene.GetPhysicalType(topPos);
         bottomType = Scene.GetPhysicalType(bottomPos);
@@ -839,22 +839,22 @@ public sealed partial class Rayman : MovableActor
                     if (type.Value is PhysicalTypeValue.Grab or PhysicalTypeValue.GrabSlide)
                     {
                         // Get tile to the left of the ledge
-                        type = Scene.GetPhysicalType(pos - new Vector2(Constants.TileSize, 0));
+                        type = Scene.GetPhysicalType(pos - new Vector2(Tile.Size, 0));
                         
                         // Make sure it's not solid
                         if (!type.IsSolid)
                         {
                             Position = new Vector2(
-                                x: pos.X - MathHelpers.Mod(pos.X, Constants.TileSize) - 17, 
-                                y: Position.Y - MathHelpers.Mod(Position.Y, Constants.TileSize) + y * Constants.TileSize);
+                                x: pos.X - MathHelpers.Mod(pos.X, Tile.Size) - 17, 
+                                y: Position.Y - MathHelpers.Mod(Position.Y, Tile.Size) + y * Tile.Size);
                             return true;
                         }
                     }
 
-                    pos += new Vector2(Constants.TileSize, 0);
+                    pos += new Vector2(Tile.Size, 0);
                 }
 
-                pos += new Vector2(0, Constants.TileSize);
+                pos += new Vector2(0, Tile.Size);
                 pos = new Vector2(Position.X, pos.Y);
             }
         }
@@ -869,22 +869,22 @@ public sealed partial class Rayman : MovableActor
                     if (type.Value is PhysicalTypeValue.Grab or PhysicalTypeValue.GrabSlide)
                     {
                         // Get tile to the right of the ledge
-                        type = Scene.GetPhysicalType(pos + new Vector2(Constants.TileSize, 0));
+                        type = Scene.GetPhysicalType(pos + new Vector2(Tile.Size, 0));
 
                         // Make sure it's not solid
                         if (!type.IsSolid)
                         {
                             Position = new Vector2(
-                                x: pos.X - MathHelpers.Mod(pos.X, Constants.TileSize) + 24,
-                                y: Position.Y - MathHelpers.Mod(Position.Y, Constants.TileSize) + y * Constants.TileSize);
+                                x: pos.X - MathHelpers.Mod(pos.X, Tile.Size) + 24,
+                                y: Position.Y - MathHelpers.Mod(Position.Y, Tile.Size) + y * Tile.Size);
                             return true;
                         }
                     }
 
-                    pos -= new Vector2(Constants.TileSize, 0);
+                    pos -= new Vector2(Tile.Size, 0);
                 }
 
-                pos += new Vector2(0, Constants.TileSize);
+                pos += new Vector2(0, Tile.Size);
                 pos = new Vector2(Position.X, pos.Y);
             }
         }
@@ -1002,7 +1002,7 @@ public sealed partial class Rayman : MovableActor
         }
         else
         {
-            Position = new Vector2(Position.X, Position.Y + Constants.TileSize - MathHelpers.Mod(Position.Y, Constants.TileSize) - 1);
+            Position = new Vector2(Position.X, Position.Y + Tile.Size - MathHelpers.Mod(Position.Y, Tile.Size) - 1);
             PlaySound(Rayman3SoundEvent.Play__HandTap1_Mix04);
         }
     }

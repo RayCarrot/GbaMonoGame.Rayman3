@@ -414,6 +414,6 @@ public class Scene2D
 
     public PhysicalType GetPhysicalType(Vector2 position)
     {
-        return new PhysicalType(Playfield.GetPhysicalValue((position / Constants.TileSize).ToPoint()));
+        return new PhysicalType(Playfield.GetPhysicalValue((position / Tile.Size).ToPoint()));
     }
 }

@@ -28,10 +28,10 @@ public class SpriteTexture2D : Texture2D
                 {
                     DrawHelpers.DrawTile_8bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex, palette);
 
-                    absTileX += Constants.TileSize;
+                    absTileX += Tile.Size;
                 }
 
-                absTileY += Constants.TileSize;
+                absTileY += Tile.Size;
             }
         }
         else
@@ -46,10 +46,10 @@ public class SpriteTexture2D : Texture2D
                 {
                     DrawHelpers.DrawTile_4bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex, palette, 0);
 
-                    absTileX += Constants.TileSize;
+                    absTileX += Tile.Size;
                 }
 
-                absTileY += Constants.TileSize;
+                absTileY += Tile.Size;
             }
         }
 

@@ -11,7 +11,7 @@ public class TgxCluster
     {
         ScrollFactor = new Vector2(cluster.ScrollFactor.X, cluster.ScrollFactor.Y);
         Layers = new List<TgxGameLayer>();
-        Size = new Vector2(cluster.SizeX * Constants.TileSize, cluster.SizeY * Constants.TileSize);
+        Size = new Vector2(cluster.SizeX * Tile.Size, cluster.SizeY * Tile.Size);
         Stationary = cluster.Stationary;
 
         // Render parallax backgrounds to a separate camera

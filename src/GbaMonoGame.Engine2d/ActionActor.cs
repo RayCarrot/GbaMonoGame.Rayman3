@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using GbaMonoGame.AnimEngine;
 using ImGuiNET;
 
@@ -144,7 +143,7 @@ public abstract class ActionActor : BaseActor
             return centerType;
 
         // Get the type one tile to the left from the center
-        pos -= new Vector2(Constants.TileSize, 0);
+        pos -= new Vector2(Tile.Size, 0);
         PhysicalType leftType = Scene.GetPhysicalType(pos);
 
         if (!leftType.IsAngledSolid)
@@ -157,14 +156,14 @@ public abstract class ActionActor : BaseActor
             // also fully solid then it's a wall, so we set the type to none.
             if (leftType.IsFullySolid)
             {
-                pos -= new Vector2(0, Constants.TileSize);
+                pos -= new Vector2(0, Tile.Size);
                 if (Scene.GetPhysicalType(pos).IsFullySolid)
                     leftType = PhysicalTypeValue.None;
             }
         }
 
         // Get the type one tile to the right from the center
-        pos = new Vector2(detectionBox.Center.X + Constants.TileSize, detectionBox.MaxY);
+        pos = new Vector2(detectionBox.Center.X + Tile.Size, detectionBox.MaxY);
         PhysicalType rightType = Scene.GetPhysicalType(pos);
 
         if (!rightType.IsAngledSolid)
@@ -177,7 +176,7 @@ public abstract class ActionActor : BaseActor
             // also fully solid then it's a wall, so we set the type to none.
             if (rightType.IsFullySolid)
             {
-                pos -= new Vector2(0, Constants.TileSize);
+                pos -= new Vector2(0, Tile.Size);
 
                 if (Scene.GetPhysicalType(pos).IsFullySolid)
                     rightType = PhysicalTypeValue.None;

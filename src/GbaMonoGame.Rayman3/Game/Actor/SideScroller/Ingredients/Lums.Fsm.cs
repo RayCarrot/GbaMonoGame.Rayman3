@@ -101,7 +101,7 @@ public partial class Lums
 
                             Vector2 pos = Position;
                             while (Scene.GetPhysicalType(pos) == PhysicalTypeValue.None)
-                                pos += new Vector2(0, Constants.TileSize);
+                                pos += new Vector2(0, Tile.Size);
 
                             GameInfo.LastGreenLumAlive++;
                             GameInfo.CheckpointPosition = pos;

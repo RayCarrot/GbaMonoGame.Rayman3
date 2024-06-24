@@ -22,12 +22,12 @@ public sealed partial class RedPirate : PirateBaseActor
     {
         if (IsFacingRight)
         {
-            if (Scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize)) == PhysicalTypeValue.Enemy_Left)
+            if (Scene.GetPhysicalType(Position - new Vector2(0, Tile.Size)) == PhysicalTypeValue.Enemy_Left)
                 ActionId = Action.Walk_Left;
         }
         else
         {
-            if (Scene.GetPhysicalType(Position - new Vector2(0, Constants.TileSize)) == PhysicalTypeValue.Enemy_Right)
+            if (Scene.GetPhysicalType(Position - new Vector2(0, Tile.Size)) == PhysicalTypeValue.Enemy_Right)
                 ActionId = Action.Walk_Right;
         }
     }

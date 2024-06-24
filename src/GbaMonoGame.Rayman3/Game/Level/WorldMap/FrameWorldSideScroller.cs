@@ -67,7 +67,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
             startPos -= new Vector2(32, 0);
 
             while (Scene.GetPhysicalType(startPos) == PhysicalTypeValue.None)
-                startPos += new Vector2(0, Constants.TileSize);
+                startPos += new Vector2(0, Tile.Size);
 
             Scene.MainActor.Position = startPos;
             Scene.Camera.SetFirstPosition();

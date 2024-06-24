@@ -14,8 +14,8 @@ public abstract class TgxGameLayer
     public int Width { get; }
     public int Height { get; }
 
-    public int PixelWidth => Width * Constants.TileSize;
-    public int PixelHeight => Height * Constants.TileSize;
+    public int PixelWidth => Width * Tile.Size;
+    public int PixelHeight => Height * Tile.Size;
 
     public abstract void SetOffset(Vector2 offset);
 }

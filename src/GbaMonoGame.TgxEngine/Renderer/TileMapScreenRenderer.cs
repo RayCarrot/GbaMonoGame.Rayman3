@@ -36,10 +36,10 @@ public class TileMapScreenRenderer : IScreenRenderer
     {
         Box renderBox = new(position, GetSize(screen));
 
-        int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Constants.TileSize);
-        int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Constants.TileSize);
-        int xEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.X, renderBox.MaxX) - renderBox.MinX) / Constants.TileSize);
-        int yEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.Y, renderBox.MaxY) - renderBox.MinY) / Constants.TileSize);
+        int xStart = (int)((Math.Max(0, renderBox.MinX) - renderBox.MinX) / Tile.Size);
+        int yStart = (int)((Math.Max(0, renderBox.MinY) - renderBox.MinY) / Tile.Size);
+        int xEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.X, renderBox.MaxX) - renderBox.MinX) / Tile.Size);
+        int yEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.Y, renderBox.MaxY) - renderBox.MinY) / Tile.Size);
 
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
@@ -49,7 +49,7 @@ public class TileMapScreenRenderer : IScreenRenderer
         ReplacedTiles[originalTileIndex] = newTileIndex;
     }
 
-    public Vector2 GetSize(GfxScreen screen) => new(Width * Constants.TileSize, Height * Constants.TileSize);
+    public Vector2 GetSize(GfxScreen screen) => new(Width * Tile.Size, Height * Tile.Size);
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
@@ -57,11 +57,11 @@ public class TileMapScreenRenderer : IScreenRenderer
 
         LocationCache<Texture2D> textureCache = Engine.TextureCache.GetOrCreateLocationCache(CachePointer);
 
-        float absTileY = position.Y + visibleTilesArea.Y * Constants.TileSize;
+        float absTileY = position.Y + visibleTilesArea.Y * Tile.Size;
 
         for (int tileY = visibleTilesArea.Top; tileY < visibleTilesArea.Bottom; tileY++)
         {
-            float absTileX = position.X + visibleTilesArea.X * Constants.TileSize;
+            float absTileX = position.X + visibleTilesArea.X * Tile.Size;
 
             for (int tileX = visibleTilesArea.Left; tileX < visibleTilesArea.Right; tileX++)
             {
@@ -96,10 +96,10 @@ public class TileMapScreenRenderer : IScreenRenderer
                     renderer.Draw(tex, new Vector2(absTileX, absTileY), effects, color);
                 }
 
-                absTileX += Constants.TileSize;
+                absTileX += Tile.Size;
             }
 
-            absTileY += Constants.TileSize;
+            absTileY += Tile.Size;
         }
     }
 

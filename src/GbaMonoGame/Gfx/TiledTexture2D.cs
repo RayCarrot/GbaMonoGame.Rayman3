@@ -7,7 +7,7 @@ namespace GbaMonoGame;
 public class TiledTexture2D : Texture2D
 {
     public TiledTexture2D(byte[] tileSet, int tileIndex, int paletteIndex, Palette palette, bool is8Bit) :
-        base(Engine.GraphicsDevice, Constants.TileSize, Constants.TileSize)
+        base(Engine.GraphicsDevice, Tile.Size, Tile.Size)
     {
         Color[] texColors = new Color[Width * Height];
 
@@ -26,7 +26,7 @@ public class TiledTexture2D : Texture2D
     }
 
     public TiledTexture2D(int width, int height, byte[] tileSet, MapTile[] tileMap, Palette palette, bool is8Bit) :
-        base(Engine.GraphicsDevice, width * Constants.TileSize, height * Constants.TileSize)
+        base(Engine.GraphicsDevice, width * Tile.Size, height * Tile.Size)
     {
         Color[] texColors = new Color[Width * Height];
 
@@ -53,10 +53,10 @@ public class TiledTexture2D : Texture2D
                     else
                         DrawHelpers.DrawTile_8bpp(texColors, absTileX, absTileY, Width, tileSet, ref tilePixelIndex, palette);
 
-                    absTileX += Constants.TileSize;
+                    absTileX += Tile.Size;
                 }
 
-                absTileY += Constants.TileSize;
+                absTileY += Tile.Size;
             }
         }
         else
@@ -83,10 +83,10 @@ public class TiledTexture2D : Texture2D
                     else
                         DrawHelpers.DrawTile_4bpp(texColors, absTileX, absTileY, Width, tileSet, ref tilePixelIndex, palette, palOffset);
 
-                    absTileX += Constants.TileSize;
+                    absTileX += Tile.Size;
                 }
 
-                absTileY += Constants.TileSize;
+                absTileY += Tile.Size;
             }
         }
 
