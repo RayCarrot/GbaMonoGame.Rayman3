@@ -64,52 +64,50 @@ public sealed partial class FlyingBomb : MovableActor
             maxX: vulnerabilityBox.MaxX + 8,
             maxY: vulnerabilityBox.MaxY - 8);
 
-        // TODO: Have some helper which checks this? Might be done like this in other places too where it checks all around a box.
-
         // Check bottom-right
-        PhysicalType type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MaxX, vulnerabilityBox.MaxY));
+        PhysicalType type = Scene.GetPhysicalType(vulnerabilityBox.BottomRight);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
         // Check middle-right
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MaxX, vulnerabilityBox.Center.Y));
+        type = Scene.GetPhysicalType(vulnerabilityBox.MiddleRight);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
         // Check top-right
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MaxX, vulnerabilityBox.MinY));
+        type = Scene.GetPhysicalType(vulnerabilityBox.TopRight);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
-        // Check top-middle
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.Center.X, vulnerabilityBox.MinY));
+        // Check top-center
+        type = Scene.GetPhysicalType(vulnerabilityBox.TopCenter);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
         // Check top-left
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MinX, vulnerabilityBox.MinY));
+        type = Scene.GetPhysicalType(vulnerabilityBox.TopLeft);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
         // Check middle-left
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MinX, vulnerabilityBox.Center.Y));
+        type = Scene.GetPhysicalType(vulnerabilityBox.MiddleLeft);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
         // Check bottom-left
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.MinX, vulnerabilityBox.MaxY));
+        type = Scene.GetPhysicalType(vulnerabilityBox.BottomLeft);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;
 
-        // Check bottom-middle
-        type = Scene.GetPhysicalType(new Vector2(vulnerabilityBox.Center.X, vulnerabilityBox.MaxY));
+        // Check bottom-center
+        type = Scene.GetPhysicalType(vulnerabilityBox.BottomCenter);
 
         if (type.IsSolid || type == PhysicalTypeValue.MoltenLava)
             return true;

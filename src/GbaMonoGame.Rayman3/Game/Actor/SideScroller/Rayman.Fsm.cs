@@ -1441,10 +1441,10 @@ public partial class Rayman
 
                 Box detectionBox = GetDetectionBox();
 
-                PhysicalType topType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = Scene.GetPhysicalType(detectionBox.TopLeft + new Vector2(1, -Tile.Size));
 
                 if (!topType.IsSolid)
-                    topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                    topType = Scene.GetPhysicalType(detectionBox.TopRight + new Vector2(-1, -Tile.Size));
 
                 // Change direction
                 if (IsButtonPressed(GbaInput.Left) && IsFacingRight)
@@ -1541,10 +1541,10 @@ public partial class Rayman
 
                 Box detectionBox = GetDetectionBox();
 
-                PhysicalType topType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 1, detectionBox.MinY - 8));
+                PhysicalType topType = Scene.GetPhysicalType(detectionBox.TopLeft + new Vector2(1, -Tile.Size));
 
                 if (!topType.IsSolid)
-                    topType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - 1, detectionBox.MinY - 8));
+                    topType = Scene.GetPhysicalType(detectionBox.TopRight + new Vector2(-1, -Tile.Size));
 
                 // Change direction
                 if (IsButtonPressed(GbaInput.Left) && IsFacingRight)

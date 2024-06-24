@@ -503,7 +503,7 @@ public sealed partial class Rayman : MovableActor
         Box detectionBox = GetDetectionBox();
         
         // Check bottom right
-        PhysicalType type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
+        PhysicalType type = Scene.GetPhysicalType(detectionBox.BottomRight);
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -518,7 +518,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         // Check bottom left
-        type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+        type = Scene.GetPhysicalType(detectionBox.BottomLeft);
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -526,7 +526,7 @@ public sealed partial class Rayman : MovableActor
         }
 
         // Check bottom middle
-        type = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX - detectionBox.Width / 2, detectionBox.MaxY));
+        type = Scene.GetPhysicalType(detectionBox.BottomCenter);
         if (type.IsSolid)
         {
             PrevSpeedY = 0;
@@ -589,14 +589,14 @@ public sealed partial class Rayman : MovableActor
         Box box = GetVulnerabilityBox();
         box = new Box(box.MinX, box.MinY, box.MaxX, box.MaxY - Tile.Size);
 
-        if (Scene.GetPhysicalType(new Vector2(box.MaxX, box.MaxY)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.MaxX, box.Center.Y)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.MaxX, box.MinY)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.Center.X, box.MinY)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.MinX, box.MinY)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.MinX, box.Center.Y)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.MinX, box.MaxY)) == PhysicalTypeValue.Damage ||
-            Scene.GetPhysicalType(new Vector2(box.Center.X, box.MaxY)) == PhysicalTypeValue.Damage)
+        if (Scene.GetPhysicalType(box.BottomRight) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.MiddleRight) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.TopRight) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.TopCenter) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.TopLeft) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.MiddleLeft) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.BottomLeft) == PhysicalTypeValue.Damage ||
+            Scene.GetPhysicalType(box.BottomCenter) == PhysicalTypeValue.Damage)
         {
             ReceiveDamage(1);
         }
@@ -802,8 +802,8 @@ public sealed partial class Rayman : MovableActor
         Box detectionBox = GetDetectionBox();
         
         PhysicalType centerType = Scene.GetPhysicalType(Position);
-        PhysicalType rightType = Scene.GetPhysicalType(new Vector2(detectionBox.MaxX, detectionBox.MaxY));
-        PhysicalType leftType = Scene.GetPhysicalType(new Vector2(detectionBox.MinX, detectionBox.MaxY));
+        PhysicalType rightType = Scene.GetPhysicalType(detectionBox.BottomRight);
+        PhysicalType leftType = Scene.GetPhysicalType(detectionBox.BottomLeft);
 
         if (centerType.IsSolid)
             return 0;
@@ -1141,7 +1141,7 @@ public sealed partial class Rayman : MovableActor
         PhysicalTypeValue type = PhysicalTypeValue.None;
         for (int i = 0; i < 3; i++)
         {
-            type = Scene.GetPhysicalType(new Vector2(detectionBox.MinX + 16 * i, detectionBox.MaxY - 1));
+            type = Scene.GetPhysicalType(detectionBox.BottomLeft + new Vector2(16 * i, -1));
 
             if (type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.Lava or PhysicalTypeValue.Water or PhysicalTypeValue.MoltenLava)
                 break;
