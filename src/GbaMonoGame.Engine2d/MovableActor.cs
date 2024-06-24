@@ -192,7 +192,87 @@ public abstract class MovableActor : InteractableActor
 
     private void CheckMapCollision_Large()
     {
-        throw new NotImplementedException();
+        Box detectionBox = GetDetectionBox();
+
+        // Moving down
+        if (Speed.Y > 0)
+        {
+            PhysicalType type = Scene.GetPhysicalType(detectionBox.BottomCenter);
+
+            if (!type.IsSolid)
+            {
+                type = Scene.GetPhysicalType(detectionBox.BottomRight);
+
+                if (!type.IsSolid)
+                {
+                    type = Scene.GetPhysicalType(detectionBox.BottomLeft);
+
+                    if (type.IsSolid)
+                    {
+                        PhysicalType otherType = Scene.GetPhysicalType(detectionBox.BottomLeft + Tile.Up);
+
+                        if (otherType.IsSolid)
+                            type = PhysicalTypeValue.None;
+                    }
+                }
+                else
+                {
+                    PhysicalType otherType = Scene.GetPhysicalType(detectionBox.BottomRight + Tile.Up);
+
+                    if (otherType.IsSolid)
+                        type = PhysicalTypeValue.None;
+
+                    if (!type.IsSolid)
+                    {
+                        type = Scene.GetPhysicalType(detectionBox.BottomLeft);
+
+                        if (type.IsSolid)
+                        {
+                            otherType = Scene.GetPhysicalType(detectionBox.BottomLeft + Tile.Up);
+
+                            if (otherType.IsSolid)
+                                type = PhysicalTypeValue.None;
+                        }
+                    }
+                }
+            }
+
+            if (type.IsSolid)
+                PushOutOfTile(detectionBox.MaxY, Direction.Up);
+        }
+
+        // Moving left
+        if (Speed.X < 0)
+        {
+            PhysicalType type = Scene.GetPhysicalType(detectionBox.BottomLeft + Tile.Up);
+
+            if (!type.IsSolid)
+            {
+                type = Scene.GetPhysicalType(detectionBox.MiddleLeft);
+
+                if (!type.IsSolid)
+                    type = Scene.GetPhysicalType(detectionBox.TopLeft);
+            }
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+                PushOutOfTile(detectionBox.MinX, Direction.Right);
+        }
+        // Moving right
+        else if (Speed.X > 0)
+        {
+            PhysicalType type = Scene.GetPhysicalType(detectionBox.BottomRight + Tile.Up);
+
+            if (!type.IsSolid)
+            {
+                type = Scene.GetPhysicalType(detectionBox.MiddleRight);
+
+                if (!type.IsSolid)
+                    type = Scene.GetPhysicalType(detectionBox.TopRight);
+            }
+
+            if (type.IsSolid && type != PhysicalTypeValue.Grab && type != PhysicalTypeValue.Passthrough)
+                PushOutOfTile(detectionBox.MinX, Direction.Left);
+        }
     }
 
     private void CheckMapCollision_Complex()
