@@ -26,6 +26,9 @@ public class TiledTexture2D : Texture2D
     }
 
     public TiledTexture2D(int width, int height, byte[] tileSet, MapTile[] tileMap, Palette palette, bool is8Bit) :
+        this(width, height, tileSet, tileMap, 0, palette, is8Bit) { }
+
+    public TiledTexture2D(int width, int height, byte[] tileSet, MapTile[] tileMap, int baseTileIndex, Palette palette, bool is8Bit) :
         base(Engine.GraphicsDevice, width * Tile.Size, height * Tile.Size)
     {
         Color[] texColors = new Color[Width * Height];
@@ -42,7 +45,7 @@ public class TiledTexture2D : Texture2D
                 {
                     MapTile tile = tileMap[tileY * width + tileX];
 
-                    int tilePixelIndex = tile.TileIndex * 0x40;
+                    int tilePixelIndex = (baseTileIndex + tile.TileIndex) * 0x40;
 
                     if (tile.FlipX && tile.FlipY)
                         DrawHelpers.DrawTile_8bpp_FlipXY(texColors, absTileX, absTileY, Width, tileSet, ref tilePixelIndex, palette);
@@ -71,7 +74,7 @@ public class TiledTexture2D : Texture2D
                 {
                     MapTile tile = tileMap[tileY * width + tileX];
 
-                    int tilePixelIndex = tile.TileIndex * 0x20;
+                    int tilePixelIndex = (baseTileIndex + tile.TileIndex) * 0x20;
                     int palOffset = tile.PaletteIndex * 16;
 
                     if (tile.FlipX && tile.FlipY)

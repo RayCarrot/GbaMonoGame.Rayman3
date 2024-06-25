@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GbaMonoGame.Rayman3;
+﻿namespace GbaMonoGame.Rayman3;
 
 public class FrameWaterSkiMode7 : FrameMode7
 {
@@ -8,16 +6,15 @@ public class FrameWaterSkiMode7 : FrameMode7
 
     public override void Init()
     {
-        throw new NotImplementedException();
-    }
+        base.Init();
 
-    public override void UnInit()
-    {
-        throw new NotImplementedException();
+        // TODO: Implement
     }
 
     public override void Step()
     {
-        throw new NotImplementedException();
+        // TODO: Implement
+
+        base.Step();
     }
 }

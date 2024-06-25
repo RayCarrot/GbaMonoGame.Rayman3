@@ -2,6 +2,7 @@
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Better name, alongside BaseCameraMode7
 public abstract class CameraActor2D : CameraActor
 {
     protected CameraActor2D(Scene2D scene) : base(scene) { }

@@ -16,7 +16,7 @@ public class TgxPlayfield2D : TgxPlayfield
             Camera.AddCluster(clusterResource);
 
         // Load vram
-        Vram = GbaVram.AllocateStatic(playfieldResource.TileKit, playfieldResource.TileMappingTable, 0x180, playfieldResource.DefaultPalette);
+        Vram = GbaVram.AllocateStatic(playfieldResource.TileKit, playfieldResource.TileMappingTable, 0x180, false, playfieldResource.DefaultPalette);
 
         // Load the layers
         foreach (GameLayerResource gameLayerResource in playfieldResource.Layers)

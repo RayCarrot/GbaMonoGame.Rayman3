@@ -62,6 +62,8 @@ public class TgxTileLayer : TgxGameLayer
         }
         else
         {
+            // NOTE: Using a single texture is more optimized, but won't work if tiles should be animated! Luckily static tile layers
+            //       are never animated in Rayman 3, so we can do this.
             Texture2D tex = Engine.TextureCache.GetOrCreateObject(
                 pointer: Resource.Offset,
                 id: 0,

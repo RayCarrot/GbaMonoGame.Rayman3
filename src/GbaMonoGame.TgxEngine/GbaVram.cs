@@ -17,11 +17,14 @@ public class GbaVram
     public byte[] TileSet { get; }
     public Palette Palette { get; }
 
-    public static GbaVram AllocateStatic(TileKit tileKit, TileMappingTable tileMappingTable, int vramLength8bpp, int defaultPalette)
+    public static GbaVram AllocateStatic(TileKit tileKit, TileMappingTable tileMappingTable, int vramLength8bpp, bool isAffine, int defaultPalette)
     {
-        // 8-bit tiles start at 512 and go on for the specified length before wrapping around
+        // If affine then the game starts at 513 instead of 512 (it always sets 512 to a blank tile)
+        int base8bpp = isAffine ? 513 : 512;
+
+        // 8-bit tiles start at its base and go on for the specified length before wrapping around
         // to 0. 4-bit tiles start at 0. Any data after this is dynamic.
-        byte[] tileSet = new byte[(512 + vramLength8bpp) * TileSize8bpp];
+        byte[] tileSet = new byte[(base8bpp + vramLength8bpp) * TileSize8bpp];
 
         // Allocate 4-bit tiles
         int offset = 2; // First 0x40 bytes are always empty. For 8-bit that's one tile, but for 4-bit it's 2 tiles.
@@ -34,7 +37,7 @@ public class GbaVram
         // Allocate 8-bit tiles
         for (int i = 0; i < tileMappingTable.Table8bpp.Length; i++)
         {
-            offset = i < vramLength8bpp ? 512 : -vramLength8bpp + 1;
+            offset = i < vramLength8bpp ? base8bpp : -vramLength8bpp + 1;
             int value = tileMappingTable.Table8bpp[i] - 1;
             Array.Copy(tileKit.Tiles8bpp, value * TileSize8bpp, tileSet, (i + offset) * TileSize8bpp, TileSize8bpp);
         }
