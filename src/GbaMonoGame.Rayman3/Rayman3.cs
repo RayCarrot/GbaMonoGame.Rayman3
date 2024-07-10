@@ -362,6 +362,8 @@ public class Rayman3 : GbaGame
             { ActorType.MovingWoodenPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
             { ActorType.LavaSplash, (instanceId, scene, resource) => new LavaSplash(instanceId, scene, resource) },
 
+            { ActorType.Hoodstormer, (instanceId, scene, resource) => new Hoodstormer(instanceId, scene, resource) },
+
             { ActorType.FlowerFire, (instanceId, scene, resource) => new FlowerFire(instanceId, scene, resource) },
 
             { ActorType.Murfy, (instanceId, scene, resource) => new Murfy(instanceId, scene, resource) },
