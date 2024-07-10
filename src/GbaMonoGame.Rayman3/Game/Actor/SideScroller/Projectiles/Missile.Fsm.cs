@@ -2,7 +2,7 @@
 
 namespace GbaMonoGame.Rayman3;
 
-public partial class LaserShot
+public partial class Missile
 {
     private void Fsm_Default(FsmAction action)
     {

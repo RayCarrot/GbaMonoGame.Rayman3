@@ -1,6 +1,6 @@
 ﻿namespace GbaMonoGame.Rayman3;
 
-public partial class LaserShot
+public partial class Missile
 {
     public new Action ActionId
     {
@@ -17,9 +17,8 @@ public partial class LaserShot
         Shot3_Right = 4,
         Shot4_Left = 5,
 
-        // TODO: Name
-        Action_6 = 6,
-        Action_7 = 7,
+        DownShot_Left = 6,
+        DownShot_Right = 7,
 
         Shot1Enemy_Right = 8,
         Shot1Enemy_Left = 9,

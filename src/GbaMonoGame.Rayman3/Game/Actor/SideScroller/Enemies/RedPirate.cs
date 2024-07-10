@@ -36,25 +36,25 @@ public sealed partial class RedPirate : PirateBaseActor
     {
         Ammo--;
 
-        LaserShot shot = Scene.CreateProjectile<LaserShot>(ActorType.LaserShot);
+        Missile missile = Scene.CreateProjectile<Missile>(ActorType.Missile);
 
-        if (shot == null) 
+        if (missile == null) 
             return;
         
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Laser3_Mix03);
 
         if (IsFacingRight)
         {
-            shot.Position = Position + new Vector2(28, -32);
-            shot.ActionId = LaserShot.Action.Shot1_Right;
+            missile.Position = Position + new Vector2(28, -32);
+            missile.ActionId = Missile.Action.Shot1_Right;
         }
         else
         {
-            shot.Position = Position + new Vector2(-28, -32);
-            shot.ActionId = LaserShot.Action.Shot1_Left;
+            missile.Position = Position + new Vector2(-28, -32);
+            missile.ActionId = Missile.Action.Shot1_Left;
         }
 
-        shot.ChangeAction();
+        missile.ChangeAction();
     }
 
     protected override void ReInit()

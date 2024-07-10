@@ -334,7 +334,7 @@ public class Rayman3 : GbaGame
             { ActorType.Piranha, (instanceId, scene, resource) => new Piranha(instanceId, scene, resource) },
             { ActorType.WaterSplash, (instanceId, scene, resource) => new WaterSplash(instanceId, scene, resource) },
             { ActorType.Explosion, (instanceId, scene, resource) => new Explosion(instanceId, scene, resource) },
-            { ActorType.LaserShot, (instanceId, scene, resource) => new LaserShot(instanceId, scene, resource) },
+            { ActorType.Missile, (instanceId, scene, resource) => new Missile(instanceId, scene, resource) },
             { ActorType.BouncyPlatform, (instanceId, scene, resource) => new BouncyPlatform(instanceId, scene, resource) },
             { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
 
