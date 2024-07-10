@@ -14,4 +14,9 @@ public sealed partial class Switch : InteractableActor
     }
 
     public byte?[] Links { get; }
+
+    public void SetToActivated()
+    {
+        State.SetTo(Fsm_Activated);
+    }
 }

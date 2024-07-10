@@ -75,9 +75,13 @@ public class KnotManager
         for (int i = 0; i < sceneResource.Captors.Length; i++)
             GameObjects[AlwaysActorsCount + ActorsCount + i] = new Captor(AlwaysActorsCount + ActorsCount + i, scene, sceneResource.Captors[i]);
 
+        // Initialize always actors
+        for (int i = 0; i < AlwaysActorsCount; i++)
+            ((BaseActor)GameObjects[i]).Init(sceneResource.AlwaysActors[i]);
+
         // Initialize actors
-        foreach (BaseActor actor in GameObjects.Take(AlwaysActorsCount + ActorsCount).Cast<BaseActor>())
-            actor.Init();
+        for (int i = 0; i < ActorsCount; i++)
+            ((BaseActor)GameObjects[AlwaysActorsCount + i]).Init(sceneResource.Actors[i]);
     }
 
     public IEnumerable<BaseActor> EnumerateAlwaysActors(bool isEnabled)

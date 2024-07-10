@@ -96,7 +96,7 @@ public abstract class BaseActor : GameObject
         AnimatedObject.Rewind();
     }
 
-    public virtual void Init() { }
+    public virtual void Init(ActorResource actorResource) { }
 
     public virtual void DoBehavior()
     {

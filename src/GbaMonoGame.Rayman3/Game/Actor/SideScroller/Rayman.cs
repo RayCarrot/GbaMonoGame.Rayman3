@@ -1548,7 +1548,7 @@ public sealed partial class Rayman : MovableActor
         GameInfo.Powers |= powers;
     }
 
-    public override void Init()
+    public override void Init(ActorResource actorResource)
     {
         AnimatedObject.YPriority = IsLocalPlayer ? 16 : 17;
 

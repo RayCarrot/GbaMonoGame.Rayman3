@@ -13,7 +13,7 @@ public enum ActorType
     MovingFlowerPlatform = 8,
 
     Switch = 10,
-
+    Gate = 11,
     Lums = 12,
     Cage = 13,
     LevelCurtain = 14,
