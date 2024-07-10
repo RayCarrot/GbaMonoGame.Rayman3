@@ -239,7 +239,7 @@ public sealed partial class Rayman : MovableActor
 
     private bool IsBossFight()
     {
-        // This condition is probably a leftover from earlier versions of the game
+        // Ly levels use the map id of the previous map, so don't count this as a boss fight then
         if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__lyfree))
             return false;
 
@@ -1601,12 +1601,33 @@ public sealed partial class Rayman : MovableActor
 
         if (GameInfo.LastGreenLumAlive == 0)
         {
-            // TODO: Implement
+            // Start facing left when returning from certain levels
+            if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 &&
+                GameInfo.field12_0xf == 0)
+            {
+                if ((MapId)GameInfo.PersistentInfo.LastPlayedLevel is 
+                    MapId.MarshAwakening1 or 
+                    MapId.BossMachine or 
+                    MapId.MissileRace1 or 
+                    MapId.MarshAwakening2 or 
+                    MapId.BeneathTheSanctuary_M1 or 
+                    MapId.BeneathTheSanctuary_M2 or 
+                    MapId.BossRockAndLava or 
+                    MapId.SanctuaryOfRockAndLava_M1 or 
+                    MapId.SanctuaryOfRockAndLava_M3 or 
+                    MapId.BossScaleMan or 
+                    MapId.Bonus4 or 
+                    MapId.Power4)
+                {
+                    ActionId = Action.Idle_Left;
+                    ChangeAction();
+                }
+            }
         }
         else
         {
             Position = GameInfo.CheckpointPosition;
-            ActionId = 0;
+            ActionId = Action.Idle_Right;
             ChangeAction();
         }
 
