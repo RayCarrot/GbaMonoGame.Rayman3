@@ -351,7 +351,7 @@ public class Rayman3 : GbaGame
             { ActorType.BarrelSplash, (instanceId, scene, resource) => new BarrelSplash(instanceId, scene, resource) },
             { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
 
-            { ActorType.Butterfly, (instanceId, scene, resource) => new Butterfly(instanceId, scene, resource) },
+            { ActorType.Butterfly, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },
 
             { ActorType.WoodenShieldedHoodboom, (instanceId, scene, resource) => new WoodenShieldedHoodboom(instanceId, scene, resource) },
 
@@ -371,6 +371,7 @@ public class Rayman3 : GbaGame
             { ActorType.ChainedSparkles, (instanceId, scene, resource) => new ChainedSparkles(instanceId, scene, resource) },
 
             { ActorType.Ly, (instanceId, scene, resource) => new Ly(instanceId, scene, resource) },
+            { ActorType.Flag, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },
 
             { ActorType.KegDebris, (instanceId, scene, resource) => new KegDebris(instanceId, scene, resource) },
 
