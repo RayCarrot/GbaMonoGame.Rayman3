@@ -25,6 +25,7 @@ public enum Message
     Main_UnlinkMovement = 1004,
     Main_BeginBounce = 1005,
     Main_Bounce = 1006,
+    SwitchActivated = 1007,
 
     Main_CollectedYellowLum = 1009,
     Main_CollectedRedLum = 1010,

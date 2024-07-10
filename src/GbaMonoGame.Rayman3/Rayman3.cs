@@ -338,6 +338,8 @@ public class Rayman3 : GbaGame
             { ActorType.BouncyPlatform, (instanceId, scene, resource) => new BouncyPlatform(instanceId, scene, resource) },
             { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
 
+            { ActorType.Switch, (instanceId, scene, resource) => new Switch(instanceId, scene, resource) },
+
             { ActorType.Lums, (instanceId, scene, resource) => new Lums(instanceId, scene, resource) },
             { ActorType.Cage, (instanceId, scene, resource) => new Cage(instanceId, scene, resource) },
             { ActorType.LevelCurtain, (instanceId, scene, resource) => new LevelCurtain(instanceId, scene, resource) },

@@ -12,6 +12,8 @@ public enum ActorType
     BouncyPlatform = 7,
     MovingFlowerPlatform = 8,
 
+    Switch = 10,
+
     Lums = 12,
     Cage = 13,
     LevelCurtain = 14,
