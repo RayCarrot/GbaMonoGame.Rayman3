@@ -43,8 +43,8 @@ public enum Message
     ThrowObjectForward = 1023,
     DropObject = 1024,
     Damaged = 1025,
-    Cam_1026 = 1026, // TODO: Name
-    Cam_1027 = 1027, // TODO: Name
+    Cam_CenterPositionX = 1026,
+    Cam_ResetPositionX = 1027,
 
     Main_LevelExit = 1031,
 

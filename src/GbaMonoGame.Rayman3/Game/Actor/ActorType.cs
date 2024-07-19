@@ -38,6 +38,7 @@ public enum ActorType
 
     WoodenShieldedHoodboom = 44,
 
+    Slapdash = 46,
     PurpleLum = 47,
     Grenade = 48,
     SwingSparkle = 49,

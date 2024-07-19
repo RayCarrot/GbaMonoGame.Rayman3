@@ -126,12 +126,12 @@ public sealed partial class CameraSideScroller : CameraActor2D
                 throw new NotImplementedException();
                 return true;
 
-            case Message.Cam_1026:
+            case Message.Cam_CenterPositionX:
                 field16_0x2e = 4;
                 HorizontalOffset = CameraOffset.Center;
                 return true;
 
-            case Message.Cam_1027:
+            case Message.Cam_ResetPositionX:
                 field16_0x2e = 1;
                 return true;
 

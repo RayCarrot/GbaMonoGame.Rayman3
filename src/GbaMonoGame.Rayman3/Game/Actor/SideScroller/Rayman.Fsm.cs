@@ -216,7 +216,7 @@ public partial class Rayman
                 }
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_ResetPositionX);
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     cam.HorizontalOffset = CameraOffset.Center;
@@ -1220,7 +1220,7 @@ public partial class Rayman
                 PreviousXSpeed = 0;
                 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_ResetPositionX);
 
                 PlaySound(Rayman3SoundEvent.Stop__Helico01_Mix10);
 
@@ -1359,7 +1359,7 @@ public partial class Rayman
                 PreviousXSpeed = 0;
 
                 if (IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_ResetPositionX);
 
                 if (Timer > 50)
                 {
@@ -2156,7 +2156,7 @@ public partial class Rayman
                     cam.HorizontalOffset = CameraOffset.Default;
 
                 if (!IsButtonJustPressed(GbaInput.B) && IsLocalPlayer)
-                    cam.ProcessMessage(this, Message.Cam_1027);
+                    cam.ProcessMessage(this, Message.Cam_ResetPositionX);
 
                 if (ActionId == NextActionId)
                     NextActionId = null;
