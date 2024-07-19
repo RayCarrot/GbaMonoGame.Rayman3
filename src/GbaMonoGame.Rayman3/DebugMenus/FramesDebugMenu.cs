@@ -38,7 +38,13 @@ public class FramesDebugMenu : DebugMenu
                     _ => GameInfo.MapId
                 };
 
-                return LevelFactory.Create((MapId)i);
+                // Create the level frame
+                Frame frame = LevelFactory.Create((MapId)i);
+
+                // Set the powers
+                GameInfo.SetPowerBasedOnMap((MapId)i);
+
+                return frame;
             })).
             ToArray()),
     };
