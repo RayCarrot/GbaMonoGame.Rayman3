@@ -326,7 +326,7 @@ public class Rayman3 : GbaGame
             getSwitchIndex: () => 0));
 
         // TODO: Implement the rest
-        ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
+            ObjectFactory.Init(new Dictionary<ActorType, ObjectFactory.CreateActor>()
         {
             { ActorType.Rayman, (instanceId, scene, resource) => new Rayman(instanceId, scene, resource) },
             { ActorType.RaymanBody, (instanceId, scene, resource) => new RaymanBody(instanceId, scene, resource) },
@@ -373,6 +373,7 @@ public class Rayman3 : GbaGame
 
             { ActorType.ChainedSparkles, (instanceId, scene, resource) => new ChainedSparkles(instanceId, scene, resource) },
 
+            { ActorType.WoodenBar, (instanceId, scene, resource) => new WoodenBar(instanceId, scene, resource) },
             { ActorType.Ly, (instanceId, scene, resource) => new Ly(instanceId, scene, resource) },
             { ActorType.Flag, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },
 

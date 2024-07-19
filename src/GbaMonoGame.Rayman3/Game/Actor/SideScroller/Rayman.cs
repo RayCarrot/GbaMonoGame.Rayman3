@@ -1454,6 +1454,15 @@ public sealed partial class Rayman : MovableActor
                 State.MoveTo(Fsm_HitKnockback);
                 return false;
 
+            case Message.Main_BeginHang:
+                IsHanging = true;
+                AttachedObject = (BaseActor)param;
+                return false;
+
+            case Message.Main_EndHang:
+                IsHanging = false;
+                return false;
+
             case Message.Main_LevelExit:
                 State.MoveTo(Fsm_EndMap);
                 return false;

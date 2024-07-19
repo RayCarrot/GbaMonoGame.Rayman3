@@ -46,6 +46,9 @@ public enum Message
     Cam_CenterPositionX = 1026,
     Cam_ResetPositionX = 1027,
 
+    Main_BeginHang = 1029,
+    Main_EndHang = 1030,
+
     Main_LevelExit = 1031,
 
     Main_CollectedCage = 1033,
