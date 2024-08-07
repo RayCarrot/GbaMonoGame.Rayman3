@@ -80,13 +80,19 @@ public partial class FlyingBomb
                     }
 
                     Box vulnerabilityBox = GetVulnerabilityBox();
-                    foreach (RaymanBody fist in rayman.GetActiveFists())
+                    for (int i = 0; i < 2; i++)
                     {
-                        if (fist.GetAttackBox().Intersects(vulnerabilityBox))
-                        {
-                            fist.ProcessMessage(this, Message.RaymanBody_FinishedAttack);
-                            Destroyed = true;
-                        }
+                        RaymanBody activeFist = rayman.ActiveBodyParts[i];
+
+                        if (activeFist == null) 
+                            continue;
+                        
+                        if (!activeFist.GetAttackBox().Intersects(vulnerabilityBox)) 
+                            continue;
+                        
+                        activeFist.ProcessMessage(this, Message.RaymanBody_FinishedAttack);
+                        Destroyed = true;
+                        break;
                     }
                 }
                 // Default

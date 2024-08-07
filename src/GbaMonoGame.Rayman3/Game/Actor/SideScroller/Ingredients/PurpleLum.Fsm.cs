@@ -26,20 +26,25 @@ public partial class PurpleLum
                     Rayman rayman = (Rayman)Scene.MainActor;
 
                     // Why is this code so weird with how the view box is handled?
-                    foreach (RaymanBody fist in rayman.GetActiveFists())
+                    for (int i = 0; i < 2; i++)
                     {
-                        Box detectionBox = fist.GetDetectionBox();
-                        if (detectionBox.Intersects(viewBox))
-                        {
-                            viewBox = new Box(viewBox.MinX + 16, viewBox.MinY + 8, viewBox.MaxX - 16, viewBox.MaxY + 4);
+                        RaymanBody activeFist = rayman.ActiveBodyParts[i];
 
-                            if (detectionBox.Intersects(viewBox))
-                            {
-                                rayman.ProcessMessage(this, Message.Main_BeginSwing, this);
-                                fist.ProcessMessage(this, Message.RaymanBody_FinishedAttack, this);
-                                break;
-                            }
-                        }
+                        if (activeFist == null)
+                            continue;
+
+                        Box detectionBox = activeFist.GetDetectionBox();
+                        if (!detectionBox.Intersects(viewBox)) 
+                            continue;
+                        
+                        viewBox = new Box(viewBox.MinX + 16, viewBox.MinY + 8, viewBox.MaxX - 16, viewBox.MaxY + 4);
+
+                        if (!detectionBox.Intersects(viewBox)) 
+                            continue;
+                        
+                        rayman.ProcessMessage(this, Message.Main_BeginSwing, this);
+                        activeFist.ProcessMessage(this, Message.RaymanBody_FinishedAttack, this);
+                        break;
                     }
                 }
                 break;

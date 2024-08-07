@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
+﻿using System.Collections.Generic;
+using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
@@ -249,9 +250,15 @@ public partial class Murfy
                 bool isBeingAttacked = false;
                 if (TargetActor == Scene.MainActor)
                 {
-                    foreach (RaymanBody fist in ((Rayman)TargetActor).GetActiveFists())
+                    Rayman rayman = (Rayman)TargetActor;
+                    for (int i = 0; i < 2; i++)
                     {
-                        if (IsAttackedByFist(fist))
+                        RaymanBody activeFist = rayman.ActiveBodyParts[i];
+
+                        if (activeFist == null)
+                            continue;
+
+                        if (IsAttackedByFist(activeFist))
                             isBeingAttacked = true;
                     }
                 }
@@ -293,9 +300,15 @@ public partial class Murfy
                     return;
 
                 bool isSafe = true;
-                foreach (RaymanBody fist in ((Rayman)TargetActor).GetActiveFists())
+                Rayman rayman = (Rayman)TargetActor;
+                for (int i = 0; i < 2; i++)
                 {
-                    if (IsAttackedByFist(fist))
+                    RaymanBody activeFist = rayman.ActiveBodyParts[i];
+
+                    if (activeFist == null)
+                        continue;
+
+                    if (IsAttackedByFist(activeFist))
                         isSafe = false;
                     else
                         Timer = 0;

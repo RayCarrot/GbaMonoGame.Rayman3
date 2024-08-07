@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
@@ -73,7 +72,7 @@ public sealed partial class Rayman : MovableActor
 
     public ActorResource Resource { get; }
     public Action? NextActionId { get; set; }
-    public Dictionary<RaymanBody.RaymanBodyPartType, RaymanBody> BodyParts { get; } = new(4); // Array with 4 entries in the game
+    public RaymanBody[] ActiveBodyParts { get; } = new RaymanBody[4];
     public BaseActor AttachedObject { get; set; }
     public byte Charge { get; set; }
     public byte HangOnEdgeDelay { get; set; }
@@ -253,10 +252,10 @@ public sealed partial class Rayman : MovableActor
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
 
-        if (!BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.Fist))
+        if (ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.Fist] == null)
             return true;
 
-        if (!BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.SecondFist) && punchCount == 2 && HasPower(Power.DoubleFist))
+        if (ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.SecondFist] == null && punchCount == 2 && HasPower(Power.DoubleFist))
             return true;
 
         return false;
@@ -269,7 +268,7 @@ public sealed partial class Rayman : MovableActor
             // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
         }
 
-        return !BodyParts.ContainsKey(RaymanBody.RaymanBodyPartType.Foot);
+        return ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.Foot] == null;
     }
 
     private bool HasPower(Power power)
@@ -340,17 +339,17 @@ public sealed partial class Rayman : MovableActor
 
         if (type == RaymanBody.RaymanBodyPartType.SuperFist)
         {
-            BodyParts[RaymanBody.RaymanBodyPartType.Fist] = bodyPart;
+            ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.Fist] = bodyPart;
             PlaySound(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
         else if (type == RaymanBody.RaymanBodyPartType.SecondSuperFist)
         {
-            BodyParts[RaymanBody.RaymanBodyPartType.SecondFist] = bodyPart;
+            ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.SecondFist] = bodyPart;
             PlaySound(Rayman3SoundEvent.Play__SuprFist_Mix01);
         }
         else
         {
-            BodyParts[type] = bodyPart;
+            ActiveBodyParts[(int)type] = bodyPart;
 
             if (type != RaymanBody.RaymanBodyPartType.Torso)
             {
@@ -1273,7 +1272,7 @@ public sealed partial class Rayman : MovableActor
         {
             case Message.RaymanBody_FinishedAttack:
                 RaymanBody.RaymanBodyPartType bodyPartType = (RaymanBody.RaymanBodyPartType)param;
-                BodyParts.Remove(bodyPartType);
+                ActiveBodyParts[(int)bodyPartType] = null;
 
                 switch (bodyPartType)
                 {
@@ -1544,14 +1543,6 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    public IEnumerable<RaymanBody> GetActiveFists()
-    {
-        if (BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.Fist, out RaymanBody fist))
-            yield return fist;
-        if (BodyParts.TryGetValue(RaymanBody.RaymanBodyPartType.SecondFist, out RaymanBody secondFist))
-            yield return secondFist;
-    }
-
     public void SetPowers(Power powers)
     {
         GameInfo.Powers |= powers;
@@ -1565,7 +1556,7 @@ public sealed partial class Rayman : MovableActor
         InvulnerabilityStartTime = 0;
         //field11_0x88 = 0;
         NextActionId = null;
-        BodyParts.Clear();
+        Array.Clear(ActiveBodyParts);
         Flag1_0 = false;
         Flag1_1 = false;
         IsHanging = false;
