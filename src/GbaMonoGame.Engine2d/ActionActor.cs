@@ -59,6 +59,11 @@ public abstract class ActionActor : BaseActor
 
     protected void DrawWithInvulnerability(AnimationPlayer animationPlayer, bool forceDraw)
     {
+        DrawWithInvulnerability(animationPlayer, forceDraw, IsInvulnerable);
+    }
+
+    protected void DrawWithInvulnerability(AnimationPlayer animationPlayer, bool forceDraw, bool isInvulnerable)
+    {
         CameraActor camera = Scene.Camera;
 
         bool draw = camera.IsActorFramed(this) || forceDraw;
@@ -66,7 +71,7 @@ public abstract class ActionActor : BaseActor
         // Conditionally don't draw every second frame during invulnerability
         if (draw)
         {
-            if (IsInvulnerable &&
+            if (isInvulnerable &&
                 HitPoints != 0 &&
                 (GameTime.ElapsedFrames & 1) == 0)
             {
