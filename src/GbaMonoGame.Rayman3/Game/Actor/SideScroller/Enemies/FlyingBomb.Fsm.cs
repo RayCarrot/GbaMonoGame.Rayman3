@@ -163,9 +163,33 @@ public partial class FlyingBomb
         throw new NotImplementedException();
     }
 
-    // FUN_0803a4c4
-    private void FUN_10011168(FsmAction action)
+    private void Fsm_Stationary(FsmAction action)
     {
-        throw new NotImplementedException();
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Stationary;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckDeath())
+                    return;
+
+                // Damage main actor
+                if (Scene.IsHitMainActor(this))
+                {
+                    Scene.MainActor.ReceiveDamage(AttackPoints);
+                    Destroyed = true;
+                    Scene.MainActor.ProcessMessage(this, Message.Damaged);
+                }
+
+                if (Destroyed)
+                    State.MoveTo(Fsm_Destroyed);
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
     }
 }

@@ -15,7 +15,7 @@ public partial class FlyingBomb
         Move_Up = 2,
         Move_Down = 3,
         Action_4 = 4, // TODO: Name
-        Action_5 = 5, // TODO: Name
+        Stationary = 5,
         // TODO: Implement remaining actions for some types
     }
 }

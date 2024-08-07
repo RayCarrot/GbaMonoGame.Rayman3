@@ -23,8 +23,8 @@ public sealed partial class FlyingBomb : MovableActor
         {
             if (InstanceId == 68)
             {
-                ActionId = Action.Action_5;
-                firstActionId = Action.Action_5;
+                ActionId = Action.Stationary;
+                firstActionId = Action.Stationary;
             }
         }
 
@@ -32,9 +32,9 @@ public sealed partial class FlyingBomb : MovableActor
         {
             State.SetTo(FUN_10011270);
         }
-        else if (firstActionId == Action.Action_5)
+        else if (firstActionId == Action.Stationary)
         {
-            State.SetTo(FUN_10011168);
+            State.SetTo(Fsm_Stationary);
         }
         else
         {
