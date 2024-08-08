@@ -118,6 +118,6 @@ public sealed partial class FlyingBomb : MovableActor
     public override void Step()
     {
         base.Step();
-        GameInfo.ActorSoundFlags &= ~ActorSoundFlags.HelicopterBomb;
+        GameInfo.ActorSoundFlags &= ~ActorSoundFlags.FlyingBomb;
     }
 }

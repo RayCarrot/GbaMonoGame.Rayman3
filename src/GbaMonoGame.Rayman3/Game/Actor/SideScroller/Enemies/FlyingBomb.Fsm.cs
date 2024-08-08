@@ -44,7 +44,7 @@ public partial class FlyingBomb
                     {
                         SoundDelay--;
                     }
-                    else if (AnimatedObject.IsFramed && (GameInfo.ActorSoundFlags & ActorSoundFlags.HelicopterBomb) == 0)
+                    else if (AnimatedObject.IsFramed && (GameInfo.ActorSoundFlags & ActorSoundFlags.FlyingBomb) == 0)
                     {
                         if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__BombFly_Mix03))
                             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BombFly_Mix03);
@@ -53,7 +53,7 @@ public partial class FlyingBomb
                     }
 
                     if (AnimatedObject.IsFramed)
-                        GameInfo.ActorSoundFlags |= ActorSoundFlags.HelicopterBomb;
+                        GameInfo.ActorSoundFlags |= ActorSoundFlags.FlyingBomb;
                 }
 
                 // Damage main actor

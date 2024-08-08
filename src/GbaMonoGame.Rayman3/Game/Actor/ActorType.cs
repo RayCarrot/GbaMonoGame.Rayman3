@@ -43,13 +43,14 @@ public enum ActorType
     Grenade = 48,
     SwingSparkle = 49,
     BreakableGround = 50, // TODO: Implement
+    Boulder = 51, // TODO: Implement
 
     MovingWoodenPlatform = 53,
     Plum = 54, // TODO: Implement
     LavaSplash = 55,
 
     Hoodstormer = 59,
-    SpikyBall = 60, // TODO: Implement
+    SpikyFlyingBomb = 60,
     FlowerFire = 61,
 
     Murfy = 64,

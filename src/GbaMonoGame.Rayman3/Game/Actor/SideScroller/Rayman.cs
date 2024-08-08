@@ -1434,7 +1434,7 @@ public sealed partial class Rayman : MovableActor
                     Position = new Vector2(Position.X, box.MinY - 16);
                 }
 
-                if (((BaseActor)sender).Type == (int)ActorType.SpikyBall && !IsInvulnerable)
+                if (((BaseActor)sender).Type == (int)ActorType.SpikyFlyingBomb && !IsInvulnerable)
                     InvulnerabilityDuration = 60;
 
                 if (message == Message.Main_Damaged3)
