@@ -45,6 +45,17 @@ public class FramesDebugMenu : DebugMenu
                 GameInfo.SetPowerBasedOnMap((MapId)i);
 
                 return frame;
+            }, EndWithSeparator: (MapId)i switch
+            {
+                MapId.SanctuaryOfBigTree_M2 => true,
+                MapId.MarshAwakening2 => true,
+                MapId.SanctuaryOfRockAndLava_M3 => true,
+                MapId.BossFinal_M2 => true,
+                MapId._1000Lums => true,
+                MapId.ChallengeLyGCN => true,
+                MapId.Power6 => true,
+                MapId.WorldMap => true,
+                _ => false
             })).
             ToArray()),
     };
@@ -67,6 +78,9 @@ public class FramesDebugMenu : DebugMenu
             {
                 FrameManager.SetNextFrame(menuItem.CreateFrame());
             }
+
+            if (menuItem.EndWithSeparator)
+                ImGui.Separator();
         }
     }
 
@@ -75,5 +89,5 @@ public class FramesDebugMenu : DebugMenu
         DrawMenu(Menu);
     }
 
-    private record FrameMenuItem(string Name, Func<Frame> CreateFrame, FrameMenuItem[] SubMenu = null);
+    private record FrameMenuItem(string Name, Func<Frame> CreateFrame, FrameMenuItem[] SubMenu = null, bool EndWithSeparator = false);
 }
