@@ -60,7 +60,7 @@ public class GameCubeMenu : Frame
 
     private bool IsMapCompleted(int mapId)
     {
-        return GameInfo.PersistentInfo.CompletedGCNBonusLevels >= mapId;
+        return GameInfo.PersistentInfo.CompletedGCNBonusLevels > mapId;
     }
 
     private void ShowPleaseConnectText()
