@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.Rayman3;
+﻿using System;
+using GbaMonoGame.Rayman3;
 using ImGuiNET;
 
 namespace GbaMonoGame.TgxEngine;
@@ -125,5 +126,11 @@ public class GameInfoDebugWindow : DebugWindow
 
         if (ImGui.Button("Unlock all levels"))
             GameInfo.PersistentInfo.LastCompletedLevel = (byte)MapId.BossFinal_M2;
+
+        if (ImGui.Button("All lums and cages"))
+        {
+            Array.Clear(GameInfo.PersistentInfo.Lums);
+            Array.Clear(GameInfo.PersistentInfo.Cages);
+        }
     }
 }
