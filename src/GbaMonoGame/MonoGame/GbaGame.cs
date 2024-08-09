@@ -64,14 +64,15 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     protected abstract Game Game { get; }
     protected abstract string Title { get; }
-    protected abstract int SoundBankResourceId { get; }
-    protected abstract Dictionary<int, string> SongTable { get; }
-    protected abstract Dictionary<SoundType, int> SampleSongs { get; }
+    protected abstract Dictionary<int, string> GbaSongTable { get; }
+    protected abstract Dictionary<int, string> NGageSongTable { get; }
 
     #endregion
 
     #region Public Properties
 
+    public abstract Dictionary<SoundType, string> SampleSongs { get; }
+    
     public abstract bool CanSkipCutscene { get; }
 
     public bool HasLoadedGameInstallation => _selectedGameInstallation != null && _loadingGameInstallationTask == null;
@@ -180,7 +181,12 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameViewPort), gameViewPort);
 
             // Load engine sounds and fonts
-            SoundEventsManager.Load(SoundBankResourceId, SongTable, SampleSongs);
+            SoundEventsManager.Load(Engine.Settings.Platform switch
+            {
+                Platform.GBA => new GbaSoundEventsManager(GbaSongTable, Engine.Loader.SoundBank),
+                Platform.NGage => new NGageSoundEventsManager(NGageSongTable, Engine.Loader.NGage_SoundEvents),
+                _ => throw new UnsupportedPlatformException()
+            });
             FontManager.Load(Engine.Loader.Font8, Engine.Loader.Font16, Engine.Loader.Font32);
 
             // Load window
@@ -598,13 +604,13 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     public void Pause()
     {
         IsPaused = true;
-        SoundEventsManager.PauseAllSongs();
+        SoundEventsManager.ForcePauseAllSongs();
     }
 
     public void Resume()
     {
         IsPaused = false;
-        SoundEventsManager.ResumeAllSongs();
+        SoundEventsManager.ForceResumeAllSongs();
     }
 
     #endregion

@@ -1,11 +1,15 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
+﻿using System.Collections.Generic;
+using BinarySerializer.Ubisoft.GbaEngine;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GbaMonoGame;
 
 public class SoundsOptionsMenu : Menu
 {
-    public SoundsOptionsMenu()
+    public SoundsOptionsMenu(Dictionary<SoundType, string> sampleSongs)
     {
+        SampleSongs = sampleSongs;
+
         AvailableVolumes = new string[11];
         for (int i = 0; i < AvailableVolumes.Length; i++)
             AvailableVolumes[i] = i.ToString();
@@ -13,13 +17,53 @@ public class SoundsOptionsMenu : Menu
         PreviousSfxVolume = Engine.Config.SfxVolume;
     }
 
+    private Dictionary<SoundType, string> SampleSongs { get; }
+    private SoundEffectInstance ActiveSampleSong { get; set; }
+    private SoundType? ActiveSampleSongType { get; set; }
+
     private string[] AvailableVolumes { get; }
 
     private float PreviousSfxVolume { get; set; }
 
+    private void PlaySampleSong(SoundType type, bool restart, float volume)
+    {
+        if (!restart && ActiveSampleSongType == type)
+        {
+            ActiveSampleSong.Volume = volume;
+        }
+        else
+        {
+            StopSampleSongs();
+            ActiveSampleSong = SoundEventsManager.GetSoundByName(SampleSongs[type]).CreateInstance();
+            ActiveSampleSong.Volume = volume;
+            ActiveSampleSong.Play();
+            ActiveSampleSongType = type;
+        }
+    }
+
+    private void StopSampleSongs()
+    {
+        if (ActiveSampleSong != null)
+        {
+            ActiveSampleSong.Dispose();
+            ActiveSampleSong = null;
+            ActiveSampleSongType = null;
+        }
+    }
+
+    private void StopSampleSong(SoundType type)
+    {
+        if (ActiveSampleSong != null && ActiveSampleSongType == type)
+        {
+            ActiveSampleSong.Dispose();
+            ActiveSampleSong = null;
+            ActiveSampleSongType = null;
+        }
+    }
+
     public override void OnExit()
     {
-        SoundEventsManager.StopSampleSongs();
+        StopSampleSongs();
     }
 
     public override void Update(MenuManager menu)
@@ -41,15 +85,15 @@ public class SoundsOptionsMenu : Menu
         if (Engine.Config.SfxVolume != PreviousSfxVolume)
         {
             PreviousSfxVolume = Engine.Config.SfxVolume;
-            SoundEventsManager.PlaySampleSong(SoundType.Sfx, true, Engine.Config.SfxVolume);
+            PlaySampleSong(SoundType.Sfx, true, Engine.Config.SfxVolume);
         }
 
         menu.Text("Music volume");
         Engine.Config.MusicVolume = menu.Selection(AvailableVolumes, (int)(Engine.Config.MusicVolume * 10)) / 10f;
         if (menu.IsElementSelected())
-            SoundEventsManager.PlaySampleSong(SoundType.Music, false, Engine.Config.MusicVolume);
+            PlaySampleSong(SoundType.Music, false, Engine.Config.MusicVolume);
         else
-            SoundEventsManager.StopSampleSong(SoundType.Music);
+            StopSampleSong(SoundType.Music);
 
 
         menu.SetColumns(1);

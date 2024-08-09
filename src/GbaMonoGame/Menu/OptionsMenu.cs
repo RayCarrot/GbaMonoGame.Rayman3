@@ -24,7 +24,7 @@ public class OptionsMenu : Menu
             menu.ChangeMenu(new GameOptionsMenu());
 
         if (menu.Button("Sound options"))
-            menu.ChangeMenu(new SoundsOptionsMenu());
+            menu.ChangeMenu(new SoundsOptionsMenu(Game.SampleSongs));
 
         if (menu.Button("Display options"))
             menu.ChangeMenu(new DisplayOptionsMenu(Game));

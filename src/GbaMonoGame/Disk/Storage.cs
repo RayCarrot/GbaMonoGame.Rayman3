@@ -1,4 +1,5 @@
-﻿using BinarySerializer;
+﻿using System.IO;
+using BinarySerializer;
 using BinarySerializer.Ubisoft.GbaEngine;
 
 namespace GbaMonoGame;
@@ -27,5 +28,17 @@ public static class Storage
     {
         using Context context = Engine.Context;
         return Engine.Settings.RootTable.ReadResource<T>(Engine.Context, gameResource, name: gameResource.ToString());
+    }
+
+    public static Stream LoadResourceStream(int index)
+    {
+        RawResource res = LoadResource<RawResource>(index);
+        return new MemoryStream(res.RawData);
+    }
+
+    public static Stream LoadResourceStream(GameResource gameResource)
+    {
+        RawResource res = LoadResource<RawResource>(gameResource);
+        return new MemoryStream(res.RawData);
     }
 }
