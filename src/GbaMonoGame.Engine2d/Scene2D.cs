@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
@@ -17,10 +16,10 @@ public class Scene2D
         Camera = createCameraFunc(this);
         HudCamera = new HudCamera(Engine.GameViewPort);
 
-        Flag_2 = true;
+        AllowModalDialogs = true;
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
         Dialogs = new List<Dialog>(layersCount);
-        DialogFlags = new List<bool>(layersCount);
+        DialogModalFlags = new List<bool>(layersCount);
 
         Scene2DResource scene = Storage.LoadResource<Scene2DResource>(id);
 
@@ -49,10 +48,10 @@ public class Scene2D
         Camera = createCameraFunc(this);
         HudCamera = new HudCamera(Engine.GameViewPort);
 
-        Flag_2 = true;
+        AllowModalDialogs = true;
         AnimationPlayer = new AnimationPlayer(false, SoundEventsManager.ProcessEvent);
         Dialogs = new List<Dialog>(layersCount);
-        DialogFlags = new List<bool>(layersCount);
+        DialogModalFlags = new List<bool>(layersCount);
 
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(map.Playfield);
 
@@ -70,19 +69,19 @@ public class Scene2D
     public CameraActor Camera { get; }
     public HudCamera HudCamera { get; }
     public List<Dialog> Dialogs { get; }
-    public List<bool> DialogFlags { get; }
+    public List<bool> DialogModalFlags { get; }
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield Playfield { get; }
     public int LayersCount { get; }
     public KnotManager KnotManager { get; }
-    public int DialogIndex { get; set; }
+    public int FirstActiveDialogIndex { get; set; }
     
     // Flags
-    public bool Flag_1 { get; set; }
-    public bool Flag_2 { get; set; }
-    public bool Flag_3 { get; set; }
-    public bool Flag_4 { get; set; }
-    public bool Flag_5 { get; set; }
+    public bool InDialogModalMode { get; set; }
+    public bool AllowModalDialogs { get; set; }
+    public bool PendingDialogRefresh { get; set; }
+    public bool InitializeNewModalDialog { get; set; }
+    public bool ReloadPlayfield { get; set; }
     public bool NGage_Flag_6 { get; set; }
 
     public Vector2 Resolution => Playfield.Camera.Resolution;
@@ -110,11 +109,15 @@ public class Scene2D
 
     public void Step()
     {
-        FUN_0809cfd4();
+        RefreshDialogs();
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
-            if (!Flag_1)
+            if (InDialogModalMode)
+            {
+                ProcessDialogs();
+            }
+            else
             {
                 RunActors();
                 ResurrectActors();
@@ -124,15 +127,15 @@ public class Scene2D
                 RunCamera();
                 ProcessDialogs();
                 DrawActors();
-            }
-            else
-            {
-                ProcessDialogs();
             }
         }
         else if (Engine.Settings.Platform == Platform.NGage)
         {
-            if (!Flag_1 && !NGage_Flag_6)
+            if (InDialogModalMode || NGage_Flag_6)
+            {
+                ProcessDialogs();
+            }
+            else
             {
                 RunActors();
                 ResurrectActors();
@@ -141,9 +144,8 @@ public class Scene2D
                 RunCaptors();
                 RunCamera();
                 DrawActors();
+                ProcessDialogs();
             }
-            
-            ProcessDialogs();
         }
         else
         {
@@ -151,30 +153,33 @@ public class Scene2D
         }
     }
 
-    public bool AddDialog(Dialog dialog, bool param1, bool param2)
+    public bool AddDialog(Dialog dialog, bool isModal, bool reloadPlayfield)
     {
-        if (Flag_3)
+        // Can't add new dialogs if a refresh is pending
+        if (PendingDialogRefresh)
             return false;
 
-        if (param1)
+        // Modal (for example the pause dialog)
+        if (isModal)
         {
-            if (!Flag_2)
+            if (!AllowModalDialogs)
                 return false;
 
-            DialogFlags.Add(true);
+            DialogModalFlags.Add(true);
             Dialogs.Add(dialog);
-            DialogIndex = Dialogs.Count - 1;
+            FirstActiveDialogIndex = Dialogs.Count - 1;
 
-            Flag_1 = true;
-            Flag_3 = true;
-            Flag_4 = true;
+            InDialogModalMode = true;
+            PendingDialogRefresh = true;
+            InitializeNewModalDialog = true;
 
-            if (param2)
-                Flag_5 = true;
+            if (reloadPlayfield)
+                ReloadPlayfield = true;
         }
+        // Normal
         else
         {
-            DialogFlags.Add(false);
+            DialogModalFlags.Add(false);
             Dialogs.Add(dialog);
 
             dialog.Load();
@@ -210,60 +215,93 @@ public class Scene2D
 
     public void ProcessDialogs()
     {
-        if (!Flag_3)
+        // Can't process if a refresh is pending
+        if (PendingDialogRefresh) 
+            return;
+        
+        for (int i = FirstActiveDialogIndex; i < Dialogs.Count; i++)
         {
-            for (int i = DialogIndex; i < Dialogs.Count; i++)
-            {
-                Dialogs[i].Step();
-                Dialogs[i].Draw(AnimationPlayer);
-            }
+            Dialogs[i].Step();
+            Dialogs[i].Draw(AnimationPlayer);
         }
     }
 
-    public void FUN_0809e1cc()
+    public void RemoveLastDialog()
     {
-        if (!DialogFlags.Last())
+        // If the last dialog is a modal...
+        if (DialogModalFlags.Last())
         {
+            // Remove the modal dialog
             Dialogs.RemoveAt(Dialogs.Count - 1);
-            DialogFlags.RemoveAt(DialogFlags.Count - 1);
-        }
-        else
-        {
-            Dialogs.RemoveAt(Dialogs.Count - 1);
-            DialogFlags.RemoveAt(DialogFlags.Count - 1);
+            DialogModalFlags.RemoveAt(DialogModalFlags.Count - 1);
 
-            bool flag = true;
-
+            // Check if there is another modal dialog and if so have that one be active
+            bool endModalMode = true;
             for (int i = Dialogs.Count - 1; i >= 0; i--)
             {
-                if (DialogFlags[i])
+                // Found a modal dialog
+                if (DialogModalFlags[i])
                 {
-                    Flag_1 = true;
-                    DialogIndex = i;
-                    flag = false;
+                    InDialogModalMode = true;
+                    FirstActiveDialogIndex = i;
+                    endModalMode = false;
                     break;
                 }
             }
 
-            if (flag)
+            // End modal mode if there were no other modal dialogs found
+            if (endModalMode)
             {
-                DialogIndex = 0;
-                Flag_1 = false;
+                FirstActiveDialogIndex = 0;
+                InDialogModalMode = false;
             }
 
-            Flag_4 = false;
-            Flag_3 = true;
+            InitializeNewModalDialog = false;
+            PendingDialogRefresh = true;
+        }
+        // If the last dialog is a normal one we just remove it
+        else
+        {
+            Dialogs.RemoveAt(Dialogs.Count - 1);
+            DialogModalFlags.RemoveAt(DialogModalFlags.Count - 1);
         }
     }
 
-    public void FUN_0809cfd4()
+    public void RefreshDialogs()
     {
-        if (Flag_3)
-        {
-            // TODO: A lot of weird unloading stuff
+        if (!PendingDialogRefresh) 
+            return;
+        
+        // Game resets the animation palette and sprite managers here
 
-            Flag_3 = false;
+        if (ReloadPlayfield)
+            throw new NotImplementedException();
+
+        // If we're exiting modal mode we want to reload animation data
+        if (!InDialogModalMode)
+        {
+            if (ReloadPlayfield)
+                throw new NotImplementedException();
+
+            KnotManager.ReloadAnimations();
+
+            for (int i = FirstActiveDialogIndex; i < Dialogs.Count; i++)
+                Dialogs[i].Load();
         }
+        // A new model dialog has been added which we want to load and initialize
+        else if (InitializeNewModalDialog)
+        {
+            Dialogs[FirstActiveDialogIndex].Load();
+            Dialogs[FirstActiveDialogIndex].Init();
+        }
+        // No ned modal dialog has been added, so just reload the animation data for what's there from before
+        else
+        {
+            for (int i = FirstActiveDialogIndex; i < Dialogs.Count; i++)
+                Dialogs[i].Load();
+        }
+
+        PendingDialogRefresh = false;
     }
 
     public void RunActors()

@@ -172,6 +172,11 @@ public class KnotManager
             throw new Exception($"Unsupported game object type {gameObject}");
     }
 
+    public void ReloadAnimations()
+    {
+        // Don't need to do anything here. The original game re-allocates data in VRAM here, usually after game has been paused.
+    }
+
     public BaseActor CreateProjectile(int actorType)
     {
         BaseActor actor = EnumerateAllActors(isEnabled: false).FirstOrDefault(x => x.Type == actorType && x.IsProjectile);
