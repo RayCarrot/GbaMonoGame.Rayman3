@@ -152,7 +152,7 @@ public class GbaSoundEventsManager : SoundEventsManager
             IsRollOffEnabled = evt.EnableRollOff,
             IsPanEnabled = evt.EnablePan,
             IsFadingOut = false,
-            field2_0x3 = false,
+            StopIfNotLooping = false,
             Loop = res.Loop,
             IsMusic = res.IsMusic,
             SoundEffect = sndEffect,
@@ -177,7 +177,7 @@ public class GbaSoundEventsManager : SoundEventsManager
                 if (song.Volume != SoundEngineInterface.MaxVolume)
                     fadeOut = 0;
 
-                song.field2_0x3 = false;
+                song.StopIfNotLooping = false;
                 song.Loop = false;
                 song.SoundInstance.IsLooped = false;
 
@@ -281,7 +281,7 @@ public class GbaSoundEventsManager : SoundEventsManager
             if (!song.IsPlaying)
                 continue;
 
-            if (song.SoundInstance.State == SoundState.Stopped && (!song.field2_0x3 || !song.Loop))
+            if (song.SoundInstance.State != SoundState.Playing && (!song.StopIfNotLooping || !song.Loop))
             {
                 song.IsPlaying = false;
 
@@ -398,13 +398,19 @@ public class GbaSoundEventsManager : SoundEventsManager
     protected override void PauseAllSongsImpl()
     {
         foreach (ActiveSong playingSong in ActiveSongs)
+        {
+            playingSong.StopIfNotLooping = true; // Not actually set here, but always set alongside PauseAll, so might as well do it here
             playingSong.InGamePaused = true;
+        }
     }
 
     protected override void ResumeAllSongsImpl()
     {
         foreach (ActiveSong playingSong in ActiveSongs)
+        {
+            playingSong.StopIfNotLooping = false; // Not actually set here, but always set alongside ResumeAll, so might as well do it here
             playingSong.InGamePaused = false;
+        }
     }
 
     protected override float GetVolumeForTypeImpl(SoundType type)
@@ -503,7 +509,7 @@ public class GbaSoundEventsManager : SoundEventsManager
         public bool IsFadingOut { get; set; }
 
         // Music player
-        public bool field2_0x3 { get; set; } // Always false?
+        public bool StopIfNotLooping { get; set; }
         public bool Loop { get; set; }
         public bool IsMusic { get; init; }
 
