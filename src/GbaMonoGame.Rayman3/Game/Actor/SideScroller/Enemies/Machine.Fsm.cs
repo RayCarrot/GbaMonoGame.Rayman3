@@ -299,7 +299,7 @@ public partial class Machine
                         if (BossHealth % 4 == 0 && BossHealth < 30)
                             explosion.Position = new Vector2(Position.X + 16 + ExplosionOffsets[BossHealth % 8].X, explosion.Position.Y);
                         
-                        explosion.Position = new Vector2(explosion.Position.X, Position.X + 32 - ExplosionOffsets[BossHealth % 8].Y);
+                        explosion.Position = new Vector2(explosion.Position.X, Position.Y + 32 - ExplosionOffsets[BossHealth % 8].Y);
                     }
 
                     BossHealth++;
