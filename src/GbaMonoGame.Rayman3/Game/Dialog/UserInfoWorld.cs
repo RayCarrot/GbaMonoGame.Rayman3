@@ -116,7 +116,8 @@ public class UserInfoWorld : Dialog
             {
                 IsFramed = true,
                 CurrentAnimation = ShouldPlayCurtainAnimation ? 1 : 0,
-                ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 120, 56),
+                ScreenPos = new Vector2(-120, 56),
+                HorizontalAnchor = HorizontalAnchorMode.Right,
             };
 
             for (int i = 0; i < 6; i++)
@@ -137,8 +138,6 @@ public class UserInfoWorld : Dialog
         if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId != MapId.WorldMap)
         {
             animationPlayer.PlayFront(CurtainsLeft);
-
-            CurtainsRight.ScreenPos = CurtainsRight.ScreenPos with { X = Engine.GameViewPort.GameResolution.X - 120 };
             animationPlayer.PlayFront(CurtainsRight);
         }
 

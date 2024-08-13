@@ -30,7 +30,8 @@ public class CagesBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 22,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44, 41),
+            ScreenPos = new Vector2(-44, 41),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -40,7 +41,8 @@ public class CagesBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 28, 45),
+            ScreenPos = new Vector2(-28, 45),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -50,7 +52,8 @@ public class CagesBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 45),
+            ScreenPos = new Vector2(-10, 45),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -132,9 +135,9 @@ public class CagesBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            CageIcon.ScreenPos = CageIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 44 + XOffset };
-            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { X = Scene.HudCamera.Resolution.X - 28 + XOffset };
-            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { X = Scene.HudCamera.Resolution.X - 10 + XOffset };
+            CageIcon.ScreenPos = CageIcon.ScreenPos with { X = -44 + XOffset };
+            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { X = -28 + XOffset };
+            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { X = -10 + XOffset };
 
             CollectedCagesDigit.CurrentAnimation = CollectedCagesDigitValue;
 

@@ -35,8 +35,6 @@ public class AObjectFog : AObject
     public AnimatedObjectResource Resource { get; }
     public AnimationChannel[] SpriteChannels { get; }
 
-    public Vector2 ScreenPos { get; set; }
-
     public bool IsAlphaBlendEnabled { get; set; }
     public float Alpha { get; set; }
     public float GbaAlpha
@@ -86,9 +84,11 @@ public class AObjectFog : AObject
 
     public override void Execute(Action<short> soundEventCallback)
     {
+        Vector2 pos = GetAnchoredPosition();
+
         float camWidth = Camera.Resolution.X;
         for (int i = 0; i < camWidth / SpriteWidth + SpritesCount; i++)
-            DrawSprite(SpriteChannels[i % SpritesCount], ScreenPos + new Vector2(SpriteWidth * i, 0));
+            DrawSprite(SpriteChannels[i % SpritesCount], pos + new Vector2(SpriteWidth * i, 0));
     }
 
     #endregion

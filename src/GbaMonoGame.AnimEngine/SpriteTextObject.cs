@@ -21,8 +21,6 @@ public class SpriteTextObject : AObject
 
     public Color Color { get; set; }
     public FontSize FontSize { get; set; }
-
-    public Vector2 ScreenPos { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
 
     public int GetStringWidth() => FontManager.GetStringWidth(FontSize, TextBytes);
@@ -32,7 +30,7 @@ public class SpriteTextObject : AObject
         if (TextBytes == null)
             return;
 
-        Vector2 pos = ScreenPos;
+        Vector2 pos = GetAnchoredPosition();
 
         foreach (byte c in TextBytes)
         {

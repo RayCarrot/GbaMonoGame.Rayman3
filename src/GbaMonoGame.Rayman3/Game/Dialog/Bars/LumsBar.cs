@@ -42,7 +42,8 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 24,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 77, 8),
+            ScreenPos = new Vector2(-77, 8),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -52,7 +53,8 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 52, 24),
+            ScreenPos = new Vector2(-52, 24),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -62,7 +64,8 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 40, 24),
+            ScreenPos = new Vector2(-40, 24),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -72,7 +75,8 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 22, 24),
+            ScreenPos = new Vector2(-22, 24),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -82,7 +86,8 @@ public class LumsBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = 0,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 24),
+            ScreenPos = new Vector2(-10, 24),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -171,11 +176,11 @@ public class LumsBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 77, 8 - YOffset);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 52, 24 - YOffset);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 40, 24 - YOffset);
-            TotalLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 22, 24 - YOffset);
-            TotalLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10, 24 - YOffset);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { Y = 8 - YOffset };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { Y = 24 - YOffset };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { Y = 24 - YOffset };
+            TotalLumsDigit1.ScreenPos = TotalLumsDigit1.ScreenPos with { Y = 24 - YOffset };
+            TotalLumsDigit2.ScreenPos = TotalLumsDigit2.ScreenPos with { Y = 24 - YOffset };
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;

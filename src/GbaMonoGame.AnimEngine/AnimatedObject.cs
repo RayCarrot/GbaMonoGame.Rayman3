@@ -49,8 +49,6 @@ public class AnimatedObject : AObject
 
     public bool IsBackSprite { get; set; }
 
-    public Vector2 ScreenPos { get; set; }
-
     public bool FlipX { get; set; }
     public bool FlipY { get; set; }
 
@@ -307,18 +305,20 @@ public class AnimatedObject : AObject
                     // Get x position
                     float xPos = channel.XPosition;
 
+                    Vector2 pos = GetAnchoredPosition();
+
                     if (!FlipX)
-                        xPos += ScreenPos.X;
+                        xPos += pos.X;
                     else
-                        xPos = ScreenPos.X - xPos - shape.Width;
+                        xPos = pos.X - xPos - shape.Width;
 
                     // Get y position
                     float yPos = channel.YPosition;
 
                     if (!FlipY)
-                        yPos += ScreenPos.Y;
+                        yPos += pos.Y;
                     else
-                        yPos = ScreenPos.Y - yPos - shape.Height;
+                        yPos = pos.Y - yPos - shape.Height;
 
                     AffineMatrix? affineMatrix = null;
 

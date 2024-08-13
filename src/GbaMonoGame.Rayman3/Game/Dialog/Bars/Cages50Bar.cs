@@ -20,7 +20,8 @@ public class Cages50Bar : Bar
         CagesIcon = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 68, 41),
+            ScreenPos = new Vector2(-68, 41),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -29,7 +30,8 @@ public class Cages50Bar : Bar
         CollectedCagesDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 56, 45),
+            ScreenPos = new Vector2(-56, 45),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -38,7 +40,8 @@ public class Cages50Bar : Bar
         CollectedCagesDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44, 45),
+            ScreenPos = new Vector2(-44, 45),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -63,11 +66,6 @@ public class Cages50Bar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        // Keep position updated for different screen resolutions support
-        CagesIcon.ScreenPos = CagesIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 68 };
-        CollectedCagesDigit1.ScreenPos = CollectedCagesDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 56 };
-        CollectedCagesDigit2.ScreenPos = CollectedCagesDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 44 };
-
         animationPlayer.PlayFront(CagesIcon);
 
         if (DeadCages < 50)

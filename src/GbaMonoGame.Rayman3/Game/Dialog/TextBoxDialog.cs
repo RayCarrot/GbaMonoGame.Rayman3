@@ -386,6 +386,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(0, -OffsetY),
+            HorizontalAnchor = HorizontalAnchorMode.Scale,
             Camera = Scene.HudCamera,
         };
 
@@ -395,6 +396,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            HorizontalAnchor = HorizontalAnchorMode.Scale,
             Camera = Scene.HudCamera,
         };
 
@@ -407,6 +409,7 @@ public class TextBoxDialog : Dialog
                     Text = "",
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(38, 7 - OffsetY),
+                    HorizontalAnchor = HorizontalAnchorMode.Scale,
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
                     Camera = Scene.HudCamera,
@@ -416,6 +419,7 @@ public class TextBoxDialog : Dialog
                     Text = "",
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(38, 21 - OffsetY),
+                    HorizontalAnchor = HorizontalAnchorMode.Scale,
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
                     Camera = Scene.HudCamera,
@@ -432,6 +436,7 @@ public class TextBoxDialog : Dialog
                     Text = "",
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(38, 7 - OffsetY),
+                    HorizontalAnchor = HorizontalAnchorMode.Scale,
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
                     Camera = Scene.HudCamera,
@@ -441,6 +446,7 @@ public class TextBoxDialog : Dialog
                     Text = "",
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(38, 21 - OffsetY),
+                    HorizontalAnchor = HorizontalAnchorMode.Scale,
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
                     Camera = Scene.HudCamera,
@@ -450,6 +456,7 @@ public class TextBoxDialog : Dialog
                     Text = "",
                     AffineMatrix = AffineMatrix.Identity,
                     ScreenPos = new Vector2(38, 35 - OffsetY),
+                    HorizontalAnchor = HorizontalAnchorMode.Scale,
                     FontSize = FontSize.Font16,
                     Color = TextColor.TextBox,
                     Camera = Scene.HudCamera,
@@ -467,6 +474,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            HorizontalAnchor = HorizontalAnchorMode.Scale,
             Camera = Scene.HudCamera,
         };
 
@@ -477,6 +485,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            HorizontalAnchor = HorizontalAnchorMode.Scale,
             Camera = Scene.HudCamera,
         };
 
@@ -486,6 +495,7 @@ public class TextBoxDialog : Dialog
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(8, 8 - OffsetY),
+            HorizontalAnchor = HorizontalAnchorMode.Scale,
             Camera = Scene.HudCamera,
         };
     }
@@ -501,18 +511,15 @@ public class TextBoxDialog : Dialog
             NextSoundEvent = Rayman3SoundEvent.None;
         }
 
-        // Set x position to support widescreen
-        float xPos = (Scene.HudCamera.Resolution.X - Engine.GameViewPort.OriginalGameResolution.X) / 2;
-
-        Canvas.ScreenPos = new Vector2(xPos, -OffsetY);
+        Canvas.ScreenPos = Canvas.ScreenPos with { Y = -OffsetY };
 
         for (int i = 0; i < TextObjects.Length; i++)
-            TextObjects[i].ScreenPos = new Vector2(38 + xPos, 7 + 14 * i - OffsetY);
+            TextObjects[i].ScreenPos = TextObjects[i].ScreenPos with { Y = 7 + 14 * i - OffsetY };
 
-        RaymanIcon.ScreenPos = new Vector2(8 + xPos, 8 - OffsetY);
-        MurfyIcon.ScreenPos = new Vector2(8 + xPos, 8 - OffsetY);
-        LyIcon.ScreenPos = new Vector2(8 + xPos, 8 - OffsetY);
-        TeensiesIcon.ScreenPos = new Vector2(8 + xPos, 8 - OffsetY);
+        RaymanIcon.ScreenPos = RaymanIcon.ScreenPos with { Y = 8 - OffsetY };
+        MurfyIcon.ScreenPos = MurfyIcon.ScreenPos with { Y = 8 - OffsetY };
+        LyIcon.ScreenPos = LyIcon.ScreenPos with { Y = 8 - OffsetY };
+        TeensiesIcon.ScreenPos = TeensiesIcon.ScreenPos with { Y = 8 - OffsetY };
 
         // Blink next text symbol
         if (CurrentTextLine + 2 < CurrentText.Length && TextTransitionValue == 1 && (GameTime.ElapsedFrames & 0x10) != 0)

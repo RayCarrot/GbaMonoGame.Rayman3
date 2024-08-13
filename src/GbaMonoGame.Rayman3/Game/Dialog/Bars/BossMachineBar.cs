@@ -18,7 +18,8 @@ public class BossMachineBar : Bar
         {
             IsFramed = true,
             CurrentAnimation = BossDamage,
-            ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 60, 24),
+            ScreenPos = new Vector2(-60, 24),
+            HorizontalAnchor = HorizontalAnchorMode.Right,
             SpritePriority = 0,
             YPriority = 0,
             Camera = Scene.HudCamera,
@@ -36,7 +37,6 @@ public class BossMachineBar : Bar
         if (Mode == 1) 
             return;
         
-        BossHealthBar.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 60, 24);
         animationPlayer.PlayFront(BossHealthBar);
     }
 }
