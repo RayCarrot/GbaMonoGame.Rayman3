@@ -18,9 +18,9 @@ public partial class Slapdash
             Scene.MainActor.Position -= new Vector2(0, 30);
 
             if (IsFacingRight)
-                Scene.MainActor.Position = new Vector2(Position.X + 10, Scene.MainActor.Position.Y);
+                Scene.MainActor.Position = Scene.MainActor.Position with { X = Position.X + 10 };
             else
-                Scene.MainActor.Position = new Vector2(Position.X - 10, Scene.MainActor.Position.Y);
+                Scene.MainActor.Position = Scene.MainActor.Position with { X = Position.X - 10 };
 
             Scene.MainActor.ProcessMessage(this, Message.Main_Damaged3, this);
         }

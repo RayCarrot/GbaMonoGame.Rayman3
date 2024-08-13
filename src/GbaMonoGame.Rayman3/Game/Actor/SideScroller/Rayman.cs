@@ -488,7 +488,7 @@ public sealed partial class Rayman : MovableActor
                 speedX = 3;
         }
 
-        MechModel.Speed = new Vector2(speedX, MechModel.Speed.Y);
+        MechModel.Speed = MechModel.Speed with { X = speedX };
     }
 
     private bool HasLanded()
@@ -854,7 +854,7 @@ public sealed partial class Rayman : MovableActor
                 }
 
                 pos += new Vector2(0, Tile.Size);
-                pos = new Vector2(Position.X, pos.Y);
+                pos.X = Position.X;
             }
         }
         else
@@ -884,7 +884,7 @@ public sealed partial class Rayman : MovableActor
                 }
 
                 pos += new Vector2(0, Tile.Size);
-                pos = new Vector2(Position.X, pos.Y);
+                pos.X = Position.X;
             }
         }
 
@@ -996,12 +996,12 @@ public sealed partial class Rayman : MovableActor
     {
         if (IsHanging && AttachedObject != null)
         {
-            Position = new Vector2(Position.X, AttachedObject.Position.Y + 58);
+            Position = Position with { Y = AttachedObject.Position.Y + 58 };
             AttachedObject = null;
         }
         else
         {
-            Position = new Vector2(Position.X, Position.Y + Tile.Size - MathHelpers.Mod(Position.Y, Tile.Size) - 1);
+            Position += new Vector2(0, Tile.Size - MathHelpers.Mod(Position.Y, Tile.Size) - 1);
             PlaySound(Rayman3SoundEvent.Play__HandTap1_Mix04);
         }
     }
@@ -1312,7 +1312,7 @@ public sealed partial class Rayman : MovableActor
                     if (Position.Y < actorToLinkBox.MinY + 7)
                     {
                         LinkedMovementActor = actorToLink;
-                        Position = new Vector2(Position.X, actorToLinkBox.MinY);
+                        Position = Position with { Y = actorToLinkBox.MinY };
                     }
 
                     if (State == Fsm_HangOnEdge)
@@ -1431,7 +1431,7 @@ public sealed partial class Rayman : MovableActor
                 {
                     Box box = ((ActionActor)AttachedObject).GetActionBox(); // TODO: Cast to Plum when we create a class for it
                     LinkedMovementActor = null; // TODO: Huh? Isn't this meant to be setting attached object to null?
-                    Position = new Vector2(Position.X, box.MinY - 16);
+                    Position = Position with { Y = box.MinY - 16 };
                 }
 
                 if (((BaseActor)sender).Type == (int)ActorType.SpikyFlyingBomb && !IsInvulnerable)

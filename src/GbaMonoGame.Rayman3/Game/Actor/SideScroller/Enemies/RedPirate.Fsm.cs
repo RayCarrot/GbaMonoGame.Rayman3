@@ -273,7 +273,7 @@ public partial class RedPirate
                 if (IsFacingRight && Position.X > KnockBackPosition.X ||
                     IsFacingLeft && Position.X < KnockBackPosition.X)
                 {
-                    Position = new Vector2(KnockBackPosition.X, Position.Y);
+                    Position = Position with { X = KnockBackPosition.X };
                     State.MoveTo(Fsm_Attack);
                 }
                 break;

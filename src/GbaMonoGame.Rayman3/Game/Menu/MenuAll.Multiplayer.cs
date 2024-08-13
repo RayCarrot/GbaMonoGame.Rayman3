@@ -59,7 +59,7 @@ public partial class MenuAll
 
         // Center sprites if English
         if (Localization.Language == 0)
-            Data.MultiplayerModeSelection.ScreenPos = new Vector2(86, Data.MultiplayerModeSelection.ScreenPos.Y);
+            Data.MultiplayerModeSelection.ScreenPos = Data.MultiplayerModeSelection.ScreenPos with { X = 86 };
 
         CurrentStepAction = Step_TransitionToMultiplayer;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
@@ -179,7 +179,7 @@ public partial class MenuAll
             CurrentStepAction = Step_MultiplayerSinglePak;
         }
 
-        Data.MultiplayerSinglePakPlayers.ScreenPos = new Vector2(Data.MultiplayerSinglePakPlayers.ScreenPos.X, 40 - MultiplayerSinglePakPlayersOffsetY);
+        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - MultiplayerSinglePakPlayersOffsetY };
 
         DrawMutliplayerText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
@@ -206,7 +206,7 @@ public partial class MenuAll
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
 
-        Data.MultiplayerSinglePakPlayers.ScreenPos = new Vector2(Data.MultiplayerSinglePakPlayers.ScreenPos.X, 40 - MultiplayerSinglePakPlayersOffsetY);
+        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - MultiplayerSinglePakPlayersOffsetY };
 
         if (NextMultiplayerTextId == -1)
             DrawMutliplayerText();

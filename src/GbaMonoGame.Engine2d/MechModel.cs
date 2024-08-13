@@ -60,13 +60,13 @@ public class MechModel
 
     private Vector2 SetAcceleratedSpeedX()
     {
-        Speed = new Vector2(Speed.X + Acceleration.X, Speed.Y);
+        Speed = Speed with { X = Speed.X + Acceleration.X };
 
         if (Acceleration.X <= 0)
         {
             if (Speed.X <= TargetSpeed.X)
             {
-                Speed = new Vector2(TargetSpeed.X, Speed.Y);
+                Speed = Speed with { X = TargetSpeed.X };
                 UpdateSpeedAction = SetConstSpeedXY;
             }
         }
@@ -74,7 +74,7 @@ public class MechModel
         {
             if (Speed.X >= TargetSpeed.X)
             {
-                Speed = new Vector2(TargetSpeed.X, Speed.Y);
+                Speed = Speed with { X = TargetSpeed.X };
                 UpdateSpeedAction = SetConstSpeedXY;
             }
         }
@@ -84,13 +84,13 @@ public class MechModel
 
     private Vector2 SetAcceleratedSpeedY()
     {
-        Speed = new Vector2(Speed.X, Speed.Y + Acceleration.Y);
+        Speed = Speed with { Y = Speed.Y + Acceleration.Y };
 
         if (Acceleration.Y <= 0)
         {
             if (Speed.Y <= TargetSpeed.Y)
             {
-                Speed = new Vector2(Speed.X, TargetSpeed.Y);
+                Speed = Speed with { Y = TargetSpeed.Y };
                 UpdateSpeedAction = SetConstSpeedXY;
             }
         }
@@ -98,7 +98,7 @@ public class MechModel
         {
             if (Speed.Y >= TargetSpeed.Y)
             {
-                Speed = new Vector2(Speed.X, TargetSpeed.Y);
+                Speed = Speed with { Y = TargetSpeed.Y };
                 UpdateSpeedAction = SetConstSpeedXY;
             }
         }
@@ -117,7 +117,7 @@ public class MechModel
         {
             if (Speed.X <= TargetSpeed.X)
             {
-                Speed = new Vector2(TargetSpeed.X, Speed.Y);
+                Speed = Speed with { X = TargetSpeed.X };
                 stopX = true;
             }
         }
@@ -125,7 +125,7 @@ public class MechModel
         {
             if (Speed.X >= TargetSpeed.X)
             {
-                Speed = new Vector2(TargetSpeed.X, Speed.Y);
+                Speed = Speed with { X = TargetSpeed.X };
                 stopX = true;
             }
         }
@@ -134,7 +134,7 @@ public class MechModel
         {
             if (Speed.Y <= TargetSpeed.Y)
             {
-                Speed = new Vector2(Speed.X, TargetSpeed.Y);
+                Speed = Speed with { Y = TargetSpeed.Y };
                 stopY = true;
             }
         }
@@ -142,7 +142,7 @@ public class MechModel
         {
             if (Speed.Y >= TargetSpeed.Y)
             {
-                Speed = new Vector2(Speed.X, TargetSpeed.Y);
+                Speed = Speed with { Y = TargetSpeed.Y };
                 stopY = true;
             }
         }
@@ -199,24 +199,24 @@ public class MechModel
     private void SetSpeedX_ResetSpeedY(float[] mechParams, int offset)
     {
         SetSpeedX(mechParams, offset);
-        Speed = new Vector2(Speed.X, 0);
+        Speed = Speed with { Y = 0 };
     }
 
     private void SetSpeedY_ResetSpeedX(float[] mechParams, int offset)
     {
         SetSpeedY(mechParams, offset);
-        Speed = new Vector2(0, Speed.Y);
+        Speed = Speed with { X = 0 };
     }
 
     private void SetSpeedX(float[] mechParams, int offset)
     {
-        Speed = new Vector2(mechParams[offset], Speed.Y);
+        Speed = Speed with { X = mechParams[offset] };
         UpdateSpeedAction = SetConstSpeedXY;
     }
 
     private void SetSpeedY(float[] mechParams, int offset)
     {
-        Speed = new Vector2(Speed.X, mechParams[offset]);
+        Speed = Speed with { Y = mechParams[offset] };
         UpdateSpeedAction = SetConstSpeedXY;
     }
 
@@ -230,26 +230,26 @@ public class MechModel
     private void SetAccelerationX_SetTargetSpeedX_ResetSpeedY(float[] mechParams, int offset)
     {
         SetAccelerationX_SetTargetSpeedX(mechParams, offset);
-        Speed = new Vector2(Speed.X, 0);
+        Speed = Speed with { Y = 0 };
     }
 
     private void SetAccelerationY_SetTargetSpeedY_ResetSpeedX(float[] mechParams, int offset)
     {
         SetAccelerationY_SetTargetSpeedY(mechParams, offset);
-        Speed = new Vector2(0, Speed.Y);
+        Speed = Speed with { X = 0 };
     }
 
     private void SetAccelerationX_SetTargetSpeedX(float[] mechParams, int offset)
     {
-        Acceleration = new Vector2(mechParams[offset + 0], Acceleration.Y);
-        TargetSpeed = new Vector2(mechParams[offset + 1], TargetSpeed.Y);
+        Acceleration = Acceleration with { X = mechParams[offset + 0] };
+        TargetSpeed = TargetSpeed with { X = mechParams[offset + 1] };
         UpdateSpeedAction = SetAcceleratedSpeedX;
     }
 
     private void SetAccelerationY_SetTargetSpeedY(float[] mechParams, int offset)
     {
-        Acceleration = new Vector2(Acceleration.X, mechParams[offset + 0]);
-        TargetSpeed = new Vector2(TargetSpeed.X, mechParams[offset + 1]);
+        Acceleration = Acceleration with { Y = mechParams[offset + 0] };
+        TargetSpeed = TargetSpeed with { Y = mechParams[offset + 1] };
         UpdateSpeedAction = SetAcceleratedSpeedY;
     }
 
@@ -263,28 +263,28 @@ public class MechModel
     private void SetSpeedX_SetAccelerationX_SetTargetSpeedX_ResetSpeedY(float[] mechParams, int offset)
     {
         SetSpeedX_SetAccelerationX_SetTargetSpeedX(mechParams, offset);
-        Speed = new Vector2(Speed.X, 0);
+        Speed = Speed with { Y = 0 };
     }
 
     private void SetSpeedY_SetAccelerationY_SetTargetSpeedY_ResetSpeedX(float[] mechParams, int offset)
     {
         SetSpeedY_SetAccelerationY_SetTargetSpeedY(mechParams, offset);
-        Speed = new Vector2(0, Speed.Y);
+        Speed = Speed with { X = 0 };
     }
 
     private void SetSpeedX_SetAccelerationX_SetTargetSpeedX(float[] mechParams, int offset)
     {
-        Speed = new Vector2(mechParams[offset + 0], Speed.Y);
-        Acceleration = new Vector2(mechParams[offset + 1], Acceleration.Y);
-        TargetSpeed = new Vector2(mechParams[offset + 2], TargetSpeed.Y);
+        Speed = Speed with { X = mechParams[offset + 0] };
+        Acceleration = Acceleration with { X = mechParams[offset + 1] };
+        TargetSpeed = TargetSpeed with { X = mechParams[offset + 2] };
         UpdateSpeedAction = SetAcceleratedSpeedX;
     }
 
     private void SetSpeedY_SetAccelerationY_SetTargetSpeedY(float[] mechParams, int offset)
     {
-        Speed = new Vector2(Speed.X, mechParams[offset + 0]);
-        Acceleration = new Vector2(Acceleration.X, mechParams[offset + 1]);
-        TargetSpeed = new Vector2(TargetSpeed.X, mechParams[offset + 2]);
+        Speed = Speed with { Y = mechParams[offset + 0] };
+        Acceleration = Acceleration with { Y = mechParams[offset + 1] };
+        TargetSpeed = TargetSpeed with { Y = mechParams[offset + 2] };
         UpdateSpeedAction = SetAcceleratedSpeedY;
     }
 

@@ -17,7 +17,7 @@ public partial class CameraSideScroller
                     IsFacingRight = LinkedObject.IsFacingRight;
 
                     UpdateTargetX();
-                    Speed = new Vector2(TargetX < LinkedObject.ScreenPosition.X ? 1 : -1, Speed.Y);
+                    Speed = Speed with { X = TargetX < LinkedObject.ScreenPosition.X ? 1 : -1 };
                 }
 
                 Timer = 0;
@@ -25,7 +25,7 @@ public partial class CameraSideScroller
 
             case FsmAction.Step:
                 // Reset speed y
-                Speed = new Vector2(Speed.X, 0);
+                Speed = Speed with { Y = 0 };
 
                 UpdateTargetX();
 
@@ -35,7 +35,7 @@ public partial class CameraSideScroller
                 if (Math.Abs(LinkedObject.ScreenPosition.X - TargetX) <= 4)
                 {
                     // Follow the linked object's movement
-                    Speed = new Vector2(linkedObjDeltaX, Speed.Y);
+                    Speed = Speed with { X = linkedObjDeltaX };
                 }
                 // If far away from the target...
                 else
@@ -46,7 +46,7 @@ public partial class CameraSideScroller
                     if ((LinkedObject.ScreenPosition.X < TargetX && Speed.X > 0) ||
                         (LinkedObject.ScreenPosition.X > TargetX && Speed.X < 0))
                     {
-                        Speed = new Vector2(0, Speed.Y);
+                        Speed = Speed with { X = 0 };
                     }
 
                     float dir = LinkedObject.ScreenPosition.X > TargetX ? 1 : -1;
@@ -55,7 +55,7 @@ public partial class CameraSideScroller
                     if (Math.Abs(linkedObjDeltaX) > 2)
                     {
                         // Move the camera alongside the linked object with a speed of 6
-                        Speed = new Vector2(dir * 6, Speed.Y);
+                        Speed = Speed with { X = dir * 6 };
                     }
                     // If the linked object is moving and
                     // the timer is greater than or equal to 3 and
@@ -106,7 +106,7 @@ public partial class CameraSideScroller
                     if ((LinkedObject.ScreenPosition.Y < 70 + yOff / 2 && linkedObjDeltaY < 0) ||
                         (LinkedObject.ScreenPosition.Y > 130 + yOff && linkedObjDeltaY > 0))
                     {
-                        Speed = new Vector2(Speed.X, linkedObjDeltaY);
+                        Speed = Speed with { Y = linkedObjDeltaY };
                     }
 
                 }
@@ -115,7 +115,7 @@ public partial class CameraSideScroller
                 {
                     if (Math.Abs(LinkedObject.ScreenPosition.Y - ScaledTargetY) <= 4)
                     {
-                        Speed = new Vector2(Speed.X, linkedObjDeltaY);
+                        Speed = Speed with { Y = linkedObjDeltaY };
 
                         if (FollowYMode == FollowMode.FollowUntilNearby)
                             FollowYMode = FollowMode.DoNotFollow;
@@ -126,38 +126,38 @@ public partial class CameraSideScroller
                         {
                             if (linkedObjDeltaY >= 2)
                             {
-                                Speed = new Vector2(Speed.X, 5);
+                                Speed = Speed with { Y = 5 };
                             }
                             else if (LinkedObject.ScreenPosition.Y - ScaledTargetY >= 21)
                             {
-                                Speed = new Vector2(Speed.X, 3);
+                                Speed = Speed with { Y = 3 };
                             }
                             else if (linkedObjDeltaY >= 1)
                             {
-                                Speed = new Vector2(Speed.X, 2);
+                                Speed = Speed with { Y = 2 };
                             }
                             else
                             {
-                                Speed = new Vector2(Speed.X, 1);
+                                Speed = Speed with { Y = 1 };
                             }
                         }
                         else
                         {
                             if (linkedObjDeltaY <= -2)
                             {
-                                Speed = new Vector2(Speed.X, -5);
+                                Speed = Speed with { Y = -5 };
                             }
                             else if (LinkedObject.ScreenPosition.Y - ScaledTargetY <= -21)
                             {
-                                Speed = new Vector2(Speed.X, -3);
+                                Speed = Speed with { Y = -3 };
                             }
                             else if (linkedObjDeltaY <= -1)
                             {
-                                Speed = new Vector2(Speed.X, -2);
+                                Speed = Speed with { Y = -2 };
                             }
                             else
                             {
-                                Speed = new Vector2(Speed.X, -1);
+                                Speed = Speed with { Y = -1 };
                             }
                         }
                     }

@@ -191,7 +191,7 @@ public partial class MenuAll
 
         // Center sprites if English
         if (Localization.Language == 0)
-            Data.OptionsSelection.ScreenPos = new Vector2(86, Data.OptionsSelection.ScreenPos.Y);
+            Data.OptionsSelection.ScreenPos = Data.OptionsSelection.ScreenPos with { X = 86 };
 
         if (InitialPage == Page.Options)
         {
@@ -201,15 +201,15 @@ public partial class MenuAll
             // Center sprites if English
             if (Localization.Language == 0)
             {
-                Data.SoundsOnOffBase.ScreenPos = new Vector2(180, Data.SoundsOnOffBase.ScreenPos.Y);
-                Data.MusicOnOff.ScreenPos = new Vector2(180, Data.MusicOnOff.ScreenPos.Y);
-                Data.SfxOnOff.ScreenPos = new Vector2(180, Data.SfxOnOff.ScreenPos.Y);
+                Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 180 };
+                Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 180 };
+                Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 180 };
             }
             else
             {
-                Data.SoundsOnOffBase.ScreenPos = new Vector2(210, Data.SoundsOnOffBase.ScreenPos.Y);
-                Data.MusicOnOff.ScreenPos = new Vector2(210, Data.MusicOnOff.ScreenPos.Y);
-                Data.SfxOnOff.ScreenPos = new Vector2(210, Data.SfxOnOff.ScreenPos.Y);
+                Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 210 };
+                Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 210 };
+                Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 210 };
             }
         }
         else
@@ -233,15 +233,15 @@ public partial class MenuAll
         // Center sprites if English
         if (Localization.Language == 0)
         {
-            Data.SoundsOnOffBase.ScreenPos = new Vector2(260 - TransitionValue / 2f, Data.SoundsOnOffBase.ScreenPos.Y);
-            Data.MusicOnOff.ScreenPos = new Vector2(260 - TransitionValue / 2f, Data.MusicOnOff.ScreenPos.Y);
-            Data.SfxOnOff.ScreenPos = new Vector2(260 - TransitionValue / 2f, Data.SfxOnOff.ScreenPos.Y);
+            Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 260 - TransitionValue / 2f };
+            Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 260 - TransitionValue / 2f };
+            Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 260 - TransitionValue / 2f };
         }
         else
         {
-            Data.SoundsOnOffBase.ScreenPos = new Vector2(290 - TransitionValue / 2f, Data.SoundsOnOffBase.ScreenPos.Y);
-            Data.MusicOnOff.ScreenPos = new Vector2(290 - TransitionValue / 2f, Data.MusicOnOff.ScreenPos.Y);
-            Data.SfxOnOff.ScreenPos = new Vector2(290 - TransitionValue / 2f, Data.SfxOnOff.ScreenPos.Y);
+            Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 290 - TransitionValue / 2f };
+            Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 290 - TransitionValue / 2f };
+            Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 290 - TransitionValue / 2f };
         }
 
         if (TransitionValue >= 160)
@@ -337,15 +337,15 @@ public partial class MenuAll
             // Center sprites if English
             if (Localization.Language == 0)
             {
-                Data.SoundsOnOffBase.ScreenPos = new Vector2(180 + TransitionValue / 2f, Data.SoundsOnOffBase.ScreenPos.Y);
-                Data.MusicOnOff.ScreenPos = new Vector2(180 + TransitionValue / 2f, Data.MusicOnOff.ScreenPos.Y);
-                Data.SfxOnOff.ScreenPos = new Vector2(180 + TransitionValue / 2f, Data.SfxOnOff.ScreenPos.Y);
+                Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 180 + TransitionValue / 2f };
+                Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 180 + TransitionValue / 2f };
+                Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 180 + TransitionValue / 2f };
             }
             else
             {
-                Data.SoundsOnOffBase.ScreenPos = new Vector2(210 + TransitionValue / 2f, Data.SoundsOnOffBase.ScreenPos.Y);
-                Data.MusicOnOff.ScreenPos = new Vector2(210 + TransitionValue / 2f, Data.MusicOnOff.ScreenPos.Y);
-                Data.SfxOnOff.ScreenPos = new Vector2(210 + TransitionValue / 2f, Data.SfxOnOff.ScreenPos.Y);
+                Data.SoundsOnOffBase.ScreenPos = Data.SoundsOnOffBase.ScreenPos with { X = 210 + TransitionValue / 2f };
+                Data.MusicOnOff.ScreenPos = Data.MusicOnOff.ScreenPos with { X = 210 + TransitionValue / 2f };
+                Data.SfxOnOff.ScreenPos = Data.SfxOnOff.ScreenPos with { X = 210 + TransitionValue / 2f };
             }
         }
         else if (TransitionValue >= 220)

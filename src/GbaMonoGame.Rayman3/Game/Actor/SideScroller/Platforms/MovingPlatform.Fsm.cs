@@ -463,9 +463,9 @@ public partial class MovingPlatform
                 Action currentActionId = ActionId == Action.Impact ? ActionAfterImpact : ActionId;
 
                 if (currentActionId is Action.MoveAccelerated_Left or Action.MoveAccelerated_Right)
-                    MechModel.Speed = new Vector2(PlatformSpeed, MechModel.Speed.Y);
+                    MechModel.Speed = MechModel.Speed with { X = PlatformSpeed };
                 else
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, PlatformSpeed);
+                    MechModel.Speed = MechModel.Speed with { Y = PlatformSpeed };
 
                 if (ActionId == Action.Impact && IsActionFinished)
                 {

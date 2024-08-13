@@ -54,9 +54,9 @@ public partial class MenuAll
             // Center sprites if English
             if (Localization.Language == 0)
             {
-                Data.GameModeList.ScreenPos = new Vector2(86, Data.GameModeList.ScreenPos.Y);
-                Data.Cursor.ScreenPos = new Vector2(46, Data.Cursor.ScreenPos.Y);
-                Data.Stem.ScreenPos = new Vector2(60, Data.Stem.ScreenPos.Y);
+                Data.GameModeList.ScreenPos = Data.GameModeList.ScreenPos with { X = 86 };
+                Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { X = 46 };
+                Data.Stem.ScreenPos = Data.Stem.ScreenPos with { X = 60 };
             }
 
             ResetStem();
@@ -70,7 +70,7 @@ public partial class MenuAll
         TgxCluster mainCluster = Playfield.Camera.GetMainCluster();
         mainCluster.Position += new Vector2(0, 3);
 
-        Data.LanguageList.ScreenPos = new Vector2(Data.LanguageList.ScreenPos.X, TransitionValue + 28);
+        Data.LanguageList.ScreenPos = Data.LanguageList.ScreenPos with { Y = TransitionValue + 28 };
         Data.LanguageList.FrameChannelSprite();
         AnimationPlayer.Play(Data.LanguageList);
 

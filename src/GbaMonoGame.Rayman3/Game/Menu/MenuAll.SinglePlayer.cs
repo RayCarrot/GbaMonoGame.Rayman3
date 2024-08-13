@@ -41,7 +41,7 @@ public partial class MenuAll
                 }
                 else
                 {
-                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { X = targetXPos };
                     StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
                 }
             }
@@ -53,7 +53,7 @@ public partial class MenuAll
                 }
                 else
                 {
-                    Data.StartEraseCursor.ScreenPos = new Vector2(targetXPos, Data.StartEraseCursor.ScreenPos.Y);
+                    Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { X = targetXPos };
                     StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
                 }
             }
@@ -131,8 +131,8 @@ public partial class MenuAll
             cluster.Position += new Vector2(0, 8);
         }
 
-        Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue / 2f - 50);
-        Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue / 2f - 68);
+        Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = TransitionValue / 2f - 50 };
+        Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = TransitionValue / 2f - 68 };
 
         if (TransitionValue >= 160)
         {
@@ -250,8 +250,8 @@ public partial class MenuAll
 
             case 1:
                 TransitionValue += 4;
-                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue);
-                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue);
+                Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = 30 - TransitionValue };
+                Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = 12 - TransitionValue };
 
                 if (TransitionValue >= 64)
                 {
@@ -259,14 +259,14 @@ public partial class MenuAll
                     EraseSaveStage = 2;
                     Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2 + 21;
                     Data.StartEraseSelection.ScreenPos = new Vector2(144, -80);
-                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -38);
+                    Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = -38 };
                 }
                 break;
 
             case 2:
                 TransitionValue += 4;
-                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 80);
-                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 38);
+                Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = TransitionValue - 80 };
+                Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = TransitionValue - 38 };
 
                 if (TransitionValue >= 80)
                 {
@@ -312,8 +312,8 @@ public partial class MenuAll
 
             case 4:
                 TransitionValue += 4;
-                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, -TransitionValue);
-                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 42 - TransitionValue);
+                Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = -TransitionValue };
+                Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = 42 - TransitionValue };
 
                 if (TransitionValue >= 80)
                 {
@@ -321,14 +321,14 @@ public partial class MenuAll
                     EraseSaveStage = 5;
                     Data.StartEraseSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
                     Data.StartEraseSelection.ScreenPos = new Vector2(80, -50);
-                    Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, -68);
+                    Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = -68 };
                 }
                 break;
 
             case 5:
                 TransitionValue += 4;
-                Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, TransitionValue - 34);
-                Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, TransitionValue - 52);
+                Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = TransitionValue - 34 };
+                Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = TransitionValue - 52 };
 
                 if (TransitionValue >= 64)
                 {
@@ -408,8 +408,8 @@ public partial class MenuAll
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position -= new Vector2(0, 4);
-            Data.StartEraseSelection.ScreenPos = new Vector2(Data.StartEraseSelection.ScreenPos.X, 30 - TransitionValue / 2f);
-            Data.StartEraseCursor.ScreenPos = new Vector2(Data.StartEraseCursor.ScreenPos.X, 12 - TransitionValue / 2f);
+            Data.StartEraseSelection.ScreenPos = Data.StartEraseSelection.ScreenPos with { Y = 30 - TransitionValue / 2f };
+            Data.StartEraseCursor.ScreenPos = Data.StartEraseCursor.ScreenPos with { Y = 12 - TransitionValue / 2f };
         }
         else if (TransitionValue >= 220)
         {

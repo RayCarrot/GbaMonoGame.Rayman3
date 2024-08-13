@@ -84,7 +84,7 @@ public class World : FrameWorldSideScroller
             GameInfo.Save(GameInfo.CurrentSlot);
 
             Murfy murfy = Scene.GetGameObject<Murfy>(MurfyId);
-            murfy.Position = new Vector2(murfy.Position.X, Scene.Playfield.Camera.Position.Y);
+            murfy.Position = murfy.Position with { Y = Scene.Playfield.Camera.Position.Y };
             murfy.IsForBonusInWorld1 = false;
         }
         else if (GameInfo.MapId == MapId.World1 && 

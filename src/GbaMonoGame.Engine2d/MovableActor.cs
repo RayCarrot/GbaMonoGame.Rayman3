@@ -130,8 +130,8 @@ public abstract class MovableActor : InteractableActor
         if (resetSpeed )
             Speed = direction switch
             {
-                Direction.Up or Direction.Down => new Vector2(Speed.X, 0),
-                Direction.Left or Direction.Right => new Vector2(0, Speed.Y),
+                Direction.Up or Direction.Down => Speed with { Y = 0 },
+                Direction.Left or Direction.Right => Speed with { X = 0 },
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         else
@@ -345,7 +345,7 @@ public abstract class MovableActor : InteractableActor
                 else
                     Position -= new Vector2(0, tileHeight + MathHelpers.Mod(detectionBox.MaxY, Tile.Size));
 
-                Speed = new Vector2(Speed.X, 0);
+                Speed = Speed with { Y = 0 };
                 IsTouchingMap = true;
             }
             else
@@ -363,13 +363,13 @@ public abstract class MovableActor : InteractableActor
                     if (Speed.Y == 0)
                     {
                         Position += new Vector2(0, tileHeight - MathHelpers.Mod(detectionBox.MaxY, Tile.Size));
-                        Speed = new Vector2(Speed.X, 0);
+                        Speed = Speed with { Y = 0 };
                         IsTouchingMap = true;
                     }
                     else if (MathHelpers.Mod(detectionBox.MaxY, Tile.Size) > tileHeight)
                     {
                         Position -= new Vector2(0, MathHelpers.Mod(detectionBox.MaxY, Tile.Size) - tileHeight);
-                        Speed = new Vector2(Speed.X, 0);
+                        Speed = Speed with { Y = 0 };
                         IsTouchingMap = true;
                     }
                 }
@@ -496,7 +496,7 @@ public abstract class MovableActor : InteractableActor
             LinkedMovementActor.Move();
 
             // If on a linked object then we remove gravity
-            Speed = new Vector2(Speed.X, 0);
+            Speed = Speed with { Y = 0 };
 
             // Add speed from the linked object
             Speed += LinkedMovementActor.Speed;

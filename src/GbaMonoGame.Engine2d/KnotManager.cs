@@ -131,10 +131,10 @@ public class KnotManager
             TgxGameLayer physicalLayer = playfield.PhysicalLayer;
 
             if (physicalLayer.PixelWidth - playfield.Camera.Resolution.X <= camPos.X)
-                camPos = new Vector2(physicalLayer.PixelWidth - playfield.Camera.Resolution.X - 1, camPos.Y);
+                camPos.X = physicalLayer.PixelWidth - playfield.Camera.Resolution.X - 1;
 
             if (physicalLayer.PixelHeight - playfield.Camera.Resolution.Y <= camPos.Y)
-                camPos = new Vector2(camPos.X, physicalLayer.PixelHeight - playfield.Camera.Resolution.Y - 1);
+                camPos.Y = physicalLayer.PixelHeight - playfield.Camera.Resolution.Y - 1;
 
             int knotX = (int)(camPos.X / Engine.GameViewPort.OriginalGameResolution.X);
             int knotY = (int)(camPos.Y / Engine.GameViewPort.OriginalGameResolution.Y);

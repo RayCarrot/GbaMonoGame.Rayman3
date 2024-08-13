@@ -154,7 +154,7 @@ public abstract class ActionActor : BaseActor
         if (!leftType.IsAngledSolid)
         {
             // Get the type all the way to the left
-            pos = new Vector2(detectionBox.MinX, pos.Y);
+            pos.X = detectionBox.MinX;
             leftType = Scene.GetPhysicalType(pos);
 
             // If the type is fully solid then we check the tile above it. If it's
@@ -174,7 +174,7 @@ public abstract class ActionActor : BaseActor
         if (!rightType.IsAngledSolid)
         {
             // Get the type all the way to the right
-            pos = new Vector2(detectionBox.MaxX, pos.Y);
+            pos.X = detectionBox.MaxX;
             rightType = Scene.GetPhysicalType(pos);
 
             // If the type is fully solid then we check the tile above it. If it's

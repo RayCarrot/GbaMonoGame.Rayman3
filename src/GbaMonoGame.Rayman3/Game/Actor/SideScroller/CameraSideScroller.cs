@@ -17,7 +17,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
         if (LinkedObject != null)
             PreviousLinkedObjectPosition = LinkedObject.Position;
 
-        Speed = new Vector2(0, Speed.Y);
+        Speed = Speed with { X = 0 };
         Timer = 0;
         TargetY = 120;
         FollowYMode = FollowMode.Follow;
@@ -159,11 +159,11 @@ public sealed partial class CameraSideScroller : CameraActor2D
 
             case Message.Cam_MoveToTarget:
                 MoveTargetPos = (Vector2)param;
-                
+
                 if (MoveTargetPos.X < 0)
-                    MoveTargetPos = new Vector2(0, MoveTargetPos.Y);
+                    MoveTargetPos = MoveTargetPos with { X = 0 };
                 if (MoveTargetPos.Y < 0)
-                    MoveTargetPos = new Vector2(MoveTargetPos.X, 0);
+                    MoveTargetPos = MoveTargetPos with { Y = 0 };
 
                 Timer = 5;
 
@@ -179,9 +179,9 @@ public sealed partial class CameraSideScroller : CameraActor2D
                 MoveTargetPos = new Vector2(LinkedObject.Position.X - xOffset, LinkedObject.Position.Y - yOffset);
 
                 if (MoveTargetPos.X < 0)
-                    MoveTargetPos = new Vector2(0, MoveTargetPos.Y);
+                    MoveTargetPos = MoveTargetPos with { X = 0 };
                 if (MoveTargetPos.Y < 0)
-                    MoveTargetPos = new Vector2(MoveTargetPos.X, 0);
+                    MoveTargetPos = MoveTargetPos with { Y = 0 };
 
                 if (param is not true)
                     Timer = 6;

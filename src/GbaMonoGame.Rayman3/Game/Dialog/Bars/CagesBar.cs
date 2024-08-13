@@ -132,9 +132,9 @@ public class CagesBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            CageIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44 + XOffset, CageIcon.ScreenPos.Y);
-            CollectedCagesDigit.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 28 + XOffset, CollectedCagesDigit.ScreenPos.Y);
-            TotalCagesDigit.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 10 + XOffset, TotalCagesDigit.ScreenPos.Y);
+            CageIcon.ScreenPos = CageIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 44 + XOffset };
+            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { X = Scene.HudCamera.Resolution.X - 28 + XOffset };
+            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { X = Scene.HudCamera.Resolution.X - 10 + XOffset };
 
             CollectedCagesDigit.CurrentAnimation = CollectedCagesDigitValue;
 

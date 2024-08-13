@@ -135,7 +135,7 @@ public partial class Murfy
                     if (SavedSpeed.X > 2.5)
                         SavedSpeed -= new Vector2(0.5f, 0);
                     else
-                        SavedSpeed = new Vector2(-2.5f, SavedSpeed.Y);
+                        SavedSpeed = SavedSpeed with { X = -2.5f };
                 }
                 else if (Position.X < TargetPosition.X - 20)
                 {
@@ -145,7 +145,7 @@ public partial class Murfy
                     if (SavedSpeed.X < 2.5)
                         SavedSpeed += new Vector2(0.5f, 0);
                     else
-                        SavedSpeed = new Vector2(2.5f, SavedSpeed.Y);
+                        SavedSpeed = SavedSpeed with { X = 2.5f };
                 }
                 else
                 {
@@ -159,7 +159,7 @@ public partial class Murfy
                     }
                     else
                     {
-                        SavedSpeed = new Vector2(0, SavedSpeed.Y);
+                        SavedSpeed = SavedSpeed with { X = 0 };
 
                         if (ActionId is Action.Fly_Right or Action.Fly_Left)
                         {
@@ -177,18 +177,18 @@ public partial class Murfy
                     if (SavedSpeed.Y < 2)
                         SavedSpeed += new Vector2(0, 0.05859375f);
                     else
-                        SavedSpeed = new Vector2(SavedSpeed.X, 2);
+                        SavedSpeed = SavedSpeed with { Y = 2 };
                 }
                 else if (Position.Y > TargetPosition.Y + 5)
                 {
                     if (SavedSpeed.Y <= -2)
-                        SavedSpeed = new Vector2(SavedSpeed.X, -2);
+                        SavedSpeed = SavedSpeed with { Y = -2 };
                     else
                         SavedSpeed -= new Vector2(0, 0.05859375f);
                 }
                 else
                 {
-                    SavedSpeed = new Vector2(SavedSpeed.X, 0);
+                    SavedSpeed = SavedSpeed with { Y = 0 };
                 }
 
                 // Set speed
@@ -290,7 +290,7 @@ public partial class Murfy
         switch (action)
         {
             case FsmAction.Init:
-                TargetPosition = new Vector2(TargetPosition.X, Position.Y - 40);
+                TargetPosition = TargetPosition with { Y = Position.Y - 40 };
                 Timer = 0;
                 ActionId = IsFacingRight ? Action.Fly_Right : Action.Fly_Left;
                 break;
@@ -315,7 +315,7 @@ public partial class Murfy
                 }
 
                 Timer++;
-                SavedSpeed = new Vector2(SavedSpeed.X, TargetPosition.Y < Position.Y ? -4 : 0);
+                SavedSpeed = SavedSpeed with { Y = TargetPosition.Y < Position.Y ? -4 : 0 };
                 MechModel.Speed = new Vector2(0, SavedSpeed.Y);
 
                 if (Timer > 10 && isSafe && Position.Y < TargetPosition.Y + 5)
@@ -337,7 +337,7 @@ public partial class Murfy
         {
             case FsmAction.Init:
                 ActionId = IsFacingRight ? Action.BeginLeave_Right : Action.BeginLeave_Left;
-                SavedSpeed = new Vector2(SavedSpeed.X, -1);
+                SavedSpeed = SavedSpeed with { Y = -1 };
                 TextBox.MoveInOurOut(false);
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MurfyVO3A_Mix01);
                 break;
@@ -348,7 +348,7 @@ public partial class Murfy
 
                 if (SavedSpeed.Y > -2)
                     SavedSpeed -= new Vector2(0, 0.05859375f);
-                SavedSpeed = new Vector2(IsFacingRight ? 1 : -1, SavedSpeed.Y);
+                SavedSpeed = SavedSpeed with { X = IsFacingRight ? 1 : -1 };
                 MechModel.Speed = SavedSpeed;
 
                 if (ScreenPosition.Y < -10)

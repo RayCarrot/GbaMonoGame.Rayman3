@@ -162,7 +162,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
                 if (Data.Cursor.ScreenPos.Y < 68)
                 {
-                    Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, 67);
+                    Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { Y = 67 };
                     Data.Stem.CurrentAnimation = 15;
                 }
             }
@@ -217,7 +217,7 @@ public partial class MenuAll : Frame, IHasPlayfield
                     }
                     else
                     {
-                        Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, yPos);
+                        Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { Y = yPos };
                         PrevSelectedOption = SelectedOption;
                     }
                 }
@@ -231,7 +231,7 @@ public partial class MenuAll : Frame, IHasPlayfield
                     }
                     else
                     {
-                        Data.Cursor.ScreenPos = new Vector2(Data.Cursor.ScreenPos.X, yPos);
+                        Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { Y = yPos };
                         PrevSelectedOption = SelectedOption;
                     }
                 }

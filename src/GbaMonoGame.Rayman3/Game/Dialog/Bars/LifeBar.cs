@@ -167,9 +167,9 @@ public class LifeBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            HitPoints.ScreenPos = new Vector2(HitPoints.ScreenPos.X, 0 - YOffset);
-            LifeDigit1.ScreenPos = new Vector2(LifeDigit1.ScreenPos.X, 20 - YOffset);
-            LifeDigit2.ScreenPos = new Vector2(LifeDigit2.ScreenPos.X, 20 - YOffset);
+            HitPoints.ScreenPos = HitPoints.ScreenPos with { Y = 0 - YOffset };
+            LifeDigit1.ScreenPos = LifeDigit1.ScreenPos with { Y = 20 - YOffset };
+            LifeDigit2.ScreenPos = LifeDigit2.ScreenPos with { Y = 20 - YOffset };
 
             animationPlayer.PlayFront(HitPoints);
             animationPlayer.PlayFront(LifeDigit1);

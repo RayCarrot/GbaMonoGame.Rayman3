@@ -297,9 +297,9 @@ public partial class Machine
                     {
                         // TODO: This makes no sense - why is only X set on certain frames??
                         if (BossHealth % 4 == 0 && BossHealth < 30)
-                            explosion.Position = new Vector2(Position.X + 16 + ExplosionOffsets[BossHealth % 8].X, explosion.Position.Y);
+                            explosion.Position = explosion.Position with { X = Position.X + 16 + ExplosionOffsets[BossHealth % 8].X };
                         
-                        explosion.Position = new Vector2(explosion.Position.X, Position.Y + 32 - ExplosionOffsets[BossHealth % 8].Y);
+                        explosion.Position = explosion.Position with { Y = Position.Y + 32 - ExplosionOffsets[BossHealth % 8].Y };
                     }
 
                     BossHealth++;

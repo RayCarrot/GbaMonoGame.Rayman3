@@ -199,9 +199,9 @@ public partial class RaymanBody
                 }
 
                 if (BodyPartType == RaymanBodyPartType.Torso)
-                    MechModel.Speed = new Vector2(speed, MechModel.Speed.Y);
+                    MechModel.Speed = MechModel.Speed with { X = speed };
                 else
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, speed);
+                    MechModel.Speed = MechModel.Speed with { Y = speed };
 
                 float remainingDist;
                 if (IsFacingRight && BodyPartType != RaymanBodyPartType.Torso)

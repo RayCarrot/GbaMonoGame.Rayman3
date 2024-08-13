@@ -855,12 +855,12 @@ public partial class Rayman
                     MechModel.Speed.Y < -4 && 
                     !Flag2_0)
                 {
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, -4);
+                    MechModel.Speed = MechModel.Speed with { Y = -4 };
                     Flag2_0 = true;
                 }
 
                 if (Speed.Y == 0 && MechModel.Speed.Y < 0)
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, 0);
+                    MechModel.Speed = MechModel.Speed with { Y = 0 };
 
                 MoveInTheAir(PreviousXSpeed);
                 SlowdownAirSpeed();
@@ -1962,7 +1962,7 @@ public partial class Rayman
 
                 PhysicalType type = PhysicalTypeValue.None;
 
-                MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                MechModel.Speed = MechModel.Speed with { X = 0 };
 
                 if (IsButtonPressed(GbaInput.Left))
                 {
@@ -1973,7 +1973,7 @@ public partial class Rayman
                     {
                         if (!RSMultiplayer.IsActive)
                         {
-                            MechModel.Speed = new Vector2(-1.5f, MechModel.Speed.Y);
+                            MechModel.Speed = MechModel.Speed with { X = -1.5f };
 
                             if (Timer > 50)
                                 Timer = 0;
@@ -1998,7 +1998,7 @@ public partial class Rayman
                     {
                         if (!RSMultiplayer.IsActive)
                         {
-                            MechModel.Speed = new Vector2(1.5f, MechModel.Speed.Y);
+                            MechModel.Speed = MechModel.Speed with { X = 1.5f };
 
                             if (Timer > 50)
                                 Timer = 0;
@@ -2027,7 +2027,7 @@ public partial class Rayman
                 {
                     if (!RSMultiplayer.IsActive)
                     {
-                        MechModel.Speed = new Vector2(MechModel.Speed.X, -1.5f);
+                        MechModel.Speed = MechModel.Speed with { Y = -1.5f };
                     }
                     else
                     {
@@ -2044,7 +2044,7 @@ public partial class Rayman
                 {
                     if (!RSMultiplayer.IsActive)
                     {
-                        MechModel.Speed = new Vector2(MechModel.Speed.X, 1.5f);
+                        MechModel.Speed = MechModel.Speed with { Y = 1.5f };
                     }
                     else
                     {
@@ -2059,7 +2059,7 @@ public partial class Rayman
                 }
                 else
                 {
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, 0);
+                    MechModel.Speed = MechModel.Speed with { Y = 0 };
 
                     if (IsButtonPressed(GbaInput.Left) && ActionId != Action.Climb_Side_Left && Speed.X != 0)
                     {
@@ -2603,9 +2603,9 @@ public partial class Rayman
                 if (IsActionFinished)
                 {
                     if (IsFacingRight)
-                        AttachedObject.Position = new Vector2(Position.X + 8, AttachedObject.Position.Y);
+                        AttachedObject.Position = AttachedObject.Position with { X = Position.X + 8 };
                     else
-                        AttachedObject.Position = new Vector2(Position.X - 8, AttachedObject.Position.Y);
+                        AttachedObject.Position = AttachedObject.Position with { X = Position.X - 8 };
                 }
 
                 NextActionId = null;
@@ -2702,7 +2702,7 @@ public partial class Rayman
                     _ => -22
                 };
 
-                AttachedObject.Position = new Vector2(AttachedObject.Position.X, Position.Y + objYOffset);
+                AttachedObject.Position = AttachedObject.Position with { Y = Position.Y + objYOffset };
 
                 OffsetCarryingObject();
 
@@ -2996,7 +2996,7 @@ public partial class Rayman
 
                 // Don't allow horizontal movement while falling
                 if (ActionId is Action.Fall_Right or Action.Fall_Left)
-                    MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                    MechModel.Speed = MechModel.Speed with { X = 0 };
 
                 Timer++;
 
@@ -3430,7 +3430,7 @@ public partial class Rayman
 
             case FsmAction.Step:
                 if (ActionId is Action.Fall_Right or Action.Fall_Left)
-                    MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                    MechModel.Speed = MechModel.Speed with { X = 0 };
 
                 if (IsOnClimbableVertical() == 1)
                 {
@@ -3484,7 +3484,7 @@ public partial class Rayman
 
             case FsmAction.Step:
                 if (ActionId is Action.Fall_Right or Action.Fall_Left)
-                    MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                    MechModel.Speed = MechModel.Speed with { X = 0 };
 
                 if (IsOnClimbableVertical() == 1)
                 {

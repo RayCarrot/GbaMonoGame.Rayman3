@@ -138,7 +138,7 @@ public class UserInfoWorld : Dialog
         {
             animationPlayer.PlayFront(CurtainsLeft);
 
-            CurtainsRight.ScreenPos = new Vector2(Engine.GameViewPort.GameResolution.X - 120, CurtainsRight.ScreenPos.Y);
+            CurtainsRight.ScreenPos = CurtainsRight.ScreenPos with { X = Engine.GameViewPort.GameResolution.X - 120 };
             animationPlayer.PlayFront(CurtainsRight);
         }
 

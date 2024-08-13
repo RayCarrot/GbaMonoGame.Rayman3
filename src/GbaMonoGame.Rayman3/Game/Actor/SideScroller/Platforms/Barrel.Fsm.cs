@@ -197,7 +197,7 @@ public partial class Barrel
             case FsmAction.Init:
                 ActionId = Action.IdleFloat;
                 InitialWaterPosition = Position;
-                MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                MechModel.Speed = MechModel.Speed with { X = 0 };
                 Timer = 0;
                 break;
 
@@ -325,7 +325,7 @@ public partial class Barrel
         {
             case FsmAction.Init:
                 ActionId = Action.IdleFloat;
-                MechModel.Speed = new Vector2(0, MechModel.Speed.Y);
+                MechModel.Speed = MechModel.Speed with { X = 0 };
                 EngineBox originalDetectionBox = ActorModel.DetectionBox;
                 SetDetectionBox(new Box(-20, originalDetectionBox.MaxY - 38, 20, originalDetectionBox.MaxY));
                 Timer = 0;
@@ -343,7 +343,7 @@ public partial class Barrel
                 // Sink
                 if (Timer < 180)
                 {
-                    MechModel.Speed = new Vector2(MechModel.Speed.X, 0.125f);
+                    MechModel.Speed = MechModel.Speed with { Y = 0.125f };
                     InitialHitPoints++;
 
                     if (InitialHitPoints == 60)

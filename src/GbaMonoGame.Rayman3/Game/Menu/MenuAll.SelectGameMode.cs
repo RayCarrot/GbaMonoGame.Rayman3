@@ -25,7 +25,7 @@ public partial class MenuAll
         // Move Y
         if (GameLogoYOffset < 56)
         {
-            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, GameLogoYOffset * 2 - 54);
+            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { Y = GameLogoYOffset * 2 - 54 };
             GameLogoYOffset += 4;
         }
         else if (OtherGameLogoValue != 12)
@@ -33,7 +33,7 @@ public partial class MenuAll
             GameLogoSinValue = (GameLogoSinValue + 16) % 256;
 
             float y = 56 + MathHelpers.Sin256(GameLogoSinValue) * OtherGameLogoValue;
-            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, y);
+            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { Y = y };
 
             if (OtherGameLogoValue == 20 && GameLogoSinValue == 96)
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Pannel_BigFoot1_Mix02);
@@ -88,7 +88,7 @@ public partial class MenuAll
 
             GameLogoMovementXOffset++;
             PrevGameTime = GameTime.ElapsedFrames;
-            Data.GameLogo.ScreenPos = new Vector2(174 + x, Data.GameLogo.ScreenPos.Y);
+            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = 174 + x };
         }
     }
 
@@ -103,9 +103,9 @@ public partial class MenuAll
         // Center sprites if English
         if (Localization.Language == 0)
         {
-            Data.GameModeList.ScreenPos = new Vector2(86, Data.GameModeList.ScreenPos.Y);
-            Data.Cursor.ScreenPos = new Vector2(46, Data.Cursor.ScreenPos.Y);
-            Data.Stem.ScreenPos = new Vector2(60, Data.Stem.ScreenPos.Y);
+            Data.GameModeList.ScreenPos = Data.GameModeList.ScreenPos with { X = 86 };
+            Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { X = 46 };
+            Data.Stem.ScreenPos = Data.Stem.ScreenPos with { X = 60 };
         }
 
         // The game does a bit of a hack to skip the transition if we start at the game mode selection
@@ -125,7 +125,7 @@ public partial class MenuAll
         GameLogoMovementXOffset = 10;
         GameLogoMovementWidth = 10;
         GameLogoMovementXCountdown = 0;
-        Data.GameLogo.ScreenPos = new Vector2(174, Data.GameLogo.ScreenPos.Y);
+        Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = 174 };
         OtherGameLogoValue = 0x14;
         GameLogoSinValue = 0;
         GameLogoYOffset = 0;
@@ -209,7 +209,7 @@ public partial class MenuAll
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position -= new Vector2(0, 4);
-            Data.GameLogo.ScreenPos = new Vector2(Data.GameLogo.ScreenPos.X, 16 - TransitionValue / 2f);
+            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { Y = 16 - TransitionValue / 2f };
         }
         else if (TransitionValue >= 220)
         {

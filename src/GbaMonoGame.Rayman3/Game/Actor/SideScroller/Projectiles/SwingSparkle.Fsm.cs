@@ -1,5 +1,4 @@
-﻿using System;
-using GbaMonoGame.Engine2d;
+﻿using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -36,7 +35,7 @@ public partial class SwingSparkle
                 break;
 
             case FsmAction.UnInit:
-                ScreenPosition = new Vector2(0, ScreenPosition.Y);
+                ScreenPosition = ScreenPosition with { X = 0 };
                 AnimatedObject.CurrentAnimation = 0;
                 ProcessMessage(this, Message.Destroy);
                 break;

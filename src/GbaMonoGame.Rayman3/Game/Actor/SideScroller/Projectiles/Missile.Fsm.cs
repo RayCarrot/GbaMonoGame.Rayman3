@@ -10,8 +10,8 @@ public partial class Missile
         {
             case FsmAction.Init:
                 // ???
-                ScreenPosition = new Vector2(0, ScreenPosition.Y);
-                Speed = new Vector2(1.525879E-05f, Speed.Y);
+                ScreenPosition = ScreenPosition with { X = 0 };
+                Speed = Speed with { X = MathHelpers.FromFixedPoint(1) };
                 break;
 
             case FsmAction.Step:
@@ -56,9 +56,9 @@ public partial class Missile
 
             case FsmAction.UnInit:
                 // ???
-                ScreenPosition = new Vector2(0, ScreenPosition.Y);
-                Speed = new Vector2(1.525879E-05f, Speed.Y);
-                
+                ScreenPosition = ScreenPosition with { X = 0 };
+                Speed = Speed with { X = MathHelpers.FromFixedPoint(1) };
+
                 ProcessMessage(this, Message.Destroy);
                 break;
         }

@@ -64,9 +64,9 @@ public class Cages50Bar : Bar
     public override void Draw(AnimationPlayer animationPlayer)
     {
         // Keep position updated for different screen resolutions support
-        CagesIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 68, CagesIcon.ScreenPos.Y);
-        CollectedCagesDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 56, CollectedCagesDigit1.ScreenPos.Y);
-        CollectedCagesDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 44, CollectedCagesDigit2.ScreenPos.Y);
+        CagesIcon.ScreenPos = CagesIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 68 };
+        CollectedCagesDigit1.ScreenPos = CollectedCagesDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 56 };
+        CollectedCagesDigit2.ScreenPos = CollectedCagesDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 44 };
 
         animationPlayer.PlayFront(CagesIcon);
 

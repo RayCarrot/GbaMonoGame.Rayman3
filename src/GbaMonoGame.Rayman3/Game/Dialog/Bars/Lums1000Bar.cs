@@ -18,7 +18,7 @@ public class Lums1000Bar : Bar
     {
         DeadLums = 1000;
         LumsIcon.CurrentAnimation = 35;
-        LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 70, LumsIcon.ScreenPos.Y);
+        LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 70 };
     }
 
     public override void Load()
@@ -69,14 +69,14 @@ public class Lums1000Bar : Bar
         if (DeadLums == 1000)
         {
             LumsIcon.CurrentAnimation = 35;
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 100, LumsIcon.ScreenPos.Y);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 100 };
         }
         else
         {
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 88, LumsIcon.ScreenPos.Y);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 72, CollectedLumsDigit1.ScreenPos.Y);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 61, CollectedLumsDigit2.ScreenPos.Y);
-            CollectedLumsDigit3.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 50, CollectedLumsDigit3.ScreenPos.Y);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 88 };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 72 };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 61 };
+            CollectedLumsDigit3.ScreenPos = CollectedLumsDigit3.ScreenPos with { X = Scene.HudCamera.Resolution.X - 50 };
 
             int digit1 = DeadLums / 100;
             int digit2 = DeadLums % 100 / 10;
@@ -88,10 +88,10 @@ public class Lums1000Bar : Bar
 
             if (DeadLums == 999)
             {
-                LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 100, LumsIcon.ScreenPos.Y);
-                CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 86, CollectedLumsDigit1.ScreenPos.Y);
-                CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 75, CollectedLumsDigit2.ScreenPos.Y);
-                CollectedLumsDigit3.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 64, CollectedLumsDigit3.ScreenPos.Y);
+                LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 100 };
+                CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 86 };
+                CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 75 };
+                CollectedLumsDigit3.ScreenPos = CollectedLumsDigit3.ScreenPos with { X = Scene.HudCamera.Resolution.X - 64 };
 
                 LumsIcon.CurrentAnimation = 36;
             }
@@ -104,7 +104,7 @@ public class Lums1000Bar : Bar
                 else
                     LumsIcon.CurrentAnimation = 33;
 
-                LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 88, LumsIcon.ScreenPos.Y);
+                LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 88 };
             }
         }
     }
@@ -114,21 +114,21 @@ public class Lums1000Bar : Bar
         // Keep position updated for different screen resolutions support
         if (DeadLums == 1000)
         {
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 100, LumsIcon.ScreenPos.Y);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 100 };
         }
         else if (DeadLums == 999)
         {
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 100, LumsIcon.ScreenPos.Y);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 86, CollectedLumsDigit1.ScreenPos.Y);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 75, CollectedLumsDigit2.ScreenPos.Y);
-            CollectedLumsDigit3.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 64, CollectedLumsDigit3.ScreenPos.Y);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 100 };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 86 };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 75 };
+            CollectedLumsDigit3.ScreenPos = CollectedLumsDigit3.ScreenPos with { X = Scene.HudCamera.Resolution.X - 64 };
         }
         else
         {
-            LumsIcon.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 88, LumsIcon.ScreenPos.Y);
-            CollectedLumsDigit1.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 72, CollectedLumsDigit1.ScreenPos.Y);
-            CollectedLumsDigit2.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 61, CollectedLumsDigit2.ScreenPos.Y);
-            CollectedLumsDigit3.ScreenPos = new Vector2(Scene.HudCamera.Resolution.X - 50, CollectedLumsDigit3.ScreenPos.Y);
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { X = Scene.HudCamera.Resolution.X - 88 };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { X = Scene.HudCamera.Resolution.X - 72 };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { X = Scene.HudCamera.Resolution.X - 61 };
+            CollectedLumsDigit3.ScreenPos = CollectedLumsDigit3.ScreenPos with { X = Scene.HudCamera.Resolution.X - 50 };
         }
 
         animationPlayer.PlayFront(LumsIcon);
