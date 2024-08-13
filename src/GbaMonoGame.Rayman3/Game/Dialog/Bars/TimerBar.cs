@@ -60,7 +60,7 @@ public class TimerBar : Bar
 
     public void DrawTime(AnimationPlayer animationPlayer, int time)
     {
-        if (Mode is 1 or 3)
+        if (Mode is BarMode.StayHidden or BarMode.Disabled)
             return;
 
         // Code copied from the N-Gage decompilation. Could probably be cleaned up a bit.

@@ -26,8 +26,34 @@ public abstract class Bar
 
     public Scene2D Scene { get; }
 
-    public int Mode { get; set; }
+    public BarMode Mode { get; set; }
     public BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
+
+    public void SetToStayHidden()
+    {
+        if (Mode != BarMode.Disabled)
+            Mode = BarMode.StayHidden;
+    }
+
+    public void SetToStayVisible(bool moveIn = true)
+    {
+        if (Mode != BarMode.Disabled)
+            Mode = BarMode.StayVisible;
+
+        if (DrawStep != BarDrawStep.Bounce && Mode != BarMode.StayHidden)
+            DrawStep = BarDrawStep.MoveIn;
+    }
+    
+    public void SetToDefault()
+    {
+        if (Mode != BarMode.Disabled)
+            Mode = BarMode.Default;
+    }
+
+    public void Disable()
+    {
+        Mode = BarMode.Disabled;
+    }
 
     public abstract void Load();
     public abstract void Set();

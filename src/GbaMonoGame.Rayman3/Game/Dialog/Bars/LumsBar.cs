@@ -111,7 +111,7 @@ public class LumsBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        if (Mode is 1 or 3)
+        if (Mode is BarMode.StayHidden or BarMode.Disabled)
             return;
 
         switch (DrawStep)
@@ -127,7 +127,7 @@ public class LumsBar : Bar
                 }
                 else
                 {
-                    DrawStep = Mode == 2 ? BarDrawStep.Wait : BarDrawStep.Bounce;
+                    DrawStep = Mode == BarMode.StayVisible ? BarDrawStep.Wait : BarDrawStep.Bounce;
                     WaitTimer = 0;
                 }
                 break;
@@ -159,7 +159,7 @@ public class LumsBar : Bar
                 break;
 
             case BarDrawStep.Wait:
-                if (Mode != 2)
+                if (Mode != BarMode.StayVisible)
                 {
                     if (WaitTimer >= 180)
                     {

@@ -34,7 +34,7 @@ public class BossMachineBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        if (Mode == 1) 
+        if (Mode == BarMode.StayHidden) 
             return;
         
         animationPlayer.PlayFront(BossHealthBar);

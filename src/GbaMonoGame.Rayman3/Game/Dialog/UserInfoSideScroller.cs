@@ -47,6 +47,7 @@ public class UserInfoSideScroller : Dialog
             // TODO: Boss bar
         }
 
+        // Disable lums and cages bars in bosses
         if (GameInfo.MapId is
             MapId.BossMachine or
             MapId.BossBadDreams or
@@ -55,8 +56,8 @@ public class UserInfoSideScroller : Dialog
             MapId.BossFinal_M1 or
             MapId.BossFinal_M2)
         {
-            GetLumsBar().Mode = 3;
-            CagesBar.Mode = 3;
+            GetLumsBar().Disable();
+            CagesBar.Disable();
         }
     }
 
@@ -93,15 +94,9 @@ public class UserInfoSideScroller : Dialog
 
     public void HideBars()
     {
-        if (LifeBar.Mode != 3)
-            LifeBar.Mode = 1;
-        
-        Bar lumsBar = GetLumsBar();
-        if (lumsBar.Mode != 3)
-            lumsBar.Mode = 1;
-
-        if (CagesBar.Mode != 3)
-            CagesBar.Mode = 1;
+        LifeBar.SetToStayHidden();
+        GetLumsBar().SetToStayHidden();
+        CagesBar.SetToStayHidden();
     }
 
     public void MoveOutBars()

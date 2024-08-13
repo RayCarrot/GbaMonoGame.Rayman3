@@ -20,7 +20,7 @@ public class LifeBar : Bar
 
     public void UpdateLife()
     {
-        if (DrawStep != BarDrawStep.Bounce && Mode != 1)
+        if (DrawStep != BarDrawStep.Bounce && Mode != BarMode.StayHidden)
             DrawStep = BarDrawStep.MoveIn;
     }
 
@@ -68,7 +68,7 @@ public class LifeBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        if (Mode is 1 or 3)
+        if (Mode is BarMode.StayHidden or BarMode.Disabled)
             return;
 
         int hp = Scene.MainActor.HitPoints;
@@ -150,7 +150,7 @@ public class LifeBar : Bar
                 break;
 
             case BarDrawStep.Wait:
-                if (Mode != 2)
+                if (Mode != BarMode.StayVisible)
                 {
                     if (WaitTimer >= 360)
                     {

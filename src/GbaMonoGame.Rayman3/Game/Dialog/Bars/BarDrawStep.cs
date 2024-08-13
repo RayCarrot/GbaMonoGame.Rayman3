@@ -2,9 +2,9 @@
 
 public enum BarDrawStep
 {
-    Hide,
-    MoveIn,
-    MoveOut,
-    Bounce,
-    Wait,
+    Hide = 0,
+    MoveIn = 1,
+    MoveOut = 2,
+    Bounce = 3,
+    Wait = 4,
 }
