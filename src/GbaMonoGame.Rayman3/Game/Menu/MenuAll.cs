@@ -332,7 +332,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         MultiplayerInfo.Init();
         MultiplayerManager.Init();
 
-        GameTime.IsPaused = false;
+        GameTime.Resume();
 
         TransitionsFX = new TransitionsFX(false);
         TransitionsFX.FadeInInit(1 / 16f);
@@ -348,7 +348,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         if (!IsLoadingMultiplayerMap)
         {
             RSMultiplayer.UnInit();
-            GameTime.IsPaused = false;
+            GameTime.Resume();
         }
 
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__raytheme);

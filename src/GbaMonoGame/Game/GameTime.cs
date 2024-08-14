@@ -23,4 +23,14 @@ public static class GameTime
         if (!IsPaused)
             ElapsedFrames++;
     }
+
+    public static void Pause()
+    {
+        IsPaused = true;
+    }
+
+    public static void Resume()
+    {
+        IsPaused = false;
+    }
 }

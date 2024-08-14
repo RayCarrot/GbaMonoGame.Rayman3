@@ -233,7 +233,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         // Pause
         if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
         {
-            GameTime.IsPaused = true;
+            GameTime.Pause();
             CurrentStepAction = Fog != null ? Step_Pause_DisableFog :Step_Pause_Init;
         }
     }
@@ -326,7 +326,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.Step();
         Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
-        GameTime.IsPaused = false;
+        GameTime.Resume();
         CurrentStepAction = Step_Normal;
     }
 

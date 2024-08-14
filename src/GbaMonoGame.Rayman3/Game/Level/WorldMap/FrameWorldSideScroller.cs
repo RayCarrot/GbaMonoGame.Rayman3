@@ -119,7 +119,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
         if (JoyPad.IsButtonJustPressed(GbaInput.Start) && !BlockPause)
         {
-            GameTime.IsPaused = true;
+            GameTime.Pause();
             // TODO: Go to pause state
         }
     }

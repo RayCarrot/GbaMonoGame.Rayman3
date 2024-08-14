@@ -326,7 +326,7 @@ public partial class PauseDialog
                 }
                 else if (JoyPad.IsButtonJustPressed(GbaInput.A) && SelectedOption == quitOptionIndex)
                 {
-                    GameTime.IsPaused = false;
+                    GameTime.Resume();
 
                     if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
