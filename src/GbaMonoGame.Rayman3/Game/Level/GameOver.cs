@@ -210,7 +210,7 @@ public class GameOver : Frame
 
     public override void UnInit()
     {
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__tizetre_Swing);
 
         if (Mode == GameOverMode.ReturnToMenu)

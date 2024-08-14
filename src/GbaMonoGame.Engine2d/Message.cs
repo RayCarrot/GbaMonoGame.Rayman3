@@ -75,13 +75,15 @@ public enum Message
 
     Cam_SetPosition = 1062,
 
+    UserInfo_Pause = 1079,
+    UserInfo_Unpause = 1080,
     Main_EnterLevelCurtain = 1081,
     Main_BeginInFrontOfLevelCurtain = 1082,
     Main_EndInFrontOfLevelCurtain = 1083,
     Main_Damaged3 = 1084,
     
     Main_Damaged4 = 1086,
-
+    ReloadAnimation = 1087,
     Main_EnterCutscene = 1088,
 
     Cam_Lock = 1090,

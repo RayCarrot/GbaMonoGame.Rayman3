@@ -78,7 +78,8 @@ public class LevelInfoBar : Bar
 
     public override void Load()
     {
-        // NOTE: Game has it set up so Load can be called multiple times, but we only need to call it once
+        // NOTE: Game has it set up so Load can be called multiple times. Dynamic objects don't get recreated after the first time, but instead
+        //       reloaded into VRAM. We don't need to do that though due to how the graphics system works here, so just always create everything.
 
         AnimatedObjectResource resource = Storage.LoadResource<AnimatedObjectResource>(GameResource.LevelDashboardAnimations);
 

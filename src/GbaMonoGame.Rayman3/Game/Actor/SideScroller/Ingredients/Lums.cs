@@ -148,9 +148,9 @@ public sealed partial class Lums : BaseActor
             //case 1063:
             //    return false;
 
-            // TODO: Implement
-            //case 1087:
-            //    return false;
+            case Message.ReloadAnimation:
+                // Don't need to do anything. The original game sets the palette index again, but we're using local indexes, so it never changes.
+                return false;
 
             default:
                 return false;

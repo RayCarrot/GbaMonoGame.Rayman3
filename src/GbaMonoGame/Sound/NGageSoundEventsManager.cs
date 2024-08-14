@@ -55,6 +55,13 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     #endregion
 
+    #region Public Properties
+
+    public float MusicVolume { get; set; } = SoundEngineInterface.MaxVolume;
+    public float SfxVolume { get; set; } = SoundEngineInterface.MaxVolume;
+
+    #endregion
+
     #region Private Methods
 
     private void CreateSong(NGageSoundEvent evt)
@@ -67,6 +74,7 @@ public class NGageSoundEventsManager : SoundEventsManager
             SoundResourceId = evt.SoundResourceId,
             Volume = (float)evt.Volume / 7,
             IsMusic = evt.IsMusic,
+            Loop = evt.Loop,
             SoundEffect = sndEffect,
             SoundInstance = sndEffectInstance
         };
@@ -117,9 +125,15 @@ public class NGageSoundEventsManager : SoundEventsManager
         float vol = song.Volume;
 
         if (song.IsMusic)
+        {
             vol *= Engine.Config.MusicVolume;
+            vol *= MusicVolume / SoundEngineInterface.MaxVolume;
+        }
         else
+        {
             vol *= Engine.Config.SfxVolume;
+            vol *= SfxVolume / SoundEngineInterface.MaxVolume;
+        }
 
         song.SoundInstance.Volume = vol;
     }
@@ -134,7 +148,7 @@ public class NGageSoundEventsManager : SoundEventsManager
         {
             UpdateVolume(ActiveMusic);
 
-            if (ActiveMusic.SoundInstance.State == SoundState.Stopped && !ActiveMusic.SoundInstance.IsLooped)
+            if (ActiveMusic.SoundInstance.State == SoundState.Stopped && !ActiveMusic.Loop)
             {
                 ActiveMusic.SoundInstance.Dispose();
                 ActiveMusic = null;
@@ -145,7 +159,7 @@ public class NGageSoundEventsManager : SoundEventsManager
         {
             UpdateVolume(sfx);
 
-            if (sfx.SoundInstance.State == SoundState.Stopped && !sfx.SoundInstance.IsLooped)
+            if (sfx.SoundInstance.State == SoundState.Stopped && !sfx.Loop)
             {
                 sfx.SoundInstance.Dispose();
                 ActiveSoundEffects.Remove(sfx.SoundResourceId);
@@ -266,6 +280,20 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     #endregion
 
+    #region Public Methods
+
+    public void PauseLoopingSoundEffects()
+    {
+        // TODO: Implement
+    }
+
+    public void ResumeLoopingSoundEffects()
+    {
+        // TODO: Implement
+    }
+
+    #endregion
+
     #region Data Types
 
     private class ActiveSong
@@ -273,6 +301,7 @@ public class NGageSoundEventsManager : SoundEventsManager
         public int SoundResourceId { get; init; }
         public float Volume { get; init; }
         public bool IsMusic { get; init; }
+        public bool Loop { get; set; }
 
         // MonoGame
         public SoundEffectInstance SoundInstance { get; init; }

@@ -138,7 +138,16 @@ public sealed partial class LevelCurtain : ActionActor
         if (base.ProcessMessageImpl(sender, message, param))
             return false;
 
-        // TODO: Handle message 1087
+        // Handle messages
+        switch (message)
+        {
+            case Message.ReloadAnimation:
+                // Don't need to do anything. The original game sets the palette index again, but we're using local indexes, so it never changes.
+                return false;
+
+            default:
+                return false;
+        }
 
         return false;
     }

@@ -190,7 +190,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     
     public override void UnInit()
     {
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
 
         Scene.UnInit();
         Scene = null;
@@ -230,11 +230,104 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
                 GameInfo.RemainingTime--;
         }
 
+        // Pause
         if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
         {
             GameTime.IsPaused = true;
-            // TODO: Go to pause state
+            CurrentStepAction = Fog != null ? Step_Pause_DisableFog :Step_Pause_Init;
         }
+    }
+
+    protected void Step_Pause_DisableFog()
+    {
+        Fog.ShouldDraw = false;
+        Scene.Step();
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+        CurrentStepAction = Step_Pause_Init;
+    }
+
+    protected void Step_Pause_Init()
+    {
+        // Fade after drawing screen 0, thus only leaving the sprites 0 as not faded
+        Gfx.SetFade(6 / 16f, FadeFlags.Screen0);
+
+        UserInfo.ProcessMessage(this, Message.UserInfo_Pause);
+
+        SoundEventsManager.FinishReplacingAllSongs();
+        SoundEventsManager.PauseAllSongs();
+
+        Scene.ProcessDialogs();
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+        CurrentStepAction = Step_Pause_AddDialog;
+    }
+
+    protected void Step_Pause_AddDialog()
+    {
+        Scene.AddDialog(PauseDialog, true, false);
+
+        if (Engine.Settings.Platform == Platform.NGage)
+            NGage_0x4 = true;
+
+        Scene.Step();
+        UserInfo.Draw(Scene.AnimationPlayer);
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+        CurrentStepAction = Step_Pause_Paused;
+    }
+
+    protected void Step_Pause_Paused()
+    {
+        if (PauseDialog.DrawStep == PauseDialog.PauseDialogDrawStep.Hide)
+            CurrentStepAction = Step_Pause_UnInit;
+
+        Scene.Step();
+
+        // The original game doesn't have this check, but since we're still running the game loop
+        // while in the simulated sleep mode we have to make sure to not draw the HUD then
+        if (!PauseDialog.IsInSleepMode)
+            UserInfo.Draw(Scene.AnimationPlayer);
+        
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+    }
+
+    protected void Step_Pause_UnInit()
+    {
+        Scene.RemoveLastDialog();
+
+        if (Engine.Settings.Platform == Platform.NGage)
+            NGage_0x4 = false;
+
+        Scene.RefreshDialogs();
+        Scene.ProcessDialogs();
+
+        // We probably don't need to do this, but in the original game it needs to reload things like
+        // palette indexes since it might be allocated differently in VRAM after unpausing.
+        foreach (GameObject gameObj in Scene.KnotManager.GameObjects)
+            gameObj.ProcessMessage(this, Message.ReloadAnimation);
+
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+        CurrentStepAction = Step_Pause_Resume;
+    }
+
+    protected void Step_Pause_Resume()
+    {
+        Gfx.ClearFade();
+
+        if (Fog != null)
+            Fog.ShouldDraw = true;
+
+        UserInfo.ProcessMessage(this, Message.UserInfo_Unpause);
+
+        SoundEventsManager.ResumeAllSongs();
+        Scene.Step();
+        Scene.Playfield.Step();
+        Scene.AnimationPlayer.Execute();
+        GameTime.IsPaused = false;
+        CurrentStepAction = Step_Normal;
     }
 
     #endregion

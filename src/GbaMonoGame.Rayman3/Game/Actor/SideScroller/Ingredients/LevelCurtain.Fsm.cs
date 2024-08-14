@@ -144,7 +144,7 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.UnInit:
-                Gfx.Fade = 1;
+                Gfx.SetFullFade();
                 SoundEventsManager.StopAllSongs();
                 GameInfo.LoadLevel(MapId);
                 break;

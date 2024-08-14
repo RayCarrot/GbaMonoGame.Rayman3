@@ -174,7 +174,7 @@ public class Intro : Frame, IHasPlayfield
     {
         Playfield.UnInit();
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__sadslide);
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
         SoundEventsManager.SetVolumeForType(SoundType.Music, SoundEngineInterface.MaxVolume);
     }
 
@@ -400,7 +400,7 @@ public class Intro : Frame, IHasPlayfield
         // TODO: Check every button input on N-Gage
         if (JoyPad.IsButtonPressed(GbaInput.Start))
         {
-            Gfx.Fade = 1;
+            Gfx.SetFullFade();
             FrameManager.SetNextFrame(Menu);
             Random.SetSeed(GameTime.ElapsedFrames);
         }

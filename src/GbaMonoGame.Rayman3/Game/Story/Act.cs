@@ -261,7 +261,7 @@ public abstract class Act : Frame
 
         if (Engine.Settings.Platform == Platform.NGage)
         {
-            AnimatedObjectResource skipSymbolResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.NGageButtons);
+            AnimatedObjectResource skipSymbolResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.NGageButtonSymbols);
             SkipSymbol = new AnimatedObject(skipSymbolResource, false)
             {
                 IsFramed = true,

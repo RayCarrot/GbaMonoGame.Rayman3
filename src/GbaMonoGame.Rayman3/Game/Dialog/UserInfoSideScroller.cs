@@ -108,8 +108,38 @@ public class UserInfoSideScroller : Dialog
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        // TODO: Implement
-        return false;
+        // TODO: Implement remaining messages
+
+        // Handle messages
+        switch (message)
+        {
+            case Message.UserInfo_Pause:
+                if (GameInfo.MapId is not (MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN))
+                {
+                    LifeBar.SetToStayVisible();
+                    GetLumsBar().SetToStayVisible();
+                    CagesBar.SetToStayVisible();
+                }
+                // TODO: Blue lums bar
+                // TODO: Switch bar
+                BossBar?.SetToStayHidden();
+                return true;
+
+            case Message.UserInfo_Unpause:
+                if (GameInfo.MapId is not (MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN))
+                {
+                    LifeBar.SetToDefault();
+                    GetLumsBar().SetToDefault();
+                    CagesBar.SetToDefault();
+                }
+                // TODO: Blue lums bar
+                // TODO: Switch bar
+                BossBar?.SetToDefault();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     public override void Load()

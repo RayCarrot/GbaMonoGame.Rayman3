@@ -15,9 +15,10 @@ public class FogDialog : Dialog
 
     private TgxPlayfield Playfield { get; }
     private AObjectFog Fog { get; set; }
-    private bool ShouldDraw { get; set; }
     private float ScrollX { get; set; }
     private int ScrollSpeed { get; set; }
+
+    public bool ShouldDraw { get; set; }
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param) => false;
 

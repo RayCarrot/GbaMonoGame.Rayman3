@@ -73,7 +73,7 @@ public class FrameMode7 : Frame
 
     public override void UnInit()
     {
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
 
         Scene.UnInit();
         Scene = null;

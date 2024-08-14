@@ -5,7 +5,7 @@ public class TransitionsFX
     public TransitionsFX(bool clear)
     {
         if (clear)
-            Gfx.Fade = 0;
+            Gfx.ClearFade();
     }
 
     public float FadeCoefficient { get; set; }
@@ -29,7 +29,7 @@ public class TransitionsFX
             if (FadeCoefficient > 1)
                 FadeCoefficient = 1;
 
-            Gfx.Fade = BrightnessCoefficient;
+            Gfx.SetFade(BrightnessCoefficient);
         }
         else if (FadeCoefficient == 0)
         {
@@ -43,7 +43,7 @@ public class TransitionsFX
             if (FadeCoefficient < 0)
                 FadeCoefficient = 0;
 
-            Gfx.Fade = FadeCoefficient;
+            Gfx.SetFade(FadeCoefficient);
         }
     }
 
@@ -59,7 +59,7 @@ public class TransitionsFX
             if (FadeCoefficient <= 0)
                 FadeCoefficient = 0;
 
-            Gfx.Fade = FadeCoefficient;
+            Gfx.SetFade(FadeCoefficient);
         }
     }
 
@@ -75,20 +75,20 @@ public class TransitionsFX
             if (BrightnessCoefficient >= 1)
                 BrightnessCoefficient = 1;
 
-            Gfx.Fade = BrightnessCoefficient;
+            Gfx.SetFade(BrightnessCoefficient);
         }
     }
 
     public void FadeInInit(float stepSize)
     {
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
         FadeCoefficient = 1;
         StepSize = stepSize;
     }
 
     public void FadeOutInit(float stepSize)
     {
-        Gfx.Fade = 0;
+        Gfx.ClearFade();
         BrightnessCoefficient = 0;
         StepSize = stepSize;
     }
@@ -97,6 +97,6 @@ public class TransitionsFX
     {
         FadeCoefficient = 0;
         BrightnessCoefficient = 1;
-        Gfx.Fade = 0;
+        Gfx.ClearFade();
     }
 }

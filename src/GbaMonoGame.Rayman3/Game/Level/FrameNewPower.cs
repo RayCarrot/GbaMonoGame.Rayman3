@@ -106,7 +106,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
 
     public override void UnInit()
     {
-        Gfx.Fade = 1;
+        Gfx.SetFullFade();
 
         Scene.UnInit();
         Scene = null;

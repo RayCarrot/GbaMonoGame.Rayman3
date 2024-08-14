@@ -30,6 +30,12 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> BackSprites { get; } = new();
 
+    /// <summary>
+    /// The equivalent of BLD on GBA. This is not implemented on the N-Gage.
+    /// </summary>
+    public static float Fade { get; set; } = 0;
+    public static FadeFlags FadeFlags { get; set; }
+
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];
     public static IEnumerable<GfxScreen> GetScreens() => Screens.Values;
@@ -43,10 +49,25 @@ public static class Gfx
         BackSprites.Clear();
     }
 
-    /// <summary>
-    /// The equivalent of BLD on GBA. This is not implemented on the N-Gage.
-    /// </summary>
-    public static float Fade { get; set; } = 0;
+    private static void DrawFade(GfxRenderer renderer)
+    {
+        // TODO: Add config option to use GBA fading on N-Gage
+        if (Engine.Settings.Platform == Platform.GBA && Fade is > 0 and <= 1)
+        {
+            renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
+            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
+        }
+    }
+
+    // BLDY and BLDCNT on GBA
+    public static void SetFade(float fade, FadeFlags flags = FadeFlags.Default)
+    {
+        Fade = fade;
+        FadeFlags = flags;
+    }
+
+    public static void ClearFade() => SetFade(0);
+    public static void SetFullFade() => SetFade(1);
 
     public static void Draw(GfxRenderer renderer)
     {
@@ -57,18 +78,20 @@ public static class Gfx
             foreach (GfxScreen screen in Screens.Values.Where(x => x.IsEnabled && x.Priority == i))
                 screen.Draw(renderer);
 
+            if ((FadeFlags & (FadeFlags)(1 << i)) != 0)
+                DrawFade(renderer);
+
             // Draw sprites
             foreach (Sprite sprite in BackSprites.Where(x => x.Priority == i))
                 sprite.Draw(renderer);
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
+
+            if ((FadeFlags & (FadeFlags)(1 << (i + 4))) != 0)
+                DrawFade(renderer);
         }
 
-        // TODO: Add config option to use GBA fading on N-Gage
-        if (Engine.Settings.Platform == Platform.GBA && Fade is > 0 and <= 1)
-        {
-            renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
-            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
-        }
+        if (FadeFlags == FadeFlags.Default)
+            DrawFade(renderer);
     }
 }

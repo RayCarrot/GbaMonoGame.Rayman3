@@ -16,6 +16,10 @@ public abstract class Frame
     /// </summary>
     public bool EndOfFrame { get; set; }
 
+    // Unknown
+    public bool NGage_0x4 { get; set; }
+    public bool NGage_0x6 { get; set; }
+
     /// <summary>
     /// Initializes the frame. This is called once when the frame is made active.
     /// </summary>
