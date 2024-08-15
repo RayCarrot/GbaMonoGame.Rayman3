@@ -21,6 +21,7 @@ public class MenuManager
 
     private const int Margin = 60;
     private const int LineHeight = 40;
+    private const float TransitionTextStep = 1 / 8f;
 
     private MenuCamera Camera { get; } = new(Engine.GameViewPort);
     private List<Sprite> Sprites { get; } = new();
@@ -84,7 +85,7 @@ public class MenuManager
             position -= new Vector2(width, 0);
         }
 
-        AffineMatrix? matrix = animate ? new AffineMatrix(1, 0, 0, TransitionTextValue) : null;
+        AffineMatrix? matrix = animate ? new AffineMatrix(0, new Vector2(1, TransitionTextValue)) : null;
         foreach (byte b in text)
         {
             Sprite sprite = FontManager.GetCharacterSprite(b, fontSize, ref position, 0, matrix, color, Camera);
@@ -157,10 +158,11 @@ public class MenuManager
 
         if (IsTransitioningTextOut)
         {
-            TransitionTextValue++;
+            TransitionTextValue -= TransitionTextStep;
 
-            if (TransitionTextValue > 8)
+            if (TransitionTextValue <= 0)
             {
+                TransitionTextValue = 0;
                 IsTransitioningTextOut = false;
                 CurrentMenu.OnExit();
                 CurrentMenu = NextMenuState?.Menu;
@@ -177,9 +179,9 @@ public class MenuManager
         {
             if (TransitionTextOutDelay == 0)
             {
-                TransitionTextValue--;
+                TransitionTextValue += TransitionTextStep;
 
-                if (TransitionTextValue < 1)
+                if (TransitionTextValue >= 1)
                 {
                     TransitionTextValue = 1;
                     IsTransitioningTextOut = false;
@@ -389,7 +391,7 @@ public class MenuManager
         IsTransitioningTextOut = false;
         IsTransitioningTextIn = true;
         TransitionTextOutDelay = 2;
-        TransitionTextValue = 8;
+        TransitionTextValue = 0;
         IsTransitioningOut = false;
         IsTransitioningIn = true;
         TransitionValue = 0;
