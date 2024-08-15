@@ -25,7 +25,6 @@ public class GameConfig
         InternalResolution = null;
         PlayfieldCameraScale = 1;
         HudCameraScale = 1;
-        DynamicPlayfieldCameraScale = true;
         SfxVolume = 1;
         MusicVolume = 1;
         WriteSerializerLog = false;
@@ -52,8 +51,6 @@ public class GameConfig
     [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
     [JsonPropertyName("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
     [JsonPropertyName("hudCameraScale")] public float HudCameraScale { get; set; }
-    [JsonPropertyName("dynamicPlayfieldCameraScale")] public bool DynamicPlayfieldCameraScale { get; set; } // TODO: Implement
-    // TODO: Option for HUD scale
 
     // Sound
     [JsonPropertyName("sfxVolume")] public float SfxVolume { get; set; }

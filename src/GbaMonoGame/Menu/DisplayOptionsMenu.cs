@@ -13,13 +13,8 @@ public class DisplayOptionsMenu : Menu
         Game = game;
 
         GraphicsAdapter adapter = Game.GraphicsDevice.Adapter;
-
-        AvailableFullscreenResolutionNames = adapter.SupportedDisplayModes.Select(x => $"{x.Width} x {x.Height}").ToArray();
-        AvailableFullscreenResolutions = adapter.SupportedDisplayModes.Select(x => new Point(x.Width, x.Height)).ToArray();
-        OriginalFullscreenResolutionSelectedIndex = Array.IndexOf(AvailableFullscreenResolutions, Engine.Config.FullscreenResolution);
-        FullscreenResolutionSelectedIndex = OriginalFullscreenResolutionSelectedIndex == -1
-            ? AvailableFullscreenResolutions.Length - 1
-            : OriginalFullscreenResolutionSelectedIndex;
+        Vector2 originalRes = Engine.GameViewPort.OriginalGameResolution;
+        Vector2 screenRes = new(adapter.CurrentDisplayMode.Width, adapter.CurrentDisplayMode.Height);
 
         AvailableIsFullscreenNames = new[]
         {
@@ -28,45 +23,35 @@ public class DisplayOptionsMenu : Menu
         };
         IsFullscreen = OriginalIsFullscreen;
 
+        AvailableFullscreenResolutionNames = adapter.SupportedDisplayModes.Select(x => $"{x.Width} x {x.Height}").ToArray();
+        AvailableFullscreenResolutions = adapter.SupportedDisplayModes.Select(x => new Point(x.Width, x.Height)).ToArray();
+        OriginalFullscreenResolutionSelectedIndex = Array.IndexOf(AvailableFullscreenResolutions, Engine.Config.FullscreenResolution);
+        FullscreenResolutionSelectedIndex = OriginalFullscreenResolutionSelectedIndex == -1
+            ? AvailableFullscreenResolutions.Length - 1
+            : OriginalFullscreenResolutionSelectedIndex;
+
+        int windowResCount = Math.Min((int)(screenRes.X / originalRes.X), (int)(screenRes.Y / originalRes.Y));
         AvailableWindowResolutionNames = new[]
         {
             "Custom",
-            "1x",
-            "2x",
-            "3x",
-            "4x",
-            "5x",
-            "6x",
-            "7x",
-            "8x",
-        };
+        }.Concat(Enumerable.Range(0, windowResCount).Select(x => $"{x + 1}x")).ToArray();
         WindowResolutionScale = OriginalWindowResolutionScale;
 
+        // TODO: Add other aspect ratios too? Allow setting custom value in the UI?
         AvailableInternalResolutionNames = new[]
         {
-            "Original",
-            "GBA (240x160)",
-            "N-Gage (176x208)",
-            "Widescreen (288x162)",
+            $"Original ({originalRes.X}x{originalRes.Y})",
+            "Widescreen (288x162)", // 16:9
         };
         AvailableInternalResolutions = new Point?[]
         {
             null,
-            new(240, 160),
-            new(176, 208),
             new(288, 162),
         };
         OriginalInternalResolutionSelectedIndex = Array.IndexOf(AvailableInternalResolutions, Engine.Config.InternalResolution);
         InternalResolutionSelectedIndex = OriginalInternalResolutionSelectedIndex == -1
             ? AvailableInternalResolutions.Length - 1
             : OriginalInternalResolutionSelectedIndex;
-
-        AvailableDynamicPlayfieldCameraScaleNames = new[]
-        {
-            "Off",
-            "On",
-        };
-        OriginalDynamicPlayfieldCameraScale = Engine.Config.DynamicPlayfieldCameraScale;
 
         AvailablePlayfieldCameraScales = new[]
         {
@@ -125,14 +110,14 @@ public class DisplayOptionsMenu : Menu
 
     private GbaGame Game { get; }
 
+    private string[] AvailableIsFullscreenNames { get; }
+    private bool OriginalIsFullscreen => Engine.Config.IsFullscreen;
+    private bool IsFullscreen { get; set; }
+
     private string[] AvailableFullscreenResolutionNames { get; }
     private Point[] AvailableFullscreenResolutions { get; }
     private int OriginalFullscreenResolutionSelectedIndex { get; set; }
     private int FullscreenResolutionSelectedIndex { get; set; }
-
-    private string[] AvailableIsFullscreenNames { get; }
-    private bool OriginalIsFullscreen => Engine.Config.IsFullscreen;
-    private bool IsFullscreen { get; set; }
 
     private string[] AvailableWindowResolutionNames { get; }
     private int OriginalWindowResolutionScale
@@ -165,10 +150,6 @@ public class DisplayOptionsMenu : Menu
     private int OriginalInternalResolutionSelectedIndex { get; set; }
     private int InternalResolutionSelectedIndex { get; set; }
 
-    private string[] AvailableDynamicPlayfieldCameraScaleNames { get; }
-    private bool OriginalDynamicPlayfieldCameraScale { get; }
-    private bool DynamicPlayfieldCameraScale { get; set; }
-
     private string[] AvailablePlayfieldCameraScaleNames { get; }
     private float[] AvailablePlayfieldCameraScales { get; }
     private int OriginalPlayfieldCameraScale { get; set; }
@@ -190,20 +171,17 @@ public class DisplayOptionsMenu : Menu
         menu.SetColumns(1, 0.9f);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Left);
 
-        menu.Text("Fullscreen resolution");
-        FullscreenResolutionSelectedIndex = menu.Selection(AvailableFullscreenResolutionNames, FullscreenResolutionSelectedIndex);
-
         menu.Text("Mode");
         IsFullscreen = menu.Selection(AvailableIsFullscreenNames, IsFullscreen ? 1 : 0) == 1;
+
+        menu.Text("Fullscreen resolution");
+        FullscreenResolutionSelectedIndex = menu.Selection(AvailableFullscreenResolutionNames, FullscreenResolutionSelectedIndex);
 
         menu.Text("Window resolution");
         WindowResolutionScale = menu.Selection(AvailableWindowResolutionNames, WindowResolutionScale);
 
         menu.Text("Internal resolution");
         InternalResolutionSelectedIndex = menu.Selection(AvailableInternalResolutionNames, InternalResolutionSelectedIndex);
-
-        menu.Text("Dynamic camera scale");
-        DynamicPlayfieldCameraScale = menu.Selection(AvailableDynamicPlayfieldCameraScaleNames, DynamicPlayfieldCameraScale ? 1 : 0) == 1;
 
         menu.Text("Camera scale");
         PlayfieldCameraScale = menu.Selection(AvailablePlayfieldCameraScaleNames, PlayfieldCameraScale);
@@ -218,7 +196,6 @@ public class DisplayOptionsMenu : Menu
                           IsFullscreen != OriginalIsFullscreen ||
                           WindowResolutionScale != OriginalWindowResolutionScale||
                           InternalResolutionSelectedIndex != OriginalInternalResolutionSelectedIndex ||
-                          DynamicPlayfieldCameraScale != OriginalDynamicPlayfieldCameraScale ||
                           PlayfieldCameraScale != OriginalPlayfieldCameraScale||
                           HudCameraScale != OriginalHudCameraScale;
 
@@ -228,7 +205,6 @@ public class DisplayOptionsMenu : Menu
             Engine.Config.IsFullscreen = IsFullscreen;
 
             Engine.Config.InternalResolution = AvailableInternalResolutions[InternalResolutionSelectedIndex];
-            Engine.Config.DynamicPlayfieldCameraScale = DynamicPlayfieldCameraScale;
             Engine.Config.PlayfieldCameraScale = AvailablePlayfieldCameraScales[PlayfieldCameraScale];
             Engine.Config.HudCameraScale = AvailableHudCameraScales[HudCameraScale];
             Engine.GameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
