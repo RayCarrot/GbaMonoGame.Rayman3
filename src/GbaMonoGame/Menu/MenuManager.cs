@@ -19,7 +19,7 @@ public class MenuManager
 
     #region Private Properties
 
-    private const int Margin = 60;
+    private const int Margin = 80;
     private const int LineHeight = 40;
     private const float TransitionTextStep = 1 / 8f;
 
@@ -226,12 +226,12 @@ public class MenuManager
         }
 
         // Draw engine version in the corner
-        Vector2 versionPos = new(Camera.Resolution.X - 12, Camera.Resolution.Y - 25);
+        Vector2 versionPos = new(Camera.Resolution.X - 12, Camera.Resolution.Y - 37);
         DrawText(
             text: $"Version {Engine.Version.ToString(3)}",
             position: ref versionPos,
             horizontalAlignment: HorizontalAlignment.Right,
-            fontSize: FontSize.Font16,
+            fontSize: FontSize.Font32,
             color: Color,
             animate: false);
     }
@@ -462,11 +462,8 @@ public class MenuManager
     {
         public MenuCamera(GameViewPort gameViewPort) : base(gameViewPort) { }
 
-        protected override Vector2 GetResolution(GameViewPort gameViewPort)
-        {
-            // Scale by 3.5 to fit more text on screen
-            return gameViewPort.GameResolution * 3.5f;
-        }
+        // Scale by 5 to fit more text on screen
+        protected override Vector2 GetResolution(GameViewPort gameViewPort) => gameViewPort.GameResolution * 5f;
     }
 
     private class MenuState
