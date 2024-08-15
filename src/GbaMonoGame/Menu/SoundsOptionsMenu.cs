@@ -80,14 +80,6 @@ public class SoundsOptionsMenu : Menu
         menu.SetColumns(1, 0.9f);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Left);
 
-        menu.Text("Sound effects volume");
-        Engine.Config.SfxVolume = menu.Selection(AvailableVolumes, (int)(Engine.Config.SfxVolume * 10)) / 10f;
-        if (Engine.Config.SfxVolume != PreviousSfxVolume)
-        {
-            PreviousSfxVolume = Engine.Config.SfxVolume;
-            PlaySampleSong(SoundType.Sfx, true, Engine.Config.SfxVolume);
-        }
-
         menu.Text("Music volume");
         Engine.Config.MusicVolume = menu.Selection(AvailableVolumes, (int)(Engine.Config.MusicVolume * 10)) / 10f;
         if (menu.IsElementSelected())
@@ -95,6 +87,13 @@ public class SoundsOptionsMenu : Menu
         else
             StopSampleSong(SoundType.Music);
 
+        menu.Text("Sound effects volume");
+        Engine.Config.SfxVolume = menu.Selection(AvailableVolumes, (int)(Engine.Config.SfxVolume * 10)) / 10f;
+        if (Engine.Config.SfxVolume != PreviousSfxVolume)
+        {
+            PreviousSfxVolume = Engine.Config.SfxVolume;
+            PlaySampleSong(SoundType.Sfx, true, Engine.Config.SfxVolume);
+        }
 
         menu.SetColumns(1);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
