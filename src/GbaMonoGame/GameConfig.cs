@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace GbaMonoGame;
 
@@ -18,10 +17,8 @@ public class GameConfig
 
         FullscreenResolution = new Point(defaultDisplayMode.Width, defaultDisplayMode.Height);
         IsFullscreen = true;
-        GbaWindowResolution = new Point(240 * 4, 160 * 4);
-        NGageWindowResolution = new Point(176 * 4, 208 * 4);
-        GbaWindowPosition = null;
-        NGageWindowPosition = null;
+        GbaWindowBounds = new Rectangle(0, 0, 240 * 4, 160 * 4);
+        NGageWindowBounds = new Rectangle(0, 0, 176 * 4, 208 * 4);
         InternalResolution = null;
         PlayfieldCameraScale = 1;
         HudCameraScale = 1;
@@ -42,37 +39,34 @@ public class GameConfig
     #region Public Properties
 
     // Display
-    [JsonPropertyName("fullscreenResolution")] public Point FullscreenResolution { get; set; }
-    [JsonPropertyName("isFullscreen")] public bool IsFullscreen { get; set; }
-    [JsonPropertyName("gbaWindowResolution")] public Point GbaWindowResolution { get; set; }
-    [JsonPropertyName("nGageWindowResolution")] public Point NGageWindowResolution { get; set; }
-    [JsonPropertyName("gbaWindowPosition")] public Point? GbaWindowPosition { get; set; }
-    [JsonPropertyName("nGageWindowPosition")] public Point? NGageWindowPosition { get; set; }
-    [JsonPropertyName("internalResolution")] public Point? InternalResolution { get; set; }
-    [JsonPropertyName("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
-    [JsonPropertyName("hudCameraScale")] public float HudCameraScale { get; set; }
+    [JsonProperty("fullscreenResolution")] public Point FullscreenResolution { get; set; }
+    [JsonProperty("isFullscreen")] public bool IsFullscreen { get; set; }
+    [JsonProperty("gbaWindowBounds")] public Rectangle GbaWindowBounds { get; set; }
+    [JsonProperty("nGageWindowBounds")] public Rectangle NGageWindowBounds { get; set; }
+    [JsonProperty("internalResolution")] public Point? InternalResolution { get; set; }
+    [JsonProperty("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
+    [JsonProperty("hudCameraScale")] public float HudCameraScale { get; set; }
 
     // Sound
-    [JsonPropertyName("sfxVolume")] public float SfxVolume { get; set; }
-    [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; }
+    [JsonProperty("sfxVolume")] public float SfxVolume { get; set; }
+    [JsonProperty("musicVolume")] public float MusicVolume { get; set; }
 
     // Debug
-    [JsonPropertyName("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
-    [JsonPropertyName("dumpSprites")] public bool DumpSprites { get; set; } // TODO: Add debug option to enable this
+    [JsonProperty("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
+    [JsonProperty("dumpSprites")] public bool DumpSprites { get; set; } // TODO: Add debug option to enable this
 
     #endregion
 
     #region Private Methods
 
-    private static JsonSerializerOptions GetJsonOptions()
+    private static JsonSerializerSettings GetJsonSettings()
     {
-        JsonSerializerOptions options = new()
+        JsonSerializerSettings settings = new()
         {
-            WriteIndented = true,
-            IncludeFields = true, // Need this for the Point struct
+            Formatting = Formatting.Indented,
         };
 
-        return options;
+        return settings;
     }
 
     #endregion
@@ -82,7 +76,7 @@ public class GameConfig
     public static GameConfig Load(string filePath)
     {
         if (File.Exists(filePath))
-            return JsonSerializer.Deserialize<GameConfig>(File.ReadAllText(filePath), GetJsonOptions());
+            return JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(filePath), GetJsonSettings());
         else
             return new GameConfig();
     }
@@ -90,7 +84,7 @@ public class GameConfig
     public void Save(string filePath)
     {
         ConfigChanged?.Invoke(this, EventArgs.Empty);
-        File.WriteAllText(filePath, JsonSerializer.Serialize(this, GetJsonOptions()));
+        File.WriteAllText(filePath, JsonConvert.SerializeObject(this, GetJsonSettings()));
     }
 
     #endregion

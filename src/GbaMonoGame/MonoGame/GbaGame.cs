@@ -547,13 +547,11 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         switch (Engine.Settings.Platform)
         {
             case Platform.GBA:
-                Engine.Config.GbaWindowPosition = Window.Position;
-                Engine.Config.GbaWindowResolution = GetResolution();
+                Engine.Config.GbaWindowBounds = Window.ClientBounds;
                 break;
 
             case Platform.NGage:
-                Engine.Config.NGageWindowPosition = Window.Position;
-                Engine.Config.NGageWindowResolution = GetResolution();
+                Engine.Config.NGageWindowBounds = Window.ClientBounds;
                 break;
 
             default:
@@ -569,35 +567,27 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         }
         else
         {
-            Point? pos;
-            Point res;
+            Rectangle bounds;
 
             if (HasLoadedGameInstallation)
             {
-                pos = Engine.Settings.Platform switch
+                bounds = Engine.Settings.Platform switch
                 {
-                    Platform.GBA => Engine.Config.GbaWindowPosition,
-                    Platform.NGage => Engine.Config.NGageWindowPosition,
-                    _ => throw new UnsupportedPlatformException()
-                };
-                res = Engine.Settings.Platform switch
-                {
-                    Platform.GBA => Engine.Config.GbaWindowResolution,
-                    Platform.NGage => Engine.Config.NGageWindowResolution,
+                    Platform.GBA => Engine.Config.GbaWindowBounds,
+                    Platform.NGage => Engine.Config.NGageWindowBounds,
                     _ => throw new UnsupportedPlatformException()
                 };
             }
             else
             {
-                // We don't know the platform yet, so default to the gba position and resolution since it'll be the most common one
-                pos = Engine.Config.GbaWindowPosition;
-                res = Engine.Config.GbaWindowResolution;
+                // We don't know the platform yet, so default to the gba bounds since it'll be the most common one
+                bounds = Engine.Config.GbaWindowBounds;
             }
 
-            if (pos != null)
-                Window.Position = pos.Value;
+            if (bounds.Location != Point.Zero)
+                Window.Position = bounds.Location;
 
-            SetResolution(res, false);
+            SetResolution(bounds.Size, false);
         }
     }
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BinarySerializer.Ubisoft.GbaEngine;
 using ImGuiNET;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -16,10 +16,10 @@ public class GenerateDebugMenu : DebugMenu
 
     private void WriteJson<T>(T obj, string filePath)
     {
-        string json = JsonSerializer.Serialize(obj, new JsonSerializerOptions()
+        string json = JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
         {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() }
+            Formatting = Formatting.Indented,
+            Converters = { new StringEnumConverter() }
         });
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         File.WriteAllText(filePath, json);

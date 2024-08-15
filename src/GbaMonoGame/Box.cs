@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 
 namespace GbaMonoGame;
 

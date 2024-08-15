@@ -124,14 +124,14 @@ public class DisplayOptionsMenu : Menu
     {
         get
         {
-            Point windowRes = Engine.Settings.Platform switch
+            Rectangle windowBounds = Engine.Settings.Platform switch
             {
-                Platform.GBA => Engine.Config.GbaWindowResolution,
-                Platform.NGage => Engine.Config.NGageWindowResolution,
+                Platform.GBA => Engine.Config.GbaWindowBounds,
+                Platform.NGage => Engine.Config.NGageWindowBounds,
                 _ => throw new UnsupportedPlatformException()
             };
 
-            float scale = windowRes.ToVector2().X / Engine.GameViewPort.RequestedGameResolution.X;
+            float scale = windowBounds.Size.ToVector2().X / Engine.GameViewPort.RequestedGameResolution.X;
 
             for (int i = 0; i < 8; i++)
             {
@@ -211,19 +211,22 @@ public class DisplayOptionsMenu : Menu
 
             if (WindowResolutionScale != 0)
             {
+                Point windowRes = (Engine.GameViewPort.RequestedGameResolution * WindowResolutionScale).ToPoint();
+
                 switch (Engine.Settings.Platform)
                 {
                     case Platform.GBA:
-                        Engine.Config.GbaWindowResolution = (Engine.GameViewPort.RequestedGameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.GbaWindowBounds = Engine.Config.GbaWindowBounds with { Size = windowRes };
                         break;
 
                     case Platform.NGage:
-                        Engine.Config.NGageWindowResolution = (Engine.GameViewPort.RequestedGameResolution * WindowResolutionScale).ToPoint();
+                        Engine.Config.NGageWindowBounds = Engine.Config.GbaWindowBounds with { Size = windowRes };
                         break;
 
                     default:
                         throw new UnsupportedPlatformException();
                 }
+                
                 Game.ApplyDisplayConfig();
             }
 
