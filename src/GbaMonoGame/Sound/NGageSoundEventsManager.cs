@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GbaMonoGame;
 
+// TODO: Read XM music from data instead of using GBA music
 public class NGageSoundEventsManager : SoundEventsManager
 {
     #region Constructor
@@ -171,6 +172,9 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     protected override void ProcessEventImpl(short soundEventId, object obj)
     {
+        if (soundEventId < 0 || soundEventId >= Engine.Loader.NGage_SoundEvents.Length)
+            return;
+
         NGageSoundEvent evt = Engine.Loader.NGage_SoundEvents[soundEventId];
 
         if (evt.PlaySong)
@@ -181,6 +185,9 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     protected override bool IsSongPlayingImpl(short soundEventId)
     {
+        if (soundEventId < 0 || soundEventId >= Engine.Loader.NGage_SoundEvents.Length)
+            return false;
+
         NGageSoundEvent evt = Engine.Loader.NGage_SoundEvents[soundEventId];
 
         if (evt.IsMusic)
