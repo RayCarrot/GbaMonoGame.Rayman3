@@ -401,72 +401,25 @@ public class TextBoxDialog : Dialog
             Camera = Scene.HudCamera,
         };
 
-        if (Engine.Settings.Platform == Platform.GBA)
+        int textsCount = Engine.Settings.Platform switch
         {
-            TextObjects = new[]
+            Platform.GBA => 2,
+            Platform.NGage => 3,
+            _ => throw new UnsupportedPlatformException()
+        };
+        TextObjects = new SpriteTextObject[textsCount];
+        for (int i = 0; i < textsCount; i++)
+        {
+            TextObjects[i] = new SpriteTextObject()
             {
-                new SpriteTextObject()
-                {
-                    Text = "",
-                    AffineMatrix = AffineMatrix.Identity,
-                    ScreenPos = new Vector2(38, 7 - OffsetY),
-                    HorizontalAnchor = HorizontalAnchorMode.Scale,
-                    FontSize = FontSize.Font16,
-                    Color = TextColor.TextBox,
-                    Camera = Scene.HudCamera,
-                },
-                new SpriteTextObject()
-                {
-                    Text = "",
-                    AffineMatrix = AffineMatrix.Identity,
-                    ScreenPos = new Vector2(38, 21 - OffsetY),
-                    HorizontalAnchor = HorizontalAnchorMode.Scale,
-                    FontSize = FontSize.Font16,
-                    Color = TextColor.TextBox,
-                    Camera = Scene.HudCamera,
-                }
+                Text = i < CurrentText?.Length ? (i == 0 ? CurrentText[i][2..] : CurrentText[i]) : "",
+                AffineMatrix = AffineMatrix.Identity,
+                ScreenPos = new Vector2(38, 7 + 14 * i - OffsetY),
+                HorizontalAnchor = HorizontalAnchorMode.Scale,
+                FontSize = FontSize.Font16,
+                Color = TextColor.TextBox,
+                Camera = Scene.HudCamera,
             };
-        }
-        else if (Engine.Settings.Platform == Platform.NGage)
-        {
-            // N-Gage has 3 lines of text
-            TextObjects = new[]
-            {
-                new SpriteTextObject()
-                {
-                    Text = "",
-                    AffineMatrix = AffineMatrix.Identity,
-                    ScreenPos = new Vector2(38, 7 - OffsetY),
-                    HorizontalAnchor = HorizontalAnchorMode.Scale,
-                    FontSize = FontSize.Font16,
-                    Color = TextColor.TextBox,
-                    Camera = Scene.HudCamera,
-                },
-                new SpriteTextObject()
-                {
-                    Text = "",
-                    AffineMatrix = AffineMatrix.Identity,
-                    ScreenPos = new Vector2(38, 21 - OffsetY),
-                    HorizontalAnchor = HorizontalAnchorMode.Scale,
-                    FontSize = FontSize.Font16,
-                    Color = TextColor.TextBox,
-                    Camera = Scene.HudCamera,
-                },
-                new SpriteTextObject()
-                {
-                    Text = "",
-                    AffineMatrix = AffineMatrix.Identity,
-                    ScreenPos = new Vector2(38, 35 - OffsetY),
-                    HorizontalAnchor = HorizontalAnchorMode.Scale,
-                    FontSize = FontSize.Font16,
-                    Color = TextColor.TextBox,
-                    Camera = Scene.HudCamera,
-                }
-            };
-        }
-        else
-        {
-            throw new UnsupportedPlatformException();
         }
 
         AnimatedObjectResource murfyIconResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.TextBoxMurfyIconAnimations);
