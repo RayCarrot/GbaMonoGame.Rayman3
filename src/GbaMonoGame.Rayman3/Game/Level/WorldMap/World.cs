@@ -9,8 +9,6 @@ public class World : FrameWorldSideScroller
 {
     public World(MapId mapId) : base(mapId) { }
 
-    public UserInfoWorld UserInfo { get; set; }
-
     private Action CurrentExStepAction { get; set; }
     private Action NextExStepAction { get; set; }
     
