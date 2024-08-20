@@ -85,6 +85,7 @@ public sealed partial class Rayman : MovableActor
     public int PrevHitPoints { get; set; }
     public float PrevSpeedY { get; set; }
     public int CameraTargetY { get; set; }
+    public byte ReverseControlsTimer { get; set; }
 
     public bool Debug_NoClip { get; set; } // Custom no-clip mode
 
@@ -146,87 +147,52 @@ public sealed partial class Rayman : MovableActor
         }
     }
 
-    private bool IsButtonPressed(GbaInput input)
+    private GbaInput ReverseControls(GbaInput input) => 
+        (GbaInput)((input & (GbaInput.Left | GbaInput.Down)) != 0 ? (ushort)input >> 1 : (ushort)input << 1);
+
+    private bool IsDirectionalButtonPressed(GbaInput input)
     {
-        if (!RSMultiplayer.IsActive)
+        if (RSMultiplayer.IsActive)
+        {
+            if (ReverseControlsTimer != 0)
+                input = ReverseControls(input);
+
+            SimpleJoyPad joyPad = MultiJoyPad.GetJoyPad(InstanceId);
+            return joyPad.IsButtonPressed(input);
+        }
+        else
         {
             return JoyPad.IsButtonPressed(input);
         }
-        else
-        {
-            throw new NotImplementedException();
-        }
     }
 
-    private bool IsButtonPressed2(GbaInput input)
+    private bool IsDirectionalButtonButtonReleased(GbaInput input)
     {
-        if (!RSMultiplayer.IsActive)
+        if (RSMultiplayer.IsActive)
         {
-            return JoyPad.IsButtonPressed(input);
+            if (ReverseControlsTimer != 0)
+                input = ReverseControls(input);
+
+            return MultiJoyPad.GetJoyPad(InstanceId).IsButtonReleased(input);
         }
         else
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private bool IsButtonJustPressed(GbaInput input)
-    {
-        if (!RSMultiplayer.IsActive)
-        {
-            return JoyPad.IsButtonJustPressed(input);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private bool IsButtonJustPressed2(GbaInput input)
-    {
-        if (!RSMultiplayer.IsActive)
-        {
-            return JoyPad.IsButtonJustPressed(input);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private bool IsButtonJustReleased(GbaInput input)
-    {
-        if (!RSMultiplayer.IsActive)
-        {
-            return JoyPad.IsButtonJustReleased(input);
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private bool IsButtonReleased(GbaInput input)
-    {
-        if (!RSMultiplayer.IsActive)
         {
             return JoyPad.IsButtonReleased(input);
         }
-        else
-        {
-            throw new NotImplementedException();
-        }
     }
 
-    private bool IsButtonReleased2(GbaInput input)
+    private bool IsDirectionalButtonJustPressed(GbaInput input)
     {
-        if (!RSMultiplayer.IsActive)
+        if (RSMultiplayer.IsActive)
         {
-            return JoyPad.IsButtonReleased(input);
+            if (ReverseControlsTimer != 0)
+                input = ReverseControls(input);
+
+            return MultiJoyPad.GetJoyPad(InstanceId).IsButtonJustPressed(input);
         }
         else
         {
-            throw new NotImplementedException();
+            return JoyPad.IsButtonJustPressed(input);
         }
     }
 
@@ -432,12 +398,12 @@ public sealed partial class Rayman : MovableActor
 
         MechModel.Speed = new Vector2(PreviousXSpeed, 5.62501525879f);
 
-        if (IsButtonPressed(GbaInput.Left))
+        if (IsDirectionalButtonPressed(GbaInput.Left))
         {
             if (PreviousXSpeed > -3)
                 PreviousXSpeed -= 0.12109375f;
         }
-        else if (IsButtonPressed(GbaInput.Right))
+        else if (IsDirectionalButtonPressed(GbaInput.Right))
         {
             if (PreviousXSpeed < 3)
                 PreviousXSpeed += 0.12109375f;
@@ -463,21 +429,21 @@ public sealed partial class Rayman : MovableActor
         {
             PreviousXSpeed -= 0.12109375f;
 
-            if (IsButtonPressed(GbaInput.Right))
+            if (IsDirectionalButtonPressed(GbaInput.Right))
                 PreviousXSpeed -= 0.015625f;
         }
         else if (SlideType?.Value is PhysicalTypeValue.SlideAngle30Right1 or PhysicalTypeValue.SlideAngle30Right2)
         {
             PreviousXSpeed += 0.12109375f;
 
-            if (IsButtonPressed(GbaInput.Left))
+            if (IsDirectionalButtonPressed(GbaInput.Left))
                 PreviousXSpeed += 0.015625f;
         }
     }
 
     private void MoveInTheAir(float speedX)
     {
-        if (IsButtonPressed(GbaInput.Left))
+        if (IsDirectionalButtonPressed(GbaInput.Left))
         {
             if (IsFacingRight)
                 AnimatedObject.FlipX = true;
@@ -487,7 +453,7 @@ public sealed partial class Rayman : MovableActor
             if (speedX <= -3)
                 speedX = -3;
         }
-        else if (IsButtonPressed(GbaInput.Right))
+        else if (IsDirectionalButtonPressed(GbaInput.Right))
         {
             if (IsFacingLeft)
                 AnimatedObject.FlipX = false;
@@ -578,7 +544,7 @@ public sealed partial class Rayman : MovableActor
             ActionId = IsFacingRight ? Action.ThrowFistInAir_Right : Action.ThrowFistInAir_Left;
         }
 
-        if (IsButtonJustPressed(GbaInput.B))
+        if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.B))
         {
             if (CanAttackWithFist(1))
             {
@@ -720,7 +686,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (IsFacingRight)
             {
-                if (IsButtonPressed(GbaInput.Down))
+                if (IsDirectionalButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Right)
                         ActionId = Action.Sliding_Crouch_Right;
@@ -733,7 +699,7 @@ public sealed partial class Rayman : MovableActor
             }
             else
             {
-                if (IsButtonPressed(GbaInput.Down))
+                if (IsDirectionalButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Left)
                         ActionId = Action.Sliding_Crouch_Left;
@@ -749,7 +715,7 @@ public sealed partial class Rayman : MovableActor
         {
             if (IsFacingRight)
             {
-                if (IsButtonPressed(GbaInput.Down))
+                if (IsDirectionalButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Right)
                         ActionId = Action.Sliding_Crouch_Right;
@@ -762,7 +728,7 @@ public sealed partial class Rayman : MovableActor
             }
             else
             {
-                if (IsButtonPressed(GbaInput.Down))
+                if (IsDirectionalButtonPressed(GbaInput.Down))
                 {
                     if (ActionId != Action.Sliding_Crouch_Left)
                         ActionId = Action.Sliding_Crouch_Left;
@@ -1617,7 +1583,7 @@ public sealed partial class Rayman : MovableActor
         AttachedObject = null;
         CameraTargetY = 0;
         //field13_0x8c = 0;
-        //field14_0x8e = 0;
+        ReverseControlsTimer = 0;
         //field25_0x9a = HitPoints;
         field23_0x98 = 0;
         HangOnEdgeDelay = 0;

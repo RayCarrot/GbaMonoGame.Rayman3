@@ -21,11 +21,11 @@ public class SimpleJoyPad
         [GbaInput.L] = Keys.Q,
     };
 
-    private GbaInput KeyStatus { get; set; }
-    private GbaInput KeyTriggers { get; set; } // Just pressed
+    public GbaInput KeyStatus { get; set; }
+    public GbaInput KeyTriggers { get; set; } // Just pressed
 
-    private GbaInput[] ReplayData { get; set; }
-    private int ReplayDataIndex { get; set; }
+    public GbaInput[] ReplayData { get; set; }
+    public int ReplayDataIndex { get; set; }
 
     public bool IsReplayFinished => KeyStatus == GbaInput.None;
 
