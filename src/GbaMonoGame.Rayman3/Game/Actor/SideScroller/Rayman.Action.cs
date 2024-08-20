@@ -87,7 +87,8 @@ public partial class Rayman
         Sliding_Slow_Left = 75,
         Sliding_Crouch_Right = 76,
         Sliding_Crouch_Left = 77,
-
+        BodyShot_Right = 78,
+        BodyShot_Left = 79,
         Climb_Side_Right = 80,
         Climb_Side_Left = 81,
         Climb_Up_Right = 82,
@@ -109,7 +110,11 @@ public partial class Rayman
 
         Damage_Knockback_Right = 100,
         Damage_Knockback_Left = 101,
-
+        WallJump_Fall = 102,
+        WallJump_IdleStill = 103,
+        WallJump_Jump = 104,
+        WallJump_Move = 105,
+        WallJump_Idle = 106,
         BeginBounce_Right = 107,
         BeginBounce_Left = 108,
         BouncyJump_Right = 109,

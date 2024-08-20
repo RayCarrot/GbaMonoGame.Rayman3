@@ -271,6 +271,16 @@ public sealed partial class Rayman : MovableActor
         return ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.Foot] == null;
     }
 
+    private bool CanAttackWithBody()
+    {
+        if (RSMultiplayer.IsActive)
+        {
+            // TODO: Call FUN_0802aae4 to perform some multiplayer specific check
+        }
+
+        return ActiveBodyParts[(int)RaymanBody.RaymanBodyPartType.Torso] == null;
+    }
+
     private bool HasPower(Power power)
     {
         if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
@@ -1003,6 +1013,33 @@ public sealed partial class Rayman : MovableActor
         {
             Position += new Vector2(0, Tile.Size - MathHelpers.Mod(Position.Y, Tile.Size) - 1);
             PlaySound(Rayman3SoundEvent.Play__HandTap1_Mix04);
+        }
+    }
+
+    private bool IsOnWallJumpable()
+    {
+        if (!HasPower(Power.WallJump))
+            return false;
+
+        if (Flag1_3)
+            return false;
+
+        return Scene.GetPhysicalType(Position) == PhysicalTypeValue.WallJump;
+    }
+
+    private void BeginWallJump()
+    {
+        Vector2 pos = Position;
+
+        for (int i = 0; i < 6; i++)
+        {
+            pos.X += Tile.Size;
+
+            if (Scene.GetPhysicalType(pos) != PhysicalTypeValue.WallJump)
+            {
+                Position = Position with { X = pos.X - MathHelpers.Mod(pos.X, Tile.Size) - 26 };
+                return;
+            }
         }
     }
 

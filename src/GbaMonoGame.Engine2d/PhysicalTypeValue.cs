@@ -42,7 +42,7 @@ public enum PhysicalTypeValue : byte
     Hang = 46,
     Climb = 47,
     Water = 48,
-
+    WallJump = 49,
     SlideJump = 50,
     ClimbSpider1 = 51,
     ClimbSpider2 = 52,

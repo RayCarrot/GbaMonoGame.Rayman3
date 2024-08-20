@@ -1,5 +1,4 @@
 using System;
-using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
@@ -58,7 +57,7 @@ public partial class Rayman
 
         if (IsLocalPlayer &&
             State != Fsm_Jump &&
-            State != FUN_0802ce54 &&
+            State != Fsm_BodyShotAttack &&
             State != FUN_080284ac &&
             State != Fsm_EnterLevelCurtain &&
             State != Fsm_LockedLevelCurtain &&
@@ -422,7 +421,7 @@ public partial class Rayman
                 if (field23_0x98 == 0 && IsButtonJustPressed(GbaInput.B) && CanAttackWithFist(2))
                 {
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
 
@@ -564,7 +563,7 @@ public partial class Rayman
                 // Punch
                 if (IsButtonPressed2(GbaInput.B) && CanAttackWithFist(2))
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
 
@@ -806,7 +805,7 @@ public partial class Rayman
                 // Charge punch
                 if (field23_0x98 == 0 && Charge > 10 && IsButtonPressed(GbaInput.B) && CanAttackWithFist(2))
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -846,6 +845,8 @@ public partial class Rayman
             case FsmAction.Step:
                 if (!FsmStep_DoInTheAir())
                     return;
+
+                float speedY = Speed.Y;
 
                 if (IsLocalPlayer)
                     cam.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, 130);
@@ -891,7 +892,11 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
+                if (IsButtonJustPressed(GbaInput.A) && field27_0x9c != 0)
+                {
+                    State.MoveTo(FUN_0802ddac);
+                    return;
+                }
 
                 if (IsOnHangable())
                 {
@@ -906,7 +911,18 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
+                if (IsButtonPressed2(GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
+
+                if (speedY < 4 && IsButtonJustPressed(GbaInput.R) && HasPower(Power.BodyShot) && CanAttackWithBody())
+                {
+                    State.MoveTo(Fsm_BodyShotAttack);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -1047,7 +1063,7 @@ public partial class Rayman
                 // Attack
                 if (IsButtonPressed2(GbaInput.B) && CanAttackWithFoot())
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -1126,12 +1142,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
-                //{
-                //    FUN_0802a4c0();
-                //    Fsm.ChangeAction(FUN_08031554);
-                //}
+                if (IsButtonPressed2(GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -1204,16 +1220,24 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
-                //{
-                //    FUN_0802a4c0();
-                //    Fsm.ChangeAction(FUN_08031554);
-                //}
+                if (IsButtonPressed2(GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
 
+                if (IsButtonJustPressed(GbaInput.R) && HasPower(Power.BodyShot) && CanAttackWithBody())
+                {
+                    State.MoveTo(Fsm_BodyShotAttack);
+                    return;
+                }
 
-                // TODO: Implement
-
+                if (field27_0x9c != 0)
+                {
+                    State.MoveTo(FUN_0802ddac);
+                    return;
+                }
                 break;
             
             case FsmAction.UnInit:
@@ -1271,12 +1295,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
-                //{
-                //    FUN_0802a4c0();
-                //    Fsm.ChangeAction(FUN_08031554);
-                //}
+                if (IsButtonPressed2(GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -1340,12 +1364,12 @@ public partial class Rayman
                     return;
                 }
 
-                // TODO: Implement
-                //if (CheckInput(GbaInput.L) && IsOnWallJumpable())
-                //{
-                //    FUN_0802a4c0();
-                //    Fsm.ChangeAction(FUN_08031554);
-                //}
+                if (IsButtonPressed2(GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
 
                 if (field27_0x9c != 0)
                 {
@@ -1619,7 +1643,7 @@ public partial class Rayman
         }
     }
 
-    private void Fsm_ChargeAttack(FsmAction action)
+    private void Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -1930,6 +1954,182 @@ public partial class Rayman
         }
     }
 
+    private void Fsm_BodyShotAttack(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.BodyShot_Right : Action.BodyShot_Left;
+                PlaySound(Rayman3SoundEvent.Play__BodyAtk1_Mix01);
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (IsLocalPlayer)
+                    Scene.Camera.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, 130);
+                
+                if (AnimatedObject.CurrentFrame == 6 && CanAttackWithBody())
+                    Attack(90, RaymanBody.RaymanBodyPartType.Torso, Vector2.Zero, false);
+
+                if (IsActionFinished && field27_0x9c == 0)
+                {
+                    State.MoveTo(Fsm_TimeoutHelico);
+                    return;
+                }
+
+                if (IsActionFinished && field27_0x9c != 0)
+                {
+                    State.MoveTo(FUN_0802ddac);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_WallJump(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = Action.WallJump_Jump;
+                PlaySound(Rayman3SoundEvent.Play__OnoJump1__or__OnoJump3_Mix01__or__OnoJump4_Mix01__or__OnoJump5_Mix01__or__OnoJump6_Mix01);
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (Speed.Y > 0)
+                    ActionId = Action.WallJump_Fall;
+
+                if (!IsOnWallJumpable())
+                {
+                    State.MoveTo(Fsm_Fall);
+                    return;
+                }
+
+                if (IsButtonPressed2(GbaInput.L))
+                {
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
+    private void Fsm_WallJumpIdle(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = Action.WallJump_Move;
+                Timer = 0;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                // Slide down
+                if ((ActionId == Action.WallJump_Idle && Timer > 30) || 
+                    (ActionId == Action.WallJump_IdleStill && Timer > 90))
+                {
+                    Position += new Vector2(0, 0.5f);
+                }
+                else if ((ActionId == Action.WallJump_Idle && Timer == 30) || 
+                         (ActionId == Action.WallJump_IdleStill && Timer == 90)) 
+                {
+                    PlaySound(Rayman3SoundEvent.Play__WallSlid_Mix02);
+                }
+
+                if (ActionId == Action.WallJump_Move && IsActionFinished)
+                    ActionId = Action.WallJump_IdleStill;
+
+                if (ActionId is Action.WallJump_IdleStill or Action.WallJump_Move && IsButtonReleased2(GbaInput.L))
+                {
+                    if (ActionId == Action.WallJump_Move && AnimatedObject.CurrentFrame < 4)
+                        PlaySound(Rayman3SoundEvent.Play__HandTap2_Mix03);
+
+                    ActionId = Action.WallJump_Idle;
+                    Timer = 0;
+                }
+
+                Timer++;
+
+                if (ActionId == Action.WallJump_Idle && IsButtonJustPressed(GbaInput.A))
+                {
+                    State.MoveTo(Fsm_WallJump);
+                    return;
+                }
+
+                if ((ActionId == Action.WallJump_Idle && Timer > 60) ||
+                    (ActionId == Action.WallJump_IdleStill && Timer > 120))
+                {
+                    State.MoveTo(Fsm_WallJumpFall);
+                    return;
+                }
+
+                if (Flag1_3)
+                {
+                    Flag1_3 = false;
+                    State.MoveTo(Fsm_WallJumpFall);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                PlaySound(Rayman3SoundEvent.Stop__WallSlid_Mix02);
+                break;
+        }
+    }
+
+    private void Fsm_WallJumpFall(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                ActionId = Action.WallJump_Fall;
+                Timer = GameTime.ElapsedFrames;
+                PlaySound(Rayman3SoundEvent.Play__OnoPeur1_Mix03);
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return;
+
+                if (!IsOnWallJumpable())
+                {
+                    State.MoveTo(Fsm_Fall);
+                    return;
+                }
+
+                if (IsButtonJustPressed(GbaInput.L) && GameTime.ElapsedFrames - Timer > 20)
+                {
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+    }
+
     private void Fsm_Climb(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
@@ -2110,7 +2310,7 @@ public partial class Rayman
                 if (IsButtonPressed2(GbaInput.B) && CanAttackWithFist(1))
                 {
                     ActionId = IsFacingRight ? Action.Climb_BeginChargeFist_Right : Action.Climb_BeginChargeFist_Left;
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
 
@@ -2236,7 +2436,7 @@ public partial class Rayman
                 // Attack
                 if (IsButtonJustPressed(GbaInput.B) && CanAttackWithFoot())
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -2319,7 +2519,7 @@ public partial class Rayman
                 // Attack
                 if (IsButtonJustPressed(GbaInput.B) && CanAttackWithFoot())
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -2930,7 +3130,7 @@ public partial class Rayman
                     ActionId is Action.ThrowObjectUp_Right or Action.ThrowObjectUp_Left &&
                     AnimatedObject.CurrentFrame > 6)
                 {
-                    State.MoveTo(Fsm_ChargeAttack);
+                    State.MoveTo(Fsm_Attack);
                     return;
                 }
                 break;
@@ -3555,11 +3755,9 @@ public partial class Rayman
     }
 
     // TODO: Implement all of these
-    private void FUN_0802ce54(FsmAction action) { }
     private void FUN_080284ac(FsmAction action) { }
     private void FUN_0802ddac(FsmAction action) { }
     private void FUN_08033228(FsmAction action) { }
-    private void FUN_08031554(FsmAction action) { }
     private void FUN_080224f4(FsmAction action) { }
     private void FUN_1005dea0(FsmAction action) { }
     private void FUN_1005dfa4(FsmAction action) { }

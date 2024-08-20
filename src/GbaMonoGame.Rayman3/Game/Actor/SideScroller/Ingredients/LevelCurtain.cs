@@ -148,8 +148,6 @@ public sealed partial class LevelCurtain : ActionActor
             default:
                 return false;
         }
-
-        return false;
     }
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)

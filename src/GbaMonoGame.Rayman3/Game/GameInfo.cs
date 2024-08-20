@@ -328,7 +328,7 @@ public static class GameInfo
             Powers |= Power.Grab;
 
         if (mapId >= MapId.EchoingCaves_M2)
-            Powers |= Power.Climb;
+            Powers |= Power.WallJump;
 
         if (mapId >= MapId.SanctuaryOfStoneAndFire_M3)
             Powers |= Power.SuperHelico;

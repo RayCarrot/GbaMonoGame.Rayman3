@@ -45,7 +45,7 @@ public sealed partial class Ly : MovableActor
 
             case MapId.EchoingCaves_M2:
                 JoyPad.SetReplayData(Engine.Loader.Rayman3_NewPower3Replay.Inputs);
-                rayman.SetPowers(Power.Climb);
+                rayman.SetPowers(Power.WallJump);
                 break;
 
             case MapId.SanctuaryOfStoneAndFire_M3:
