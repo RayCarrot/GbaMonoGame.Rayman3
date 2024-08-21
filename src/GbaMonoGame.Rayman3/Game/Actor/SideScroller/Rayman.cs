@@ -157,7 +157,7 @@ public sealed partial class Rayman : MovableActor
             if (ReverseControlsTimer != 0)
                 input = ReverseControls(input);
 
-            SimpleJoyPad joyPad = MultiJoyPad.GetJoyPad(InstanceId);
+            SimpleJoyPad joyPad = MultiJoyPad.GetSimpleJoyPadForCurrentFrame(InstanceId);
             return joyPad.IsButtonPressed(input);
         }
         else
@@ -173,7 +173,7 @@ public sealed partial class Rayman : MovableActor
             if (ReverseControlsTimer != 0)
                 input = ReverseControls(input);
 
-            return MultiJoyPad.GetJoyPad(InstanceId).IsButtonReleased(input);
+            return MultiJoyPad.GetSimpleJoyPadForCurrentFrame(InstanceId).IsButtonReleased(input);
         }
         else
         {
@@ -188,7 +188,7 @@ public sealed partial class Rayman : MovableActor
             if (ReverseControlsTimer != 0)
                 input = ReverseControls(input);
 
-            return MultiJoyPad.GetJoyPad(InstanceId).IsButtonJustPressed(input);
+            return MultiJoyPad.GetSimpleJoyPadForCurrentFrame(InstanceId).IsButtonJustPressed(input);
         }
         else
         {
