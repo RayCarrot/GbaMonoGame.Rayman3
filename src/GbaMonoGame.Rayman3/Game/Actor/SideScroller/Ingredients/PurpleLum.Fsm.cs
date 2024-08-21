@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class PurpleLum
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -53,5 +53,7 @@ public partial class PurpleLum
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

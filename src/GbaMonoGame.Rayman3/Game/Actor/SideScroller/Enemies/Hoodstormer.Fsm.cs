@@ -27,7 +27,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private void Fsm_Wait(FsmAction action)
+    private bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -37,13 +37,14 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 // Check if in range of the main actor
                 if ((IsFacingRight && Scene.MainActor.Position.X - Position.X < 220) ||
                     (IsFacingLeft && Position.X - Scene.MainActor.Position.X < 220))
                 {
                     State.MoveTo(Fsm_Fly);
+                    return false;
                 }
                 break;
 
@@ -51,10 +52,12 @@ public partial class Hoodstormer
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
     // Unused
-    private void Fsm_Taunt(FsmAction action)
+    private bool Fsm_Taunt(FsmAction action)
     {
         switch (action)
         {
@@ -64,19 +67,24 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Fly(FsmAction action)
+    private bool Fsm_Fly(FsmAction action)
     {
         switch (action)
         {
@@ -95,19 +103,24 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 if (Scene.IsDetectedMainActor(this))
+                {
                     State.MoveTo(Fsm_Attack);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Attack(FsmAction action)
+    private bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -124,22 +137,27 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 if (AnimatedObject.CurrentFrame is 3 or 8 && !AnimatedObject.IsDelayMode)
                     ShootMissile();
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_FlyAway);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_FlyAway(FsmAction action)
+    private bool Fsm_FlyAway(FsmAction action)
     {
         switch (action)
         {
@@ -150,7 +168,7 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 if (!AnimatedObject.IsFramed)
                 {
@@ -166,9 +184,11 @@ public partial class Hoodstormer
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -183,12 +203,17 @@ public partial class Hoodstormer
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

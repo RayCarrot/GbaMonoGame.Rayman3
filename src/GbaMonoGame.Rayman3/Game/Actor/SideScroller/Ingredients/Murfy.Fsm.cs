@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
@@ -23,7 +22,7 @@ public partial class Murfy
         return true;
     }
 
-    private void Fsm_PreInit(FsmAction action)
+    private bool Fsm_PreInit(FsmAction action)
     {
         switch (action)
         {
@@ -35,15 +34,17 @@ public partial class Murfy
                 InitialPosition = Position;
                 TextBox = Scene.GetRequiredDialog<TextBoxDialog>();
                 State.MoveTo(Fsm_Init);
-                break;
+                return false;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Init(FsmAction action)
+    private bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -54,17 +55,23 @@ public partial class Murfy
 
             case FsmAction.Step:
                 MechModel.Speed = Vector2.Zero;
+
                 if (ShouldSpawn)
+                {
                     State.MoveTo(Fsm_WaitToSpawn);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 SetText();
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_WaitToSpawn(FsmAction action)
+    private bool Fsm_WaitToSpawn(FsmAction action)
     {
         switch (action)
         {
@@ -78,6 +85,7 @@ public partial class Murfy
                 {
                     MoveTextBoxIn = false;
                     State.MoveTo(Fsm_MoveIn);
+                    return false;
                 }
                 break;
 
@@ -85,9 +93,11 @@ public partial class Murfy
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveIn(FsmAction action)
+    private bool Fsm_MoveIn(FsmAction action)
     {
         switch (action)
         {
@@ -196,16 +206,21 @@ public partial class Murfy
 
                 // If stopped moving
                 if (SavedSpeed == Vector2.Zero && ActionId is not (Action.BeginIdle_Right or Action.BeginIdle_Left))
+                {
                     State.MoveTo(Fsm_Talk);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Talk(FsmAction action)
+    private bool Fsm_Talk(FsmAction action)
     {
         switch (action)
         {
@@ -218,7 +233,7 @@ public partial class Murfy
 
             case FsmAction.Step:
                 if (!FsmStep_AdvanceText())
-                    return;
+                    return false;
 
                 Timer++;
 
@@ -268,14 +283,14 @@ public partial class Murfy
                 {
                     MoveTextBoxIn = true;
                     State.MoveTo(Fsm_MoveIn);
-                    return;
+                    return false;
                 }
 
                 // Unused since Rayman can't attack while in a cutscene
                 if (isBeingAttacked)
                 {
                     State.MoveTo(Fsm_AvoidAttack);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -283,9 +298,11 @@ public partial class Murfy
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_AvoidAttack(FsmAction action)
+    private bool Fsm_AvoidAttack(FsmAction action)
     {
         switch (action)
         {
@@ -297,7 +314,7 @@ public partial class Murfy
 
             case FsmAction.Step:
                 if (!FsmStep_AdvanceText())
-                    return;
+                    return false;
 
                 bool isSafe = true;
                 Rayman rayman = (Rayman)TargetActor;
@@ -322,6 +339,7 @@ public partial class Murfy
                 {
                     MoveTextBoxIn = true;
                     State.MoveTo(Fsm_MoveIn);
+                    return false;
                 }
                 break;
 
@@ -329,9 +347,11 @@ public partial class Murfy
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Leave(FsmAction action)
+    private bool Fsm_Leave(FsmAction action)
     {
         switch (action)
         {
@@ -352,7 +372,10 @@ public partial class Murfy
                 MechModel.Speed = SavedSpeed;
 
                 if (ScreenPosition.Y < -10)
+                {
                     State.MoveTo(Fsm_Init);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -363,5 +386,7 @@ public partial class Murfy
                     Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                 break;
         }
+
+        return true;
     }
 }

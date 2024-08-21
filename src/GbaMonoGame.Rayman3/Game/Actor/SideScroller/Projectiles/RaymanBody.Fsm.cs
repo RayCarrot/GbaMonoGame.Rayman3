@@ -54,7 +54,7 @@ public partial class RaymanBody
         return true;
     }
 
-    private void Fsm_Wait(FsmAction action)
+    private bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -64,18 +64,27 @@ public partial class RaymanBody
 
             case FsmAction.Step:
                 if (BodyPartType == RaymanBodyPartType.HitEffect)
+                {
                     State.MoveTo(Fsm_HitEffect);
-                else if (ActionId != 0)
+                    return false;
+                }
+                
+                if (ActionId != 0)
+                {
                     State.MoveTo(Fsm_MoveForward);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveForward(FsmAction action)
+    private bool Fsm_MoveForward(FsmAction action)
     {
         switch (action)
         {
@@ -93,7 +102,9 @@ public partial class RaymanBody
 
             case FsmAction.Step:
                 if (!FsmStep_CheckCollision())
-                    return;
+                    return false;
+
+                bool reverseDirection = false;
 
                 ChargePower--;
 
@@ -107,7 +118,7 @@ public partial class RaymanBody
                     if (Speed.Y < 2)
                     {
                         ActionId = IsFacingRight ? 15 : 16;
-                        State.MoveTo(Fsm_MoveBackwards);
+                        reverseDirection = true;
                     }
                 }
                 // Turn around fist or foot
@@ -116,13 +127,19 @@ public partial class RaymanBody
                     if (IsFacingRight && Speed.X < 2)
                     {
                         ActionId = BaseActionId + 4;
-                        State.MoveTo(Fsm_MoveBackwards);
+                        reverseDirection = true;
                     }
                     else if (IsFacingLeft && Speed.X > -2)
                     {
                         ActionId = BaseActionId + 3;
-                        State.MoveTo(Fsm_MoveBackwards);
+                        reverseDirection = true;
                     }
+                }
+
+                if (reverseDirection)
+                {
+                    State.MoveTo(Fsm_MoveBackwards);
+                    return false;
                 }
                 break;
 
@@ -130,9 +147,11 @@ public partial class RaymanBody
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveBackwards(FsmAction action)
+    private bool Fsm_MoveBackwards(FsmAction action)
     {
         switch (action)
         {
@@ -142,7 +161,7 @@ public partial class RaymanBody
             
             case FsmAction.Step:
                 if (!FsmStep_CheckCollision())
-                    return;
+                    return false;
 
                 float bodyPos1;
                 float raymanPos1;
@@ -212,7 +231,7 @@ public partial class RaymanBody
                 if (remainingDist < 25)
                 {
                     State.MoveTo(Fsm_Wait);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -230,9 +249,11 @@ public partial class RaymanBody
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_HitEffect(FsmAction action)
+    private bool Fsm_HitEffect(FsmAction action)
     {
         switch (action)
         {
@@ -242,7 +263,10 @@ public partial class RaymanBody
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -252,5 +276,7 @@ public partial class RaymanBody
                 AnimatedObject.YPriority = 32;
                 break;
         }
+
+        return true;
     }
 }

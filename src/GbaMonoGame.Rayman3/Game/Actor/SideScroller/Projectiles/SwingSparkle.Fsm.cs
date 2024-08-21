@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class SwingSparkle
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -31,7 +31,10 @@ public partial class SwingSparkle
                     Value = rayman.PreviousXSpeed - 30;
 
                 if (finished)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -40,5 +43,7 @@ public partial class SwingSparkle
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

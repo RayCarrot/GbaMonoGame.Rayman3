@@ -25,7 +25,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -66,7 +66,7 @@ public partial class WoodenShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
@@ -93,6 +93,7 @@ public partial class WoodenShieldedHoodboom
                     (IsActionFinished && (Flags & 0x80) != 0))
                 {
                     State.MoveTo(Fsm_PrepareGrenade);
+                    return false;
                 }
                 break;
 
@@ -100,9 +101,11 @@ public partial class WoodenShieldedHoodboom
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_PrepareGrenade(FsmAction action)
+    private bool Fsm_PrepareGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -115,21 +118,26 @@ public partial class WoodenShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (AnimatedObject.CurrentFrame == 10)
+                {
                     State.MoveTo(Fsm_ThrowGrenade);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ThrowGrenade(FsmAction action)
+    private bool Fsm_ThrowGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -168,21 +176,26 @@ public partial class WoodenShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Hit(FsmAction action)
+    private bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -224,7 +237,7 @@ public partial class WoodenShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
@@ -240,7 +253,10 @@ public partial class WoodenShieldedHoodboom
                 }
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -248,9 +264,11 @@ public partial class WoodenShieldedHoodboom
                     Flags = (byte)(Flags & 0xef);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -276,5 +294,7 @@ public partial class WoodenShieldedHoodboom
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class LavaSplash
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -43,5 +43,7 @@ public partial class LavaSplash
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

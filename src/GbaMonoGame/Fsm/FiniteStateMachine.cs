@@ -45,7 +45,7 @@ public class FiniteStateMachine
         return !(stateMachine == state);
     }
 
-    public delegate void Fsm(FsmAction action);
+    public delegate bool Fsm(FsmAction action);
 
     public override string ToString()
     {

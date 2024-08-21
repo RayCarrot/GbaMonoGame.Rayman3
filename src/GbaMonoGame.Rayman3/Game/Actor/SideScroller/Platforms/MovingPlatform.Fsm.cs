@@ -16,7 +16,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private void Fsm_Move(FsmAction action)
+    private bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -45,7 +45,7 @@ public partial class MovingPlatform
 
             case FsmAction.Step:
                 if (!FsmStep_UpdatePreviousValidDirectionalType())
-                    return;
+                    return false;
 
                 // Return to normal action if the impact has finished
                 if (ActionId == Action.Impact && IsActionFinished)
@@ -132,7 +132,7 @@ public partial class MovingPlatform
                 if (Fire != null)
                 {
                     State.MoveTo(Fsm_Burn);
-                    return;
+                    return false;
                 }
 
                 // Return platform if main actor has moved away
@@ -140,19 +140,19 @@ public partial class MovingPlatform
                 {
                     PreviousPhysicalType = PhysicalTypeValue.None;
                     State.MoveTo(Fsm_MoveReverse);
-                    return;
+                    return false;
                 }
 
                 if (IsDirectionalType(CurrentDirectionalType) && IsActivated)
                 {
                     State.MoveTo(Fsm_Move);
-                    return;
+                    return false;
                 }
 
                 if (CurrentDirectionalType == PhysicalTypeValue.MovingPlatform_FullStop)
                 {
                     State.MoveTo(Fsm_Stop);
-                    return;
+                    return false;
                 }
                 break;
             
@@ -160,9 +160,11 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveReverse(FsmAction action)
+    private bool Fsm_MoveReverse(FsmAction action)
     {
         switch (action)
         {
@@ -192,7 +194,7 @@ public partial class MovingPlatform
 
             case FsmAction.Step:
                 if (!FsmStep_UpdatePreviousValidDirectionalType())
-                    return;
+                    return false;
 
                 // Return to normal action if the impact has finished
                 if (ActionId == Action.Impact && IsActionFinished)
@@ -260,13 +262,13 @@ public partial class MovingPlatform
                     CurrentDirectionalType = PhysicalTypeValue.MovingPlatform_Stop;
                     PreviousPhysicalType = PhysicalTypeValue.None;
                     State.MoveTo(Fsm_Move);
-                    return;
+                    return false;
                 }
 
                 if (IsDirectionalType(CurrentDirectionalType) && IsActivated)
                 {
                     State.MoveTo(Fsm_MoveReverse);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -274,9 +276,11 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Stop(FsmAction action)
+    private bool Fsm_Stop(FsmAction action)
     {
         switch (action)
         {
@@ -325,9 +329,11 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Burn(FsmAction action)
+    private bool Fsm_Burn(FsmAction action)
     {
         switch (action)
         {
@@ -391,9 +397,11 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Respawn(FsmAction action)
+    private bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {
@@ -424,9 +432,11 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveAccelerated(FsmAction action)
+    private bool Fsm_MoveAccelerated(FsmAction action)
     {
         switch (action)
         {
@@ -521,7 +531,7 @@ public partial class MovingPlatform
                 if (CurrentDirectionalType == AcceleratedInfos[currentActionId].NextType)
                 {
                     State.MoveTo(Fsm_MoveAccelerated);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -529,5 +539,7 @@ public partial class MovingPlatform
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

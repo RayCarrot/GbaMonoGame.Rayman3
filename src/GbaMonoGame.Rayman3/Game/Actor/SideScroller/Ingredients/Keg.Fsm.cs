@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Keg
 {
-    private void Fsm_WaitingToFall(FsmAction action)
+    private bool Fsm_WaitingToFall(FsmAction action)
     {
         switch (action)
         {
@@ -40,6 +40,7 @@ public partial class Keg
                 {
                     ShouldDraw = true;
                     State.MoveTo(Fsm_Falling);
+                    return false;
                 }
                 break;
 
@@ -47,9 +48,11 @@ public partial class Keg
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Falling(FsmAction action)
+    private bool Fsm_Falling(FsmAction action)
     {
         switch (action)
         {
@@ -74,6 +77,7 @@ public partial class Keg
                     Position = InitialPos;
                     
                     State.MoveTo(Fsm_WaitingToFall);
+                    return false;
                 }
                 break;
 
@@ -81,9 +85,11 @@ public partial class Keg
                 Timer = 0;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_InitBossMachine(FsmAction action)
+    private bool Fsm_InitBossMachine(FsmAction action)
     {
         switch (action)
         {
@@ -121,7 +127,10 @@ public partial class Keg
                 }
 
                 if (Timer != 0 && ActionId == Action.Bounce && Speed.Y == 0)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -130,9 +139,11 @@ public partial class Keg
                 AnimatedObject.SpritePriority = 1;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -145,16 +156,21 @@ public partial class Keg
                     Scene.MainActor.ProcessMessage(this, Message.Main_PickUpObject, this);
 
                 if (Scene.IsDetectedMainActor(this) && ((Rayman)Scene.MainActor).AttachedObject == this)
+                {
                     State.MoveTo(Fsm_PickedUp);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_PickedUp(FsmAction action)
+    private bool Fsm_PickedUp(FsmAction action)
     {
         switch (action)
         {
@@ -170,9 +186,11 @@ public partial class Keg
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Drop(FsmAction action)
+    private bool Fsm_Drop(FsmAction action)
     {
         switch (action)
         {
@@ -192,13 +210,13 @@ public partial class Keg
                 if (landed && GameInfo.MapId == MapId.BossMachine)
                 {
                     State.MoveTo(Fsm_InitBossMachine);
-                    return;
+                    return false;
                 }
 
                 if (landed)
                 {
                     State.MoveTo(Fsm_Respawn);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -206,9 +224,11 @@ public partial class Keg
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ThrownUp(FsmAction action)
+    private bool Fsm_ThrownUp(FsmAction action)
     {
         switch (action)
         {
@@ -258,19 +278,19 @@ public partial class Keg
                 if (Scene.IsDetectedMainActor(this) && ((Rayman)Scene.MainActor).AttachedObject == this && Speed.Y > 0)
                 {
                     State.MoveTo(Fsm_PickedUp);
-                    return;
+                    return false;
                 }
 
                 if (landed && GameInfo.MapId == MapId.BossMachine)
                 {
                     State.MoveTo(Fsm_InitBossMachine);
-                    return;
+                    return false;
                 }
 
                 if (landed)
                 {
                     State.MoveTo(Fsm_Respawn);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -278,9 +298,11 @@ public partial class Keg
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ThrownForward(FsmAction action)
+    private bool Fsm_ThrownForward(FsmAction action)
     {
         switch (action)
         {
@@ -323,13 +345,13 @@ public partial class Keg
                 if (landed && GameInfo.MapId == MapId.BossMachine)
                 {
                     State.MoveTo(Fsm_InitBossMachine);
-                    return;
+                    return false;
                 }
 
                 if (landed)
                 {
                     State.MoveTo(Fsm_Respawn);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -337,9 +359,11 @@ public partial class Keg
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Respawn(FsmAction action)
+    private bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {
@@ -382,15 +406,23 @@ public partial class Keg
                 }
 
                 if (Timer > 240)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
     // TODO: Implement
-    private void FUN_08063fe4(FsmAction action) { }
+    private bool FUN_08063fe4(FsmAction action)
+    {
+        return true;
+    }
 }

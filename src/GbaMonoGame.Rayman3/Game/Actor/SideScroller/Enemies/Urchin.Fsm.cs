@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Urchin
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -30,12 +30,17 @@ public partial class Urchin
                     GameInfo.ActorSoundFlags |= ActorSoundFlags.Urchin;
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

@@ -44,7 +44,7 @@ public partial class RedPirate
         return true;
     }
 
-    private void Fsm_Fall(FsmAction action)
+    private bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {
@@ -65,16 +65,21 @@ public partial class RedPirate
 
                 // Wait for landing to finish
                 if (IsActionFinished && ActionId is Action.Land_Right or Action.Land_Left)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -88,20 +93,20 @@ public partial class RedPirate
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!FsmStep_DoInteractable())
-                    return;
+                    return false;
 
                 // 180 frames and not detected main actor...
                 if (GameTime.ElapsedFrames - IdleDetectionTimer > 180 && !Scene.IsDetectedMainActor(this))
                 {
                     State.MoveTo(Fsm_Walk);
-                    return;
+                    return false;
                 }
 
                 // 75 frames and detected main actor...
                 if (GameTime.ElapsedFrames - AttackTimer > 75 && Scene.IsDetectedMainActor(this))
                 {
                     State.MoveTo(Fsm_Attack);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -109,9 +114,11 @@ public partial class RedPirate
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Walk(FsmAction action)
+    private bool Fsm_Walk(FsmAction action)
     {
         switch (action)
         {
@@ -123,7 +130,7 @@ public partial class RedPirate
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!FsmStep_DoInteractable())
-                    return;
+                    return false;
 
                 // Reverse direction
                 if (Speed.X == 0)
@@ -132,16 +139,21 @@ public partial class RedPirate
                 Walk();
 
                 if (Scene.IsDetectedMainActor(this))
+                {
                     State.MoveTo(Fsm_Attack);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 Ammo = Random.GetNumber(1) + 1;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Attack(FsmAction action)
+    private bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -160,7 +172,7 @@ public partial class RedPirate
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!FsmStep_DoInteractable())
-                    return;
+                    return false;
 
                 if (AnimatedObject.CurrentFrame == 6 && 
                     ActionId is Action.Shoot_Right or Action.Shoot_Left &&
@@ -171,16 +183,21 @@ public partial class RedPirate
                 }
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Hit(FsmAction action)
+    private bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -197,7 +214,7 @@ public partial class RedPirate
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!FsmStep_DoInteractable())
-                    return;
+                    return false;
 
                 // Allow 20 frames to be double hit and cause a hit knock-back
                 if (GameTime.ElapsedFrames - DoubleHitTimer > 20)
@@ -205,6 +222,7 @@ public partial class RedPirate
                     StartInvulnerability();
                     Ammo = 2;
                     State.MoveTo(Fsm_Attack);
+                    return false;
                 }
                 break;
 
@@ -212,9 +230,11 @@ public partial class RedPirate
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_HitKnockBack(FsmAction action)
+    private bool Fsm_HitKnockBack(FsmAction action)
     {
         switch (action)
         {
@@ -242,14 +262,14 @@ public partial class RedPirate
                 {
                     Ammo = 1;
                     State.MoveTo(Fsm_Dying);
-                    return;
+                    return false;
                 }
-                
+
                 if (type.IsSolid)
                 {
                     Ammo = 1;
                     State.MoveTo(Fsm_ReturnFromKnockBack);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -257,9 +277,11 @@ public partial class RedPirate
                 CheckAgainstMapCollision = true;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ReturnFromKnockBack(FsmAction action)
+    private bool Fsm_ReturnFromKnockBack(FsmAction action)
     {
         switch (action)
         {
@@ -275,6 +297,7 @@ public partial class RedPirate
                 {
                     Position = Position with { X = KnockBackPosition.X };
                     State.MoveTo(Fsm_Attack);
+                    return false;
                 }
                 break;
 
@@ -282,9 +305,11 @@ public partial class RedPirate
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -313,5 +338,7 @@ public partial class RedPirate
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

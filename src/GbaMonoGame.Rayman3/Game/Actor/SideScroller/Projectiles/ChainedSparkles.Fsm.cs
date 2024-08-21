@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class ChainedSparkles
 {
-    private void FUN_08060930(FsmAction action)
+    private bool FUN_08060930(FsmAction action)
     {
         switch (action)
         {
@@ -23,9 +23,11 @@ public partial class ChainedSparkles
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_NewPower(FsmAction action)
+    private bool Fsm_NewPower(FsmAction action)
     {
         switch (action)
         {
@@ -61,6 +63,7 @@ public partial class ChainedSparkles
                 {
                     ProcessMessage(this, Message.Destroy);
                     State.MoveTo(Fsm_NewPower);
+                    return false;
                 }
                 break;
 
@@ -68,9 +71,11 @@ public partial class ChainedSparkles
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void FUN_08060f58(FsmAction action)
+    private bool FUN_08060f58(FsmAction action)
     {
         throw new NotImplementedException();
 

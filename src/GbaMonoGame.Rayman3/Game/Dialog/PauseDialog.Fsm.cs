@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class PauseDialog
 {
-    private void Fsm_CheckSelection(FsmAction action)
+    private bool Fsm_CheckSelection(FsmAction action)
     {
         switch (action)
         {
@@ -186,19 +186,19 @@ public partial class PauseDialog
                 if (resume)
                 {
                     State.MoveTo(null);
-                    return;
+                    return false;
                 }
 
                 if (Engine.Settings.Platform == Platform.GBA && sleepMode)
                 {
                     State.MoveTo(Fsm_SleepMode);
-                    return;
+                    return false;
                 }
 
                 if (quitGame)
                 {
                     State.MoveTo(Fsm_QuitGame);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -206,9 +206,11 @@ public partial class PauseDialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_SleepMode(FsmAction action)
+    private bool Fsm_SleepMode(FsmAction action)
     {
         // This is implemented differently in the original game. It has loops where it calls
         // vsync here and does bios calls to trigger the sleep mode. We just try and simulate
@@ -225,7 +227,10 @@ public partial class PauseDialog
 
                 // Text displays for 3 seconds
                 if (SleepModeTimer > 180)
+                {
                     State.MoveTo(Fsm_CheckSelection);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -233,9 +238,11 @@ public partial class PauseDialog
                 DrawStep = PauseDialogDrawStep.Hide;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_QuitGame(FsmAction action)
+    private bool Fsm_QuitGame(FsmAction action)
     {
         switch (action)
         {
@@ -259,6 +266,8 @@ public partial class PauseDialog
                 break;
 
             case FsmAction.Step:
+                bool goBack = false;
+
                 int resumeOptionIndex = Engine.Settings.Platform switch
                 {
                     Platform.GBA => 1,
@@ -322,7 +331,7 @@ public partial class PauseDialog
                         throw new UnsupportedPlatformException();
                     }
 
-                    State.MoveTo(Fsm_CheckSelection);
+                    goBack = true;
                 }
                 else if (JoyPad.IsButtonJustPressed(GbaInput.A) && SelectedOption == quitOptionIndex)
                 {
@@ -344,11 +353,19 @@ public partial class PauseDialog
                     if (Engine.Settings.Platform == Platform.GBA)
                         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
                 }
+
+                if (goBack)
+                {
+                    State.MoveTo(Fsm_CheckSelection);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

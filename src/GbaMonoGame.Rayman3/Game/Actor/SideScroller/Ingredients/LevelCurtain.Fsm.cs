@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class LevelCurtain
 {
-    private void Fsm_Locked(FsmAction action)
+    private bool Fsm_Locked(FsmAction action)
     {
         switch (action)
         {
@@ -39,9 +39,11 @@ public partial class LevelCurtain
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Unlocked(FsmAction action)
+    private bool Fsm_Unlocked(FsmAction action)
     {
         switch (action)
         {
@@ -50,6 +52,8 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.Step:
+                bool enterCurtain = false;
+
                 if (Scene.IsDetectedMainActor(this) && Scene.MainActor.Speed.Y == 0)
                 {
                     ((World)Frame.Current).UserInfo.SetLevelInfoBar(InitialActionId);
@@ -60,8 +64,7 @@ public partial class LevelCurtain
                         JoyPad.IsButtonReleased(GbaInput.Right) &&
                         !((World)Frame.Current).UserInfo.Hide)
                     {
-                        Scene.MainActor.ProcessMessage(this, Message.Main_Stop);
-                        State.MoveTo(Fsm_EnterCurtain);
+                        enterCurtain = true;
                     }
                     else
                     {
@@ -81,15 +84,24 @@ public partial class LevelCurtain
                     if (!Scene.KeepAllObjectsActive || AnimatedObject.IsFramed)
                         Scene.MainActor.ProcessMessage(this, Message.Main_EndInFrontOfLevelCurtain);
                 }
+
+                if (enterCurtain)
+                {
+                    Scene.MainActor.ProcessMessage(this, Message.Main_Stop);
+                    State.MoveTo(Fsm_EnterCurtain);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_EnterCurtain(FsmAction action)
+    private bool Fsm_EnterCurtain(FsmAction action)
     {
         switch (action)
         {
@@ -103,6 +115,8 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.Step:
+                bool transitionToLevel = false;
+
                 if (IsActionFinished)
                 {
                     if (ActionId == 33)
@@ -118,8 +132,14 @@ public partial class LevelCurtain
                     }
                     else
                     {
-                        State.MoveTo(Fsm_TransitionToLevel);
+                        transitionToLevel = true;
                     }
+                }
+
+                if (transitionToLevel)
+                {
+                    State.MoveTo(Fsm_TransitionToLevel);
+                    return false;
                 }
                 break;
 
@@ -127,9 +147,11 @@ public partial class LevelCurtain
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_TransitionToLevel(FsmAction action)
+    private bool Fsm_TransitionToLevel(FsmAction action)
     {
         switch (action)
         {
@@ -140,7 +162,10 @@ public partial class LevelCurtain
 
             case FsmAction.Step:
                 if (!((World)Frame.Current).IsTransitioningOut())
+                {
                     State.MoveTo(Fsm_Unlocked);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -149,5 +174,7 @@ public partial class LevelCurtain
                 GameInfo.LoadLevel(MapId);
                 break;
         }
+
+        return true;
     }
 }

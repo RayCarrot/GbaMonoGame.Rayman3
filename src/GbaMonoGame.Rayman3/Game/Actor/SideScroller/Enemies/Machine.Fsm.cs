@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Machine
 {
-    private void Fsm_Init(FsmAction action)
+    private bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -45,22 +45,33 @@ public partial class Machine
 
                 // Cog wheel part
                 if (BossHealth is 1 or 2 or 3)
+                {
                     State.MoveTo(Fsm_CogWheelSpinning);
+                    return false;
+                }
                 // Parent if died at least once
                 else if (BossHealth == 4 && GameInfo.LastGreenLumAlive != 0)
+                {
                     State.MoveTo(Fsm_CannonFire);
+                    return false;
+                }
                 // Parent first time
                 else if (BossHealth == 4 && GameInfo.LastGreenLumAlive == 0)
+                {
                     State.MoveTo(Fsm_CannonIntro);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_CogWheelSpinning(FsmAction action)
+    private bool Fsm_CogWheelSpinning(FsmAction action)
     {
         switch (action)
         {
@@ -97,16 +108,21 @@ public partial class Machine
                 }
 
                 if (CogDestroyed)
+                {
                     State.MoveTo(Fsm_PartDestroyed);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_PartDestroyed(FsmAction action)
+    private bool Fsm_PartDestroyed(FsmAction action)
     {
         switch (action)
         {
@@ -128,16 +144,21 @@ public partial class Machine
                 AnimatedObject.AffineMatrix = new AffineMatrix(Rotation, scale, scale);
 
                 if (ScreenPosition.Y > Scene.Resolution.Y)
+                {
                     State.MoveTo(Fsm_Init);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_CannonIntro(FsmAction action)
+    private bool Fsm_CannonIntro(FsmAction action)
     {
         switch (action)
         {
@@ -182,7 +203,10 @@ public partial class Machine
                 }
 
                 if (Timer > 190 && ActionId == Action.CannonIdle2 && IsActionFinished)
+                {
                     State.MoveTo(Fsm_CannonFire);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -194,9 +218,11 @@ public partial class Machine
                 }
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_CannonFire(FsmAction action)
+    private bool Fsm_CannonFire(FsmAction action)
     {
         switch (action)
         {
@@ -256,16 +282,21 @@ public partial class Machine
                 }
 
                 if (BossHealth == 0)
+                {
                     State.MoveTo(Fsm_CannonDestroyed);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_CannonDestroyed(FsmAction action)
+    private bool Fsm_CannonDestroyed(FsmAction action)
     {
         switch (action)
         {
@@ -309,6 +340,7 @@ public partial class Machine
                 {
                     BossHealth = 0;
                     State.MoveTo(Fsm_PartDestroyed);
+                    return false;
                 }
                 break;
 
@@ -316,5 +348,7 @@ public partial class Machine
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

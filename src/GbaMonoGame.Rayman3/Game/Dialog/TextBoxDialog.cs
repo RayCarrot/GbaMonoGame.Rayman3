@@ -145,7 +145,7 @@ public class TextBoxDialog : Dialog
 
     #region FSM
 
-    private void Fsm_MoveIn(FsmAction action)
+    private bool Fsm_MoveIn(FsmAction action)
     {
         switch (action)
         {
@@ -162,6 +162,7 @@ public class TextBoxDialog : Dialog
                 {
                     OffsetY = 0;
                     State.MoveTo(Fsm_WaitForNextText);
+                    return false;
                 }
                 break;
 
@@ -169,9 +170,11 @@ public class TextBoxDialog : Dialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_WaitForNextText(FsmAction action)
+    private bool Fsm_WaitForNextText(FsmAction action)
     {
         switch (action)
         {
@@ -185,6 +188,7 @@ public class TextBoxDialog : Dialog
                     NextText = false;
                     CurrentTextLine += TextObjects.Length;
                     State.MoveTo(Fsm_TransitionTextOut);
+                    return false;
                 }
                 break;
 
@@ -192,9 +196,11 @@ public class TextBoxDialog : Dialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_TransitionTextOut(FsmAction action)
+    private bool Fsm_TransitionTextOut(FsmAction action)
     {
         switch (action)
         {
@@ -205,6 +211,8 @@ public class TextBoxDialog : Dialog
                 break;
 
             case FsmAction.Step:
+                bool transitionIn = false;
+
                 if (!IsFinished)
                 {
                     TextTransitionValue++;
@@ -213,6 +221,8 @@ public class TextBoxDialog : Dialog
 
                     if (TextTransitionValue > 8)
                     {
+                        transitionIn = true;
+
                         if (CurrentTextLine >= CurrentText.Length)
                         {
                             CurrentTextLine = 0;
@@ -221,9 +231,13 @@ public class TextBoxDialog : Dialog
                             ShouldPlayedMurfySound = true;
                             IsFinished = true;
                         }
-
-                        State.MoveTo(Fsm_TransitionTextIn);
                     }
+                }
+
+                if (transitionIn)
+                {
+                    State.MoveTo(Fsm_TransitionTextIn);
+                    return false;
                 }
                 break;
 
@@ -231,9 +245,11 @@ public class TextBoxDialog : Dialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_TransitionTextIn(FsmAction action)
+    private bool Fsm_TransitionTextIn(FsmAction action)
     {
         switch (action)
         {
@@ -242,6 +258,8 @@ public class TextBoxDialog : Dialog
                 break;
 
             case FsmAction.Step:
+                bool finished = false;
+
                 if (Timer != 0)
                 {
                     if (TextObjects.Length == 3)
@@ -267,8 +285,6 @@ public class TextBoxDialog : Dialog
                 {
                     TextTransitionValue--;
 
-                    bool finished = false;
-
                     if (TextTransitionValue < 1)
                     {
                         TextTransitionValue = 1;
@@ -277,9 +293,12 @@ public class TextBoxDialog : Dialog
 
                     foreach (SpriteTextObject textObj in TextObjects)
                         textObj.AffineMatrix = new AffineMatrix(1, 0, 0, TextTransitionValue);
+                }
 
-                    if (finished)
-                        State.MoveTo(Fsm_WaitForNextText);
+                if (finished)
+                {
+                    State.MoveTo(Fsm_WaitForNextText);
+                    return false;
                 }
                 break;
 
@@ -287,9 +306,11 @@ public class TextBoxDialog : Dialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveOut(FsmAction action)
+    private bool Fsm_MoveOut(FsmAction action)
     {
         switch (action)
         {
@@ -303,6 +324,7 @@ public class TextBoxDialog : Dialog
                 {
                     OffsetY = 45;
                     State.MoveTo(null);
+                    return false;
                 }
                 break;
 
@@ -310,6 +332,8 @@ public class TextBoxDialog : Dialog
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
     #endregion

@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Missile
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -51,7 +51,10 @@ public partial class Missile
                 }
 
                 if (finished)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -62,5 +65,7 @@ public partial class Missile
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

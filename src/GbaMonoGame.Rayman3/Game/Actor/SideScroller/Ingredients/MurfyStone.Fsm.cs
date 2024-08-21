@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class MurfyStone
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -59,5 +59,7 @@ public partial class MurfyStone
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

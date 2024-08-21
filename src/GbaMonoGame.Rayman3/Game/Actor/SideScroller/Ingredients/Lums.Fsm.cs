@@ -1,6 +1,4 @@
 ﻿using System;
-using BinarySerializer.Nintendo.GBA;
-using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
@@ -8,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Lums
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -40,7 +38,7 @@ public partial class Lums
                 }
 
                 // Lums have 3 random animations they cycle between, showing different sparkles
-                if (AnimatedObject.EndOfAnimation)
+                if (IsActionFinished)
                 {
                     if (ActionId == Action.BlueLum)
                     {
@@ -57,16 +55,21 @@ public partial class Lums
                 }
 
                 if (collected)
+                {
                     State.MoveTo(Fsm_Collected);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Collected(FsmAction action)
+    private bool Fsm_Collected(FsmAction action)
     {
         switch (action)
         {
@@ -75,7 +78,7 @@ public partial class Lums
                 {
                     // Check if the timer finished and the lum should just despawn
                     if (BossDespawnTimer == 1)
-                        return;
+                        return true;
 
                     BossDespawnTimer = 0;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumBleu_Mix02);
@@ -143,20 +146,16 @@ public partial class Lums
                 break;
 
             case FsmAction.Step:
-                if (AnimatedObject.EndOfAnimation)
+                if (IsActionFinished && ActionId == Action.BlueLum && GameInfo.MapId != MapId.BossRockAndLava)
                 {
-                    if (ActionId == Action.BlueLum && GameInfo.MapId != MapId.BossRockAndLava)
-                    {
-                        State.MoveTo(FUN_0805e6b8);
-                    }
-                    else
-                    {
-                        State.MoveTo(Fsm_Idle);
-
-                        // N-Gage doesn't do this for some reason
-                        if (Engine.Settings.Platform == Platform.GBA && GameInfo.MapId == MapId.BossRockAndLava)
-                            BossDespawnTimer = 0;
-                    }
+                    State.MoveTo(FUN_0805e6b8);
+                    return false;
+                }
+                
+                if (IsActionFinished)
+                {
+                    State.MoveTo(Fsm_Idle);
+                    return false;
                 }
                 break;
 
@@ -165,11 +164,13 @@ public partial class Lums
                     ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 
     // TODO: Implement
-    private void FUN_0805ed40(FsmAction action) { }
-    private void FUN_0805e6b8(FsmAction action) { }
-    private void FUN_0805e83c(FsmAction action) { }
-    private void FUN_0805e844(FsmAction action) { }
+    private bool FUN_0805ed40(FsmAction action) => true;
+    private bool FUN_0805e6b8(FsmAction action) => true;
+    private bool FUN_0805e83c(FsmAction action) => true;
+    private bool FUN_0805e844(FsmAction action) => true;
 }

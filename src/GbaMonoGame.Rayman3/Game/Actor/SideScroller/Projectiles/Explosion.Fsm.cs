@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Explosion
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -14,7 +14,10 @@ public partial class Explosion
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -22,5 +25,7 @@ public partial class Explosion
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

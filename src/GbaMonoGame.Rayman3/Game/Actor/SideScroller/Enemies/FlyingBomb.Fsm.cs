@@ -17,7 +17,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private void Fsm_Move(FsmAction action)
+    private bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -35,7 +35,7 @@ public partial class FlyingBomb
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 // Play sound for helicopter bombs
                 if ((ActorType)Type == ActorType.HelicopterBomb)
@@ -104,7 +104,7 @@ public partial class FlyingBomb
                 if (Destroyed || HitWall())
                 {
                     State.MoveTo(Fsm_Destroyed);
-                    return;
+                    return false;
                 }
 
                 if (CurrentDirectionalType is 
@@ -114,7 +114,7 @@ public partial class FlyingBomb
                     PhysicalTypeValue.Enemy_Down)
                 {
                     State.MoveTo(Fsm_Move);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -122,9 +122,11 @@ public partial class FlyingBomb
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Destroyed(FsmAction action)
+    private bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {
@@ -146,7 +148,7 @@ public partial class FlyingBomb
                     explosion.Position = Position;
 
                 State.MoveTo(Fsm_Move);
-                break;
+                return false;
 
             case FsmAction.UnInit:
                 CurrentDirectionalType = null;
@@ -155,15 +157,17 @@ public partial class FlyingBomb
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 
     // FUN_0803a2fc
-    private void FUN_10011270(FsmAction action)
+    private bool FUN_10011270(FsmAction action)
     {
         throw new NotImplementedException();
     }
 
-    private void Fsm_Stationary(FsmAction action)
+    private bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -173,7 +177,7 @@ public partial class FlyingBomb
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 // Damage main actor
                 if (Scene.IsHitMainActor(this))
@@ -184,12 +188,17 @@ public partial class FlyingBomb
                 }
 
                 if (Destroyed)
+                {
                     State.MoveTo(Fsm_Destroyed);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

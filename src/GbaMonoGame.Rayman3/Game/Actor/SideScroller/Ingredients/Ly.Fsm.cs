@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Ly
 {
-    private void Fsm_Init(FsmAction action)
+    private bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -17,15 +17,17 @@ public partial class Ly
             case FsmAction.Step:
                 TextBox = Scene.GetDialog<TextBoxDialog>();
                 State.MoveTo(Fsm_Idle);
-                break;
+                return false;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -35,16 +37,21 @@ public partial class Ly
 
             case FsmAction.Step:
                 if (Scene.IsDetectedMainActor(this))
+                {
                     State.MoveTo(Fsm_Talk);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 Scene.Camera.ProcessMessage(this, Message.Cam_FollowPositionY, 160);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Talk(FsmAction action)
+    private bool Fsm_Talk(FsmAction action)
     {
         switch (action)
         {
@@ -86,7 +93,10 @@ public partial class Ly
                     TextBox.MoveToNextText();
 
                 if (TextBox.IsFinished)
+                {
                     State.MoveTo(Fsm_GivePower);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -94,9 +104,11 @@ public partial class Ly
                 TextBox.MoveInOurOut(false);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_GivePower(FsmAction action)
+    private bool Fsm_GivePower(FsmAction action)
     {
         switch (action)
         {
@@ -149,16 +161,21 @@ public partial class Ly
                 }
 
                 if (IsActionFinished && ActionId == Action.GivePower5)
+                {
                     State.MoveTo(Fsm_RaymanReceivePower);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_RaymanReceivePower(FsmAction action)
+    private bool Fsm_RaymanReceivePower(FsmAction action)
     {
         switch (action)
         {
@@ -177,16 +194,21 @@ public partial class Ly
                 }
 
                 if (Timer > 150)
+                {
                     State.MoveTo(Fsm_Leave);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Leave(FsmAction action)
+    private bool Fsm_Leave(FsmAction action)
     {
         switch (action)
         {
@@ -196,12 +218,17 @@ public partial class Ly
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

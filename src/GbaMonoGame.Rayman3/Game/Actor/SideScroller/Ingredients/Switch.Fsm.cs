@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Switch
 {
-    private void Fsm_Deactivated(FsmAction action)
+    private bool Fsm_Deactivated(FsmAction action)
     {
         switch (action)
         {
@@ -15,16 +15,21 @@ public partial class Switch
 
             case FsmAction.Step:
                 if (HitPoints == 0)
+                {
                     State.MoveTo(Fsm_Activating);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Activating(FsmAction action)
+    private bool Fsm_Activating(FsmAction action)
     {
         switch (action)
         {
@@ -81,16 +86,21 @@ public partial class Switch
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Activated);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Activated(FsmAction action)
+    private bool Fsm_Activated(FsmAction action)
     {
         switch (action)
         {
@@ -106,5 +116,7 @@ public partial class Switch
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

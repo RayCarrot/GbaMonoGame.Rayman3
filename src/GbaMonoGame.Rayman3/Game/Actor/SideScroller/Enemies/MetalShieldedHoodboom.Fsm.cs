@@ -55,7 +55,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -66,7 +66,7 @@ public partial class MetalShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
@@ -112,19 +112,19 @@ public partial class MetalShieldedHoodboom
                 if (readyToAttack && detectedMainActor)
                 {
                     State.MoveTo(Fsm_PrepareGrenade);
-                    return;
+                    return false;
                 }
 
                 if (isAttackedFromAbove)
                 {
                     State.MoveTo(Fsm_GuardAbove);
-                    return;
+                    return false;
                 }
 
                 if (isAttackedFromBelow)
                 {
                     State.MoveTo(Fsm_GuardBelow);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -132,9 +132,11 @@ public partial class MetalShieldedHoodboom
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_PrepareGrenade(FsmAction action)
+    private bool Fsm_PrepareGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -144,21 +146,26 @@ public partial class MetalShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (AnimatedObject.CurrentFrame == 10)
+                {
                     State.MoveTo(Fsm_ThrowGrenade);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ThrowGrenade(FsmAction action)
+    private bool Fsm_ThrowGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -197,21 +204,26 @@ public partial class MetalShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_GuardAbove(FsmAction action)
+    private bool Fsm_GuardAbove(FsmAction action)
     {
         switch (action)
         {
@@ -222,21 +234,26 @@ public partial class MetalShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_GuardBelow(FsmAction action)
+    private bool Fsm_GuardBelow(FsmAction action)
     {
         switch (action)
         {
@@ -247,21 +264,26 @@ public partial class MetalShieldedHoodboom
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -284,5 +306,7 @@ public partial class MetalShieldedHoodboom
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

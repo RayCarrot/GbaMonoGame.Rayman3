@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Teensies
 {
-    private void Fsm_WaitMaster(FsmAction action)
+    private bool Fsm_WaitMaster(FsmAction action)
     {
         switch (action)
         {
@@ -33,21 +33,21 @@ public partial class Teensies
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     State.MoveTo(Fsm_World1IntroText);
-                    return;
+                    return false;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && requirementMet)
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     State.MoveTo(Fsm_ShowRequirementMetText);
-                    return;
+                    return false;
                 }
 
                 if (Scene.IsDetectedMainActor(this) && !requirementMet)
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EnterCutscene);
                     State.MoveTo(Fsm_ShowRequirementNotMetText);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -57,9 +57,11 @@ public partial class Teensies
                 ((World)Frame.Current).UserInfo.Hide = true;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_World1IntroText(FsmAction action)
+    private bool Fsm_World1IntroText(FsmAction action)
     {
         switch (action)
         {
@@ -77,12 +79,16 @@ public partial class Teensies
                 if (JoyPad.IsButtonJustPressed(GbaInput.A))
                     TextBox.MoveToNextText();
 
+                if (TextBox.IsFinished && IsWorldFinished() && IsEnoughCagesTaken())
+                {
+                    State.MoveTo(Fsm_ShowRequirementMetText);
+                    return false;
+                }
+                
                 if (TextBox.IsFinished)
                 {
-                    if (IsWorldFinished() && IsEnoughCagesTaken())
-                        State.MoveTo(Fsm_ShowRequirementMetText);
-                    else
-                        State.MoveTo(Fsm_ShowRequirementNotMetText);
+                    State.MoveTo(Fsm_ShowRequirementNotMetText);
+                    return false;
                 }
                 break;
 
@@ -90,9 +96,11 @@ public partial class Teensies
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ShowRequirementMetText(FsmAction action)
+    private bool Fsm_ShowRequirementMetText(FsmAction action)
     {
         switch (action)
         {
@@ -122,16 +130,21 @@ public partial class Teensies
                 }
 
                 if (!TextBox.IsOnScreen())
+                {
                     State.MoveTo(Fsm_ExitedRequirementMetText);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ((World)Frame.Current).UserInfo.Hide = false;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ExitedRequirementMetText(FsmAction action)
+    private bool Fsm_ExitedRequirementMetText(FsmAction action)
     {
         switch (action)
         {
@@ -148,9 +161,11 @@ public partial class Teensies
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ShowRequirementNotMetText(FsmAction action)
+    private bool Fsm_ShowRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -160,6 +175,8 @@ public partial class Teensies
                 break;
 
             case FsmAction.Step:
+                bool finished = false;
+
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 SetMasterAction();
@@ -168,21 +185,29 @@ public partial class Teensies
                 {
                     TextBox.MoveInOurOut(false);
                     Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
-                    State.MoveTo(Fsm_WaitExitRequirementNotMetText);
-                    return;
+                    finished = true;
+                }
+                else if (JoyPad.IsButtonJustPressed(GbaInput.A))
+                {
+                    TextBox.MoveToNextText();
                 }
                 
-                if (JoyPad.IsButtonJustPressed(GbaInput.A))
-                    TextBox.MoveToNextText();
+                if (finished)
+                {
+                    State.MoveTo(Fsm_WaitExitRequirementNotMetText);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_WaitExitRequirementNotMetText(FsmAction action)
+    private bool Fsm_WaitExitRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -194,16 +219,21 @@ public partial class Teensies
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (!TextBox.IsOnScreen())
+                {
                     State.MoveTo(Fsm_ExitedRequirementNotMetText);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ((World)Frame.Current).UserInfo.Hide = false;
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ExitedRequirementNotMetText(FsmAction action)
+    private bool Fsm_ExitedRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -217,17 +247,22 @@ public partial class Teensies
                 SetMasterAction();
 
                 if (HasLeftMainActorView())
+                {
                     State.MoveTo(Fsm_WaitMaster);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
     // Appears unused
-    private void Fsm_VictoryDance(FsmAction action)
+    private bool Fsm_VictoryDance(FsmAction action)
     {
         switch (action)
         {
@@ -245,9 +280,11 @@ public partial class Teensies
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -263,5 +300,7 @@ public partial class Teensies
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

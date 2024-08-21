@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class WoodenBar
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -27,6 +27,7 @@ public partial class WoodenBar
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_BeginHang, this);
                     State.MoveTo(Fsm_Grabbed);
+                    return false;
                 }
                 break;
 
@@ -34,9 +35,11 @@ public partial class WoodenBar
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Grabbed(FsmAction action)
+    private bool Fsm_Grabbed(FsmAction action)
     {
         switch (action)
         {
@@ -160,6 +163,7 @@ public partial class WoodenBar
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_EndHang, this);
                     State.MoveTo(Fsm_Idle);
+                    return false;
                 }
                 break;
 
@@ -167,5 +171,7 @@ public partial class WoodenBar
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

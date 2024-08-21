@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Piranha
 {
-    private void Fsm_Wait(FsmAction action)
+    private bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -19,16 +19,21 @@ public partial class Piranha
                 Timer++;
                 
                 if (Scene.IsDetectedMainActor(this) && Timer > 120)
+                {
                     State.MoveTo(Fsm_Move);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Move(FsmAction action)
+    private bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -50,18 +55,26 @@ public partial class Piranha
                 }
 
                 if (HitPoints == 0)
+                {
                     State.MoveTo(Fsm_Dying);
+                    return false;
+                }
                 else if (IsActionFinished)
-                    State.MoveTo(Fsm_Wait);   
+                {
+                    State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -76,7 +89,10 @@ public partial class Piranha
                 PhysicalType type = Scene.GetPhysicalType(Position);
 
                 if (type == PhysicalTypeValue.Water)
+                {
                     State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -84,5 +100,7 @@ public partial class Piranha
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

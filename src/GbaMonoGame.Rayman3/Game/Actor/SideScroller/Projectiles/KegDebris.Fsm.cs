@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class KegDebris
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -25,7 +25,10 @@ public partial class KegDebris
                 });
 
                 if (Timer > 60 && !Scene.Camera.IsActorFramed(this))
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -34,5 +37,7 @@ public partial class KegDebris
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

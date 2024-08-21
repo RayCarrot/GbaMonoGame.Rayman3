@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Leaf
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -32,6 +32,7 @@ public partial class Leaf
                     ScreenPosition.Y > Scene.Resolution.Y)
                 {
                     State.MoveTo(Fsm_Default);
+                    return false;
                 }
                 break;
 
@@ -40,5 +41,7 @@ public partial class Leaf
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

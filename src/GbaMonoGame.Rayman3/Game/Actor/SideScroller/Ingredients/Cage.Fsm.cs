@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Cage
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -22,14 +22,14 @@ public partial class Cage
                 {
                     PrevHitPoints = HitPoints;
                     State.MoveTo(Fsm_Damaged);
-                    return;
+                    return false;
                 }
 
                 // Change idle state after 2 seconds
                 if (Timer >= 120)
                 {
                     State.MoveTo(Fsm_Blink);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -37,9 +37,11 @@ public partial class Cage
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Blink(FsmAction action)
+    private bool Fsm_Blink(FsmAction action)
     {
         switch (action)
         {
@@ -56,14 +58,14 @@ public partial class Cage
                 {
                     PrevHitPoints = HitPoints;
                     State.MoveTo(Fsm_Damaged);
-                    return;
+                    return false;
                 }
 
                 // Go back to the default idle animation when finished
                 if (IsActionFinished)
                 {
                     State.MoveTo(Fsm_Idle);
-                    return;
+                    return false;
                 }
                 break;
             
@@ -71,9 +73,11 @@ public partial class Cage
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Damaged(FsmAction action)
+    private bool Fsm_Damaged(FsmAction action)
     {
         switch (action)
         {
@@ -88,13 +92,13 @@ public partial class Cage
                 {
                     PrevHitPoints = HitPoints;
                     State.MoveTo(Fsm_Destroyed);
-                    return;
+                    return false;
                 }
 
                 if (IsActionFinished)
                 {
                     State.MoveTo(Fsm_IdleDamaged);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -102,9 +106,11 @@ public partial class Cage
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_IdleDamaged(FsmAction action)
+    private bool Fsm_IdleDamaged(FsmAction action)
     {
         switch (action)
         {
@@ -124,7 +130,7 @@ public partial class Cage
                 {
                     PrevHitPoints = HitPoints;
                     State.MoveTo(Fsm_Destroyed);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -132,9 +138,11 @@ public partial class Cage
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Destroyed(FsmAction action)
+    private bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {
@@ -147,12 +155,17 @@ public partial class Cage
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class WaterSplash
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -24,12 +24,17 @@ public partial class WaterSplash
                 }
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

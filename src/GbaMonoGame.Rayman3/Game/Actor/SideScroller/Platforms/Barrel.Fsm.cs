@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Barrel
 {
-    private void Fsm_WaitForHit(FsmAction action)
+    private bool Fsm_WaitForHit(FsmAction action)
     {
         switch (action)
         {
@@ -20,6 +20,7 @@ public partial class Barrel
                 {
                     InitialHitPoints = HitPoints;
                     State.MoveTo(Fsm_Hit);
+                    return false;
                 }
                 break;
 
@@ -27,9 +28,11 @@ public partial class Barrel
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Hit(FsmAction action)
+    private bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -51,7 +54,7 @@ public partial class Barrel
                 {
                     InitialHitPoints = HitPoints;
                     State.MoveTo(Fsm_FallIntoWater);
-                    return;
+                    return false;
                 }
 
                 // Fall to break
@@ -59,7 +62,7 @@ public partial class Barrel
                 {
                     InitialHitPoints = HitPoints;
                     State.MoveTo(Fsm_FallToBreak);
-                    return;
+                    return false;
                 }
 
                 // Finished impact animation
@@ -68,7 +71,7 @@ public partial class Barrel
                     HitPoints = 100;
                     InitialHitPoints = 100;
                     State.MoveTo(Fsm_WaitForHit);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -76,9 +79,11 @@ public partial class Barrel
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_FallToBreak(FsmAction action)
+    private bool Fsm_FallToBreak(FsmAction action)
     {
         switch (action)
         {
@@ -89,16 +94,21 @@ public partial class Barrel
 
             case FsmAction.Step:
                 if (Scene.GetPhysicalType(Position).IsSolid)
+                {
                     State.MoveTo(Fsm_Break);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Break(FsmAction action)
+    private bool Fsm_Break(FsmAction action)
     {
         switch (action)
         {
@@ -109,16 +119,21 @@ public partial class Barrel
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_WaitForHit);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_FallIntoWater(FsmAction action)
+    private bool Fsm_FallIntoWater(FsmAction action)
     {
         switch (action)
         {
@@ -143,7 +158,10 @@ public partial class Barrel
                 }
 
                 if (Scene.GetPhysicalType(Position + new Vector2(0, -16)) == PhysicalTypeValue.Water)
+                {
                     State.MoveTo(Fsm_LandInWater);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -160,9 +178,11 @@ public partial class Barrel
                     waterSplash.Position = Position + new Vector2(16, 0);
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_LandInWater(FsmAction action)
+    private bool Fsm_LandInWater(FsmAction action)
     {
         switch (action)
         {
@@ -181,16 +201,21 @@ public partial class Barrel
                     BarrelSplash.Position = Position;
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_WaitInWater);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_WaitInWater(FsmAction action)
+    private bool Fsm_WaitInWater(FsmAction action)
     {
         switch (action)
         {
@@ -219,16 +244,21 @@ public partial class Barrel
                     BarrelSplash.Position = new Vector2(Position.X + 4, InitialWaterPosition.Y - 10);
 
                 if (linkedMovement)
+                {
                     State.MoveTo(Fsm_MoveForwardInWater);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveForwardInWater(FsmAction action)
+    private bool Fsm_MoveForwardInWater(FsmAction action)
     {
         switch (action)
         {
@@ -264,14 +294,14 @@ public partial class Barrel
                 if (Scene.GetPhysicalType(physicalPos).IsSolid)
                 {
                     State.MoveTo(Fsm_StopMoving);
-                    return;
+                    return false;
                 }
-                
+
                 if (hasMainActorMovedBack)
                 {
                     MoveRight = !MoveRight;
                     State.MoveTo(Fsm_MoveBackwardsInWater);
-                    return;    
+                    return false;
                 }
                 break;
 
@@ -279,9 +309,11 @@ public partial class Barrel
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveBackwardsInWater(FsmAction action)
+    private bool Fsm_MoveBackwardsInWater(FsmAction action)
     {
         switch (action)
         {
@@ -310,6 +342,7 @@ public partial class Barrel
                 {
                     MoveRight = !MoveRight;
                     State.MoveTo(Fsm_WaitInWater);
+                    return false;
                 }
                 break;
 
@@ -317,9 +350,11 @@ public partial class Barrel
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_StopMoving(FsmAction action)
+    private bool Fsm_StopMoving(FsmAction action)
     {
         switch (action)
         {
@@ -374,5 +409,7 @@ public partial class Barrel
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

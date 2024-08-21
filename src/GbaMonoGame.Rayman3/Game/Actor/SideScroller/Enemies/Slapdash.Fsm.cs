@@ -35,7 +35,7 @@ public partial class Slapdash
         return true;
     }
 
-    private void Fsm_Wait(FsmAction action)
+    private bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -45,7 +45,7 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
                 
@@ -53,6 +53,7 @@ public partial class Slapdash
                     (IsFacingLeft && Position.X - Scene.MainActor.Position.X < Scene.Resolution.X)) 
                 {
                     State.MoveTo(Fsm_Walk);
+                    return false;
                 }
                 break;
 
@@ -60,9 +61,11 @@ public partial class Slapdash
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Walk(FsmAction action)
+    private bool Fsm_Walk(FsmAction action)
     {
         switch (action)
         {
@@ -75,20 +78,20 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (ShouldTurnAround())
                 {
                     State.MoveTo(Fsm_TurnAround);
-                    return;
+                    return false;
                 }
 
                 if (Scene.IsDetectedMainActor(this))
                 {
                     State.MoveTo(Fsm_BeginChargeAttack);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -96,9 +99,11 @@ public partial class Slapdash
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_TurnAround(FsmAction action)
+    private bool Fsm_TurnAround(FsmAction action)
     {
         switch (action)
         {
@@ -126,12 +131,15 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Walk);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -139,9 +147,11 @@ public partial class Slapdash
                 ChangeAction();
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_BeginChargeAttack(FsmAction action)
+    private bool Fsm_BeginChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -152,21 +162,26 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_ChargeAttack);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_ChargeAttack(FsmAction action)
+    private bool Fsm_ChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -177,7 +192,7 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
@@ -203,19 +218,19 @@ public partial class Slapdash
                 if (ShouldTurnAround())
                 {
                     State.MoveTo(Fsm_TurnAround);
-                    return;
+                    return false;
                 }
 
                 if (changedDirection)
                 {
                     State.MoveTo(Fsm_TurnAroundFromChargeAttack);
-                    return;
+                    return false;
                 }
 
                 if (timeOut)
                 {
                     State.MoveTo(Fsm_Walk);
-                    return;
+                    return false;
                 }
                 break;
 
@@ -223,9 +238,11 @@ public partial class Slapdash
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_TurnAroundFromChargeAttack(FsmAction action)
+    private bool Fsm_TurnAroundFromChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -235,21 +252,26 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_TurnAround);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Hit(FsmAction action)
+    private bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -262,21 +284,26 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Walk);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Dying(FsmAction action)
+    private bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -288,7 +315,10 @@ public partial class Slapdash
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Wait);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -296,5 +326,7 @@ public partial class Slapdash
                 LevelMusicManager.FUN_08001918();
                 break;
         }
+
+        return true;
     }
 }

@@ -29,7 +29,7 @@ public partial class SpikyFlyingBomb
         return true;
     }
 
-    private void Fsm_Move(FsmAction action)
+    private bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -46,7 +46,7 @@ public partial class SpikyFlyingBomb
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 CurrentDirectionalType = Scene.GetPhysicalType(Position);
 
@@ -59,6 +59,7 @@ public partial class SpikyFlyingBomb
                     PhysicalTypeValue.Enemy_Down)
                 {
                     State.MoveTo(Fsm_Move);
+                    return false;
                 }
                 break;
 
@@ -66,9 +67,11 @@ public partial class SpikyFlyingBomb
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Destroyed(FsmAction action)
+    private bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {
@@ -92,15 +95,17 @@ public partial class SpikyFlyingBomb
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
     // FUN_08049b58
-    private void FUN_10010ac4(FsmAction action)
+    private bool FUN_10010ac4(FsmAction action)
     {
         throw new NotImplementedException();
     }
 
-    private void Fsm_Stationary(FsmAction action)
+    private bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -110,7 +115,7 @@ public partial class SpikyFlyingBomb
 
             case FsmAction.Step:
                 if (!FsmStep_CheckDeath())
-                    return;
+                    return false;
 
                 ManageSound();
                 break;
@@ -119,5 +124,7 @@ public partial class SpikyFlyingBomb
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

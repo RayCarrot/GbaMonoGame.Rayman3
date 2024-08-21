@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class BouncyPlatform
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -76,16 +76,21 @@ public partial class BouncyPlatform
                 }
 
                 if (detectedMainActor && ActionId == Action.Idle)
+                {
                     State.MoveTo(Fsm_Bounce);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Bounce(FsmAction action)
+    private bool Fsm_Bounce(FsmAction action)
     {
         switch (action)
         {
@@ -179,7 +184,10 @@ public partial class BouncyPlatform
                 }
 
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -189,5 +197,7 @@ public partial class BouncyPlatform
                     ActionId = Action.BeginTrap;
                 break;
         }
+
+        return true;
     }
 }

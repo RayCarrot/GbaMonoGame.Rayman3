@@ -2,7 +2,7 @@
 
 public partial class Depart
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -15,6 +15,7 @@ public partial class Depart
                 {
                     Scene.MainActor.ProcessMessage(this, MessageToSend);
                     State.MoveTo(null);
+                    return false;
                 }
                 break;
 
@@ -22,5 +23,7 @@ public partial class Depart
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

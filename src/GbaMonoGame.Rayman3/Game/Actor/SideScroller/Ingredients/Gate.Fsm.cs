@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Gate
 {
-    private void Fsm_Closed(FsmAction action)
+    private bool Fsm_Closed(FsmAction action)
     {
         switch (action)
         {
@@ -15,16 +15,21 @@ public partial class Gate
 
             case FsmAction.Step:
                 if (IsOpen)
+                {
                     State.MoveTo(Fsm_Opening);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Opening(FsmAction action)
+    private bool Fsm_Opening(FsmAction action)
     {
         switch (action)
         {
@@ -38,16 +43,21 @@ public partial class Gate
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Open);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Open(FsmAction action)
+    private bool Fsm_Open(FsmAction action)
     {
         switch (action)
         {
@@ -57,16 +67,21 @@ public partial class Gate
 
             case FsmAction.Step:
                 if (!IsOpen)
+                {
                     State.MoveTo(Fsm_Closing);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Closing(FsmAction action)
+    private bool Fsm_Closing(FsmAction action)
     {
         switch (action)
         {
@@ -77,12 +92,17 @@ public partial class Gate
 
             case FsmAction.Step:
                 if (IsActionFinished)
+                {
                     State.MoveTo(Fsm_Closed);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

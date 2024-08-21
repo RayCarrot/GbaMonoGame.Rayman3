@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class BreakableDoor
 {
-    private void Fsm_Idle(FsmAction action)
+    private bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -18,16 +18,21 @@ public partial class BreakableDoor
                     ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
 
                 if (ActionId is Action.Break_Right or Action.Break_Left)
+                {
                     State.MoveTo(Fsm_Break);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_Break(FsmAction action)
+    private bool Fsm_Break(FsmAction action)
     {
         switch (action)
         {
@@ -37,12 +42,17 @@ public partial class BreakableDoor
 
             case FsmAction.Step:
                 if (ActionId is Action.Break_Right or Action.Break_Left && IsActionFinished)
+                {
                     State.MoveTo(Fsm_Idle);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }

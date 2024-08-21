@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class CameraSideScroller
 {
-    private void Fsm_Follow(FsmAction action)
+    private bool Fsm_Follow(FsmAction action)
     {
         switch (action)
         {
@@ -180,7 +180,10 @@ public partial class CameraSideScroller
                 if (!mainCluster.IsOnLimit(Edge.Left) &&
                     !mainCluster.IsOnLimit(Edge.Right) &&
                     LinkedObject.IsFacingRight != IsFacingRight)
+                {
                     State.MoveTo(Fsm_Follow);
+                    return false;
+                }
 
                 if (field16_0x2e == 4)
                 {
@@ -193,9 +196,11 @@ public partial class CameraSideScroller
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_MoveToTarget(FsmAction action)
+    private bool Fsm_MoveToTarget(FsmAction action)
     {
         switch (action)
         {
@@ -256,7 +261,7 @@ public partial class CameraSideScroller
                     {
                         Scene.MainActor.ProcessMessage(this, Message.Main_ExitStopOrCutscene);
                         State.MoveTo(Fsm_Follow);
-                        return;
+                        return false;
                     }
 
                     if (Timer == 7)
@@ -268,5 +273,7 @@ public partial class CameraSideScroller
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 }

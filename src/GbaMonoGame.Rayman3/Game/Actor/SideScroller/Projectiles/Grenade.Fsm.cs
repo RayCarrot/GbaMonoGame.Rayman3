@@ -13,7 +13,7 @@ public partial class Grenade
         return true;
     }
 
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -23,7 +23,7 @@ public partial class Grenade
 
             case FsmAction.Step:
                 if (!FsmStep_CheckHitMainActor())
-                    return;
+                    return false;
 
                 if (TouchingMapTimer != 0)
                     TouchingMapTimer++;
@@ -41,6 +41,7 @@ public partial class Grenade
                     TouchingMapTimer >= 30)
                 {
                     State.MoveTo(Fsm_Default);
+                    return false;
                 }
                 break;
 
@@ -58,5 +59,7 @@ public partial class Grenade
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__Grenad01_Mix03);
                 break;
         }
+
+        return true;
     }
 }

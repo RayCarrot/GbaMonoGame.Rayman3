@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class FlowerFire
 {
-    private void Fsm_Default(FsmAction action)
+    private bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -30,9 +30,11 @@ public partial class FlowerFire
                 // Do nothing
                 break;
         }
+
+        return true;
     }
 
-    private void Fsm_End(FsmAction action)
+    private bool Fsm_End(FsmAction action)
     {
         switch (action)
         {
@@ -42,12 +44,17 @@ public partial class FlowerFire
 
             case FsmAction.Step:
                 if (AnimatedObject.EndOfAnimation)
+                {
                     State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
                 break;
         }
+
+        return true;
     }
 }
