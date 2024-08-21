@@ -7,7 +7,18 @@ using GbaMonoGame.TgxEngine;
 namespace GbaMonoGame.Rayman3;
 
 public partial class GameCubeMenu
-{ 
+{
+    private bool FsmStep_CheckConnection()
+    {
+        if (UseJoyBus && JoyBus.CheckForLostConnection())
+        {
+            State.MoveTo(Fsm_ConnectionLost);
+            return false;
+        }
+
+        return true;
+    }
+
     private bool Fsm_PreInit(FsmAction action)
     {
         switch (action)
@@ -178,12 +189,8 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                // Lost connection
-                if (JoyBus.CheckForLostConnection())
-                {
-                    State.MoveTo(Fsm_ConnectionLost);
+                if (!FsmStep_CheckConnection())
                     return false;
-                }
 
                 // Read data
                 byte gbaUnlockFlags = 0;
@@ -255,12 +262,8 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                // Lost connection
-                if (JoyBus.CheckForLostConnection())
-                {
-                    State.MoveTo(Fsm_ConnectionLost);
+                if (!FsmStep_CheckConnection())
                     return false;
-                }
 
                 // Exit
                 if (JoyPad.IsButtonJustPressed(GbaInput.B))
@@ -315,12 +318,8 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                // Lost connection
-                if (JoyBus.CheckForLostConnection())
-                {
-                    State.MoveTo(Fsm_ConnectionLost);
+                if (!FsmStep_CheckConnection())
                     return false;
-                }
 
                 // Exit
                 if (JoyPad.IsButtonJustPressed(GbaInput.B))
@@ -393,12 +392,8 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                // Lost connection
-                if (UseJoyBus && JoyBus.CheckForLostConnection())
-                {
-                    State.MoveTo(Fsm_ConnectionLost);
+                if (!FsmStep_CheckConnection())
                     return false;
-                }
 
                 bool hasSelectedMap = false;
 
@@ -528,12 +523,8 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                // Lost connection
-                if (JoyBus.CheckForLostConnection())
-                {
-                    State.MoveTo(Fsm_ConnectionLost);
+                if (!FsmStep_CheckConnection())
                     return false;
-                }
 
                 // Calculate download percentage
                 int percentage = (JoyBus.Size - JoyBus.RemainingSize) * 100 / JoyBus.Size;
