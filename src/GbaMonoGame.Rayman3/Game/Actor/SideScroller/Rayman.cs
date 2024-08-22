@@ -19,7 +19,13 @@ public sealed partial class Rayman : MovableActor
 
         if (RSMultiplayer.IsActive)
         {
-            // TODO: Implement N-Gage specific changes - there are a lot!
+            if (Engine.Settings.Platform == Platform.NGage)
+            {
+                MultiplayerData = new NGageMultiplayerData()
+                {
+                    field_b8 = 1,
+                };
+            }
 
             if (instanceId >= RSMultiplayer.PlayersCount)
             {
@@ -33,35 +39,67 @@ public sealed partial class Rayman : MovableActor
                     AnimatedObject.IsSoundEnabled = false;
                 }
 
-                // This is some hacky code to add the additional multiplayer palettes. The game doesn't store this
-                // in the animated object resource to avoid them being allocated in single player. So the game
-                // manually allocates them to vram here. We however can't just modify this actor's animations since
-                // we cache sprites between all actors that share the same animated object. So the easiest solution
-                // is to add the palettes to the animated object resource and then just change the base pal index.
-                if (AnimatedObject.Resource.PalettesCount == 2)
+                if (Engine.Settings.Platform == Platform.NGage &&
+                    MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag &&
+                    MultiplayerInfo.CaptureTheFlag_field_04 != 0)
                 {
-                    Palette16 pal2 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player2RaymanPalette).Value;
-                    Palette16 pal3 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player3RaymanPalette).Value;
-                    Palette16 pal4 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player4RaymanPalette).Value;
-
-                    AnimatedObject.Resource.PalettesCount = 2 * 4;
-                    AnimatedObject.Resource.Palettes = new SpritePalettes
+                    // TODO: Implement setting palettes
+                }
+                else
+                {
+                    // This is some hacky code to add the additional multiplayer palettes. The game doesn't store this
+                    // in the animated object resource to avoid them being allocated in single player. So the game
+                    // manually allocates them to vram here. We however can't just modify this actor's animations since
+                    // we cache sprites between all actors that share the same animated object. So the easiest solution
+                    // is to add the palettes to the animated object resource and then just change the base pal index.
+                    if (AnimatedObject.Resource.PalettesCount == 2)
                     {
-                        Palettes = new[]
+                        Palette16 pal2 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player2RaymanPalette).Value;
+                        Palette16 pal3 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player3RaymanPalette).Value;
+                        Palette16 pal4 = Storage.LoadResource<Resource<Palette16>>(GameResource.Player4RaymanPalette).Value;
+
+                        AnimatedObject.Resource.PalettesCount = 2 * 4;
+                        AnimatedObject.Resource.Palettes = new SpritePalettes
                         {
-                            AnimatedObject.Resource.Palettes.Palettes[0],
-                            AnimatedObject.Resource.Palettes.Palettes[1],
-                            AnimatedObject.Resource.Palettes.Palettes[0],
-                            pal2,
-                            AnimatedObject.Resource.Palettes.Palettes[0],
-                            pal3,
-                            AnimatedObject.Resource.Palettes.Palettes[0],
-                            pal4,
-                        }
-                    };
+                            Palettes = new[]
+                            {
+                                AnimatedObject.Resource.Palettes.Palettes[0],
+                                AnimatedObject.Resource.Palettes.Palettes[1],
+
+                                AnimatedObject.Resource.Palettes.Palettes[0],
+                                pal2,
+
+                                AnimatedObject.Resource.Palettes.Palettes[0],
+                                pal3,
+
+                                AnimatedObject.Resource.Palettes.Palettes[0],
+                                pal4,
+                            }
+                        };
+                    }
+
+                    AnimatedObject.BasePaletteIndex = InstanceId * 2;
                 }
 
-                AnimatedObject.BasePaletteIndex = InstanceId * 2;
+                if (Engine.Settings.Platform == Platform.NGage &&
+                    MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag &&
+                    IsLocalPlayer)
+                {
+                    AnimatedObjectResource arrowResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.CaptureTheFlagArrowAnimations);
+
+                    for (int i = 0; i < RSMultiplayer.PlayersCount - 1; i++)
+                    {
+                        MultiplayerData!.FlagArrows[i] = new AnimatedObject(arrowResource, arrowResource.IsDynamic)
+                        {
+                            IsFramed = true,
+                            SpritePriority = 0,
+                            YPriority = 2,
+                            CurrentAnimation = 1,
+                            AffineMatrix = AffineMatrix.Identity,
+                        };
+                    }
+                }
+
                 IsInvulnerable = true;
                 SetPowers(Power.All);
             }
@@ -71,6 +109,7 @@ public sealed partial class Rayman : MovableActor
     }
 
     public ActorResource Resource { get; }
+    public NGageMultiplayerData MultiplayerData { get; }
     public Action? NextActionId { get; set; }
     public RaymanBody[] ActiveBodyParts { get; } = new RaymanBody[4];
     public BaseActor AttachedObject { get; set; }
@@ -249,9 +288,9 @@ public sealed partial class Rayman : MovableActor
 
     private bool HasPower(Power power)
     {
-        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
+        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag)
         {
-            throw new NotImplementedException();
+            return (MultiplayerData.Powers & power) != 0;
         }
         else
         {
@@ -643,7 +682,7 @@ public sealed partial class Rayman : MovableActor
             return false;
 
         Vector2 topPos = Position;
-        Vector2 bottomPos = Position + new Vector2(0, Tile.Size);;
+        Vector2 bottomPos = Position + new Vector2(0, Tile.Size);
 
         if (Speed.X < 0)
         {
@@ -1689,5 +1728,20 @@ public sealed partial class Rayman : MovableActor
             AnimatedObject.PlayChannelBox();
             AnimatedObject.ComputeNextFrame();
         }
+    }
+
+    public class NGageMultiplayerData
+    {
+        // TODO: Name these properties
+        public BaseActor field_00 { get; set; }
+        public AnimatedObject[] FlagArrows { get; } = new AnimatedObject[RSMultiplayer.MaxPlayersCount - 1];
+        public uint field_ac { get; set; }
+        public uint field_b0 { get; set; }
+        public uint field_b4 { get; set; }
+        public byte field_b8 { get; set; }
+        public byte field_b9 { get; set; }
+        public byte PlayerPaletteId { get; set; } // TODO: Probably don't need this
+        public Power Powers { get; set; }
+        public byte field_bc { get; set; }
     }
 }

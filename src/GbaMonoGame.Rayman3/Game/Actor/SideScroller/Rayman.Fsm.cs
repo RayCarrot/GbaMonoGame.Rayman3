@@ -7,9 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Rayman
 {
-    // FUN_08020ee0
-    // TODO: Name
-    private bool FsmStep_Inlined_FUN_1004c544()
+    private bool FsmStep_DoOnTheGround()
     {
         if (!FsmStep_CheckDeath())
             return false;
@@ -34,6 +32,47 @@ public partial class Rayman
             PlaySound(Rayman3SoundEvent.Stop__SkiLoop1);
 
             State.MoveTo(Fsm_JumpSlide);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool FsmStep_DoInTheAir()
+    {
+        if (ManageHit() &&
+            (State == Fsm_StopHelico ||
+             State == Fsm_Helico ||
+             State == Fsm_Jump ||
+             State == Fsm_JumpSlide) &&
+            ActionId is not (
+                Action.Damage_Knockback_Right or
+                Action.Damage_Knockback_Left or
+                Action.Damage_Shock_Right or
+                Action.Damage_Shock_Left))
+        {
+            ActionId = IsFacingRight ? Action.Damage_Knockback_Right : Action.Damage_Knockback_Left;
+        }
+
+        return FsmStep_CheckDeath();
+    }
+
+    private bool FsmStep_DoStandingOnPlum()
+    {
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+            cam.HorizontalOffset = CameraOffset.Center;
+        }
+
+        if (field23_0x98 != 0)
+            field23_0x98--;
+
+        ManageHit();
+
+        if (HitPoints == 0)
+        {
+            State.MoveTo(Fsm_Dying);
             return false;
         }
 
@@ -111,79 +150,6 @@ public partial class Rayman
             else
                 State.MoveTo(FUN_08033228);
 
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool FsmStep_DoInTheAir()
-    {
-        if (ManageHit() &&
-            (State == Fsm_StopHelico ||
-             State == Fsm_Helico ||
-             State == Fsm_Jump ||
-             State == Fsm_JumpSlide) &&
-            ActionId is not (
-                Action.Damage_Knockback_Right or
-                Action.Damage_Knockback_Left or
-                Action.Damage_Shock_Right or
-                Action.Damage_Shock_Left))
-        {
-            ActionId = IsFacingRight ? Action.Damage_Knockback_Right : Action.Damage_Knockback_Left;
-        }
-
-        return FsmStep_CheckDeath();
-    }
-
-    // TODO: Name
-    private bool FsmStep_FUN_08020e8c()
-    {
-        if (Engine.Settings.Platform == Platform.GBA)
-        {
-            CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
-            cam.HorizontalOffset = CameraOffset.Center;
-        }
-
-        if (field23_0x98 != 0)
-            field23_0x98--;
-
-        ManageHit();
-
-        if (HitPoints == 0)
-        {
-            State.MoveTo(Fsm_Dying);
-            return false;
-        }
-
-        return true;
-    }
-
-    // TODO: Name
-    private bool FsmStep_FUN_08020ee0()
-    {
-        if (!FsmStep_CheckDeath())
-            return false;
-
-        CheckSlide();
-        ManageSlide();
-
-        if (ManageHit())
-        {
-            State.MoveTo(Fsm_Hit);
-            return false;
-        }
-
-        if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && SlideType != null)
-        {
-            State.MoveTo(Fsm_JumpSlide);
-            return false;
-        }
-
-        if (ShouldAutoJump())
-        {
-            PlaySound(Rayman3SoundEvent.Stop__SldGreen_SkiLoop1);
-            State.MoveTo(Fsm_JumpSlide);
             return false;
         }
 
@@ -304,7 +270,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 Timer++;
@@ -374,16 +340,16 @@ public partial class Rayman
                     ActionId = Action.Walk_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Walk_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Jump
@@ -504,7 +470,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 Timer--;
@@ -524,16 +490,16 @@ public partial class Rayman
                     ActionId = Action.Walk_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Walk_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Walk
@@ -631,7 +597,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 if (Speed.Y > 1 && PreviousXSpeed == 0)
@@ -670,16 +636,16 @@ public partial class Rayman
                         ActionId = Action.Walk_LookAround_Left;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                            throw new NotImplementedException();
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                            MultiplayerData.field_b9 = 1;
                     }
                     else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                     {
                         ActionId = Action.Walk_LookAround_Right;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                            throw new NotImplementedException();
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                            MultiplayerData.field_b9 = 1;
                     }
                 }
                 else
@@ -689,16 +655,16 @@ public partial class Rayman
                         ActionId = Action.Walk_Left;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                            throw new NotImplementedException();
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                            MultiplayerData.field_b9 = 1;
                     }
                     else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                     {
                         ActionId = Action.Walk_Right;
                         ChangeAction();
 
-                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                            throw new NotImplementedException();
+                        if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                            MultiplayerData.field_b9 = 1;
                     }
                 }
 
@@ -1464,7 +1430,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 if (IsActionFinished && ActionId is Action.CrouchDown_Right or Action.CrouchDown_Left)
@@ -1498,16 +1464,16 @@ public partial class Rayman
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Let go of down and stop crouching
@@ -1584,7 +1550,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 Box detectionBox = GetDetectionBox();
@@ -1600,16 +1566,16 @@ public partial class Rayman
                     ActionId = Action.Crawl_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Crawl_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 if (IsSliding)
@@ -1725,7 +1691,7 @@ public partial class Rayman
                 // Check for damage
                 if (AttachedObject?.Type == (int)ActorType.Plum)
                 {
-                    if (!FsmStep_FUN_08020e8c())
+                    if (!FsmStep_DoStandingOnPlum())
                         return false;
 
                     if (Engine.Settings.Platform == Platform.NGage)
@@ -1740,7 +1706,7 @@ public partial class Rayman
                 }
                 else
                 {
-                    if (!FsmStep_FUN_08020ee0())
+                    if (!FsmStep_DoOnTheGround())
                         return false;
                 }
 
@@ -2429,20 +2395,16 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                    {
-                        throw new NotImplementedException();
-                    }
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                    {
-                        throw new NotImplementedException();
-                    }
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Move
@@ -2513,20 +2475,16 @@ public partial class Rayman
                     ActionId = Action.Hang_Move_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                    {
-                        throw new NotImplementedException();
-                    }
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.Hang_Move_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                    {
-                        throw new NotImplementedException();
-                    }
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Stop moving
@@ -2800,7 +2758,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 // Sync the objects position with Rayman
@@ -2867,7 +2825,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_Inlined_FUN_1004c544())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 // Sync the objects position with Rayman
@@ -2926,7 +2884,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_FUN_08020ee0())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 // Change direction
@@ -2935,16 +2893,16 @@ public partial class Rayman
                     ActionId = Action.CarryObject_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.CarryObject_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 if (IsFacingRight)
@@ -2999,7 +2957,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_FUN_08020ee0())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 // Change direction
@@ -3008,16 +2966,16 @@ public partial class Rayman
                     ActionId = Action.WalkWithObject_Left;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
                 else if (IsDirectionalButtonPressed(GbaInput.Right) && IsFacingLeft)
                 {
                     ActionId = Action.WalkWithObject_Right;
                     ChangeAction();
 
-                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive)
-                        throw new NotImplementedException();
+                    if (Engine.Settings.Platform == Platform.NGage && RSMultiplayer.IsActive && MultiplayerData != null)
+                        MultiplayerData.field_b9 = 1;
                 }
 
                 // Sync the objects position with Rayman
@@ -3106,7 +3064,7 @@ public partial class Rayman
                 break;
 
             case FsmAction.Step:
-                if (!FsmStep_FUN_08020ee0())
+                if (!FsmStep_DoOnTheGround())
                     return false;
 
                 if (ActionId is Action.ThrowObjectForward_Right or Action.ThrowObjectForward_Left)
