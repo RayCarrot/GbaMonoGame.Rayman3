@@ -1989,6 +1989,35 @@ public partial class Rayman
         return true;
     }
 
+    private bool Fsm_QuickFinishBodyShotAttack(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                if (IsLocalPlayer)
+                    Scene.Camera.ProcessMessage(this, Message.Cam_DoNotFollowPositionY, 130);
+
+                MechModel.Speed = MechModel.Speed with { Y = 4 };
+
+                if (IsActionFinished)
+                {
+                    State.MoveTo(Fsm_StopHelico);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
     private bool Fsm_WallJump(FsmAction action)
     {
         switch (action)

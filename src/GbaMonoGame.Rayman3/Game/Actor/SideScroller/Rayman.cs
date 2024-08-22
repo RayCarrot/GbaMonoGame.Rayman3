@@ -1544,6 +1544,15 @@ public sealed partial class Rayman : MovableActor
                     CanSafetyJump = true;
                 return false;
 
+            case Message.Main_QuickFinishBodyShotAttack:
+                if (State == Fsm_BodyShotAttack)
+                    State.MoveTo(Fsm_QuickFinishBodyShotAttack);
+                return false;
+
+            case Message.Main_1056:
+                Flag1_0 = true;
+                return false;
+
             case Message.Main_Stop:
                 State.MoveTo(Fsm_Stop);
                 return false;

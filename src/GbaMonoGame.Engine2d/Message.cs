@@ -64,10 +64,11 @@ public enum Message
 
     Main_AllowCoyoteJump = 1048,
     Murfy_Spawn = 1049,
+    Main_QuickFinishBodyShotAttack = 1050,
 
     Cam_Shake = 1054,
     Cam_MoveToTarget = 1055,
-
+    Main_1056 = 1056, // TODO: Name
     Main_Stop = 1057,
     Cam_MoveToLinkedObject = 1058,
     Main_ExitStopOrCutscene = 1059,

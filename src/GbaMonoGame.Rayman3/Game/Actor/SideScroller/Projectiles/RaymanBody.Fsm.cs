@@ -7,6 +7,8 @@ public partial class RaymanBody
 {
     private bool FsmStep_CheckCollision()
     {
+        bool moveBackwards = false;
+
         // Check for actor collision
         InteractableActor hitActor = Scene.IsHitActor(this);
 
@@ -36,19 +38,28 @@ public partial class RaymanBody
 
                 if (BodyPartType == RaymanBodyPartType.Torso)
                 {
-                    // TODO: Implement
-                    //if (hitActor != null && hitActor.Type == (int)ActorType.BreakableGround)
-                    //{
-
-                    //}
+                    if (hitActor is { Type: (int)ActorType.BreakableGround } && ((BreakableGround)hitActor).QuickFinishBodyAttack)
+                    {
+                        Scene.MainActor.ProcessMessage(this, Message.Main_QuickFinishBodyShotAttack);
+                    }
+                    else
+                    {
+                        ActionId = IsFacingRight ? 15 : 16;
+                        moveBackwards = true;
+                    }
                 }
                 else
                 {
                     ActionId = BaseActionId + (IsFacingRight ? 4 : 3);
-                    State.MoveTo(Fsm_MoveBackwards);
-                    return false;
+                    moveBackwards = true;
                 }
             }
+        }
+
+        if (moveBackwards)
+        {
+            State.MoveTo(Fsm_MoveBackwards);
+            return false;
         }
 
         return true;
