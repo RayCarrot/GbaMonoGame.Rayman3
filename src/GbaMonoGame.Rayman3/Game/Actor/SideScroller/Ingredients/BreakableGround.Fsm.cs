@@ -22,7 +22,8 @@ public partial class BreakableGround
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_LinkMovement, this);
                 }
-                else if (!Scene.IsDetectedMainActor(this) && Scene.MainActor.LinkedMovementActor == this && Scene.MainActor.Position.Y > Position.Y)
+                else if (Scene.MainActor.LinkedMovementActor == this && 
+                         (!Scene.IsDetectedMainActor(this) || Scene.MainActor.Position.Y > Position.Y))
                 {
                     Scene.MainActor.ProcessMessage(this, Message.Main_UnlinkMovement, this);
                 }
