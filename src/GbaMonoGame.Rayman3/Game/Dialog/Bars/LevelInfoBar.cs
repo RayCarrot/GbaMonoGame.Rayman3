@@ -47,20 +47,20 @@ public class LevelInfoBar : Bar
         };
     }
 
-    private MapId[][] LevelMaps { get; }
+    public MapId[][] LevelMaps { get; }
 
-    private int WaitTimer { get; set; }
-    private int YOffset { get; set; } = 40;
-    private int LevelCurtainId { get; set; }
+    public int WaitTimer { get; set; }
+    public int OffsetY { get; set; } = 40;
+    public int LevelCurtainId { get; set; }
 
-    private SpriteTextObject LevelName { get; set; }
-    private AnimatedObject Canvas { get; set; }
-    private AnimatedObject CollectedLumsDigit1 { get; set; }
-    private AnimatedObject CollectedLumsDigit2 { get; set; }
-    private AnimatedObject TotalLumsDigit1 { get; set; }
-    private AnimatedObject TotalLumsDigit2 { get; set; }
-    private AnimatedObject CollectedCagesDigit { get; set; }
-    private AnimatedObject TotalCagesDigit { get; set; }
+    public SpriteTextObject LevelName { get; set; }
+    public AnimatedObject Canvas { get; set; }
+    public AnimatedObject CollectedLumsDigit1 { get; set; }
+    public AnimatedObject CollectedLumsDigit2 { get; set; }
+    public AnimatedObject TotalLumsDigit1 { get; set; }
+    public AnimatedObject TotalLumsDigit2 { get; set; }
+    public AnimatedObject CollectedCagesDigit { get; set; }
+    public AnimatedObject TotalCagesDigit { get; set; }
 
     private string GetLevelName()
     {
@@ -292,16 +292,16 @@ public class LevelInfoBar : Bar
         switch (DrawStep)
         {
             case BarDrawStep.Hide:
-                YOffset = 40;
+                OffsetY = 40;
                 break;
 
             case BarDrawStep.MoveIn:
-                if (YOffset != 0)
+                if (OffsetY != 0)
                 {
-                    if (YOffset == 36)
+                    if (OffsetY == 36)
                         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PannelUp_Mix01);
 
-                    YOffset -= 2;
+                    OffsetY -= 2;
                 }
                 else
                 {
@@ -310,13 +310,13 @@ public class LevelInfoBar : Bar
                 break;
 
             case BarDrawStep.MoveOut:
-                if (YOffset < 40)
+                if (OffsetY < 40)
                 {
-                    YOffset += 2;
+                    OffsetY += 2;
                 }
                 else
                 {
-                    YOffset = 40;
+                    OffsetY = 40;
                     DrawStep = BarDrawStep.Hide;
                 }
                 break;
@@ -324,7 +324,7 @@ public class LevelInfoBar : Bar
             case BarDrawStep.Wait:
                 if (WaitTimer >= 20)
                 {
-                    YOffset = 0;
+                    OffsetY = 0;
                     DrawStep = BarDrawStep.MoveOut;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PannelDw_Mix01);
                 }
@@ -339,19 +339,19 @@ public class LevelInfoBar : Bar
         {
             LevelName.ScreenPos = new Vector2(
                 x: -LevelName.GetStringWidth() / 2f,
-                y: -32 + YOffset);
+                y: -32 + OffsetY);
 
-            Canvas.ScreenPos = Canvas.ScreenPos with { Y = 8 + YOffset };
+            Canvas.ScreenPos = Canvas.ScreenPos with { Y = 8 + OffsetY };
 
-            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { Y = -6 + YOffset };
-            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { Y = -6 + YOffset };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { Y = -6 + OffsetY };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { Y = -6 + OffsetY };
 
-            TotalLumsDigit1.ScreenPos = TotalLumsDigit1.ScreenPos with { Y = -6 + YOffset };
-            TotalLumsDigit2.ScreenPos = TotalLumsDigit2.ScreenPos with { Y = -6 + YOffset };
+            TotalLumsDigit1.ScreenPos = TotalLumsDigit1.ScreenPos with { Y = -6 + OffsetY };
+            TotalLumsDigit2.ScreenPos = TotalLumsDigit2.ScreenPos with { Y = -6 + OffsetY };
 
-            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { Y = -7 + YOffset };
+            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { Y = -7 + OffsetY };
 
-            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { Y = -7 + YOffset };
+            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { Y = -7 + OffsetY };
 
             animationPlayer.PlayFront(Canvas);
 

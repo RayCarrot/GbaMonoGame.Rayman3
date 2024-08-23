@@ -7,11 +7,11 @@ public class Cages50Bar : Bar
 {
     public Cages50Bar(Scene2D scene) : base(scene) { }
 
-    private int DeadCages { get; set; }
+    public int DeadCages { get; set; }
 
-    private AnimatedObject CagesIcon { get; set; }
-    private AnimatedObject CollectedCagesDigit1 { get; set; }
-    private AnimatedObject CollectedCagesDigit2 { get; set; }
+    public AnimatedObject CagesIcon { get; set; }
+    public AnimatedObject CollectedCagesDigit1 { get; set; }
+    public AnimatedObject CollectedCagesDigit2 { get; set; }
 
     public override void Load()
     {

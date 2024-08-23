@@ -9,9 +9,9 @@ public class TimerBar : Bar
 {
     public TimerBar(Scene2D scene) : base(scene) { }
 
-    private AnimatedObject TimerFrame { get; set; }
-    private AnimatedObject[] Digits { get; set; }
-    private int NGage_Value { get; set; }
+    public AnimatedObject TimerFrame { get; set; }
+    public AnimatedObject[] Digits { get; set; }
+    public int NGage_Value { get; set; }
 
     public override void Load()
     {

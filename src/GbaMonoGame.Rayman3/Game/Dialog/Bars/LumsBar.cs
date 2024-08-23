@@ -7,16 +7,16 @@ public class LumsBar : Bar
 {
     public LumsBar(Scene2D scene) : base(scene) { }
 
-    private int WaitTimer { get; set; }
-    private int YOffset { get; set; }
-    private int CollectedLumsDigitValue1 { get; set; }
-    private int CollectedLumsDigitValue2 { get; set; }
+    public int WaitTimer { get; set; }
+    public int OffsetY { get; set; }
+    public int CollectedLumsDigitValue1 { get; set; }
+    public int CollectedLumsDigitValue2 { get; set; }
 
-    private AnimatedObject LumsIcon { get; set; }
-    private AnimatedObject CollectedLumsDigit1 { get; set; }
-    private AnimatedObject CollectedLumsDigit2 { get; set; }
-    private AnimatedObject TotalLumsDigit1 { get; set; }
-    private AnimatedObject TotalLumsDigit2 { get; set; }
+    public AnimatedObject LumsIcon { get; set; }
+    public AnimatedObject CollectedLumsDigit1 { get; set; }
+    public AnimatedObject CollectedLumsDigit2 { get; set; }
+    public AnimatedObject TotalLumsDigit1 { get; set; }
+    public AnimatedObject TotalLumsDigit2 { get; set; }
 
     public void AddLums(int count)
     {
@@ -117,13 +117,13 @@ public class LumsBar : Bar
         switch (DrawStep)
         {
             case BarDrawStep.Hide:
-                YOffset = 35;
+                OffsetY = 35;
                 break;
                 
             case BarDrawStep.MoveIn:
-                if (YOffset > 0)
+                if (OffsetY > 0)
                 {
-                    YOffset -= 2;
+                    OffsetY -= 2;
                 }
                 else
                 {
@@ -133,13 +133,13 @@ public class LumsBar : Bar
                 break;
 
             case BarDrawStep.MoveOut:
-                if (YOffset < 35)
+                if (OffsetY < 35)
                 {
-                    YOffset++;
+                    OffsetY++;
                 }
                 else
                 {
-                    YOffset = 35;
+                    OffsetY = 35;
                     DrawStep = BarDrawStep.Hide;
                 }
                 break;
@@ -147,12 +147,12 @@ public class LumsBar : Bar
             case BarDrawStep.Bounce:
                 if (WaitTimer < 35)
                 {
-                    YOffset = -BounceData[WaitTimer];
+                    OffsetY = -BounceData[WaitTimer];
                     WaitTimer++;
                 }
                 else
                 {
-                    YOffset = 0;
+                    OffsetY = 0;
                     DrawStep = BarDrawStep.Wait;
                     WaitTimer = 0;
                 }
@@ -163,7 +163,7 @@ public class LumsBar : Bar
                 {
                     if (WaitTimer >= 180)
                     {
-                        YOffset = 0;
+                        OffsetY = 0;
                         DrawStep = BarDrawStep.MoveOut;
                     }
                     else
@@ -176,11 +176,11 @@ public class LumsBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { Y = 8 - YOffset };
-            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { Y = 24 - YOffset };
-            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { Y = 24 - YOffset };
-            TotalLumsDigit1.ScreenPos = TotalLumsDigit1.ScreenPos with { Y = 24 - YOffset };
-            TotalLumsDigit2.ScreenPos = TotalLumsDigit2.ScreenPos with { Y = 24 - YOffset };
+            LumsIcon.ScreenPos = LumsIcon.ScreenPos with { Y = 8 - OffsetY };
+            CollectedLumsDigit1.ScreenPos = CollectedLumsDigit1.ScreenPos with { Y = 24 - OffsetY };
+            CollectedLumsDigit2.ScreenPos = CollectedLumsDigit2.ScreenPos with { Y = 24 - OffsetY };
+            TotalLumsDigit1.ScreenPos = TotalLumsDigit1.ScreenPos with { Y = 24 - OffsetY };
+            TotalLumsDigit2.ScreenPos = TotalLumsDigit2.ScreenPos with { Y = 24 - OffsetY };
 
             CollectedLumsDigit1.CurrentAnimation = CollectedLumsDigitValue1;
             CollectedLumsDigit2.CurrentAnimation = CollectedLumsDigitValue2;

@@ -7,13 +7,13 @@ public class CagesBar : Bar
 {
     public CagesBar(Scene2D scene) : base(scene) { }
 
-    private int WaitTimer { get; set; }
-    private int XOffset { get; set; }
-    private int CollectedCagesDigitValue { get; set; }
+    public int WaitTimer { get; set; }
+    public int OffsetX { get; set; }
+    public int CollectedCagesDigitValue { get; set; }
 
-    private AnimatedObject CageIcon { get; set; }
-    private AnimatedObject CollectedCagesDigit { get; set; }
-    private AnimatedObject TotalCagesDigit { get; set; }
+    public AnimatedObject CageIcon { get; set; }
+    public AnimatedObject CollectedCagesDigit { get; set; }
+    public AnimatedObject TotalCagesDigit { get; set; }
 
     public void AddCages(int count)
     {
@@ -76,13 +76,13 @@ public class CagesBar : Bar
         switch (DrawStep)
         {
             case BarDrawStep.Hide:
-                XOffset = 65;
+                OffsetX = 65;
                 break;
 
             case BarDrawStep.MoveIn:
-                if (XOffset > 0)
+                if (OffsetX > 0)
                 {
-                    XOffset -= 3;
+                    OffsetX -= 3;
                 }
                 else
                 {
@@ -92,13 +92,13 @@ public class CagesBar : Bar
                 break;
 
             case BarDrawStep.MoveOut:
-                if (XOffset < 65)
+                if (OffsetX < 65)
                 {
-                    XOffset += 2;
+                    OffsetX += 2;
                 }
                 else
                 {
-                    XOffset = 65;
+                    OffsetX = 65;
                     DrawStep = BarDrawStep.Hide;
                 }
                 break;
@@ -106,12 +106,12 @@ public class CagesBar : Bar
             case BarDrawStep.Bounce:
                 if (WaitTimer < 35)
                 {
-                    XOffset = BounceData[WaitTimer];
+                    OffsetX = BounceData[WaitTimer];
                     WaitTimer++;
                 }
                 else
                 {
-                    XOffset = 0;
+                    OffsetX = 0;
                     DrawStep = BarDrawStep.Wait;
                     WaitTimer = 0;
                 }
@@ -122,7 +122,7 @@ public class CagesBar : Bar
                 {
                     if (WaitTimer >= 180)
                     {
-                        XOffset = 0;
+                        OffsetX = 0;
                         DrawStep = BarDrawStep.MoveOut;
                     }
                     else
@@ -135,9 +135,9 @@ public class CagesBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            CageIcon.ScreenPos = CageIcon.ScreenPos with { X = -44 + XOffset };
-            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { X = -28 + XOffset };
-            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { X = -10 + XOffset };
+            CageIcon.ScreenPos = CageIcon.ScreenPos with { X = -44 + OffsetX };
+            CollectedCagesDigit.ScreenPos = CollectedCagesDigit.ScreenPos with { X = -28 + OffsetX };
+            TotalCagesDigit.ScreenPos = TotalCagesDigit.ScreenPos with { X = -10 + OffsetX };
 
             CollectedCagesDigit.CurrentAnimation = CollectedCagesDigitValue;
 

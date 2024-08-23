@@ -7,8 +7,8 @@ public class BossMachineBar : Bar
 {
     public BossMachineBar(Scene2D scene) : base(scene) { }
 
-    private AnimatedObject BossHealthBar { get; set; }
-    private int BossDamage { get; set; }
+    public AnimatedObject BossHealthBar { get; set; }
+    public int BossDamage { get; set; }
 
     public override void Load()
     {

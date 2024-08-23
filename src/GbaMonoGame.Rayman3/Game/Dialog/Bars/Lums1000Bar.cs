@@ -7,12 +7,12 @@ public class Lums1000Bar : Bar
 {
     public Lums1000Bar(Scene2D scene) : base(scene) { }
 
-    private int DeadLums { get; set; }
+    public int DeadLums { get; set; }
 
-    private AnimatedObject LumsIcon { get; set; }
-    private AnimatedObject CollectedLumsDigit1 { get; set; }
-    private AnimatedObject CollectedLumsDigit2 { get; set; }
-    private AnimatedObject CollectedLumsDigit3 { get; set; }
+    public AnimatedObject LumsIcon { get; set; }
+    public AnimatedObject CollectedLumsDigit1 { get; set; }
+    public AnimatedObject CollectedLumsDigit2 { get; set; }
+    public AnimatedObject CollectedLumsDigit3 { get; set; }
 
     public void AddLastLums()
     {

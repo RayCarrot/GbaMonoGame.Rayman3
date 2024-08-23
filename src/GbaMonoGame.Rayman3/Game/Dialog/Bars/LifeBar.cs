@@ -8,15 +8,15 @@ public class LifeBar : Bar
 {
     public LifeBar(Scene2D scene) : base(scene) { }
 
-    private int WaitTimer { get; set; }
-    private int YOffset { get; set; }
-    private int PreviousLivesCount { get; set; }
-    private int PreviousHitPoints { get; set; }
-    private bool HitPointsChanged { get; set; }
+    public int WaitTimer { get; set; }
+    public int OffsetY { get; set; }
+    public int PreviousLivesCount { get; set; }
+    public int PreviousHitPoints { get; set; }
+    public bool HitPointsChanged { get; set; }
 
-    private AnimatedObject HitPoints { get; set; }
-    private AnimatedObject LifeDigit1 { get; set; }
-    private AnimatedObject LifeDigit2 { get; set; }
+    public AnimatedObject HitPoints { get; set; }
+    public AnimatedObject LifeDigit1 { get; set; }
+    public AnimatedObject LifeDigit2 { get; set; }
 
     public void UpdateLife()
     {
@@ -122,13 +122,13 @@ public class LifeBar : Bar
         switch (DrawStep)
         {
             case BarDrawStep.Hide:
-                YOffset = 36;
+                OffsetY = 36;
                 break;
 
             case BarDrawStep.MoveIn:
-                if (YOffset != 0)
+                if (OffsetY != 0)
                 {
-                    YOffset -= 2;
+                    OffsetY -= 2;
                 }
                 else
                 {
@@ -138,13 +138,13 @@ public class LifeBar : Bar
                 break;
 
             case BarDrawStep.MoveOut:
-                if (YOffset < 36)
+                if (OffsetY < 36)
                 {
-                    YOffset += 2;
+                    OffsetY += 2;
                 }
                 else
                 {
-                    YOffset = 36;
+                    OffsetY = 36;
                     DrawStep = BarDrawStep.Hide;
                 }
                 break;
@@ -154,7 +154,7 @@ public class LifeBar : Bar
                 {
                     if (WaitTimer >= 360)
                     {
-                        YOffset = 0;
+                        OffsetY = 0;
                         DrawStep = BarDrawStep.MoveOut;
                     }
                     else
@@ -167,9 +167,9 @@ public class LifeBar : Bar
 
         if (DrawStep != BarDrawStep.Hide)
         {
-            HitPoints.ScreenPos = HitPoints.ScreenPos with { Y = 0 - YOffset };
-            LifeDigit1.ScreenPos = LifeDigit1.ScreenPos with { Y = 20 - YOffset };
-            LifeDigit2.ScreenPos = LifeDigit2.ScreenPos with { Y = 20 - YOffset };
+            HitPoints.ScreenPos = HitPoints.ScreenPos with { Y = 0 - OffsetY };
+            LifeDigit1.ScreenPos = LifeDigit1.ScreenPos with { Y = 20 - OffsetY };
+            LifeDigit2.ScreenPos = LifeDigit2.ScreenPos with { Y = 20 - OffsetY };
 
             animationPlayer.PlayFront(HitPoints);
             animationPlayer.PlayFront(LifeDigit1);
