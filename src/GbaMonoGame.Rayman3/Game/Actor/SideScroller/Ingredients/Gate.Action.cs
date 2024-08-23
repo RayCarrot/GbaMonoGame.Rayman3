@@ -20,6 +20,6 @@ public partial class Gate
         Init_4Switches_Right = 7,
         Init_3Switches_Left = 8,
         Init_3Switches_Right = 9,
-        Closing_Left = 10, // Unused
+        Closing_Left = 10,
     }
 }

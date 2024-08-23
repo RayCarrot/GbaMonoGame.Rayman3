@@ -3,6 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
+// Grille
 public sealed partial class Gate : InteractableActor
 {
     public Gate(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

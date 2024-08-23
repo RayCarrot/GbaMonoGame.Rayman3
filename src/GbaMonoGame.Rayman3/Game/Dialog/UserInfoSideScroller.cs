@@ -22,9 +22,7 @@ public class UserInfoSideScroller : Dialog
         }
 
         if (GameInfo.MapId == MapId.EchoingCaves_M1)
-        {
-            // TODO: Switch bar
-        }
+            SwitchBar = new SwitchBar(scene);
 
         if (GameInfo.MapId == MapId.BossMachine)
         {
@@ -61,13 +59,14 @@ public class UserInfoSideScroller : Dialog
         }
     }
 
-    private LifeBar LifeBar { get; }
-    private LumsBar LumsBar { get; }
-    private Lums1000Bar Lums1000Bar { get; }
-    private Bar BossBar { get; }
-    private CagesBar CagesBar { get; }
+    public LifeBar LifeBar { get; }
+    public LumsBar LumsBar { get; }
+    public Lums1000Bar Lums1000Bar { get; }
+    public SwitchBar SwitchBar { get; }
+    public Bar BossBar { get; }
+    public CagesBar CagesBar { get; }
 
-    private Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
+    public Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
 
     public void UpdateLife()
     {
@@ -87,7 +86,12 @@ public class UserInfoSideScroller : Dialog
         CagesBar.AddCages(count);
     }
 
-    public void AddBossDamage()
+    public void SwitchActivated()
+    {
+        SwitchBar.ActivateSwitch();
+    }
+
+    public void BossHit()
     {
         BossBar.Set();
     }
@@ -97,6 +101,18 @@ public class UserInfoSideScroller : Dialog
         LifeBar.SetToStayHidden();
         GetLumsBar().SetToStayHidden();
         CagesBar.SetToStayHidden();
+    }
+
+    public void ForceHideLevelBars()
+    {
+        LifeBar.OffsetY = 0;
+        LifeBar.DrawStep = BarDrawStep.Hide;
+
+        LumsBar.OffsetY = 0;
+        LumsBar.DrawStep = BarDrawStep.Hide;
+
+        CagesBar.OffsetX = 0;
+        CagesBar.DrawStep = BarDrawStep.Hide;
     }
 
     public void MoveOutBars()
@@ -117,11 +133,17 @@ public class UserInfoSideScroller : Dialog
                 if (GameInfo.MapId is not (MapId.ChallengeLy1 or MapId.ChallengeLy2 or MapId.ChallengeLyGCN))
                 {
                     LifeBar.SetToStayVisible();
+                    LifeBar.MoveIn();
+
                     GetLumsBar().SetToStayVisible();
+                    GetLumsBar().MoveIn();
+
                     CagesBar.SetToStayVisible();
+                    CagesBar.MoveIn();
                 }
+
                 // TODO: Blue lums bar
-                // TODO: Switch bar
+                SwitchBar?.SetToStayHidden();
                 BossBar?.SetToStayHidden();
                 return true;
 
@@ -132,8 +154,9 @@ public class UserInfoSideScroller : Dialog
                     GetLumsBar().SetToDefault();
                     CagesBar.SetToDefault();
                 }
+
                 // TODO: Blue lums bar
-                // TODO: Switch bar
+                SwitchBar?.SetToDefault();
                 BossBar?.SetToDefault();
                 return true;
 
@@ -148,14 +171,14 @@ public class UserInfoSideScroller : Dialog
         GetLumsBar().Load();
         CagesBar.Load();
         // TODO: Blue lums bar
-        // TODO: Switch bar
+        SwitchBar?.Load();
         BossBar?.Load();
 
         LifeBar.Set();
         GetLumsBar().Set();
         CagesBar.Set();
         // TODO: Blue lums bar
-        // TODO: Switch bar
+        SwitchBar?.Set();
     }
 
     public override void Init() { }
@@ -166,7 +189,7 @@ public class UserInfoSideScroller : Dialog
         GetLumsBar().Draw(animationPlayer);
         CagesBar.Draw(animationPlayer);
         // TODO: Blue lums bar
-        // TODO: Switch bar
+        SwitchBar?.Draw(animationPlayer);
         BossBar?.Draw(animationPlayer);
     }
 }

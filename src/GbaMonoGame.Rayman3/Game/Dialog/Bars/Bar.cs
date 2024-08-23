@@ -35,15 +35,12 @@ public abstract class Bar
             Mode = BarMode.StayHidden;
     }
 
-    public void SetToStayVisible(bool moveIn = true)
+    public void SetToStayVisible()
     {
         if (Mode != BarMode.Disabled)
             Mode = BarMode.StayVisible;
-
-        if (DrawStep != BarDrawStep.Bounce && Mode != BarMode.StayHidden)
-            DrawStep = BarDrawStep.MoveIn;
     }
-    
+
     public void SetToDefault()
     {
         if (Mode != BarMode.Disabled)
@@ -53,6 +50,12 @@ public abstract class Bar
     public void Disable()
     {
         Mode = BarMode.Disabled;
+    }
+
+    public void MoveIn()
+    {
+        if (DrawStep != BarDrawStep.Bounce && Mode != BarMode.StayHidden)
+            DrawStep = BarDrawStep.MoveIn;
     }
 
     public abstract void Load();

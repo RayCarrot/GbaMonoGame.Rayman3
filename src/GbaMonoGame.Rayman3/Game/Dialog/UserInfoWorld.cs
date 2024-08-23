@@ -23,7 +23,7 @@ public class UserInfoWorld : Dialog
             // TODO: World name bar
         }
 
-        LifeBar.SetToStayVisible(moveIn: false);
+        LifeBar.SetToStayVisible();
 
         Hide = false;
         ShouldPlayCurtainAnimation = true;

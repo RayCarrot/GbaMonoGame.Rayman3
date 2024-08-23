@@ -17,22 +17,18 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Private Properties
-
-    private CircleWindowEffectObject CircleEffect { get; set; }
-    private int CircleFXTimer { get; set; }
-    private CircleFXTransitionMode CircleFXMode { get; set; }
-
-    #endregion
-
     #region Protected Properties
 
-    protected Scene2D Scene { get; set; }
-    protected Action CurrentStepAction { get; set; }
+    protected CircleWindowEffectObject CircleEffect { get; set; }
+    protected int CircleFXTimer { get; set; }
+    protected CircleFXTransitionMode CircleFXMode { get; set; }
 
     #endregion
 
     #region Public Properties
+
+    public Scene2D Scene { get; set; }
+    public Action CurrentStepAction { get; set; }
 
     public TransitionsFX TransitionsFX { get; set; }
     public UserInfoSideScroller UserInfo { get; set; }
@@ -120,8 +116,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         }
 
         CircleEffect.Camera = Scene.Playfield.Camera;
-        CircleEffect.Radius = CircleFXTimer;
-        CircleEffect.CirclePosition = Scene.MainActor.ScreenPosition - new Vector2(0, 32);
+        CircleEffect.Init(CircleFXTimer, Scene.MainActor.ScreenPosition - new Vector2(0, 32));
     }
 
     public override void Init()
@@ -215,7 +210,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Steps
 
-    protected void Step_Normal()
+    public void Step_Normal()
     {
         Scene.Step();
         Scene.Playfield.Step();
@@ -238,7 +233,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         }
     }
 
-    protected void Step_Pause_DisableFog()
+    public void Step_Pause_DisableFog()
     {
         Fog.ShouldDraw = false;
         Scene.Step();
@@ -247,7 +242,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Init;
     }
 
-    protected void Step_Pause_Init()
+    public void Step_Pause_Init()
     {
         // Fade after drawing screen 0, thus only leaving the sprites 0 as not faded
         Gfx.SetFade(6 / 16f, FadeFlags.Screen0);
@@ -263,7 +258,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_AddDialog;
     }
 
-    protected void Step_Pause_AddDialog()
+    public void Step_Pause_AddDialog()
     {
         Scene.AddDialog(PauseDialog, true, false);
 
@@ -277,7 +272,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Paused;
     }
 
-    protected void Step_Pause_Paused()
+    public void Step_Pause_Paused()
     {
         if (PauseDialog.DrawStep == PauseDialog.PauseDialogDrawStep.Hide)
             CurrentStepAction = Step_Pause_UnInit;
@@ -293,7 +288,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
     }
 
-    protected void Step_Pause_UnInit()
+    public void Step_Pause_UnInit()
     {
         Scene.RemoveLastDialog();
 
@@ -313,7 +308,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Resume;
     }
 
-    protected void Step_Pause_Resume()
+    public void Step_Pause_Resume()
     {
         Gfx.ClearFade();
 

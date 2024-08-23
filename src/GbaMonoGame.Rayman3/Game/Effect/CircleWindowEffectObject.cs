@@ -63,6 +63,12 @@ public class CircleWindowEffectObject : EffectObject
 
     public int Radius { get; set; }
     public Vector2 CirclePosition { get; set; }
+
+    public void Init(int radius, Vector2 pos)
+    {
+        Radius = radius;
+        CirclePosition = pos;
+    }
     
     public override void Execute(Action<short> soundEventCallback)
     {

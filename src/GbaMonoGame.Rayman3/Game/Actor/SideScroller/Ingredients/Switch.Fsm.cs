@@ -54,7 +54,7 @@ public partial class Switch
 
                 if (GameInfo.MapId == MapId.EchoingCaves_M1)
                 {
-                    // TODO: Update switch bar
+                    ((FrameSideScroller)Frame.Current).UserInfo.SwitchActivated();
                 }
                 else if (GameInfo.MapId == MapId.BeneathTheSanctuary_M1)
                 {

@@ -119,7 +119,7 @@ public sealed partial class Machine : MovableActor
 
             case Message.Machine_CogDestroyed:
                 BossHealth--;
-                ((FrameSideScroller)Frame.Current).UserInfo.AddBossDamage();
+                ((FrameSideScroller)Frame.Current).UserInfo.BossHit();
                 return false;
 
             default:
