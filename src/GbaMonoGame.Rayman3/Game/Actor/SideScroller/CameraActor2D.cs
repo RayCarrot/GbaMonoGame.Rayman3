@@ -14,9 +14,8 @@ public abstract class CameraActor2D : CameraActor
 
         bool isFramed = viewBox.Intersects(camBox);
 
-        // NOTE: The game only does this if it is framed, but we do it anyway
-        //       as to make debugging the game easier.
-        actor.AnimatedObject.ScreenPos = actor.Position - Scene.Playfield.Camera.Position;
+        if (isFramed)
+            actor.AnimatedObject.ScreenPos = actor.Position - Scene.Playfield.Camera.Position;
 
         return isFramed;
     }
