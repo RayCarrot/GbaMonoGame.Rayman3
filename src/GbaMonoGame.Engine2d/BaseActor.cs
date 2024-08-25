@@ -89,6 +89,12 @@ public abstract class BaseActor : GameObject
         }
     }
 
+    protected void InitWithLink(ActorResource actorResource)
+    {
+        if (actorResource.Links[0] != null && !Scene.GetGameObject(actorResource.Links[0].Value).IsEnabled)
+            ProcessMessage(this, Message.Destroy);
+    }
+
     public Box GetViewBox() => _viewBox.Offset(Position);
 
     public void RewindAction()
