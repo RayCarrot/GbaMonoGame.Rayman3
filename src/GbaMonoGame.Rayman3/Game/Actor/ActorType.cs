@@ -32,6 +32,7 @@ public enum ActorType
     BarrelSplash = 29,
     Depart = 30,
     RedShell = 31,
+    KegFire = 32,
 
     Caterpillar = 35, // TODO: Implement
 

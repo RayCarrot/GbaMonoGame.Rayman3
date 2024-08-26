@@ -446,6 +446,28 @@ public class Scene2D
         return null;
     }
 
+    public InteractableActor IsHitActorOfType(InteractableActor actor, int type)
+    {
+        Box attackBox = actor.GetAttackBox();
+
+        foreach (BaseActor actorToCheck in KnotManager.EnumerateAllActors(isEnabled: true))
+        {
+            // Ignore main actor if not in multiplayer
+            if (!RSMultiplayer.IsActive && actorToCheck.InstanceId == 0)
+                continue;
+
+            // Check for collision
+            if (actorToCheck != actor && 
+                actorToCheck.Type == type &&
+                actorToCheck.ReceivesDamage && 
+                actorToCheck is InteractableActor interactableActor && 
+                interactableActor.GetVulnerabilityBox().Intersects(attackBox))
+                return interactableActor;
+        }
+
+        return null;
+    }
+
     public GameObject GetGameObject(int instanceId) => KnotManager.GetGameObject(instanceId);
     public T GetGameObject<T>(int instanceId) where T : GameObject => (T)KnotManager.GetGameObject(instanceId);
 

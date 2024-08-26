@@ -148,7 +148,7 @@ public partial class Rayman
             if (!RSMultiplayer.IsActive)
                 State.MoveTo(Fsm_Dying);
             else
-                State.MoveTo(FUN_08033228);
+                State.MoveTo(Fsm_MultiplayerDying);
 
             return false;
         }
@@ -3194,6 +3194,142 @@ public partial class Rayman
         return true;
     }
 
+    private bool Fsm_FlyWithKeg(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.CarryObject_Right : Action.CarryObject_Left;
+                NextActionId = null;
+                MechModel.Speed = MechModel.Speed with { Y = 0 };
+                
+                if (IsFacingRight)
+                    AttachedObject.Position = Position + new Vector2(10, -22);
+                else
+                    AttachedObject.Position = Position + new Vector2(-8, -22);
+
+                SetDetectionBox(new Box(
+                    minX: ActorModel.DetectionBox.MinX - 10,
+                    minY: ActorModel.DetectionBox.MinY - 22,
+                    maxX: ActorModel.DetectionBox.MaxX,
+                    maxY: ActorModel.DetectionBox.MaxY - 22));
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return false;
+
+                if (StartFlyingWithKegRight)
+                {
+                    PlaySound(Rayman3SoundEvent.Play__OnoGO_Mix02);
+
+                    if (Flag1_B)
+                    {
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel_BA, 3);
+                        Flag1_B = false;
+                    }
+                    else
+                    {
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel, 3);
+                        Flag1_B = true;
+                    }
+
+                    StartFlyingWithKegRight = false;
+                    ActionId = IsFacingRight ? Action.FlyForwardWithKeg_Right : Action.FlyBackwardsWithKeg_Right;
+                }
+                else if (StartFlyingWithKegLeft)
+                {
+                    PlaySound(Rayman3SoundEvent.Play__OnoGO_Mix02);
+
+                    if (Flag1_B)
+                    {
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel_BA, 3);
+                        Flag1_B = false;
+                    }
+                    else
+                    {
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel, 3);
+                        Flag1_B = true;
+                    }
+
+                    StartFlyingWithKegLeft = false;
+                    ActionId = IsFacingRight ? Action.FlyForwardWithKeg_Left : Action.FlyBackwardsWithKeg_Left;
+                }
+
+                if (StopFlyingWithKeg)
+                {
+                    StopFlyingWithKeg = false;
+                    Speed = Speed with { X = 0 };
+                }
+
+                if (IsFacingRight)
+                    AttachedObject.Position = AttachedObject.Position with { X = Position.X + 6 };
+                else
+                    AttachedObject.Position = AttachedObject.Position with { X = Position.X + -4 };
+
+                if (ActionId is Action.CarryObject_Right or Action.CarryObject_Left)
+                {
+                    MechModel.Speed = MechModel.Speed with { Y = 0 };
+
+                    // Sync the objects position with Rayman
+                    switch (AnimatedObject.CurrentFrame)
+                    {
+                        case 0:
+                        case 1:
+                        case 2:
+                            AttachedObject.Position = AttachedObject.Position with { Y = Position.Y - 22 };
+                            break;
+                        
+                        case 3:
+                        case 4:
+                            AttachedObject.Position = AttachedObject.Position with { Y = Position.Y - 23 };
+                            break;
+                        
+                        case 5:
+                        case 6:
+                            AttachedObject.Position = AttachedObject.Position with { Y = Position.Y - 22 };
+                            break;
+                        
+                        case 7:
+                        case 8:
+                        case 9:
+                            AttachedObject.Position = AttachedObject.Position with { Y = Position.Y - 21 };
+                            break;
+                    }
+                }
+                else
+                {
+                    AttachedObject.Position = AttachedObject.Position with { Y = Position.Y - 22 };
+
+                    if (IsDirectionalButtonPressed(GbaInput.Up))
+                        MechModel.Speed = MechModel.Speed with { Y = -2.5f };
+                    else if (IsDirectionalButtonPressed(GbaInput.Down))
+                        MechModel.Speed = MechModel.Speed with { Y = 2.5f };
+                    else
+                        MechModel.Speed = MechModel.Speed with { Y = 0 };
+                }
+
+                if (DropObject)
+                {
+                    DropObject = false;
+                    PreviousXSpeed = 2;
+                    State.MoveTo(Fsm_Helico);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                AttachedObject = null;
+                CheckAgainstMapCollision = true;
+                Position -= new Vector2(0, -22);
+                SetDetectionBox(new Box(ActorModel.DetectionBox));
+                SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__echocave, 3);
+                break;
+        }
+
+        return true;
+    }
+
     private bool Fsm_EndMap(FsmAction action)
     {
         switch (action)
@@ -3493,10 +3629,33 @@ public partial class Rayman
 
                 if (!Flag1_C)
                 {
-                    // TODO: N-Gage checks if AttachedObject is null and if so goes to the "else". However on GBA it'd
-                    //       probably go to the first block if null? Check if this is ever an issue.
-                    if (Position.X - AttachedObject.Position.X >= 0)
+                    // Due to the lack of some null checks on GBA this code works differently on GBA and N-Gage if there is no attached object
+                    bool right;
+                    if (Engine.Settings.Platform == Platform.GBA)
+                    {
+                        // On GBA there is no null check making it evaluate the condition as true if so and prioritizing a knockback to the right
+                        if (AttachedObject == null || Position.X - AttachedObject.Position.X >= 0)
+                            right = true;
+                        else
+                            right = false;
+                    }
+                    else if (Engine.Settings.Platform == Platform.NGage)
+                    {
+                        // On N-Gage there's an added null check, making it prioritize a knockback to the left
+                        if (AttachedObject != null && Position.X - AttachedObject.Position.X >= 0)
+                            right = true;
+                        else
+                            right = false;
+                    }
+                    else
+                    {
+                        throw new UnsupportedPlatformException();
+                    }
+
+                    // Right
+                    if (right)
                         ActionId = IsFacingRight ? Action.KnockbackForwards_Right : Action.KnockbackBackwards_Left;
+                    // Left
                     else
                         ActionId = IsFacingRight ? Action.KnockbackBackwards_Right : Action.KnockbackForwards_Left;
                 }
@@ -3834,7 +3993,7 @@ public partial class Rayman
     // TODO: Implement all of these
     private bool FUN_080284ac(FsmAction action) => true;
     private bool FUN_0802ddac(FsmAction action) => true;
-    private bool FUN_08033228(FsmAction action) => true;
+    private bool Fsm_MultiplayerDying(FsmAction action) => true;
     private bool FUN_080224f4(FsmAction action) => true;
     private bool FUN_1005dea0(FsmAction action) => true;
     private bool FUN_1005dfa4(FsmAction action) => true;

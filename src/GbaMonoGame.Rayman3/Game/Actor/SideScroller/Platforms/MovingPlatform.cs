@@ -167,7 +167,7 @@ public sealed partial class MovingPlatform : MovableActor
 
         if (Timer == 120)
         {
-            Fire.ProcessMessage(this, Message.FlowerFire_End);
+            Fire.ProcessMessage(this, Message.LightOnFire_Right);
 
             if (Scene.MainActor.LinkedMovementActor == this)
             {

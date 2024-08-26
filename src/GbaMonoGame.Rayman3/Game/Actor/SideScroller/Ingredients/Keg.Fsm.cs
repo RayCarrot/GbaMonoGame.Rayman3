@@ -420,9 +420,119 @@ public partial class Keg
         return true;
     }
 
-    // TODO: Implement
-    private bool FUN_08063fe4(FsmAction action)
+    private bool Fsm_Fly(FsmAction action)
     {
+        switch (action)
+        {
+            case FsmAction.Init:
+                Timer = 0;
+                CheckAgainstMapCollision = true;
+                break;
+
+            case FsmAction.Step:
+                bool endFlight = false;
+                bool respawn = false;
+
+                Timer++;
+
+                // Start flying after igniting for 1 second
+                if (Timer > 60 && ActionId is Action.Ignite_Right or Action.Ignite_Left)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Combust1_Mix02);
+                    ActionId = IsFacingRight ? Action.Flying_Right : Action.Flying_Left;
+                    Scene.MainActor.ProcessMessage(this, IsFacingRight ? Message.Main_StartFlyingWithKegRight : Message.Main_StartFlyingWithKegLeft);
+                    SpawnedDebrisCount = 0;
+                }
+                // Flying for 10.5 seconds
+                else if (Timer > 630 && ActionId is Action.Flying_Right or Action.Flying_Left)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__Combust1_Mix02);
+                    ActionId = IsFacingRight ? Action.StopFlying_Right : Action.StopFlying_Left;
+                    Scene.MainActor.ProcessMessage(this, Message.Main_StopFlyingWithKeg);
+                }
+                // If flying...
+                else if (ActionId is Action.Flying_Right or Action.Flying_Left or Action.StopFlying_Right or Action.StopFlying_Left)
+                {
+                    // End flight if it's been over 12 seconds or no longer attached to the main actor
+                    if (Timer > 720 || ((Rayman)Scene.MainActor).AttachedObject != this)
+                    {
+                        Scene.MainActor.ProcessMessage(this, Message.DropObject);
+                        endFlight = true;
+                    }
+                    // If the main actor touches the map or is dead
+                    else if ((Scene.MainActor.IsTouchingMap && Timer > 75) || Scene.MainActor.HitPoints == 0)
+                    {
+                        SpawnExplosion(true);
+                        Scene.MainActor.ProcessMessage(this, Message.Exploded);
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__Combust1_Mix02);
+                        respawn = true;
+                    }
+                }
+
+                if (respawn)
+                {
+                    State.MoveTo(Fsm_Respawn);
+                    return false;
+                }
+
+                if (endFlight)
+                {
+                    State.MoveTo(Fsm_FallFromFlight);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_FallFromFlight(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsFacingRight ? Action.FallFromFlight_Right : Action.FallFromFlight_Left;
+                break;
+
+            case FsmAction.Step:
+                bool respawn = false;
+
+                InteractableActor hitPirate = Scene.IsHitActorOfType(this, (int)ActorType.SilverPirate);
+                if (hitPirate != null)
+                {
+                    hitPirate.ReceiveDamage(50);
+                    hitPirate.ProcessMessage(this, Message.Hit, this);
+                    respawn = true;
+                }
+
+                if (ScreenPosition.X > Scene.Resolution.X + 1 || 
+                    ScreenPosition.X < 0 || 
+                    Speed.X == 0 || 
+                    Scene.GetPhysicalType(Position) == PhysicalTypeValue.InstaKill || 
+                    Scene.GetPhysicalType(Position) == PhysicalTypeValue.MoltenLava || 
+                    respawn)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__Combust1_Mix02);
+                    respawn = true;
+                    SpawnExplosion(true);
+                }
+
+                if (respawn)
+                {
+                    State.MoveTo(Fsm_Respawn);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
         return true;
     }
 }

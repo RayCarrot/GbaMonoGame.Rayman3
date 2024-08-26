@@ -52,12 +52,15 @@ public enum Message
     Main_LevelExit = 1031,
 
     Main_CollectedCage = 1033,
-    FlowerFire_End = 1034,
+    LightOnFire_Right = 1034,
+    LightOnFire_Left = 1035,
+    Main_StartFlyingWithKegRight = 1036,
+    Main_StartFlyingWithKegLeft = 1037,
 
     Cam_DoNotFollowPositionY = 1039,
     Cam_FollowPositionY = 1040,
     Cam_FollowPositionYUntilNearby = 1041,
-
+    Main_StopFlyingWithKeg = 1042,
     Hit = 1043,
     Main_BeginSwing = 1044,
     Main_Damaged2 = 1045,
@@ -72,7 +75,7 @@ public enum Message
     Main_Stop = 1057,
     Cam_MoveToLinkedObject = 1058,
     Main_ExitStopOrCutscene = 1059,
-    Machine_CogDestroyed = 1060,
+    Exploded = 1060,
 
     Cam_SetPosition = 1062,
 

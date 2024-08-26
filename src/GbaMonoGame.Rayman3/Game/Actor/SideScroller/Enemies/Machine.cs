@@ -109,7 +109,7 @@ public sealed partial class Machine : MovableActor
                 if (State == Fsm_CogWheelSpinning)
                 {
                     CogDestroyed = true;
-                    Parent.ProcessMessage(this, Message.Machine_CogDestroyed);
+                    Parent.ProcessMessage(this, Message.Exploded);
                 }
                 return false;
 
@@ -117,7 +117,7 @@ public sealed partial class Machine : MovableActor
                 MurfySpawned = true;
                 return false;
 
-            case Message.Machine_CogDestroyed:
+            case Message.Exploded:
                 BossHealth--;
                 ((FrameSideScroller)Frame.Current).UserInfo.BossHit();
                 return false;

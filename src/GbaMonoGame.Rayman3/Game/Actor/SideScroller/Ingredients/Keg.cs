@@ -80,7 +80,7 @@ public sealed partial class Keg : MovableActor
                 return false;
 
             case Message.DropObject:
-                if (State != FUN_08063fe4)
+                if (State != Fsm_Fly)
                     State.MoveTo(Fsm_Drop);
                 return false;
 
@@ -95,10 +95,15 @@ public sealed partial class Keg : MovableActor
                 State.MoveTo(Fsm_Respawn);
                 return false;
 
-            // TODO: Implement
-            //case 1034:
-            //case 1035:
-            //    return false;
+            case Message.LightOnFire_Right:
+            case Message.LightOnFire_Left:
+                if (State == Fsm_PickedUp)
+                {
+                    ActionId = message == Message.LightOnFire_Right ? Action.Ignite_Right : Action.Ignite_Left;
+                    Scene.MainActor.ProcessMessage(this, message);
+                    State.MoveTo(Fsm_Fly);
+                }
+                return false;
 
             default:
                 return false;

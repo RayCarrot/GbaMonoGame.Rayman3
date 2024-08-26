@@ -119,7 +119,10 @@ public partial class Rayman
         BeginBounce_Left = 108,
         BouncyJump_Right = 109,
         BouncyJump_Left = 110,
-
+        FlyForwardWithKeg_Right = 111,
+        FlyForwardWithKeg_Left = 112,
+        FlyBackwardsWithKeg_Right = 113,
+        FlyBackwardsWithKeg_Left = 114,
         KnockbackBackwards_Right = 115,
         KnockbackBackwards_Left = 116,
         KnockbackForwards_Right = 117,

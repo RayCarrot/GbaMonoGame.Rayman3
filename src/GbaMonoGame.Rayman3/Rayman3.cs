@@ -630,6 +630,7 @@ public class Rayman3 : GbaGame
             { ActorType.BarrelSplash, (instanceId, scene, resource) => new BarrelSplash(instanceId, scene, resource) },
             { ActorType.Depart, (instanceId, scene, resource) => new Depart(instanceId, scene, resource) },
             { ActorType.RedShell, (instanceId, scene, resource) => new RedShell(instanceId, scene, resource) },
+            { ActorType.KegFire, (instanceId, scene, resource) => new KegFire(instanceId, scene, resource) },
 
             { ActorType.Butterfly, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },
 

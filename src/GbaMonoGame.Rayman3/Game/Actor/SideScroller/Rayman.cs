@@ -137,10 +137,10 @@ public sealed partial class Rayman : MovableActor
     public bool Flag1_4 { get; set; }
     public bool Flag1_5 { get; set; }
     public bool IsInFrontOfLevelCurtain { get; set; }
-    public bool Flag1_7 { get; set; }
-    public bool Flag1_8 { get; set; }
-    public bool Flag1_9 { get; set; }
-    public bool Flag1_A { get; set; }
+    public bool StartFlyingWithKegRight { get; set; }
+    public bool StartFlyingWithKegLeft { get; set; }
+    public bool StopFlyingWithKeg { get; set; }
+    public bool DropObject { get; set; }
     public bool Flag1_B { get; set; }
     public bool Flag1_C { get; set; }
     public bool Flag1_D { get; set; }
@@ -1457,6 +1457,10 @@ public sealed partial class Rayman : MovableActor
                 }
                 return false;
 
+            case Message.DropObject:
+                DropObject = true;
+                return false;
+
             case Message.Damaged:
             case Message.Main_Damaged2:
             case Message.Main_Damaged3:
@@ -1511,6 +1515,24 @@ public sealed partial class Rayman : MovableActor
 
             case Message.Main_CollectedCage:
                 ((FrameSideScroller)Frame.Current).UserInfo.AddCages(1);
+                return false;
+
+            case Message.LightOnFire_Right:
+            case Message.LightOnFire_Left:
+                if (State != Fsm_HitKnockback && State != Fsm_Dying)
+                    State.MoveTo(Fsm_FlyWithKeg);
+                return false;
+
+            case Message.Main_StartFlyingWithKegRight:
+                StartFlyingWithKegRight = true;
+                return false;
+
+            case Message.Main_StartFlyingWithKegLeft:
+                StartFlyingWithKegLeft = true;
+                return false;
+
+            case Message.Main_StopFlyingWithKeg:
+                StopFlyingWithKeg = true;
                 return false;
 
             case Message.Main_BeginSwing:
@@ -1568,6 +1590,18 @@ public sealed partial class Rayman : MovableActor
                 }
                 return false;
 
+            case Message.Exploded:
+                if (RSMultiplayer.IsActive)
+                {
+                    State.MoveTo(Fsm_MultiplayerDying);
+                }
+                else
+                {
+                    if (State != Fsm_Dying && State != Fsm_EndMap)
+                        State.MoveTo(Fsm_Dying);
+                }
+                return false;
+
             case Message.Main_EnterLevelCurtain:
                 if (State != Fsm_EnterLevelCurtain)
                     State.MoveTo(Fsm_EnterLevelCurtain);
@@ -1616,10 +1650,10 @@ public sealed partial class Rayman : MovableActor
         Flag1_4 = false;
         Flag1_5 = false;
         IsInFrontOfLevelCurtain = false;
-        Flag1_7 = false;
-        Flag1_8 = false;
-        Flag1_9 = false;
-        Flag1_A = false;
+        StartFlyingWithKegRight = false;
+        StartFlyingWithKegLeft = false;
+        StopFlyingWithKeg = false;
+        DropObject = false;
         Flag1_B = false;
         Flag1_C = false;
         Flag1_D = false;
