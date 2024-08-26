@@ -177,10 +177,7 @@ public class MechModel
 
     private void Reset(float[] mechParams, int offset)
     {
-        Speed = Vector2.Zero;
-        Acceleration = Vector2.Zero;
-        TargetSpeed = Vector2.Zero;
-        UpdateSpeedAction = SetConstSpeedXY;
+        Reset();
     }
 
     private void UseConstantSpeed(float[] mechParams, int offset)
@@ -291,5 +288,13 @@ public class MechModel
     public void Init(int type, float[] mechParams)
     {
         InitActions[type](mechParams, 0);
+    }
+
+    public void Reset()
+    {
+        Speed = Vector2.Zero;
+        Acceleration = Vector2.Zero;
+        TargetSpeed = Vector2.Zero;
+        UpdateSpeedAction = SetConstSpeedXY;
     }
 }

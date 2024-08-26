@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-public partial class RedPirate
+public partial class SilverPirate
 {
     private bool FsmStep_CheckDeath()
     {
@@ -54,10 +54,8 @@ public partial class RedPirate
 
             case FsmAction.Step:
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
-                
-                // Check if landed
-                PhysicalType type = GetPhysicalGroundType();
-                if (type.IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
+
+                if (GetPhysicalGroundType().IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
                 {
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraJump_BigFoot1_Mix02);
                     ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
@@ -85,7 +83,6 @@ public partial class RedPirate
         {
             case FsmAction.Init:
                 ActionId = IsFacingRight ? Action.Idle_Right : Action.Idle_Left;
-                IdleDetectionTimer = GameTime.ElapsedFrames;
                 AttackTimer = GameTime.ElapsedFrames;
                 break;
 
@@ -95,15 +92,20 @@ public partial class RedPirate
                 if (!FsmStep_CheckDeath())
                     return false;
 
-                // 180 frames and not detected main actor...
-                if (GameTime.ElapsedFrames - IdleDetectionTimer > 180 && !Scene.IsDetectedMainActor(this))
+                if (IsFacingRight && Scene.MainActor.Position.X < Position.X)
+                    ActionId = Action.Idle_Left;
+                else if (IsFacingLeft && Scene.MainActor.Position.X > Position.X)
+                    ActionId = Action.Idle_Right;
+
+                if (((Rayman)Scene.MainActor).ActionId is 
+                    Rayman.Action.EndChargeFist_Right or Rayman.Action.EndChargeFist_Left or 
+                    Rayman.Action.EndChargeSecondFist_Right or Rayman.Action.EndChargeSecondFist_Left)
                 {
-                    State.MoveTo(Fsm_Walk);
+                    State.MoveTo(Fsm_Jump);
                     return false;
                 }
 
-                // 75 frames and detected main actor...
-                if (GameTime.ElapsedFrames - AttackTimer > 75 && Scene.IsDetectedMainActor(this))
+                if (GameTime.ElapsedFrames - AttackTimer > 60 && Scene.IsDetectedMainActor(this))
                 {
                     State.MoveTo(Fsm_Attack);
                     return false;
@@ -118,12 +120,12 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Walk(FsmAction action)
+    private bool Fsm_Jump(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-                ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                ActionId = IsFacingRight ? Action.Jump_Right : Action.Jump_Left;
                 break;
 
             case FsmAction.Step:
@@ -132,21 +134,15 @@ public partial class RedPirate
                 if (!FsmStep_CheckDeath())
                     return false;
 
-                // Reverse direction
-                if (Speed.X == 0)
-                    ActionId = ActionId == Action.Walk_Right ? Action.Walk_Left : Action.Walk_Right;
-
-                Walk();
-
-                if (Scene.IsDetectedMainActor(this))
+                if (Scene.GetPhysicalType(Position).IsSolid)
                 {
-                    State.MoveTo(Fsm_Attack);
+                    State.MoveTo(Fsm_Idle);
                     return false;
                 }
                 break;
 
             case FsmAction.UnInit:
-                Ammo = Random.GetNumber(1) + 1;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraJump_BigFoot1_Mix02);
                 break;
         }
 
@@ -158,14 +154,14 @@ public partial class RedPirate
         switch (action)
         {
             case FsmAction.Init:
-                HasFiredShot = false;
+                HighShot = Position.Y >= Scene.MainActor.Position.Y && !((Rayman)Scene.MainActor).IsInCrouchState;
 
-                if (Ammo == 0)
-                    Ammo = Random.GetNumber(1) + 1;
+                if (HighShot)
+                    ActionId = Position.X - Scene.MainActor.Position.X < 0 ? Action.ShootHigh_Right : Action.ShootHigh_Left;
+                else
+                    ActionId = Position.X - Scene.MainActor.Position.X < 0 ? Action.ShootLow_Right : Action.ShootLow_Left;
 
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraAtk1_Mix01__or__PiraHurt_Mix02);
-
-                ActionId = Position.X - Scene.MainActor.Position.X < 0 ? Action.Shoot_Right : Action.Shoot_Left;
                 break;
 
             case FsmAction.Step:
@@ -174,12 +170,11 @@ public partial class RedPirate
                 if (!FsmStep_CheckDeath())
                     return false;
 
-                if (AnimatedObject.CurrentFrame == 6 && 
-                    ActionId is Action.Shoot_Right or Action.Shoot_Left &&
-                    !HasFiredShot)
+                if ((AnimatedObject.CurrentFrame == 7 && ActionId is Action.ShootHigh_Right or Action.ShootHigh_Left) ||
+                    (AnimatedObject.CurrentFrame == 8 && ActionId is Action.ShootLow_Right or Action.ShootLow_Left))
                 {
-                    Shoot();
-                    HasFiredShot = true;
+                    if (!AnimatedObject.IsDelayMode)
+                        Shoot();
                 }
 
                 if (IsActionFinished)
@@ -217,10 +212,9 @@ public partial class RedPirate
                     return false;
 
                 // Allow 20 frames to be double hit and cause a hit knock-back
-                if (GameTime.ElapsedFrames - DoubleHitTimer > 20)
+                if (Scene.GetPhysicalType(Position).IsSolid && GameTime.ElapsedFrames - DoubleHitTimer > 20)
                 {
                     StartInvulnerability();
-                    Ammo = 2;
                     State.MoveTo(Fsm_Attack);
                     return false;
                 }
@@ -239,9 +233,9 @@ public partial class RedPirate
         switch (action)
         {
             case FsmAction.Init:
-                KnockBackPosition = Position;
+                KnockBackYPosition = Position.Y;
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
-                ActionId = IsFacingRight ? Action.HitKnockBack_Right : Action.HitKnockBack_Left;
+                ActionId = IsFacingRight ? Action.HitKnockBack1_Right : Action.HitKnockBack1_Left;
                 StartInvulnerability();
                 CheckAgainstMapCollision = false;
                 break;
@@ -251,58 +245,28 @@ public partial class RedPirate
                 PhysicalType type = Scene.GetPhysicalType(Position);
 
                 if (IsActionFinished)
-                    ActionId = IsFacingRight ? Action.Hit_Right : Action.Hit_Left;
+                    ActionId = IsFacingRight ? Action.HitKnockBack2_Right : Action.HitKnockBack2_Left;
 
-                if (type.Value is 
-                        PhysicalTypeValue.InstaKill or 
-                        PhysicalTypeValue.Damage or 
-                        PhysicalTypeValue.Water or 
+                if (type.Value is
+                        PhysicalTypeValue.InstaKill or
+                        PhysicalTypeValue.Damage or
+                        PhysicalTypeValue.Water or
                         PhysicalTypeValue.MoltenLava ||
-                    (type.IsSolid && KnockBackPosition.Y + 16 < Position.Y))
+                    (type.IsSolid && KnockBackYPosition + 16 < Position.Y))
                 {
-                    Ammo = 1;
                     State.MoveTo(Fsm_Dying);
                     return false;
                 }
 
                 if (type.IsSolid)
                 {
-                    Ammo = 1;
-                    State.MoveTo(Fsm_ReturnFromKnockBack);
-                    return false;
-                }
-                break;
-
-            case FsmAction.UnInit:
-                CheckAgainstMapCollision = true;
-                break;
-        }
-
-        return true;
-    }
-
-    private bool Fsm_ReturnFromKnockBack(FsmAction action)
-    {
-        switch (action)
-        {
-            case FsmAction.Init:
-                ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
-                break;
-
-            case FsmAction.Step:
-                LevelMusicManager.PlaySpecialMusicIfDetected(this);
-
-                if (IsFacingRight && Position.X > KnockBackPosition.X ||
-                    IsFacingLeft && Position.X < KnockBackPosition.X)
-                {
-                    Position = Position with { X = KnockBackPosition.X };
                     State.MoveTo(Fsm_Attack);
                     return false;
                 }
                 break;
 
             case FsmAction.UnInit:
-                // Do nothing
+                CheckAgainstMapCollision = true;
                 break;
         }
 
@@ -318,12 +282,23 @@ public partial class RedPirate
                     ActionId = IsFacingRight ? Action.DyingBehind_Right : Action.DyingBehind_Left;
                 else
                     ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
-                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
+
                 IsSolid = false;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
                 LevelMusicManager.FUN_08001918();
                 break;
 
             case FsmAction.Step:
+                if (Scene.GetPhysicalType(Position).Value is
+                        PhysicalTypeValue.InstaKill or
+                        PhysicalTypeValue.Damage or
+                        PhysicalTypeValue.Water or
+                        PhysicalTypeValue.MoltenLava ||
+                    Scene.GetPhysicalType(Position).IsSolid)
+                {
+                    MechModel.Reset();
+                }
+
                 if (!AnimatedObject.IsDelayMode && AnimatedObject.CurrentFrame == 5)
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraDead_Mix05);
 

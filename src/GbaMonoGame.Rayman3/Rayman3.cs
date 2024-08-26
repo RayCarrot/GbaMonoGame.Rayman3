@@ -624,6 +624,7 @@ public class Rayman3 : GbaGame
             { ActorType.Keg, (instanceId, scene, resource) => new Keg(instanceId, scene, resource) },
             { ActorType.Barrel, (instanceId, scene, resource) => new Barrel(instanceId, scene, resource) },
 
+            { ActorType.SilverPirate, (instanceId, scene, resource) => new SilverPirate(instanceId, scene, resource) },
             { ActorType.HelicopterBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },
 
             { ActorType.BarrelSplash, (instanceId, scene, resource) => new BarrelSplash(instanceId, scene, resource) },
