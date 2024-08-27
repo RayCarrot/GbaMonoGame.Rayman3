@@ -33,6 +33,11 @@ public static class Gfx
 
     public static Color ClearColor { get; set; } = Color.Black; // Background palette color 0 on GBA. This is not implemented on the N-Gage.
     public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
+    public static float GbaFade
+    {
+        get => Fade * 16;
+        set => Fade = value / 16;
+    }
     public static FadeControl FadeControl { get; set; } // The equivalent of BLDCNT on GBA. This is not implemented on the N-Gage.
 
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);

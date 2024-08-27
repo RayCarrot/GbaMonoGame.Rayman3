@@ -254,7 +254,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         // Fade after drawing screen 0, thus only leaving the sprites 0 as not faded
         Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease, FadeFlags.Screen0);
-        Gfx.Fade = 6 / 16f;
+        Gfx.GbaFade = 6;
 
         UserInfo.ProcessMessage(this, Message.UserInfo_Pause);
 
