@@ -55,10 +55,18 @@ public partial class SilverPirate
             case FsmAction.Step:
                 LevelMusicManager.PlaySpecialMusicIfDetected(this);
 
-                if (GetPhysicalGroundType().IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
+                // If all objects are kept active we want to wait with having the pirate fall until it's framed
+                if (Scene.KeepAllObjectsActive && !AnimatedObject.IsFramed)
                 {
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraJump_BigFoot1_Mix02);
-                    ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    Speed = Speed with { Y = 0 };
+                }
+                else
+                {
+                    if (GetPhysicalGroundType().IsSolid && ActionId is Action.Fall_Right or Action.Fall_Left)
+                    {
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraJump_BigFoot1_Mix02);
+                        ActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    }
                 }
 
                 // Wait for landing to finish
