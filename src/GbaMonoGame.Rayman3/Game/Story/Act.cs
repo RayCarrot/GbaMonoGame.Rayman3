@@ -3,6 +3,7 @@ using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -290,6 +291,8 @@ public abstract class Act : Frame
     {
         if (ActResource.StopMusicSoundEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(ActResource.StopMusicSoundEvent);
+
+        Gfx.ClearColor = Color.Black;
     }
 
     public override void Step()

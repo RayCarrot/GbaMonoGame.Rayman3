@@ -2,6 +2,7 @@
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -91,6 +92,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     protected void CreateCircleFXTransition()
     {
+        Gfx.ClearColor = Color.Black;
+
         // Add the circle FX as an effect object. On the GBA this is done using a window.
         CircleEffect = new CircleWindowEffectObject
         {
@@ -127,6 +130,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         CanPause = true;
         LevelMusicManager.Init();
+        CreateCircleFXTransition();
         TransitionsFX = new TransitionsFX(true);
         BaseActor.ActorDrawPriority = 1;
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
@@ -173,7 +177,6 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.Init();
         Scene.Playfield.Step();
 
-        CreateCircleFXTransition();
         InitNewCircleFXTransition(true);
 
         // We have to show the circle effect already now or we have one game frame with the level visible

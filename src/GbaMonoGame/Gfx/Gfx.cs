@@ -31,6 +31,7 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> BackSprites { get; } = new();
 
+    public static Color ClearColor { get; set; } = Color.Black; // Background palette color 0 on GBA. This is not implemented on the N-Gage.
     public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
     public static FadeControl FadeControl { get; set; } // The equivalent of BLDCNT on GBA. This is not implemented on the N-Gage.
 
@@ -72,6 +73,13 @@ public static class Gfx
 
     public static void Draw(GfxRenderer renderer)
     {
+        // Draw clear color on GBA
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
+            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, ClearColor);
+        }
+
         // Draw each game layer (3-0)
         for (int i = 3; i >= 0; i--)
         {

@@ -4,6 +4,7 @@ using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Action = System.Action;
 
@@ -128,6 +129,8 @@ public partial class MenuAll : Frame, IHasPlayfield
             CreateBackgroundTexture(bgLayer, 3),
         });
         SetBackgroundPalette(3);
+
+        Gfx.ClearColor = Color.Black;
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
         Playfield.Camera.GetCluster(1).Position = new Vector2(0, 160);

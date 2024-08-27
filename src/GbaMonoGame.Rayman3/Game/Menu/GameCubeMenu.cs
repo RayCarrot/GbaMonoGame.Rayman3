@@ -1,6 +1,7 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -170,6 +171,7 @@ public partial class GameCubeMenu : Frame
         }
 
         WheelRotation = 0;
+        Gfx.ClearColor = Color.Black;
         WaitingForConnection = false;
         IsActive = true;
         State.MoveTo(Fsm_PreInit);

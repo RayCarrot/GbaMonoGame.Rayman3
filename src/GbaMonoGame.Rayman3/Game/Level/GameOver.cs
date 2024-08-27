@@ -2,6 +2,7 @@
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -214,6 +215,8 @@ public class GameOver : Frame
         Gfx.Fade = 1;
 
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__tizetre_Swing);
+
+        Gfx.ClearColor = Color.Black;
 
         if (Mode == GameOverMode.ReturnToMenu)
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);

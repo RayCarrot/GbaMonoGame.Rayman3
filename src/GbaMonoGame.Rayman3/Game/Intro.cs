@@ -2,6 +2,7 @@
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -87,6 +88,8 @@ public class Intro : Frame, IHasPlayfield
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
         Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
         Playfield.Camera.FixedResolution = true;
+
+        Gfx.ClearColor = Color.Black;
 
         Playfield.Camera.Position = Vector2.Zero;
         Playfield.Step();
