@@ -50,11 +50,22 @@ public class GfxDebugWindow : DebugWindow
             Engine.GameViewPort.SetRequestedResolution(new Vector2(res.X, res.Y));
 
         ImGui.Spacing();
+        ImGui.SeparatorText("Fade");
 
         float fade = Gfx.Fade;
-        ImGui.SliderFloat("Fade", ref fade, 0, 1);
+        ImGui.SliderFloat("Level", ref fade, 0, 1);
         Gfx.Fade = fade;
 
+        for (int i = 0; i < 4; i++)
+        {
+            if (i != 0)
+                ImGui.SameLine();
+
+            if (ImGui.RadioButton($"{(FadeMode)i}", Gfx.FadeControl.Mode == (FadeMode)i))
+                Gfx.FadeControl = Gfx.FadeControl with { Mode = (FadeMode)i };
+        }
+
+        ImGui.Spacing();
         ImGui.SeparatorText("Screens");
 
         if (ImGui.BeginTable("_screens", 8))
