@@ -56,12 +56,16 @@ public class TgxCamera2D : TgxCamera
                         // If the cluster wraps we use the original scroll factor (scaling it by the different camera resolutions)
                         scrollFactor = cluster.ScrollFactor * cluster.Camera.Resolution / Resolution;
                     }
-                    else
+                    else if (mainCluster.MaxPosition.X != 0)
                     {
                         // If the cluster does not wrap we want it to scroll evenly through the width of the level
                         scrollFactor = new Vector2(
                             cluster.GetMaxPosition(cluster.Camera.Resolution).X / mainCluster.MaxPosition.X,
                             cluster.ScrollFactor.Y);
+                    }
+                    else
+                    {
+                        scrollFactor = new Vector2(0, cluster.ScrollFactor.Y);
                     }
                 }
                 else
