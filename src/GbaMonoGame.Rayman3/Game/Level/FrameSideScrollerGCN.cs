@@ -39,7 +39,6 @@ public class FrameSideScrollerGCN : FrameSideScroller
     public override void Init()
     {
         GameInfo.InitLevel(LevelType.GameCube);
-        LevelMusicManager.Init();
 
         PreviousMapId = GameInfo.MapId;
         GameInfo.MapId = MapId.GameCube_Bonus1 + GcnMapId;
@@ -50,15 +49,20 @@ public class FrameSideScrollerGCN : FrameSideScroller
         GameInfo.YellowLumsCount = MapInfo.LumsCount;
         GameInfo.CagesCount = MapInfo.CagesCount;
 
-        SoundEventsManager.ProcessEvent(MapInfo.StartMusicSoundEvent);
+        LevelMusicManager.Init();
+
+        if (MapInfo.StartMusicSoundEvent != Rayman3SoundEvent.None)
+            SoundEventsManager.ProcessEvent(MapInfo.StartMusicSoundEvent);
+
+        CreateCircleFXTransition();
 
         TransitionsFX = new TransitionsFX(true);
         BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D(Map, x => new CameraSideScroller(x), 4);
+        Scene = new Scene2D(Map, x => new CameraSideScroller(x), 3);
 
         // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, MapInfo.HasBlueLum);
-        UserInfo.ProcessMessage(this, (Message)1081); // TODO: Implement and name message
+        UserInfo.ProcessMessage(this, Message.UserInfo_GameCubeLevel);
 
         // Create pause dialog, but don't add yet
         PauseDialog = new PauseDialog(Scene);
@@ -67,8 +71,10 @@ public class FrameSideScrollerGCN : FrameSideScroller
         Scene.Init();
         Scene.Playfield.Step();
 
-        CreateCircleFXTransition();
         InitNewCircleFXTransition(true);
+
+        // We have to show the circle effect already now or we have one game frame with the level visible
+        Scene.AnimationPlayer.PlayFront(CircleEffect);
 
         Scene.AnimationPlayer.Execute();
 

@@ -81,6 +81,7 @@ public enum Message
 
     UserInfo_Pause = 1079,
     UserInfo_Unpause = 1080,
+    UserInfo_GameCubeLevel = 1081,
     Main_EnterLevelCurtain = 1081,
     Main_BeginInFrontOfLevelCurtain = 1082,
     Main_EndInFrontOfLevelCurtain = 1083,

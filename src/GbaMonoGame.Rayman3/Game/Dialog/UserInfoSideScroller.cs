@@ -160,6 +160,11 @@ public class UserInfoSideScroller : Dialog
                 BossBar?.SetToDefault();
                 return true;
 
+            case Message.UserInfo_GameCubeLevel:
+                CagesBar.SetToStayHidden();
+                LumsBar.SetToStayHidden();
+                return true;
+
             default:
                 return false;
         }

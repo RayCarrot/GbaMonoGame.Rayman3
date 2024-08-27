@@ -127,6 +127,11 @@ public class GameInfoDebugWindow : DebugWindow
         if (ImGui.Button("Unlock all levels"))
             GameInfo.PersistentInfo.LastCompletedLevel = (byte)MapId.BossFinal_M2;
 
+        ImGui.SameLine();
+        if (ImGui.Button("Unlock all GCN levels"))
+            GameInfo.PersistentInfo.CompletedGCNBonusLevels = 10;
+
+        ImGui.SameLine();
         if (ImGui.Button("All lums and cages"))
         {
             Array.Clear(GameInfo.PersistentInfo.Lums);
