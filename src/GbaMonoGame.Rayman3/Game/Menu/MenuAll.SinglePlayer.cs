@@ -185,7 +185,9 @@ public partial class MenuAll
                             GameInfo.LoadLastWorld();
                         }
 
-                        Gfx.SetFullFade();
+                        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+                        Gfx.Fade = 1;
+
                         GameInfo.CurrentSlot = SelectedOption;
                         IsLoadingSlot = false;
                     }

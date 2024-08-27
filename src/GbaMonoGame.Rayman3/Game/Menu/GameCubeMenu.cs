@@ -180,7 +180,8 @@ public partial class GameCubeMenu : Frame
         if (IsJoyBusActive)
             JoyBus.Disconnect();
 
-        Gfx.SetFullFade();
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+        Gfx.Fade = 1;
     }
 
     public override void Step()

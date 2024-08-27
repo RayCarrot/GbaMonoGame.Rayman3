@@ -340,13 +340,15 @@ public partial class PauseDialog
                     if (Engine.Settings.Platform == Platform.GBA && GameInfo.LevelType == LevelType.GameCube)
                     {
                         SoundEventsManager.StopAllSongs();
-                        Gfx.SetFullFade();
+                        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+                        Gfx.Fade = 1;
                         FrameManager.SetNextFrame(new GameCubeMenu());
                     }
                     else
                     {
                         SoundEventsManager.StopAllSongs();
-                        Gfx.SetFullFade();
+                        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+                        Gfx.Fade = 1;
                         FrameManager.SetNextFrame(new MenuAll(MenuAll.Page.SelectGameMode));
                     }
 

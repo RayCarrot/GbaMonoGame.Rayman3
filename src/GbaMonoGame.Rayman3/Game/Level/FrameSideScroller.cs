@@ -23,6 +23,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     protected int CircleFXTimer { get; set; }
     protected CircleFXTransitionMode CircleFXMode { get; set; }
 
+    protected FadeControl SavedFadeControl { get; set; }
+
     #endregion
 
     #region Public Properties
@@ -185,7 +187,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     
     public override void UnInit()
     {
-        Gfx.SetFullFade();
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+        Gfx.Fade = 1;
 
         Scene.UnInit();
         Scene = null;
@@ -244,8 +247,11 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     public void Step_Pause_Init()
     {
+        SavedFadeControl = Gfx.FadeControl;
+
         // Fade after drawing screen 0, thus only leaving the sprites 0 as not faded
-        Gfx.SetFade(6 / 16f, FadeFlags.Screen0);
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease, FadeFlags.Screen0);
+        Gfx.Fade = 6 / 16f;
 
         UserInfo.ProcessMessage(this, Message.UserInfo_Pause);
 
@@ -310,7 +316,8 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     public void Step_Pause_Resume()
     {
-        Gfx.ClearFade();
+        Gfx.FadeControl = SavedFadeControl;
+        Gfx.Fade = 0;
 
         if (Fog != null)
             Fog.ShouldDraw = true;

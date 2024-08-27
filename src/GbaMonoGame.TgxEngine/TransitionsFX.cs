@@ -5,7 +5,7 @@ public class TransitionsFX
     public TransitionsFX(bool clear)
     {
         if (clear)
-            Gfx.ClearFade();
+            Gfx.FadeControl = FadeControl.None;
     }
 
     public float FadeCoefficient { get; set; }
@@ -29,7 +29,7 @@ public class TransitionsFX
             if (FadeCoefficient > 1)
                 FadeCoefficient = 1;
 
-            Gfx.SetFade(BrightnessCoefficient);
+            Gfx.Fade = BrightnessCoefficient;
         }
         else if (FadeCoefficient == 0)
         {
@@ -43,7 +43,10 @@ public class TransitionsFX
             if (FadeCoefficient < 0)
                 FadeCoefficient = 0;
 
-            Gfx.SetFade(FadeCoefficient);
+            Gfx.Fade = FadeCoefficient;
+
+            if (FadeCoefficient == 0)
+                Gfx.FadeControl = FadeControl.None;
         }
     }
 
@@ -56,10 +59,10 @@ public class TransitionsFX
         {
             FadeCoefficient -= stepSize;
 
-            if (FadeCoefficient <= 0)
+            if (FadeCoefficient < 0)
                 FadeCoefficient = 0;
 
-            Gfx.SetFade(FadeCoefficient);
+            Gfx.Fade = FadeCoefficient;
         }
     }
 
@@ -72,31 +75,28 @@ public class TransitionsFX
         {
             BrightnessCoefficient += stepSize;
 
-            if (BrightnessCoefficient >= 1)
+            if (BrightnessCoefficient > 1)
                 BrightnessCoefficient = 1;
 
-            Gfx.SetFade(BrightnessCoefficient);
+            Gfx.Fade = BrightnessCoefficient;
         }
     }
 
     public void FadeInInit(float stepSize)
     {
-        Gfx.SetFullFade();
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+        Gfx.Fade = 1;
+
         FadeCoefficient = 1;
         StepSize = stepSize;
     }
 
     public void FadeOutInit(float stepSize)
     {
-        Gfx.ClearFade();
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+        Gfx.Fade = 0;
+        
         BrightnessCoefficient = 0;
         StepSize = stepSize;
-    }
-
-    public void StopFade()
-    {
-        FadeCoefficient = 0;
-        BrightnessCoefficient = 1;
-        Gfx.ClearFade();
     }
 }

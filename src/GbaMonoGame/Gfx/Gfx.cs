@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
@@ -30,11 +31,8 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> BackSprites { get; } = new();
 
-    /// <summary>
-    /// The equivalent of BLD on GBA. This is not implemented on the N-Gage.
-    /// </summary>
-    public static float Fade { get; set; } = 0;
-    public static FadeFlags FadeFlags { get; set; }
+    public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
+    public static FadeControl FadeControl { get; set; } // The equivalent of BLDCNT on GBA. This is not implemented on the N-Gage.
 
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];
@@ -52,22 +50,25 @@ public static class Gfx
     private static void DrawFade(GfxRenderer renderer)
     {
         // TODO: Add config option to use GBA fading on N-Gage
-        if (Engine.Settings.Platform == Platform.GBA && Fade is > 0 and <= 1)
+        if (Engine.Settings.Platform == Platform.GBA && FadeControl.Mode != FadeMode.None && Fade is > 0 and <= 1)
         {
             renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
-            renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
+
+            switch (FadeControl.Mode)
+            {
+                case FadeMode.AlphaBlending:
+                    throw new NotImplementedException();
+
+                case FadeMode.BrightnessIncrease:
+                    renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.White * Fade);
+                    break;
+                
+                case FadeMode.BrightnessDecrease:
+                    renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
+                    break;
+            }
         }
     }
-
-    // BLDY and BLDCNT on GBA
-    public static void SetFade(float fade, FadeFlags flags = FadeFlags.Default)
-    {
-        Fade = fade;
-        FadeFlags = flags;
-    }
-
-    public static void ClearFade() => SetFade(0);
-    public static void SetFullFade() => SetFade(1);
 
     public static void Draw(GfxRenderer renderer)
     {
@@ -78,7 +79,7 @@ public static class Gfx
             foreach (GfxScreen screen in Screens.Values.Where(x => x.IsEnabled && x.Priority == i))
                 screen.Draw(renderer);
 
-            if ((FadeFlags & (FadeFlags)(1 << i)) != 0)
+            if ((FadeControl.Flags & (FadeFlags)(1 << i)) != 0)
                 DrawFade(renderer);
 
             // Draw sprites
@@ -87,11 +88,11 @@ public static class Gfx
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
                 sprite.Draw(renderer);
 
-            if ((FadeFlags & (FadeFlags)(1 << (i + 4))) != 0)
+            if ((FadeControl.Flags & (FadeFlags)(1 << (i + 4))) != 0)
                 DrawFade(renderer);
         }
 
-        if (FadeFlags == FadeFlags.Default)
+        if (FadeControl.Flags == FadeFlags.Default)
             DrawFade(renderer);
     }
 }

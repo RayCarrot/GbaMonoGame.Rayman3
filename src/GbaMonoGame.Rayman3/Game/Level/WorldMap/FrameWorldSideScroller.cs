@@ -22,6 +22,8 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
     protected Scene2D Scene { get; set; }
     protected Action CurrentStepAction { get; set; }
 
+    protected FadeControl SavedFadeControl { get; set; }
+
     #endregion
 
     #region Public Properties
@@ -89,7 +91,8 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     public override void UnInit()
     {
-        Gfx.SetFullFade();
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease);
+        Gfx.Fade = 1;
 
         Scene.UnInit();
         Scene = null;
@@ -126,8 +129,11 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     private void Step_Pause_Init()
     {
+        SavedFadeControl = Gfx.FadeControl;
+
         // Fade after drawing screen 0, thus only leaving the sprites 0 as not faded
-        Gfx.SetFade(6 / 16f, FadeFlags.Screen0);
+        Gfx.FadeControl = new FadeControl(FadeMode.BrightnessDecrease, FadeFlags.Screen0);
+        Gfx.Fade = 6 / 16f;
 
         UserInfo.ProcessMessage(this, Message.UserInfo_Pause);
 
@@ -193,7 +199,8 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     private void Step_Pause_Resume()
     {
-        Gfx.ClearFade();
+        Gfx.FadeControl = SavedFadeControl;
+        Gfx.Fade = 0;
 
         Scene.Step();
         
