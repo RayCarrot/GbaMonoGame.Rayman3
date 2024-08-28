@@ -114,5 +114,7 @@ The button mapping will be made customizable in the future, along with controlle
 
 Besides these you can also hold down `left shift` while resizing the window to maintain the aspect ratio.
 
+You can also launch the game with a BizHawk .bk2 TAS file which will have it play the button inputs from that.
+
 ## Want to help?
 Do you want to help out? Feel free to contact me if so! This is currently a side project and might take a long time to finish, especially when being worked on by only myself.
