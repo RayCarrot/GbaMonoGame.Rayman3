@@ -27,6 +27,7 @@ public class MenuManager
     private List<Sprite> Sprites { get; } = new();
     private Color DisabledColor { get; } = new(0.4f, 0.4f, 0.4f);
     private Color Color { get; } = Color.White;
+    private Color DisabledHighlightColor { get; } = new(120, 96, 19);
     private Color HighlightColor { get; } = new(218, 168, 9);
 
     private Menu CurrentMenu { get; set; }
@@ -349,20 +350,28 @@ public class MenuManager
 
         if (CurrentSelectionIndex == index)
         {
-            text = $"< {text} >";
-
             if (InputManager.IsButtonJustPressed(Keys.Left))
             {
                 selectedOption--;
                 if (selectedOption < 0)
-                    selectedOption = options.Length - 1;
+                    selectedOption = 0;
             }
             else if (InputManager.IsButtonJustPressed(Keys.Right))
             {
                 selectedOption++;
-                if (selectedOption >= options.Length)
-                    selectedOption = 0;
+                if (selectedOption > options.Length - 1)
+                    selectedOption = options.Length - 1;
             }
+        }
+
+        if (CurrentSelectionIndex == index)
+        {
+            DrawWrappedText(
+                text: "< ",
+                position: ref pos,
+                horizontalAlignment: DefaultHorizontalAlignment,
+                fontSize: FontSize.Font32,
+                color: selectedOption > 0 ? HighlightColor : DisabledHighlightColor);
         }
 
         DrawWrappedText(
@@ -371,6 +380,16 @@ public class MenuManager
             horizontalAlignment: DefaultHorizontalAlignment,
             fontSize: FontSize.Font32,
             color: CurrentSelectionIndex == index ? HighlightColor : Color);
+
+        if (CurrentSelectionIndex == index)
+        {
+            DrawWrappedText(
+                text: " >",
+                position: ref pos,
+                horizontalAlignment: DefaultHorizontalAlignment,
+                fontSize: FontSize.Font32,
+                color: selectedOption < options.Length - 1 ? HighlightColor : DisabledHighlightColor);
+        }
 
         SelectableElementsCount++;
         NextLine(pos);
