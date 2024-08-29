@@ -39,6 +39,7 @@ public class MenuManager
     private Vector2 Position { get; set; }
     private int ColumnsCount => ColumnRenderBoxes.Length;
     private int CurrentColumnIndex { get; set; }
+    public float NextLineY { get; set; }
     private int SelectableElementsCount { get; set; }
     private int CurrentSelectionIndex { get; set; }
     private HorizontalAlignment DefaultHorizontalAlignment { get; set; }
@@ -133,10 +134,13 @@ public class MenuManager
     {
         CurrentColumnIndex++;
 
+        NextLineY = Math.Max(NextLineY, pos.Y + lineHeight);
+
         if (CurrentColumnIndex >= ColumnsCount)
         {
             CurrentColumnIndex = 0;
-            Position = new Vector2(ColumnRenderBoxes[CurrentColumnIndex].MinX, pos.Y + lineHeight);
+            Position = new Vector2(ColumnRenderBoxes[CurrentColumnIndex].MinX, NextLineY);
+            NextLineY = 0;
         }
         else
         {
