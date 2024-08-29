@@ -19,6 +19,8 @@ public class OptionsMenu : Menu
 
         Options =
         [
+            new HeaderMenuOption("Display"),
+
             // Display mode
             new MultiSelectionMenuOption<bool>(
                 name: "Display mode",
@@ -91,6 +93,8 @@ public class OptionsMenu : Menu
                 },
                 getCustomName: data => $"{data:0.00}x"),
 
+            new HeaderMenuOption("Game"),
+
             // Internal resolution
             new MultiSelectionMenuOption<Point?>(
                 name: "Internal resolution",
@@ -102,8 +106,36 @@ public class OptionsMenu : Menu
                 getData: _ => Engine.Config.InternalResolution,
                 setData: data =>
                 {
+                    Rectangle originalWindowBounds = Engine.Settings.Platform switch
+                    {
+                        Platform.GBA => Engine.Config.GbaWindowBounds,
+                        Platform.NGage => Engine.Config.NGageWindowBounds,
+                        _ => throw new UnsupportedPlatformException()
+                    };
+
+                    float originalWindowScale = originalWindowBounds.Size.ToVector2().X / Engine.GameViewPort.RequestedGameResolution.X;
+
                     Engine.Config.InternalResolution = data;
                     Engine.GameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
+
+                    Point newWindowRes = (Engine.GameViewPort.RequestedGameResolution * originalWindowScale).ToPoint();
+
+                    switch (Engine.Settings.Platform)
+                    {
+                        case Platform.GBA:
+                            Engine.Config.GbaWindowBounds = Engine.Config.GbaWindowBounds with { Size = newWindowRes };
+                            break;
+
+                        case Platform.NGage:
+                            Engine.Config.NGageWindowBounds = Engine.Config.NGageWindowBounds with { Size = newWindowRes };
+                            break;
+
+                        default:
+                            throw new UnsupportedPlatformException();
+                    }
+
+                    Game.ApplyDisplayConfig();
+                    Game.SaveWindowState();
                 },
                 getCustomName: data => data == null ? null : $"{data.Value.X} x {data.Value.Y}"),
 
@@ -134,6 +166,8 @@ public class OptionsMenu : Menu
                 getData: _ => Engine.Config.HudCameraScale,
                 setData: data => Engine.Config.HudCameraScale = data,
                 getCustomName: data => $"{data:0.00}"),
+
+            new HeaderMenuOption("Sound"),
 
             // Music volume
             new VolumeSelectionMenuOption(
@@ -172,9 +206,6 @@ public class OptionsMenu : Menu
 
         menu.Text("Options");
         menu.Spacing();
-
-        menu.SetColumns(1, 0.9f);
-        menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Left);
 
         foreach (MenuOption option in Options)
             option.Update(menu);

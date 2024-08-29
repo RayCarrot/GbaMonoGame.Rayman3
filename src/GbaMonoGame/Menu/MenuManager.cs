@@ -19,16 +19,16 @@ public class MenuManager
 
     #region Private Properties
 
-    private const int Margin = 80;
     private const int LineHeight = 40;
     private const float TransitionTextStep = 1 / 8f;
 
     private MenuCamera Camera { get; } = new(Engine.GameViewPort);
     private List<Sprite> Sprites { get; } = new();
+    private Vector2 Margin { get; } = new(250, 80);
     private Color DisabledColor { get; } = new(0.4f, 0.4f, 0.4f);
     private Color Color { get; } = Color.White;
-    private Color DisabledHighlightColor { get; } = new(120, 96, 19);
-    private Color HighlightColor { get; } = new(218, 168, 9);
+    private Color DisabledHighlightColor { get; } = new(66, 54, 14);
+    private Color HighlightColor { get; } = new(227, 175, 11);
 
     private Menu CurrentMenu { get; set; }
     private MenuState NextMenuState { get; set; }
@@ -150,7 +150,7 @@ public class MenuManager
 
     public void Update()
     {
-        FullRenderBox = new Box(Margin, Margin, Camera.Resolution.X - Margin, Camera.Resolution.Y - Margin);
+        FullRenderBox = new Box(Margin.X, Margin.Y, Camera.Resolution.X - Margin.X, Camera.Resolution.Y - Margin.Y);
         Position = new Vector2(FullRenderBox.MinX, FullRenderBox.MinY);
         CurrentColumnIndex = 0;
 

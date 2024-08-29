@@ -76,6 +76,9 @@ public class MultiSelectionMenuOption<T> : MenuOption
 
     public override void Update(MenuManager menu)
     {
+        menu.SetColumns(1, 0.9f);
+        menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Left);
+
         menu.Text(Name);
         SelectedIndex = menu.Selection(DisplayNames, SelectedIndex);
 

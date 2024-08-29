@@ -14,6 +14,12 @@ public class MainMenu : Menu
         menu.SetColumns(1);
         menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
 
+        menu.Text("Paused");
+        menu.Spacing();
+
+        menu.SetColumns(1);
+        menu.SetHorizontalAlignment(MenuManager.HorizontalAlignment.Center);
+
         if (menu.Button("Resume"))
             menu.Close();
 
