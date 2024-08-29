@@ -19,6 +19,9 @@ public class OptionsMenu : Menu
 
         Options =
         [
+            #region Display
+
+            // DISPLAY
             new HeaderMenuOption("Display"),
 
             // Display mode
@@ -93,6 +96,11 @@ public class OptionsMenu : Menu
                 },
                 getCustomName: data => $"{data:0.00}x"),
 
+            #endregion
+
+            #region Game
+
+            // GAME
             new HeaderMenuOption("Game"),
 
             // Internal resolution
@@ -167,6 +175,11 @@ public class OptionsMenu : Menu
                 setData: data => Engine.Config.HudCameraScale = data,
                 getCustomName: data => $"{data:0.00}"),
 
+            #endregion
+
+            #region Sound
+
+            // SOUND
             new HeaderMenuOption("Sound"),
 
             // Music volume
@@ -184,6 +197,39 @@ public class OptionsMenu : Menu
                 restart: true,
                 getVolume: () => Engine.Config.SfxVolume,
                 setVolume: data => Engine.Config.SfxVolume = data),
+
+            #endregion
+
+            #region Debug
+
+            // DEBUG
+            new HeaderMenuOption("Debug"),
+
+            // Serializer log
+            new MultiSelectionMenuOption<bool>(
+                name: "Serializer log (requires restart)",
+                items:
+                [
+                    new MultiSelectionMenuOption<bool>.Item("Disabled", false),
+                    new MultiSelectionMenuOption<bool>.Item("Enabled", true),
+                ],
+                getData: _ => Engine.Config.WriteSerializerLog,
+                setData: data => Engine.Config.WriteSerializerLog = data,
+                getCustomName: _ => null),
+
+            // Dump sprites
+            new MultiSelectionMenuOption<bool>(
+                name: "Dump sprites",
+                items:
+                [
+                    new MultiSelectionMenuOption<bool>.Item("Disabled", false),
+                    new MultiSelectionMenuOption<bool>.Item("Enabled", true),
+                ],
+                getData: _ => Engine.Config.DumpSprites,
+                setData: data => Engine.Config.DumpSprites = data,
+                getCustomName: _ => null),
+
+            #endregion
         ];
 
         foreach (MenuOption option in Options)

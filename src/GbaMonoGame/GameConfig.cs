@@ -43,6 +43,8 @@ public class GameConfig
     [JsonProperty("isFullscreen")] public bool IsFullscreen { get; set; }
     [JsonProperty("gbaWindowBounds")] public Rectangle GbaWindowBounds { get; set; }
     [JsonProperty("nGageWindowBounds")] public Rectangle NGageWindowBounds { get; set; }
+    
+    // Game
     [JsonProperty("internalResolution")] public Point? InternalResolution { get; set; }
     [JsonProperty("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
     [JsonProperty("hudCameraScale")] public float HudCameraScale { get; set; }
@@ -52,8 +54,8 @@ public class GameConfig
     [JsonProperty("musicVolume")] public float MusicVolume { get; set; }
 
     // Debug
-    [JsonProperty("writeSerializerLog")] public bool WriteSerializerLog { get; set; } // TODO: Add debug option to enable this
-    [JsonProperty("dumpSprites")] public bool DumpSprites { get; set; } // TODO: Add debug option to enable this
+    [JsonProperty("writeSerializerLog")] public bool WriteSerializerLog { get; set; }
+    [JsonProperty("dumpSprites")] public bool DumpSprites { get; set; }
 
     #endregion
 
