@@ -654,6 +654,8 @@ public class Rayman3 : GbaGame
 
             { ActorType.ChainedSparkles, (instanceId, scene, resource) => new ChainedSparkles(instanceId, scene, resource) },
 
+            { ActorType.Bats, (instanceId, scene, resource) => new Bats(instanceId, scene, resource) },
+
             { ActorType.WoodenBar, (instanceId, scene, resource) => new WoodenBar(instanceId, scene, resource) },
             { ActorType.Ly, (instanceId, scene, resource) => new Ly(instanceId, scene, resource) },
             { ActorType.Flag, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },

@@ -59,6 +59,8 @@ public enum ActorType
 
     ChainedSparkles = 67,
 
+    Bats = 72,
+
     WoodenBar = 77,
     Ly = 78,
     Flag = 79,
