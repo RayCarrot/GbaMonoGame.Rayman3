@@ -1,0 +1,269 @@
+# Progress
+🟩 = Fully implemented  
+🟨 = Partially implemented  
+🟥 = Not implemented
+
+## Engine
+| Name                   | State   | Info                                         |
+| ---------------------- | ------- | -------------------------------------------- |
+| Storage                | 🟩     |                                              |
+| JoyPad                 | 🟨     | Not implemented custom mapping               |
+| FrameManager           | 🟩     |                                              |
+| Gfx                    | 🟩     |                                              |
+| Menu                   | 🟨     |                                              |
+| Multiplayer            | 🟥     |                                              |
+| SoundEngine            | 🟨     |                                              |
+| AnimationPlayer        | 🟩     |                                              |
+| Scene2D                | 🟩     |                                              |
+| GameObject             | 🟩     |                                              |
+| TgxPlayfield2D         | 🟩     |                                              |
+| TgxPlayfieldMode7      | 🟥     |                                              |
+| TgxCamera2D            | 🟩     |                                              |
+| TgxCameraMode7         | 🟥     |                                              |
+
+## Frames
+| Name                   | State   | Info                                         |
+| ---------------------- | ------- | -------------------------------------------- |
+| Intro                  | 🟩     |                                              |
+| MenuAll                | 🟨     | Not implemented on N-Gage                    |
+| GameCubeMenu           | 🟨     | Not implemented transitions                  |
+| Act                    | 🟩     |                                              |
+| GameOver               | 🟩     |                                              |
+| Credits                | 🟥     |                                              |
+
+## Levels
+| Name                       | State   | Info                                         |
+| -------------------------- | ------- | -------------------------------------------- |
+| WoodLight_M1               | 🟩     |                                              |
+| WoodLight_M2               | 🟩     |                                              |
+| FairyGlade_M1              | 🟩     |                                              |
+| FairyGlade_M2              | 🟩     |                                              |
+| MarshAwakening1            | 🟥     |                                              |
+| SanctuaryOfBigTree_M1      | 🟩     |                                              |
+| SanctuaryOfBigTree_M2      | 🟩     |                                              |
+| MissileRace1               | 🟥     |                                              |
+| EchoingCaves_M1            | 🟩     |                                              |
+| EchoingCaves_M2            | 🟩     |                                              |
+| CavesOfBadDreams_M1        | 🟨     | Not implemented background skull effect      |
+| CavesOfBadDreams_M2        | 🟨     | Not implemented background skull effect      |
+| BossBadDreams              | 🟩     |                                              |
+| MenhirHills_M1             | 🟩     |                                              |
+| MenhirHills_M2             | 🟩     |                                              |
+| MarshAwakening2            | 🟥     |                                              |
+| SanctuaryOfStoneAndFire_M1 | 🟩     |                                              |
+| SanctuaryOfStoneAndFire_M2 | 🟩     |                                              |
+| SanctuaryOfStoneAndFire_M3 | 🟩     |                                              |
+| BeneathTheSanctuary_M1     | 🟩     |                                              |
+| BeneathTheSanctuary_M2     | 🟩     |                                              |
+| ThePrecipice_M1            | 🟨     | Not implemented background effect            |
+| ThePrecipice_M2            | 🟨     | Not implemented camera centering on boulder  |
+| BossRockAndLava            | 🟩     |                                              |
+| TheCanopy_M1               | 🟩     |                                              |
+| TheCanopy_M2               | 🟩     |                                              |
+| SanctuaryOfRockAndLava_M1  | 🟨     | Not implemented light effect                 |
+| SanctuaryOfRockAndLava_M2  | 🟨     | Not implemented light effect                 |
+| SanctuaryOfRockAndLava_M3  | 🟨     | Not implemented light effect                 |
+| TombOfTheAncients_M1       | 🟩     |                                              |
+| TombOfTheAncients_M2       | 🟩     |                                              |
+| BossScaleMan               | 🟩     |                                              |
+| IronMountains_M1           | 🟩     |                                              |
+| IronMountains_M2           | 🟩     |                                              |
+| MissileRace2               | 🟥     |                                              |
+| PirateShip_M1              | 🟩     |                                              |
+| PirateShip_M2              | 🟩     |                                              |
+| BossFinal_M1               | 🟩     |                                              |
+| BossFinal_M2               | 🟩     |                                              |
+| Bonus1                     | 🟩     |                                              |
+| Bonus2                     | 🟩     |                                              |
+| Bonus3                     | 🟩     |                                              |
+| Bonus4                     | 🟩     |                                              |
+| 1000Lums                   | 🟩     |                                              |
+| ChallengeLy1               | 🟩     |                                              |
+| ChallengeLy2               | 🟩     |                                              |
+| ChallengeLyGCN             | 🟩     |                                              |
+| Power1                     | 🟩     |                                              |
+| Power2                     | 🟩     |                                              |
+| Power3                     | 🟩     |                                              |
+| Power4                     | 🟩     |                                              |
+| Power5                     | 🟩     |                                              |
+| Power6                     | 🟩     |                                              |
+| World1                     | 🟩     |                                              |
+| World2                     | 🟩     |                                              |
+| World3                     | 🟩     |                                              |
+| World4                     | 🟩     |                                              |
+| WorldMap                   | 🟥     |                                              |
+| Multi_MissileRace          | 🟥     |                                              |
+| Multi_MissileArena         | 🟥     |                                              |
+| Multi_RayTag1              | 🟥     |                                              |
+| Multi_RayTag2              | 🟥     |                                              |
+| Multi_CatAndMouse1         | 🟥     |                                              |
+| Multi_CatAndMouse2         | 🟥     |                                              |
+| Multi_CaptureTheFlag1      | 🟥     |                                              |
+| Multi_CaptureTheFlag2      | 🟥     |                                              |
+| Multi_CaptureTheFlag3      | 🟥     |                                              |
+| Multi_CaptureTheFlag4      | 🟥     |                                              |
+| Multi_CaptureTheFlag5      | 🟥     |                                              |
+| Multi_CaptureTheFlag6      | 🟥     |                                              |
+| GameCube_Bonus1            | 🟩     |                                              |
+| GameCube_Bonus2            | 🟩     |                                              |
+| GameCube_Bonus3            | 🟨     |                                              |
+| GameCube_Bonus4            | 🟨     |                                              |
+| GameCube_Bonus5            | 🟨     |                                              |
+| GameCube_Bonus6            | 🟩     |                                              |
+| GameCube_Bonus7            | 🟨     |                                              |
+| GameCube_Bonus8            | 🟩     |                                              |
+| GameCube_Bonus9            | 🟩     |                                              |
+| GameCube_Bonus10           | 🟩     |                                              |
+
+## Dialogs
+| Name                   | State   | Info                                         |
+| ---------------------- | ------- | -------------------------------------------- |
+| UserInfoSideScroller   | 🟩     |                                              |
+| UserInfoSideWorld      | 🟩     |                                              |
+| #?                     | 🟥     |                                              |
+| #?                     | 🟥     |                                              |
+| #?                     | 🟥     |                                              |
+| #?                     | 🟥     |                                              |
+| PauseDialog            | 🟩     |                                              |
+| FogDialog              | 🟩     |                                              |
+| LyTimerDialog          | 🟩     |                                              |
+| TextBoxDialog          | 🟩     |                                              |
+
+## Bars
+| Name                   | State   | Info                                         |
+| ---------------------- | ------- | -------------------------------------------- |
+| BlueLumBar             | 🟥     |                                              |
+| LifeBar                | 🟩     |                                              |
+| LumsBar                | 🟩     |                                              |
+| Lums1000Bar            | 🟩     |                                              |
+| CagesBar               | 🟩     |                                              |
+| Cages50Bar             | 🟩     |                                              |
+| LevelInfoBar           | 🟩     |                                              |
+| TimerBar               | 🟩     |                                              |
+| #?                     | 🟥     |                                              |
+| SwitchBar              | 🟩     |                                              |
+| BossFinalBar           | 🟥     |                                              |
+| BossMachineBar         | 🟩     |                                              |
+| BossRockAndLavaBar     | 🟥     |                                              |
+| BossScalemanBar        | 🟥     |                                              |
+| WorldNameBar           | 🟥     |                                              |
+
+## Actors
+| Name                   | State   | Info                                         |
+| ---------------------- | ------- | -------------------------------------------- |
+| Rayman                 | 🟨     | Not implemented all states                   |
+| RaymanBody             | 🟩     |                                              |
+| RedPirate              | 🟩     |                                              |
+| Piranha                | 🟩     |                                              |
+| WaterSplash            | 🟩     |                                              |
+| Explosion              | 🟩     |                                              |
+| Missile                | 🟩     |                                              |
+| BouncyPlatform         | 🟩     |                                              |
+| MovingFlowerPlatform   | 🟩     |                                              |
+| #9                     | 🟥     |                                              |
+| Switch                 | 🟩     |                                              |
+| Gate                   | 🟩     |                                              |
+| Lums                   | 🟨     | Not implemented blue lums among other states |
+| Cage                   | 🟩     |                                              |
+| LevelCurtain           | 🟩     |                                              |
+| #15                    | 🟥     |                                              |
+| #16                    | 🟥     |                                              |
+| BreakableDoor          | 🟩     |                                              |
+| Keg                    | 🟩     |                                              |
+| Barrel                 | 🟩     |                                              |
+| #20                    | 🟥     |                                              |
+| Sphere                 | 🟥     |                                              |
+| #22                    | 🟥     |                                              |
+| GreenPirate            | 🟥     |                                              |
+| BluePirate             | 🟥     |                                              |
+| SilverPirate           | 🟩     |                                              |
+| HelicopterBomb         | 🟩     |                                              |
+| ZombieChicken          | 🟩     |                                              |
+| #28                    | 🟥     |                                              |
+| BarrelSplash           | 🟩     |                                              |
+| Depart                 | 🟩     |                                              |
+| RedShell               | 🟩     |                                              |
+| KegFire                | 🟩     |                                              |
+| #33                    | 🟥     |                                              |
+| #34                    | 🟥     |                                              |
+| Caterpillar            | 🟥     |                                              |
+| #36                    | 🟥     |                                              |
+| Butterfly              | 🟩     |                                              |
+| #38                    | 🟥     |                                              |
+| #39                    | 🟥     |                                              |
+| #40                    | 🟥     |                                              |
+| #41                    | 🟥     |                                              |
+| #42                    | 🟥     |                                              |
+| #43                    | 🟥     |                                              |
+| WoodenShieldedHoodboom | 🟩     |                                              |
+| #45                    | 🟥     |                                              |
+| Slapdash               | 🟩     |                                              |
+| PurpleLum              | 🟩     |                                              |
+| Grenade                | 🟩     |                                              |
+| SwingSparkle           | 🟩     |                                              |
+| BreakableGround        | 🟩     |                                              |
+| Boulder                | 🟥     |                                              |
+| #52                    | 🟥     |                                              |
+| MovingWoodenPlatform   | 🟩     |                                              |
+| Plum                   | 🟥     |                                              |
+| LavaSplash             | 🟩     |                                              |
+| #56                    | 🟥     |                                              |
+| #57                    | 🟥     |                                              |
+| #58                    | 🟥     |                                              |
+| Hoodstormer            | 🟩     |                                              |
+| SpikyFlyingBomb        | 🟩     |                                              |
+| FlowerFire             | 🟩     |                                              |
+| #62                    | 🟥     |                                              |
+| #63                    | 🟥     |                                              |
+| Murfy                  | 🟩     |                                              |
+| #65                    | 🟥     |                                              |
+| #66                    | 🟥     |                                              |
+| ChainedSparkles        | 🟩     |                                              |
+| #68                    | 🟥     |                                              |
+| #69                    | 🟥     |                                              |
+| #70                    | 🟥     |                                              |
+| #71                    | 🟥     |                                              |
+| Bats                   | 🟩     |                                              |
+| #73                    | 🟥     |                                              |
+| #74                    | 🟥     |                                              |
+| #75                    | 🟥     |                                              |
+| #76                    | 🟥     |                                              |
+| WoodenBar              | 🟩     |                                              |
+| Ly                     | 🟩     |                                              |
+| Flag                   | 🟩     |                                              |
+| #80                    | 🟥     |                                              |
+| #81                    | 🟥     |                                              |
+| KegDebris              | 🟩     |                                              |
+| #83                    | 🟥     |                                              |
+| Machine                | 🟩     |                                              |
+| #85                    | 🟥     |                                              |
+| #86                    | 🟥     |                                              |
+| #87                    | 🟥     |                                              |
+| #88                    | 🟥     |                                              |
+| Skull                  | 🟩     |                                              |
+| #90                    | 🟥     |                                              |
+| #91                    | 🟥     |                                              |
+| MurfyStone             | 🟩     |                                              |
+| #93                    | 🟥     |                                              |
+| #94                    | 🟥     |                                              |
+| Teensies               | 🟩     |                                              |
+| #96                    | 🟥     |                                              |
+| #97                    | 🟥     |                                              |
+| #98                    | 🟥     |                                              |
+| #99                    | 🟥     |                                              |
+| Urchin                 | 🟩     |                                              |
+| Arrive                 | 🟨     | Not implemented when linked to Murfy         |
+| SpikyBomb              | 🟨     |                                              |
+| #103                   | 🟥     |                                              |
+| #104                   | 🟥     |                                              |
+| #105                   | 🟥     |                                              |
+| MovingUnusedPlatform   | 🟩     |                                              |
+| RotatedHelicopterBomb  | 🟩     |                                              |
+| Leaf                   | 🟩     |                                              |
+| #109                   | 🟥     |                                              |
+| MetalShieldedHoodboom  | 🟩     |                                              |
+| #111                   | 🟥     |                                              |
+| #112                   | 🟥     |                                              |
+| #113                   | 🟥     |                                              |
+| #114                   | 🟥     |                                              |
+| #115                   | 🟥     |                                              |
