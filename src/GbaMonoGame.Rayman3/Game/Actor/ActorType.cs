@@ -28,6 +28,7 @@ public enum ActorType
     BluePirate = 24, // TODO: Implement
     SilverPirate = 25,
     HelicopterBomb = 26,
+    ZombieChicken = 27,
 
     BarrelSplash = 29,
     Depart = 30,
