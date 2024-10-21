@@ -69,6 +69,8 @@ public enum ActorType
 
     Machine = 84,
 
+    Skull = 89,
+
     MurfyStone = 92,
 
     Teensies = 95,

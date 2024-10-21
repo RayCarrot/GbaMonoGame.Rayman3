@@ -663,6 +663,8 @@ public class Rayman3 : GbaGame
             { ActorType.KegDebris, (instanceId, scene, resource) => new KegDebris(instanceId, scene, resource) },
 
             { ActorType.Machine, (instanceId, scene, resource) => new Machine(instanceId, scene, resource) },
+
+            { ActorType.Skull, (instanceId, scene, resource) => new Skull(instanceId, scene, resource) },
             
             { ActorType.MurfyStone, (instanceId, scene, resource) => new MurfyStone(instanceId, scene, resource) },
 
