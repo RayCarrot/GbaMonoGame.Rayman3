@@ -186,7 +186,7 @@
 | KegFire                | 🟩     |                                              |
 | #33                    | 🟥     |                                              |
 | #34                    | 🟥     |                                              |
-| Caterpillar            | 🟥     |                                              |
+| Caterpillar            | 🟩     |                                              |
 | #36                    | 🟥     |                                              |
 | Butterfly              | 🟩     |                                              |
 | #38                    | 🟥     |                                              |

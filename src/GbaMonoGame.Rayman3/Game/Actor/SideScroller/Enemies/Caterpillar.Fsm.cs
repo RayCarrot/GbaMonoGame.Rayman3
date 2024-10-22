@@ -1,4 +1,7 @@
 ﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -38,7 +41,8 @@ public partial class Caterpillar
 
                 if (HitPoints == 0)
                 {
-                    // TODO: Implement
+                    State.MoveTo(Fsm_Projectile);
+                    return false;
                 }
 
                 if (Scene.IsDetectedMainActor(this))
@@ -107,7 +111,8 @@ public partial class Caterpillar
 
                 if (HitPoints == 0)
                 {
-                    // TODO: Implement
+                    State.MoveTo(Fsm_Projectile);
+                    return false;
                 }
 
                 if (reachedTarget)
@@ -156,7 +161,8 @@ public partial class Caterpillar
 
                 if (HitPoints == 0)
                 {
-                    // TODO: Implement
+                    State.MoveTo(Fsm_Projectile);
+                    return false;
                 }
 
                 if (reachedTarget)
@@ -164,6 +170,270 @@ public partial class Caterpillar
                     State.MoveTo(Fsm_Move);
                     return false;
                 }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_Projectile(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                AnimatedObject.DisableLinks = true;
+                AnimatedObject.CurrentAnimation = AnimatedObject.BaseAnimation;
+                
+                ActionId = IsFacingRight ? Action.Falling_Right : Action.Falling_Left;
+                
+                CheckAgainstMapCollision = true;
+                IsTouchingMap = false;
+                IsInvulnerable = true;
+                
+                HitPoints++;
+                
+                Timer = 0;
+
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MumuHit_SkullHit_Mix02);
+                break;
+
+            case FsmAction.Step:
+                Timer++;
+
+                // Land on the ground
+                if (IsTouchingMap && ActionId is not (Action.KnockedDown_Left or Action.KnockedDown_Right))
+                    ActionId = IsFacingRight ? Action.KnockedDown_Left : Action.KnockedDown_Right;
+
+                // Picked up by Rayman
+                if (Scene.IsDetectedMainActor(this) &&
+                    ((Rayman)Scene.MainActor).AttachedObject == null &&
+                    ActionId is Action.KnockedDown_Left or Action.KnockedDown_Right)
+                {
+                    Scene.MainActor.ProcessMessage(this, Message.Main_PickUpObject, this);
+                }
+
+                if (Timer >= 240)
+                {
+                    State.MoveTo(Fsm_ProjectileReturn);
+                    return false;
+                }
+
+                if (ActionId is Action.KnockedDown_Left or Action.KnockedDown_Right &&
+                    Scene.IsDetectedMainActor(this) &&
+                    ((Rayman)Scene.MainActor).AttachedObject == this)
+                {
+                    State.MoveTo(Fsm_PickedUp);
+                    return false;
+                }
+
+                if (Engine.Settings.Platform == Platform.NGage &&
+                    Scene.GetPhysicalType(new Vector2(Position.X, GetDetectionBox().MaxY)) == PhysicalTypeValue.MoltenLava)
+                {
+                    State.MoveTo(Fsm_Dying);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                CheckAgainstMapCollision = false;
+                SineWaveValue = 0;
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_ProjectileReturn(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Direction switch
+                {
+                    MoveDirection.Up => Action.Move_Up,
+                    MoveDirection.Down => Action.Move_Down,
+                    MoveDirection.Left => Action.Move_Left,
+                    MoveDirection.Right => Action.Move_Right,
+                    _ => throw new Exception("Invalid direction")
+                };
+
+                Vector2 dist = LastPosition - Position;
+                float distLength = dist.Length();
+                if (distLength != 0)
+                {
+                    ReturnSpeed = dist / distLength * 2;
+                    MechModel.Speed = ReturnSpeed;
+                }
+
+                AnimatedObject.DisableLinks = false;
+                AnimatedObject.SetPosition(Position);
+
+                IsInvulnerable = false;
+
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MumuWake_LumHit_Mix03);
+                break;
+
+            case FsmAction.Step:
+                bool returned = false;
+                if (ReturnSpeed.X > 0)
+                {
+                    if (Position.X + ReturnSpeed.X > LastPosition.X)
+                    {
+                        ReturnSpeed = Vector2.Zero;
+                        Position = LastPosition;
+                        returned = true;
+                    }
+                }
+                else if (ReturnSpeed.X < 0)
+                {
+                    if (Position.X + ReturnSpeed.X < LastPosition.X)
+                    {
+                        ReturnSpeed = Vector2.Zero;
+                        Position = LastPosition;
+                        returned = true;
+                    }
+                }
+
+                if (HitPoints == 0)
+                {
+                    State.MoveTo(Fsm_Projectile);
+                    return false;
+                }
+
+                if (returned)
+                {
+                    State.MoveTo(Fsm_Move);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_PickedUp(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.PickedUp;
+                break;
+
+            case FsmAction.Step:
+                // Do nothing
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_ThrownUp(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.ThrownUp;
+                break;
+
+            case FsmAction.Step:
+                bool hitOtherObj = false;
+
+                if (Scene.IsHitActor(this) is { } hitObj)
+                {
+                    hitObj.ReceiveDamage(AttackPoints);
+                    hitOtherObj = true;
+                }
+
+                // Caught by Rayman if falling back down
+                if (Scene.IsDetectedMainActor(this) &&
+                    ((Rayman)Scene.MainActor).AttachedObject == null &&
+                    Speed.Y > 0)
+                {
+                    Scene.MainActor.ProcessMessage(this, Message.Main_CatchObject, this);
+                }
+
+                if (hitOtherObj || Scene.GetPhysicalType(new Vector2(Position.X, GetDetectionBox().MaxY)).IsSolid)
+                {
+                    State.MoveTo(Fsm_Dying);
+                    return false;
+                }
+
+                if (Scene.IsDetectedMainActor(this) &&
+                    ((Rayman)Scene.MainActor).AttachedObject == this &&
+                    Speed.Y > 0)
+                {
+                    State.MoveTo(Fsm_PickedUp);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_ThrownForward(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Scene.MainActor.IsFacingRight ? Action.ThrownForward_Right : Action.ThrownForward_Left;
+                break;
+
+            case FsmAction.Step:
+                bool hitOtherObj = false;
+
+                if (Scene.IsHitActor(this) is { } hitObj)
+                {
+                    hitObj.ReceiveDamage(AttackPoints);
+                    hitOtherObj = true;
+                }
+
+                PhysicalType type = Scene.GetPhysicalType(new Vector2(Position.X, GetDetectionBox().MaxY));
+
+                // NOTE: Checking for the InstaKill type appears to be a mistake in the original code (it checking for <= 32 instead of < 32)
+                if (hitOtherObj || type.IsSolid || type.Value is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
+                {
+                    State.MoveTo(Fsm_Dying);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_Dying(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MumuDead_Mix04);
+                ActionId = Action.Dying;
+                break;
+
+            case FsmAction.Step:
+                if (IsActionFinished)
+                    ProcessMessage(this, Message.Destroy);
                 break;
 
             case FsmAction.UnInit:

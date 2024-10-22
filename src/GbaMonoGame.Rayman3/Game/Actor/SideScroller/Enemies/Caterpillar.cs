@@ -49,9 +49,11 @@ public sealed partial class Caterpillar : MovableActor
     public new AObjectChain AnimatedObject => (AObjectChain)base.AnimatedObject;
 
     public Vector2 LastPosition { get; set; }
+    public Vector2 ReturnSpeed { get; set; }
     public MoveDirection Direction { get; set; }
     public byte SineWaveValue { get; set; }
     public float TargetPosition { get; set; }
+    public ushort Timer { get; set; }
 
     private void CheckMoveBounds()
     {
@@ -137,7 +139,22 @@ public sealed partial class Caterpillar : MovableActor
 
         switch (message)
         {
-            // TODO: Implement
+            case Message.ThrowObjectUp:
+                State.MoveTo(Fsm_ThrownUp);
+                return false;
+
+            case Message.ThrowObjectForward:
+                State.MoveTo(Fsm_ThrownForward);
+                return false;
+
+            case Message.DropObject:
+                State.MoveTo(Fsm_Projectile);
+                return false;
+
+            // Unused
+            case Message.HitActorOfSameType:
+                State.MoveTo(Fsm_Dying);
+                return false;
 
             default:
                 return false;

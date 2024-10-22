@@ -20,7 +20,7 @@ public class AObjectChain : AnimatedObject
     public int BaseAnimation { get; set; }
     
     public bool EnablePriorityManagement { get; set; }
-    public bool DisableLinks { get; set; } // TODO: Is this used? If not just remove it.
+    public bool DisableLinks { get; set; }
 
     public Vector2[] PositionsBuffer { get; set; }
     public Vector2[] ChildrenScreenPositions { get; set; }
@@ -31,6 +31,13 @@ public class AObjectChain : AnimatedObject
     public void SetCurrentPriority(bool prio)
     {
         PriosBuffer[BufferIndex] = prio;
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        BufferIndex = 0;
+        for (int i = 0; i < PositionsBuffer.Length; i++)
+            PositionsBuffer[i] = position;
     }
 
     public void Init(int linksCount, Vector2 position, int baseAnimation, bool enablePriorityManagement)
@@ -118,9 +125,8 @@ public class AObjectChain : AnimatedObject
         ChildrenDrawCount = 0;
 
         if (DisableLinks)
-        {
-            throw new NotImplementedException();
-            // TODO: BaseActor.Draw
+        { 
+            actor.DrawDefault(animationPlayer, forceDraw);
             return;
         }
 

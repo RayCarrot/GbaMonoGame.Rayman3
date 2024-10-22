@@ -48,7 +48,6 @@ public enum Message
 
     Main_BeginHang = 1029,
     Main_EndHang = 1030,
-
     Main_LevelExit = 1031,
 
     Main_CollectedCage = 1033,
@@ -56,7 +55,7 @@ public enum Message
     LightOnFire_Left = 1035,
     Main_StartFlyingWithKegRight = 1036,
     Main_StartFlyingWithKegLeft = 1037,
-
+    HitActorOfSameType = 1038,
     Cam_DoNotFollowPositionY = 1039,
     Cam_FollowPositionY = 1040,
     Cam_FollowPositionYUntilNearby = 1041,

@@ -60,7 +60,7 @@ public abstract class BaseActor : GameObject
     public bool HasMoved { get; set; }
     public bool IsObjectCollisionXOnly { get; set; }
 
-    protected void DrawDefault(AnimationPlayer animationPlayer, bool forceDraw)
+    public void DrawDefault(AnimationPlayer animationPlayer, bool forceDraw)
     {
         if (Scene.Camera.IsActorFramed(this) || forceDraw)
         {
@@ -74,7 +74,7 @@ public abstract class BaseActor : GameObject
         }
     }
 
-    protected void DrawLarge(AnimationPlayer animationPlayer, bool forceDraw)
+    public void DrawLarge(AnimationPlayer animationPlayer, bool forceDraw)
     {
         if (Scene.Camera.IsActorFramed(this) || forceDraw)
         {
@@ -89,7 +89,7 @@ public abstract class BaseActor : GameObject
         }
     }
 
-    protected void InitWithLink(ActorResource actorResource)
+    public void InitWithLink(ActorResource actorResource)
     {
         if (actorResource.Links[0] != null && !Scene.GetGameObject(actorResource.Links[0].Value).IsEnabled)
             ProcessMessage(this, Message.Destroy);
