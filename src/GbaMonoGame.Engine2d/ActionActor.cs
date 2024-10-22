@@ -6,7 +6,11 @@ namespace GbaMonoGame.Engine2d;
 
 public abstract class ActionActor : BaseActor
 {
-    protected ActionActor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
+    protected ActionActor(int instanceId, Scene2D scene, ActorResource actorResource)
+        : this(instanceId, scene, actorResource, new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)) { }
+
+    protected ActionActor(int instanceId, Scene2D scene, ActorResource actorResource, AnimatedObject animatedObject) 
+        : base(instanceId, scene, actorResource, animatedObject)
     {
         HitPoints = actorResource.Model.HitPoints;
         AttackPoints = actorResource.Model.AttackPoints;

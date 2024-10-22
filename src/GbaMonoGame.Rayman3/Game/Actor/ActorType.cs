@@ -35,7 +35,7 @@ public enum ActorType
     RedShell = 31,
     KegFire = 32,
 
-    Caterpillar = 35, // TODO: Implement
+    Caterpillar = 35,
 
     Butterfly = 37,
 
