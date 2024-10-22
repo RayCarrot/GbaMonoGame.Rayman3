@@ -278,6 +278,10 @@ public class GbaSoundEventsManager : SoundEventsManager
     {
         foreach (ActiveSong song in ActiveSongs.ToArray())
         {
+            // Do not refresh songs if they are paused in the engine since that's outside the game's code
+            if (song.InEnginePaused)
+                continue;
+
             if (!song.IsPlaying)
                 continue;
 

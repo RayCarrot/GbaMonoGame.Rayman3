@@ -655,12 +655,18 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     public void Pause()
     {
+        if (IsPaused)
+            return;
+
         IsPaused = true;
         SoundEventsManager.ForcePauseAllSongs();
     }
 
     public void Resume()
     {
+        if (!IsPaused)
+            return;
+
         IsPaused = false;
         SoundEventsManager.ForceResumeAllSongs();
     }
