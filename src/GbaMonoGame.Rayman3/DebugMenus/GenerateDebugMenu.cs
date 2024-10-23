@@ -143,4 +143,77 @@ public class GenerateDebugMenu : DebugMenu
         if (ImGui.MenuItem("Game data"))
             GenerateGameData();
     }
+
+    // TODO: Continue from Pf Engrenage - PF=Platform
+    // From "Liste Animations des Ingredients 141101.xls"
+    private Dictionary<ActorType, string> ActorNames = new()
+    {
+        [ActorType.RedPirate] = "Pir_rg",
+        [ActorType.Piranha] = "Gm",
+
+        [ActorType.Missile] = "Fx_bmb",
+
+        [ActorType.MovingFlowerPlatform] = "Pf_fleur",
+
+        [ActorType.GreenPirate] = "Pir_vt",
+        [ActorType.BluePirate] = "Pir_bl",
+        [ActorType.SilverPirate] = "Pir_ar",
+        [ActorType.HelicopterBomb] = "Bmv", // Alt. "Bmi"
+        [(ActorType)27] = "Zbi",
+
+        [(ActorType)31] = "Mis_rg",
+
+        [(ActorType)35] = "Mu",
+
+        [(ActorType)41] = "Arai",
+
+        [ActorType.WoodenShieldedHoodboom] = "Cag",
+
+        [ActorType.Slapdash] = "Cag2",
+
+        [ActorType.Grenade] = "fx_cag",
+
+        [(ActorType)57] = "dark_lum",
+
+        [ActorType.Hoodstormer] = "Cagoustic",
+        [ActorType.SpikyFlyingBomb] = "bombe_piq",
+        [ActorType.FlowerFire] = "Pf_fleur_feu",
+
+        [(ActorType)72] = "bats",
+    };
+    private Dictionary<ActorType, string> IngredientNames = new()
+    {
+        [ActorType.RedPirate] = "Pirate Rouge",
+        [ActorType.Piranha] = "Grosse Machoire",
+
+        [ActorType.Missile] = "SFX for fire explosiions etc..",
+
+        [ActorType.MovingFlowerPlatform] = "Pf Fleur",
+
+        [ActorType.GreenPirate] = "Pirate Vert",
+        [ActorType.BluePirate] = "Pirate Blue",
+        [ActorType.SilverPirate] = "Pirate Argent ( was Jaune)",
+        [ActorType.HelicopterBomb] = "Bombe Volante", // Alt. "Bombe Immobile (see Bmv)"
+        [(ActorType)27] = "Chicken Zombie",
+
+        [(ActorType)31] = "Missile Rouge",
+
+        [(ActorType)35] = "Mumu",
+
+        [(ActorType)41] = "Araignée",
+
+        [ActorType.WoodenShieldedHoodboom] = "Cagoulard",
+
+        [ActorType.Slapdash] = "Cagoulard",
+
+        [ActorType.Grenade] = "Cagoustic_fx",
+
+        [(ActorType)57] = "Dark_Lum",
+
+        [ActorType.Hoodstormer] = "Cagoustic",
+        [ActorType.SpikyFlyingBomb] = "Bombe Piquant",
+        [ActorType.FlowerFire] = "Pf Fleur SFX",
+
+        [(ActorType)72] = "Bats",
+    };
 }
