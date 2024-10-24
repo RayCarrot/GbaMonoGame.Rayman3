@@ -34,13 +34,13 @@ public class PlayfieldDebugWindow : DebugWindow
 
         if (ImGui.BeginTable("_clusters", 7))
         {
-            ImGui.TableSetupColumn("Id");
+            ImGui.TableSetupColumn("Id", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Layers", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Position");
             ImGui.TableSetupColumn("Max position");
             ImGui.TableSetupColumn("Scroll factor");
             ImGui.TableSetupColumn("Type");
             ImGui.TableSetupColumn("Camera");
-            ImGui.TableSetupColumn("Layers");
             ImGui.TableHeadersRow();
 
             int i = 0;
@@ -50,6 +50,9 @@ public class PlayfieldDebugWindow : DebugWindow
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{(i == 0 ? "Main" : $"{i}")}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{String.Join(", ", cluster.GetLayers().Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{cluster.Position.X:0.00} x {cluster.Position.Y:0.00}");
@@ -65,9 +68,6 @@ public class PlayfieldDebugWindow : DebugWindow
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{cluster.Camera.GetType().Name}");
-
-                ImGui.TableNextColumn();
-                ImGui.Text($"{String.Join(", ", cluster.GetLayers().Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
 
                 i++;
             }
