@@ -20,11 +20,24 @@ public abstract class ActionActor : BaseActor
         ChangeAction();
 
         _detectionBox = new Box(actorResource.Model.DetectionBox);
+
+        _debugDetectionBoxAObject = new DebugBoxAObject()
+        {
+            Color = DebugBoxColor.DetectionBox,
+            Camera = Scene.Playfield.Camera
+        };
+        _debugActionBoxAObject = new DebugBoxAObject()
+        {
+            Color = DebugBoxColor.ActionBox,
+            Camera = Scene.Playfield.Camera
+        };
     }
 
     private int _actionId;
     private Box _detectionBox;
     private Box _actionBox;
+    private readonly DebugBoxAObject _debugDetectionBoxAObject;
+    private readonly DebugBoxAObject _debugActionBoxAObject;
 
     public Action[] Actions { get; }
 
@@ -203,6 +216,19 @@ public abstract class ActionActor : BaseActor
             return leftType;
         else
             return PhysicalTypeValue.None;
+    }
+
+    public override void DrawDebugBoxes(AnimationPlayer animationPlayer)
+    {
+        base.DrawDebugBoxes(animationPlayer);
+
+        _debugDetectionBoxAObject.Position = Position + _detectionBox.Position - Scene.Playfield.Camera.Position;
+        _debugDetectionBoxAObject.Size = _detectionBox.Size;
+        animationPlayer.PlayFront(_debugDetectionBoxAObject);
+
+        _debugActionBoxAObject.Position = Position + _actionBox.Position - Scene.Playfield.Camera.Position;
+        _debugActionBoxAObject.Size = _actionBox.Size;
+        animationPlayer.PlayFront(_debugActionBoxAObject);
     }
 
     public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame;
 
@@ -12,6 +13,14 @@ namespace GbaMonoGame;
 /// </summary>
 public static class Gfx
 {
+    static Gfx()
+    {
+        Pixel = new Texture2D(Engine.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+        Pixel.SetData([Color.White]);
+    }
+
+    public static Texture2D Pixel { get; }
+
     /// <summary>
     /// The game screens. These are the equivalent of backgrounds on the GBA
     /// and there are always 4 of these.

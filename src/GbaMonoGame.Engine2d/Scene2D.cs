@@ -5,6 +5,7 @@ using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
+using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -75,6 +76,8 @@ public class Scene2D
     public int LayersCount { get; }
     public KnotManager KnotManager { get; }
     public int FirstActiveDialogIndex { get; set; }
+
+    public bool ShowDebugBoxes { get; set; }
     
     // Flags
     public bool InDialogModalMode { get; set; }
@@ -151,6 +154,14 @@ public class Scene2D
         {
             throw new UnsupportedPlatformException();
         }
+
+        // Toggle showing debug boxes
+        if (InputManager.IsButtonJustPressed(Keys.B))
+            ShowDebugBoxes = !ShowDebugBoxes;
+
+        // Draw debug boxes
+        if (!InDialogModalMode && ShowDebugBoxes)
+            DrawDebugBoxes();
     }
 
     public bool AddDialog(Dialog dialog, bool isModal, bool reloadPlayfield)
@@ -398,6 +409,14 @@ public class Scene2D
     public void RunCamera()
     {
         Camera.Step();
+    }
+
+    public void DrawDebugBoxes()
+    {
+        foreach (GameObject obj in KnotManager.EnumerateAllGameObjects(isEnabled: true))
+        {
+            obj.DrawDebugBoxes(AnimationPlayer);
+        }
     }
 
     public bool IsDetectedMainActor(ActionActor actor)

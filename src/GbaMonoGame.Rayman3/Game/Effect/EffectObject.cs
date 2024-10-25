@@ -1,34 +1,24 @@
 ﻿using GbaMonoGame.AnimEngine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
-namespace GbaMonoGame.Rayman3
+namespace GbaMonoGame.Rayman3;
+
+/// <summary>
+/// A custom object base class for emulating GBA effects, such as fading and windows
+/// </summary>
+public abstract class EffectObject : AObject
 {
-    /// <summary>
-    /// A custom object base class for emulating GBA effects, such as fading and windows
-    /// </summary>
-    public abstract class EffectObject : AObject
+    protected void DrawRectangle(Vector2 position, Vector2 size, Color color)
     {
-        static EffectObject()
+        Gfx.AddSprite(new Sprite
         {
-            Pixel = new Texture2D(Engine.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            Pixel.SetData(new[] { Color.White });
-        }
-
-        protected static Texture2D Pixel { get; }
-
-        protected void DrawRectangle(Vector2 position, Vector2 size, Color color)
-        {
-            Gfx.AddSprite(new Sprite
-            {
-                Texture = Pixel,
-                Position = position,
-                Priority = SpritePriority,
-                Center = false,
-                AffineMatrix = new AffineMatrix(0, size),
-                Color = color,
-                Camera = Camera,
-            });
-        }
+            Texture = Gfx.Pixel,
+            Position = position,
+            Priority = SpritePriority,
+            Center = false,
+            AffineMatrix = new AffineMatrix(0, size),
+            Color = color,
+            Camera = Camera,
+        });
     }
 }

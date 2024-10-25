@@ -2,7 +2,6 @@
 using BinarySerializer.Ubisoft.GbaEngine;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
-using Microsoft.Xna.Framework.Input;
 using Game = BinarySerializer.Ubisoft.GbaEngine.Game;
 
 namespace GbaMonoGame.Rayman3;
@@ -804,18 +803,6 @@ public class Rayman3 : GbaGame
         debugLayout.AddWindow(new GameInfoDebugWindow());
         debugLayout.AddMenu(new FramesDebugMenu());
         debugLayout.AddMenu(new GenerateDebugMenu());
-    }
-
-    protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
-    {
-        // Toggle showing debug collision screen
-        if (InputManager.IsButtonJustPressed(Keys.T))
-        {
-            if (Frame.Current is IHasPlayfield { Playfield: { } playfield })
-                playfield.PhysicalLayer.DebugScreen.IsEnabled = !playfield.PhysicalLayer.DebugScreen.IsEnabled;
-        }
-
-        base.Update(gameTime);
     }
 
     #endregion

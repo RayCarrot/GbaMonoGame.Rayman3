@@ -1,4 +1,5 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine;
+using GbaMonoGame.AnimEngine;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -15,9 +16,18 @@ public class Captor : GameObject
         EventsToTrigger = captorResource.EventsCount;
 
         _captorBox = new Box(captorResource.BoxMinX, captorResource.BoxMinY, captorResource.BoxMaxX, captorResource.BoxMaxY);
+
+        _debugCaptorBoxAObject = new DebugBoxAObject()
+        {
+            Size = _captorBox.Size,
+            Color = DebugBoxColor.CaptorBox,
+            IsFilled = true,
+            Camera = Scene.Playfield.Camera
+        };
     }
 
     private readonly Box _captorBox;
+    private readonly DebugBoxAObject _debugCaptorBoxAObject;
 
     // Flags
     public bool TriggerOnMainActorDetection { get; set; }
@@ -86,5 +96,13 @@ public class Captor : GameObject
             EventsToTrigger = OriginalEventsToTrigger;
             IsTriggering = false;
         }
+    }
+
+    public override void DrawDebugBoxes(AnimationPlayer animationPlayer)
+    {
+        base.DrawDebugBoxes(animationPlayer);
+
+        _debugCaptorBoxAObject.Position = _captorBox.Position - Scene.Playfield.Camera.Position;
+        animationPlayer.PlayFront(_debugCaptorBoxAObject);
     }
 }

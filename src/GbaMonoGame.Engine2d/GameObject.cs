@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using GbaMonoGame.AnimEngine;
+using ImGuiNET;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -65,6 +66,11 @@ public abstract class GameObject : Object
             default:
                 return false;
         }
+    }
+
+    public virtual void DrawDebugBoxes(AnimationPlayer animationPlayer)
+    {
+        // TODO: Display cross at origin position like in Ray1Map?
     }
 
     public override void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)

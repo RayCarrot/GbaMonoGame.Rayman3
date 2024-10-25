@@ -13,9 +13,6 @@ public class GfxRenderer
         SpriteBatch = spriteBatch;
         GameViewPort = gameViewPort;
 
-        Pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-        Pixel.SetData(new[] { Color.White });
-
         RasterizerState = new RasterizerState() { ScissorTestEnable = true };
     }
 
@@ -25,7 +22,6 @@ public class GfxRenderer
 
     private SpriteBatch SpriteBatch { get; }
     private GameViewPort GameViewPort { get; }
-    private Texture2D Pixel { get; }
     private RasterizerState RasterizerState { get; }
     private RenderOptions? RenderOptions { get; set; }
 
@@ -119,7 +115,7 @@ public class GfxRenderer
     public void DrawFilledRectangle(Rectangle rect, Color color)
     {
         // Simply use the function already there
-        SpriteBatch.Draw(Pixel, rect, color);
+        SpriteBatch.Draw(Gfx.Pixel, rect, color);
     }
 
     /// <summary>
@@ -130,7 +126,7 @@ public class GfxRenderer
     /// <param name="angle">The angle in radians to draw the rectangle at</param>
     public void DrawFilledRectangle(Rectangle rect, Color color, float angle)
     {
-        SpriteBatch.Draw(Pixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
+        SpriteBatch.Draw(Gfx.Pixel, rect, null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
     }
 
     /// <summary>
@@ -154,7 +150,7 @@ public class GfxRenderer
     public void DrawFilledRectangle(Vector2 location, Vector2 size, Color color, float angle)
     {
         // stretch the pixel between the two vectors
-        SpriteBatch.Draw(Pixel,
+        SpriteBatch.Draw(Gfx.Pixel,
             location,
             null,
             color,
@@ -326,12 +322,12 @@ public class GfxRenderer
     public void DrawLine(Vector2 point, float length, float angle, Color color, float thickness)
     {
         // stretch the pixel between the two vectors
-        SpriteBatch.Draw(Pixel,
+        SpriteBatch.Draw(Gfx.Pixel,
             point,
             null,
             color,
             angle,
-            new Vector2(0, (float)Pixel.Height / 2),
+            new Vector2(0, (float)Gfx.Pixel.Height / 2),
             new Vector2(length, thickness),
             SpriteEffects.None,
             0);
@@ -348,7 +344,7 @@ public class GfxRenderer
 
     public void DrawPixel(Vector2 position, Color color)
     {
-        SpriteBatch.Draw(Pixel, position, color);
+        SpriteBatch.Draw(Gfx.Pixel, position, color);
     }
 
     #endregion
