@@ -31,7 +31,8 @@ public class LoggerDebugWindow : DebugWindow
 
     private void Logger_Log(object sender, LogEventArgs e)
     {
-        Log log = new(String.Format(e.Message, e.Args), e.Type, _colors[e.Type]);
+        string message = e.Args.Length == 0 ? e.Message : String.Format(e.Message, e.Args);
+        Log log = new(message, e.Type, _colors[e.Type]);
 
         // Only add if not already logged. This is because some logs will be sent out every frame.
         if (!_logs.Contains(log))

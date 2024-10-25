@@ -1,0 +1,21 @@
+﻿global using Scene2D = GbaMonoGame.Engine2d.Scene2D;
+global using GameObject = GbaMonoGame.Engine2d.GameObject;
+global using Captor = GbaMonoGame.Engine2d.Captor;
+global using AnimatedObject = GbaMonoGame.AnimEngine.AnimatedObject;
+global using Vector2 = Microsoft.Xna.Framework.Vector2;
+
+global using Scene2DResource = BinarySerializer.Ubisoft.GbaEngine.Scene2D;
+global using GameObjectResource = BinarySerializer.Ubisoft.GbaEngine.GameObject;
+global using ActorResource = BinarySerializer.Ubisoft.GbaEngine.Actor;
+global using CaptorResource = BinarySerializer.Ubisoft.GbaEngine.Captor;
+global using AnimatedObjectResource = BinarySerializer.Ubisoft.GbaEngine.AnimatedObject;
+global using PlayfieldResource = BinarySerializer.Ubisoft.GbaEngine.Playfield;
+global using Playfield2DResource = BinarySerializer.Ubisoft.GbaEngine.Playfield2D;
+global using PlayfieldMode7Resource = BinarySerializer.Ubisoft.GbaEngine.PlayfieldMode7;
+global using GameLayerResource = BinarySerializer.Ubisoft.GbaEngine.GameLayer;
+global using TileLayerResource = BinarySerializer.Ubisoft.GbaEngine.TileLayer;
+global using PhysicalLayerResource = BinarySerializer.Ubisoft.GbaEngine.PhysicalLayer;
+global using RotscaleLayerMode7Resource = BinarySerializer.Ubisoft.GbaEngine.RotscaleLayerMode7;
+global using TextLayerMode7Resource = BinarySerializer.Ubisoft.GbaEngine.TextLayerMode7;
+global using ClusterResource = BinarySerializer.Ubisoft.GbaEngine.Cluster;
+global using PaletteResource = BinarySerializer.Nintendo.GBA.Palette;

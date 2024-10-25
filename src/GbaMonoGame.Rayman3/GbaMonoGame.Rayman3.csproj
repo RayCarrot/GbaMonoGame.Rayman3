@@ -35,6 +35,7 @@
     <ProjectReference Include="..\GbaMonoGame.AnimEngine\GbaMonoGame.AnimEngine.csproj" />
     <ProjectReference Include="..\GbaMonoGame.Engine2d\GbaMonoGame.Engine2d.csproj" />
     <ProjectReference Include="..\GbaMonoGame.TgxEngine\GbaMonoGame.TgxEngine.csproj" />
+    <ProjectReference Include="..\GbaMonoGame.Editor\GbaMonoGame.Editor.csproj" />
     <ProjectReference Include="..\GbaMonoGame\GbaMonoGame.csproj" />
   </ItemGroup>
   <ItemGroup>

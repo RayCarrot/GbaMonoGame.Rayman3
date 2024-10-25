@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
+using GbaMonoGame.Editor;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Game = BinarySerializer.Ubisoft.GbaEngine.Game;
@@ -790,6 +791,15 @@ public class Rayman3 : GbaGame
         }
 
         LevelFactory.Init(levelCreations);
+
+        // TODO: Fill out definitions for every actor so they can be used in the editor
+        EditorData.Init(new ActorDefinition[]
+        {
+            new(ActorType.Rayman, "Rayman", new ActorActionDefinition[]
+            {
+                new() { ActionId = 0, Name = "Default" },
+            }),
+        });
 
         // Set default language
         Localization.SetLanguage(0);

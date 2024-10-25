@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using GbaMonoGame.Editor;
 using ImGuiNET;
 
 namespace GbaMonoGame.Rayman3;
@@ -46,6 +47,21 @@ public class FramesDebugMenu : DebugMenu
 
                 return frame;
             }, EndWithSeparator: (MapId)i switch
+            {
+                MapId.SanctuaryOfBigTree_M2 => true,
+                MapId.MarshAwakening2 => true,
+                MapId.SanctuaryOfRockAndLava_M3 => true,
+                MapId.BossFinal_M2 => true,
+                MapId._1000Lums => true,
+                MapId.ChallengeLyGCN => true,
+                MapId.Power6 => true,
+                MapId.WorldMap => true,
+                _ => false
+            })).
+            ToArray()),
+        new("Level Editor", null, 
+            GameInfo.Levels.
+            Select((_, i) => new FrameMenuItem(((MapId)i).ToString(), () => new LevelEditor(i), EndWithSeparator: (MapId)i switch
             {
                 MapId.SanctuaryOfBigTree_M2 => true,
                 MapId.MarshAwakening2 => true,
