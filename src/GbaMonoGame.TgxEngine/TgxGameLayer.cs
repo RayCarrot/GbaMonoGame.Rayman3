@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Nintendo.GBA;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.TgxEngine;
 

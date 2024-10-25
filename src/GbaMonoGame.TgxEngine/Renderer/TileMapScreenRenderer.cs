@@ -41,6 +41,10 @@ public class TileMapScreenRenderer : IScreenRenderer
         int xEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.X, renderBox.MaxX) - renderBox.MinX) / Tile.Size);
         int yEnd = (int)Math.Ceiling((Math.Min(screen.Camera.Resolution.Y, renderBox.MaxY) - renderBox.MinY) / Tile.Size);
 
+        // Make sure we don't go out of bounds. Only needed if the camera shows more than the actual map, which isn't usually the case.
+        xEnd = Math.Min(xEnd, Width);
+        yEnd = Math.Min(yEnd, Height);
+
         return new Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
     }
 

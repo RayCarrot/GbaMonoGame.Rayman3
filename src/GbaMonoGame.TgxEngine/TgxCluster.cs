@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.TgxEngine;
@@ -31,21 +30,10 @@ public class TgxCluster
         get => _position;
         set
         {
-            Vector2 maxPos = MaxPosition;
-
-            if (value.X < 0)
-                value.X = 0;
-            if (value.Y < 0)
-                value.Y = 0;
-            if (value.X > maxPos.X)
-                value.X = maxPos.X;
-            if (value.Y > maxPos.Y)
-                value.Y = maxPos.Y;
-
-            _position = value;
+            _position = Vector2.Clamp(value, Vector2.Zero, MaxPosition);
 
             foreach (TgxGameLayer layer in Layers)
-                layer.SetOffset(value);
+                layer.SetOffset(_position);
         }
     }
 

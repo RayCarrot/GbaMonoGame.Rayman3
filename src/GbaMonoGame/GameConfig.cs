@@ -75,6 +75,11 @@ public class GameConfig
 
     #region Public Methods
 
+    public void Apply()
+    {
+        ConfigChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     public static GameConfig Load(string filePath)
     {
         if (File.Exists(filePath))
@@ -85,7 +90,7 @@ public class GameConfig
 
     public void Save(string filePath)
     {
-        ConfigChanged?.Invoke(this, EventArgs.Empty);
+        Apply();
         File.WriteAllText(filePath, JsonConvert.SerializeObject(this, GetJsonSettings()));
     }
 
