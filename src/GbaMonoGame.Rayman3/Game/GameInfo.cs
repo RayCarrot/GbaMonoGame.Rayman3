@@ -524,13 +524,34 @@ public static class GameInfo
                 World = 4;
                 break;
 
-            // TODO: Multiplayer maps are world 5
+            case MapId.GbaMulti_MissileRace:
+            case MapId.GbaMulti_MissileArena:
+            case MapId.GbaMulti_RayTag1:
+            case MapId.GbaMulti_RayTag2:
+            case MapId.GbaMulti_CatAndMouse1:
+            case MapId.GbaMulti_CatAndMouse2:
+            case MapId.NGageMulti_RayTag1:
+            case MapId.NGageMulti_RayTag2:
+            case MapId.NGageMulti_CatAndMouse1:
+            case MapId.NGageMulti_CatAndMouse2:
+                World = 5;
+                break;
 
             case MapId.WorldMap:
+            case MapId.GameCube_Bonus1:
+            case MapId.GameCube_Bonus2:
+            case MapId.GameCube_Bonus3:
+            case MapId.GameCube_Bonus4:
+            case MapId.GameCube_Bonus5:
+            case MapId.GameCube_Bonus6:
+            case MapId.GameCube_Bonus7:
+            case MapId.GameCube_Bonus8:
+            case MapId.GameCube_Bonus9:
+            case MapId.GameCube_Bonus10:
+            default:
                 // Do nothing
                 break;
         }
-        // TODO: Implement
     }
 
     public static void InitLevel(LevelType type)
