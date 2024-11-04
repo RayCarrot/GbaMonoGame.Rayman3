@@ -171,8 +171,8 @@
 | BreakableDoor          | 🟩     |                                              |
 | Keg                    | 🟩     |                                              |
 | Barrel                 | 🟩     |                                              |
-| #20                    | 🟥     |                                              |
-| Sphere                 | 🟥     |                                              |
+| SphereBase             | 🟩     |                                              |
+| Sphere                 | 🟩     |                                              |
 | #22                    | 🟥     |                                              |
 | GreenPirate            | 🟥     |                                              |
 | BluePirate             | 🟥     |                                              |

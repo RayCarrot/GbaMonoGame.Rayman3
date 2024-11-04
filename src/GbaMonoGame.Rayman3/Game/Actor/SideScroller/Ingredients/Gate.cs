@@ -44,7 +44,7 @@ public sealed partial class Gate : InteractableActor
 
         switch (message)
         {
-            case Message.SwitchActivated:
+            case Message.Gate_Open:
                 RemainingSwitches--;
 
                 if (RemainingSwitches == 0)
@@ -54,7 +54,7 @@ public sealed partial class Gate : InteractableActor
                 }
                 return false;
 
-            case Message.SwitchDeactivated:
+            case Message.Gate_Close:
                 IsOpen = false;
                 return false;
 

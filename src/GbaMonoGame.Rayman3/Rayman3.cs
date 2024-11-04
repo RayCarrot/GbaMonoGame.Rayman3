@@ -623,6 +623,8 @@ public class Rayman3 : GbaGame
             { ActorType.BreakableDoor, (instanceId, scene, resource) => new BreakableDoor(instanceId, scene, resource) },
             { ActorType.Keg, (instanceId, scene, resource) => new Keg(instanceId, scene, resource) },
             { ActorType.Barrel, (instanceId, scene, resource) => new Barrel(instanceId, scene, resource) },
+            { ActorType.SphereBase, (instanceId, scene, resource) => new SphereBase(instanceId, scene, resource) },
+            { ActorType.Sphere, (instanceId, scene, resource) => new Sphere(instanceId, scene, resource) },
 
             { ActorType.SilverPirate, (instanceId, scene, resource) => new SilverPirate(instanceId, scene, resource) },
             { ActorType.HelicopterBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },

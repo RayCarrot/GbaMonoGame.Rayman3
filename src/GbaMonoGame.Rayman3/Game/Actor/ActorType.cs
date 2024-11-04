@@ -21,8 +21,8 @@ public enum ActorType
     BreakableDoor = 17,
     Keg = 18,
     Barrel = 19,
-
-    Sphere = 21, // TODO: Implement
+    SphereBase = 20,
+    Sphere = 21,
 
     GreenPirate = 23, // TODO: Implement
     BluePirate = 24, // TODO: Implement

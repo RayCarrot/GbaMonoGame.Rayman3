@@ -48,7 +48,7 @@ public partial class Switch
                         if (link == null)
                             break;
 
-                        Scene.GetGameObject(link.Value).ProcessMessage(this, Message.SwitchActivated);
+                        Scene.GetGameObject(link.Value).ProcessMessage(this, Message.Gate_Open);
                     }
                 }
 
