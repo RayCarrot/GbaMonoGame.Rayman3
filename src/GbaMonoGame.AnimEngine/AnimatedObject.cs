@@ -45,6 +45,10 @@ public class AnimatedObject : AObject
     public bool IsDelayMode { get; set; }
     public bool IsPaused { get; set; }
 
+    // Render flags
+    public bool IsDoubleAffine { get; set; } // Not used here
+    public bool IsAlphaBlendEnabled { get; set; }
+
     public uint VisibleSpriteChannels { get; set; }
 
     public bool IsBackSprite { get; set; }
@@ -107,7 +111,6 @@ public class AnimatedObject : AObject
     public AffineMatrix? AffineMatrix { get; set; }
     public int BasePaletteIndex { get; set; }
 
-    public bool IsAlphaBlendEnabled { get; set; }
     public float Alpha { get; set; }
     public float GbaAlpha
     {

@@ -31,6 +31,7 @@ public partial class Machine
                     part2.Parent = this;
                     part2.Rotation = 0;
                     part2.AnimatedObject.AffineMatrix = new AffineMatrix(part2.Rotation, 1, 1);
+                    part2.AnimatedObject.IsDoubleAffine = true;
 
                     Machine part3 = Scene.GetGameObject<Machine>(Resource.Links[2]!.Value);
                     part3.BossHealth = 1;
