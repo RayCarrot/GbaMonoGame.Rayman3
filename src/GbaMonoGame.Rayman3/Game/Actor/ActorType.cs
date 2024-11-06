@@ -39,6 +39,8 @@ public enum ActorType
 
     Butterfly = 37,
 
+    Jano = 39,
+
     WoodenShieldedHoodboom = 44,
 
     Slapdash = 46,
