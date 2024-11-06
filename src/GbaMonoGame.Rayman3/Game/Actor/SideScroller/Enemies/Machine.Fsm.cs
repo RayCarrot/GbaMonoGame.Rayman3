@@ -213,10 +213,7 @@ public partial class Machine
             case FsmAction.UnInit:
                 // Create a checkpoint to avoid showing the intro cutscene each time
                 if (GameInfo.LastGreenLumAlive == 0)
-                {
-                    GameInfo.LastGreenLumAlive++;
-                    GameInfo.CheckpointPosition = new Vector2(191, 136);
-                }
+                    GameInfo.SetCheckpoint(new Vector2(191, 136));
                 break;
         }
 

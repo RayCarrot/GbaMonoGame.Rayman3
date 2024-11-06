@@ -115,10 +115,7 @@ public sealed partial class Murfy : MovableActor
         if (!HasPlayedCutscene && GameInfo.MapId == MapId.WoodLight_M1)
         {
             if (GameInfo.LastGreenLumAlive == 0)
-            {
-                GameInfo.LastGreenLumAlive++;
-                GameInfo.CheckpointPosition = new Vector2(130, 264);
-            }
+                GameInfo.SetCheckpoint(new Vector2(130, 264));
 
             return true;
         }

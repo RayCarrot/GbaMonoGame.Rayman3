@@ -138,6 +138,12 @@ public static class GameInfo
         }
     }
 
+    public static void SetCheckpoint(Vector2 pos)
+    {
+        LastGreenLumAlive++;
+        CheckpointPosition = pos;
+    }
+
     public static bool GetLumStatus(int lumId)
     {
         return (PersistentInfo.Lums[lumId >> 3] & (1 << (lumId & 7))) == 0;
