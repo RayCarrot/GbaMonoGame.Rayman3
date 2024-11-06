@@ -97,6 +97,119 @@ public partial class Jano
         return true;
     }
 
+    private bool Fsm_Default(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsOnLeftSide ? Action.Idle_Right : Action.Idle_Left;
+                Timer = 0;
+                field_0x6c = Scene.Playfield.Camera.Position.X + (Scene.Resolution.X - 30);
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
+
+                Timer++;
+
+                // Move back
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X > 170)
+                {
+                    Position -= new Vector2(2, 0);
+                    return true;
+                }
+                else if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X > 170)
+                {
+                    Position += new Vector2(2, 0);
+                    return true;
+                }
+
+                // Move away if Rayman gets too close
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                // Attack if there is remaining ammo
+                if (Timer > 60 && Ammo != 0)
+                {
+                    State.MoveTo(Fsm_Attack);
+                    return false;
+                }
+
+                // If no ammo then create skull platform
+                if (Timer > 60)
+                {
+                    RefillAmmo();
+                    State.MoveTo(Fsm_CreateSkullPlatform);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_BeginMoveAway(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsOnLeftSide ? Action.Grimace_Right : Action.Grimace_Left;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
+
+                float distX = Math.Abs(Position.X - Scene.MainActor.Position.X);
+                if (distX < 50 && Position.X < 1850)
+                {
+                    if (IsOnLeftSide)
+                        Position -= new Vector2(3, 0);
+                    else
+                        Position += new Vector2(3, 0);
+                }
+
+                if (IsActionFinished && ActionId is Action.Grimace_Right or Action.Grimace_Left)
+                {
+                    State.MoveTo(Fsm_MoveAway);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
     private bool Fsm_MoveAway(FsmAction action)
     {
         switch (action)
@@ -234,83 +347,8 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_Default(FsmAction action)
-    {
-        switch (action)
-        {
-            case FsmAction.Init:
-                ActionId = IsOnLeftSide ? Action.Idle_Right : Action.Idle_Left;
-                Timer = 0;
-                field_0x6c = Scene.Playfield.Camera.Position.X + (Scene.Resolution.X - 30);
-                break;
-
-            case FsmAction.Step:
-                if (!FsmStep_CheckHit())
-                    return false;
-
-                Timer++;
-
-                // Move back
-                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X > 170)
-                {
-                    Position -= new Vector2(2, 0);
-                    return true;
-                }
-                else if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X > 170)
-                {
-                    Position += new Vector2(2, 0);
-                    return true;
-                }
-
-                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 50)
-                {
-                    State.MoveTo(FUN_1001ccd8);
-                    return false;
-                }
-
-                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 120 && Scene.MainActor.Speed.Y == 0)
-                {
-                    State.MoveTo(FUN_1001ccd8);
-                    return false;
-                }
-
-                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 50)
-                {
-                    State.MoveTo(FUN_1001ccd8);
-                    return false;
-                }
-
-                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 120 && Scene.MainActor.Speed.Y == 0)
-                {
-                    State.MoveTo(FUN_1001ccd8);
-                    return false;
-                }
-
-                if (Timer > 60 && Ammo != 0)
-                {
-                    State.MoveTo(Fsm_Attack);
-                    return false;
-                }
-
-                if (Timer > 60)
-                {
-                    RefillAmmo();
-                    State.MoveTo(FUN_1001ce48);
-                    return false;
-                }
-                break;
-
-            case FsmAction.UnInit:
-                // Do nothing
-                break;
-        }
-
-        return true;
-    }
-
     // TODO: Implement
-    // FUN_0806afac
-    private bool FUN_1001ccd8(FsmAction action)
+    private bool Fsm_CreateSkullPlatform(FsmAction action)
     {
         switch (action)
         {
@@ -331,29 +369,6 @@ public partial class Jano
     }
 
     // TODO: Implement
-    // FUN_0806b180
-    private bool FUN_1001ce48(FsmAction action)
-    {
-        switch (action)
-        {
-            case FsmAction.Init:
-
-                break;
-
-            case FsmAction.Step:
-
-                break;
-
-            case FsmAction.UnInit:
-                // Do nothing
-                break;
-        }
-
-        return true;
-    }
-
-    // TODO: Implement
-    // FUN_08069e54
     private bool Fsm_Attack(FsmAction action)
     {
         switch (action)
