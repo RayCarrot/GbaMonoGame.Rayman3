@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using System;
+using ImGuiNET;
 using Action = BinarySerializer.Ubisoft.GbaEngine.Action;
 
 namespace GbaMonoGame.Engine2d;
@@ -36,6 +37,11 @@ public class GameObjectDebugWindow : DebugWindow
                     ImGui.TableSetupColumn("MechModel");
                     ImGui.TableHeadersRow();
 
+                    // Attempt to get enum for actions
+                    Type actionType = selectedGameObject.GetType().GetNestedType("Action");
+                    if (actionType is { IsEnum: false })
+                        actionType = null;
+
                     for (int actionId = 0; actionId < actionActor.Actions.Length; actionId++)
                     {
                         Action action = actionActor.Actions[actionId];
@@ -47,7 +53,10 @@ public class GameObjectDebugWindow : DebugWindow
                             actionActor.ActionId = actionId;
 
                         ImGui.TableNextColumn();
-                        ImGui.Text($"{actionId}");
+                        if (actionType != null)
+                            ImGui.Text($"{actionId} - {Enum.GetName(actionType, actionId)}");
+                        else
+                            ImGui.Text($"{actionId}");
 
                         ImGui.TableNextColumn();
                         ImGui.Text($"{action.AnimationIndex}");
