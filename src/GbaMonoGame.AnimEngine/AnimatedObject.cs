@@ -111,7 +111,7 @@ public class AnimatedObject : AObject
     public AffineMatrix? AffineMatrix { get; set; }
     public int BasePaletteIndex { get; set; }
 
-    public float Alpha { get; set; }
+    public float Alpha { get; set; } = 1;
     public float GbaAlpha
     {
         get => Alpha * 16;
