@@ -75,15 +75,44 @@ public class GfxScreen
 
         if (Wrap)
         {
+            // Get the normal size of the background. This is used to wrapping.
             Vector2 size = Renderer.GetSize(this);
-            Vector2 wrappedPos = new(-Offset.X % size.X, -Offset.Y % size.Y);
 
-            float startX = 0 - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
-            float startY = 0 - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
+            // Get the actual area we render the background to as some backgrounds might render outside their normal size.
+            Box renderBox = Renderer.GetRenderBox(this);
 
-            for (float y = startY; y < Camera.Resolution.Y; y += size.Y)
+            // Get the background position and wrap it
+            Vector2 wrappedPos = new(MathHelpers.Mod(-Offset.X, size.X), MathHelpers.Mod(-Offset.Y, size.Y));
+            
+            // Get the camera bounds
+            const float camMinX = 0;
+            const float camMinY = 0;
+            float camMaxX = Camera.Resolution.X;
+            float camMaxY = Camera.Resolution.Y;
+
+            // Calculate the start and end positions to draw the background
+            float startX = camMinX - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
+            float startY = camMinY - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
+            float endX = camMaxX + size.X - camMaxX % size.X;
+            float endY = camMaxY + size.Y - camMaxY % size.Y;
+
+            // Extend for the visible area if needed.
+            // NOTE: This only accounts for if the render box is bigger than then the size, which we do to prevent pop-in.
+            //       But it does not account for if it's smaller. If it's smaller, then this isn't fully optimized as we might
+            //       be performing unnecessary draw calls.
+            if (renderBox.MinX < 0 && endX + renderBox.MinX < camMaxX)
+                endX += size.X;
+            if (renderBox.MinY < 0 && endY + renderBox.MinY < camMaxY)
+                endY += size.Y;
+            if (renderBox.MaxX > size.X && startX + renderBox.MaxX > camMinX)
+                startX -= size.X;
+            if (renderBox.MaxY > size.Y && startY + renderBox.MaxY > camMinY)
+                startY -= size.Y;
+
+            // Draw the background to fill out the visible range
+            for (float y = startY; y < endY; y += size.Y)
             {
-                for (float x = startX; x < Camera.Resolution.X; x += size.X)
+                for (float x = startX; x < endX; x += size.X)
                 {
                     Renderer?.Draw(renderer, this, new Vector2(x, y), color);
                 }
