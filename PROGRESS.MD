@@ -44,8 +44,8 @@
 | MissileRace1               | 🟥     |                                              |
 | EchoingCaves_M1            | 🟩     |                                              |
 | EchoingCaves_M2            | 🟩     |                                              |
-| CavesOfBadDreams_M1        | 🟨     | Not implemented background skull effect      |
-| CavesOfBadDreams_M2        | 🟨     | Not implemented background skull effect      |
+| CavesOfBadDreams_M1        | 🟩     |                                              |
+| CavesOfBadDreams_M2        | 🟩     |                                              |
 | BossBadDreams              | 🟩     |                                              |
 | MenhirHills_M1             | 🟩     |                                              |
 | MenhirHills_M2             | 🟩     |                                              |

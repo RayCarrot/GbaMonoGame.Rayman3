@@ -3476,7 +3476,29 @@ public partial class Rayman
                     {
                         case MapId.CavesOfBadDreams_M1:
                         case MapId.CavesOfBadDreams_M2:
-                            // TODO: Implement
+                            CavesOfBadDreams cavesOfBadDreams = (CavesOfBadDreams)Frame.Current;
+                            switch (cavesOfBadDreams.Mode)
+                            {
+                                case CavesOfBadDreams.FadeMode.FadeIn:
+                                    cavesOfBadDreams.Timer = 28 - cavesOfBadDreams.Timer;
+                                    cavesOfBadDreams.Mode = CavesOfBadDreams.FadeMode.TransitionOut;
+                                    break;
+
+                                case CavesOfBadDreams.FadeMode.Visible:
+                                    cavesOfBadDreams.Timer = 28;
+                                    cavesOfBadDreams.Mode = CavesOfBadDreams.FadeMode.TransitionOut;
+                                    break;
+
+                                case CavesOfBadDreams.FadeMode.FadeOut:
+                                default:
+                                    cavesOfBadDreams.Mode = CavesOfBadDreams.FadeMode.TransitionOut;
+                                    break;
+
+                                case CavesOfBadDreams.FadeMode.Invisible:
+                                    cavesOfBadDreams.Mode = CavesOfBadDreams.FadeMode.Ended;
+                                    ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
+                                    break;
+                            }
                             break;
 
                         case MapId.SanctuaryOfRockAndLava_M1:
