@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
+using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame;
 
@@ -70,7 +71,8 @@ public class GfxScreen
 
         renderer.BeginRender(new RenderOptions(IsAlphaBlendEnabled, Camera));
 
-        if (IsAlphaBlendEnabled)
+        // TODO: Add config option to use GBA fading on N-Gage
+        if (Engine.Settings.Platform == Platform.GBA && IsAlphaBlendEnabled)
             color = new Color(color, Alpha);
 
         if (Wrap)
