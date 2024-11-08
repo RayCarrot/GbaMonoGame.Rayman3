@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 
 namespace GbaMonoGame.Rayman3;
@@ -8,14 +9,24 @@ public static class LevelMusicManager
     private static short OverridenSoundEvent { get; set; }
     private static byte Timer { get; set; }
 
-    private static bool Flag_0 { get; set; } // TODO: Name
-    private static bool Flag_1 { get; set; } // TODO: Name
+    // Flags
+    private static bool IsPlayingSpecialMusic { get; set; }
+    private static bool IsCooldown { get; set; }
     private static bool ShouldPlaySpecialMusic { get; set; }
     private static bool HasOverridenLevelMusic { get; set; }
 
+    public static void Init()
+    {
+        Timer = 0;
+        IsPlayingSpecialMusic = false;
+        IsCooldown = false;
+        ShouldPlaySpecialMusic = false;
+        HasOverridenLevelMusic = false;
+    }
+
     private static void PlaySpecialMusic()
     {
-        if (Flag_0 || Flag_1)
+        if (IsPlayingSpecialMusic || IsCooldown)
             return;
 
         if (GameInfo.MapId is MapId.TombOfTheAncients_M1 or MapId.TombOfTheAncients_M2)
@@ -28,46 +39,162 @@ public static class LevelMusicManager
             SoundEventsManager.ReplaceAllSongs(GameInfo.GetSpecialLevelMusicSoundEvent(), 3);
         }
 
-        // TODO: N-Gage has a lot of additional code here
+        if (Engine.Settings.Platform == Platform.NGage)
+        {
+            switch (GameInfo.MapId)
+            {
+                case MapId.WoodLight_M1:
+                case MapId.WoodLight_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy1__After__woodlight);
+                    break;
 
-        Flag_0 = true;
-        Flag_1 = true;
+                case MapId.FairyGlade_M1:
+                case MapId.FairyGlade_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy1__After__fairyglades);
+                    break;
+
+                case MapId.SanctuaryOfBigTree_M1:
+                case MapId.SanctuaryOfBigTree_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy2__After__bigtrees);
+                    break;
+
+                case MapId.EchoingCaves_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy1__After__echocave);
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__enemy1, 3);
+                    break;
+
+                case MapId.SanctuaryOfStoneAndFire_M2:
+                case MapId.SanctuaryOfStoneAndFire_M3:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy1__After__firestone);
+                    break;
+
+                case MapId.BeneathTheSanctuary_M1:
+                case MapId.BeneathTheSanctuary_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy2__After__helico);
+                    break;
+
+                case MapId.ThePrecipice_M1:
+                case MapId.ThePrecipice_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__enemy2__After__precipice);
+                    break;
+
+                case MapId.TheCanopy_M1:
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__enemy2, 3);
+                    break;
+                    
+                case MapId.TombOfTheAncients_M1:
+                case MapId.TombOfTheAncients_M2:
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__ancients);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__spiderchase);
+                    break;
+
+                case MapId.World1:
+                case MapId.World2:
+                case MapId.World3:
+                case MapId.World4:
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__tizetre, 3);
+                    break;
+            }
+        }
+
+        IsPlayingSpecialMusic = true;
+        IsCooldown = true;
     }
 
-    public static void Init()
+    public static void StopSpecialMusic()
     {
-        Timer = 0;
-        Flag_0 = false;
-        Flag_1 = false;
-        ShouldPlaySpecialMusic = false;
-        HasOverridenLevelMusic = false;
+        if (IsPlayingSpecialMusic && !IsCooldown)
+        {
+            Rayman3SoundEvent soundEvent = GameInfo.GetLevelMusicSoundEvent();
+            SoundEventsManager.ReplaceAllSongs(soundEvent, 3);
+
+            if (Engine.Settings.Platform == Platform.NGage)
+            {
+                switch (GameInfo.MapId)
+                {
+                    case MapId.WoodLight_M1:
+                    case MapId.WoodLight_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__woodlight__After__enemy1);
+                        break;
+
+                    case MapId.FairyGlade_M1:
+                    case MapId.FairyGlade_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__fairyglades__After__enemy1);
+                        break;
+
+                    case MapId.SanctuaryOfBigTree_M1:
+                    case MapId.SanctuaryOfBigTree_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__bigtrees__After__enemy2);
+                        break;
+
+                    case MapId.EchoingCaves_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__echocave__After__enemy1);
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__echocave, 3);
+                        break;
+
+                    case MapId.SanctuaryOfStoneAndFire_M2:
+                    case MapId.SanctuaryOfStoneAndFire_M3:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__firestone__After__enemy1);
+                        break;
+
+                    case MapId.BeneathTheSanctuary_M1:
+                    case MapId.BeneathTheSanctuary_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__helico__After__enemy2);
+                        break;
+
+                    case MapId.ThePrecipice_M1:
+                    case MapId.ThePrecipice_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__precipice__After__enemy2);
+                        break;
+
+                    case MapId.TheCanopy_M1:
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__canopy, 3);
+                        break;
+
+                    case MapId.TombOfTheAncients_M1:
+                    case MapId.TombOfTheAncients_M2:
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__ancients__After__spiderchase);
+                        break;
+
+                    case MapId.World1:
+                    case MapId.World2:
+                    case MapId.World3:
+                    case MapId.World4:
+                        SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__polokus, 3);
+                        break;
+                }
+            }
+
+            IsPlayingSpecialMusic = false;
+            IsCooldown = true;
+        }
     }
 
     public static void Step()
     {
         if (!SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__win3))
         {
-            if (!Flag_1)
+            if (!IsCooldown)
             {
-                if (!Flag_0)
+                if (!IsPlayingSpecialMusic)
                 {
                     if (ShouldPlaySpecialMusic)
                         PlaySpecialMusic();
                 }
-                else if (!ShouldPlaySpecialMusic)
+                else
                 {
-                    SoundEventsManager.ReplaceAllSongs(GameInfo.GetLevelMusicSoundEvent(), 3);
-                    Flag_0 = false;
-                    Flag_1 = true;
+                    if (!ShouldPlaySpecialMusic)
+                        StopSpecialMusic();
                 }
             }
             else
             {
                 Timer--;
+
                 if (Timer == 0)
                 {
                     Timer = 120;
-                    Flag_1 = false;
+                    IsCooldown = false;
 
                     if (HasOverridenLevelMusic)
                     {
@@ -89,7 +216,8 @@ public static class LevelMusicManager
             maxX: obj.Position.X + Engine.GameViewPort.OriginalGameResolution.X,
             maxY: obj.Position.Y + 5);
 
-        if (Flag_0)
+        // Extend the box if playing
+        if (IsPlayingSpecialMusic)
         {
             objBox = new Box(
                 minX: objBox.MinX - 64,
@@ -111,24 +239,9 @@ public static class LevelMusicManager
             return;
         
         Timer = 180;
-        Flag_0 = false;
-        Flag_1 = true;
+        IsPlayingSpecialMusic = false;
+        IsCooldown = true;
         HasOverridenLevelMusic = true;
         OverridenSoundEvent = SoundEventsManager.ReplaceAllSongs(soundEventId, 0);
-    }
-
-    // TODO: Name
-    public static void FUN_08001918()
-    {
-        if (Flag_0 && !Flag_1)
-        {
-            Rayman3SoundEvent soundEvent = GameInfo.GetLevelMusicSoundEvent();
-            SoundEventsManager.ReplaceAllSongs(soundEvent, 3);
-
-            // TODO: N-Gage has a lot of additional code here
-
-            Flag_0 = false;
-            Flag_1 = true;
-        }
     }
 }

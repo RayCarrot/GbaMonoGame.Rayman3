@@ -293,7 +293,7 @@ public partial class SilverPirate
 
                 IsSolid = false;
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
-                LevelMusicManager.FUN_08001918();
+                LevelMusicManager.StopSpecialMusic();
                 break;
 
             case FsmAction.Step:

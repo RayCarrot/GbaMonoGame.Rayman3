@@ -286,7 +286,7 @@ public partial class WoodenShieldedHoodboom
                 if (IsActionFinished)
                 {
                     ProcessMessage(this, Message.Destroy);
-                    LevelMusicManager.FUN_08001918();
+                    LevelMusicManager.StopSpecialMusic();
                 }
                 break;
 

@@ -320,7 +320,7 @@ public partial class RedPirate
                     ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PiraHit1_Mix02__or__PiraHit3_Mix03);
                 IsSolid = false;
-                LevelMusicManager.FUN_08001918();
+                LevelMusicManager.StopSpecialMusic();
                 break;
 
             case FsmAction.Step:

@@ -323,7 +323,7 @@ public partial class Slapdash
 
             case FsmAction.UnInit:
                 ProcessMessage(this, Message.Destroy);
-                LevelMusicManager.FUN_08001918();
+                LevelMusicManager.StopSpecialMusic();
                 break;
         }
 

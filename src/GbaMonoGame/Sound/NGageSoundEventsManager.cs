@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 namespace GbaMonoGame;
 
 // TODO: Read XM music from data instead of using GBA music
+// TODO: Implement the full sound engine code, such as fading in/out songs
 public class NGageSoundEventsManager : SoundEventsManager
 {
     #region Constructor
@@ -67,6 +68,8 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     private void CreateSong(NGageSoundEvent evt)
     {
+        // TODO: If song does not loop and prev song loops then the game saves it and continues playing when current song stops (see spheres in bad dreams)
+
         SoundEffect sndEffect = SoundResources[evt.SoundResourceId];
         SoundEffectInstance sndEffectInstance = sndEffect.CreateInstance();
 
