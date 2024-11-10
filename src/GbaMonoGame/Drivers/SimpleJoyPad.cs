@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
 using BinarySerializer.Ubisoft.GbaEngine;
-using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame;
 
 public class SimpleJoyPad
 {
-    // TODO: Allow this to be configured
-    private static Dictionary<GbaInput, Keys> GbaButtonMapping { get; } = new()
+    private static Dictionary<GbaInput, Input> GbaInputMapping { get; } = new()
     {
-        [GbaInput.A] = Keys.Space,
-        [GbaInput.B] = Keys.S,
-        [GbaInput.Select] = Keys.C,
-        [GbaInput.Start] = Keys.V,
-        [GbaInput.Right] = Keys.Right,
-        [GbaInput.Left] = Keys.Left,
-        [GbaInput.Up] = Keys.Up,
-        [GbaInput.Down] = Keys.Down,
-        [GbaInput.R] = Keys.W,
-        [GbaInput.L] = Keys.Q,
+        [GbaInput.A] = Input.Gba_A,
+        [GbaInput.B] = Input.Gba_B,
+        [GbaInput.Select] = Input.Gba_Select,
+        [GbaInput.Start] = Input.Gba_Start,
+        [GbaInput.Right] = Input.Gba_Right,
+        [GbaInput.Left] = Input.Gba_Left,
+        [GbaInput.Up] = Input.Gba_Up,
+        [GbaInput.Down] = Input.Gba_Down,
+        [GbaInput.R] = Input.Gba_R,
+        [GbaInput.L] = Input.Gba_L,
     };
 
     public GbaInput KeyStatus { get; set; }
@@ -43,7 +41,7 @@ public class SimpleJoyPad
         {
             inputs = GbaInput.Valid;
 
-            foreach (KeyValuePair<GbaInput, Keys> input in GbaButtonMapping)
+            foreach (KeyValuePair<GbaInput, Input> input in GbaInputMapping)
             {
                 if (InputManager.IsButtonPressed(input.Value))
                     inputs |= input.Key;

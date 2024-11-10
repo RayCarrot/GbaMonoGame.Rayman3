@@ -210,21 +210,21 @@ public class MenuManager
         if (!IsTransitioningText)
         {
             // Run standard controls
-            if (InputManager.IsButtonJustPressed(Keys.Down))
+            if (InputManager.IsButtonJustPressed(Input.Menu_Down))
             {
                 if (CurrentSelectionIndex >= SelectableElementsCount - 1)
                     CurrentSelectionIndex = 0;
                 else
                     CurrentSelectionIndex++;
             }
-            else if (InputManager.IsButtonJustPressed(Keys.Up))
+            else if (InputManager.IsButtonJustPressed(Input.Menu_Up))
             {
                 if (CurrentSelectionIndex <= 0)
                     CurrentSelectionIndex = SelectableElementsCount - 1;
                 else
                     CurrentSelectionIndex--;
             }
-            else if (InputManager.IsButtonJustPressed(Keys.Back))
+            else if (InputManager.IsButtonJustPressed(Input.Menu_Back))
             {
                 GoBack();
             }
@@ -343,7 +343,7 @@ public class MenuManager
             SelectableElementsCount++;
         NextLine(pos);
 
-        return CurrentSelectionIndex == index && !IsTransitioningText && InputManager.IsButtonJustPressed(Keys.Space);
+        return CurrentSelectionIndex == index && !IsTransitioningText && InputManager.IsButtonJustPressed(Input.Menu_Confirm);
     }
 
     public int Selection(string[] options, int selectedOption)
@@ -354,13 +354,13 @@ public class MenuManager
 
         if (CurrentSelectionIndex == index)
         {
-            if (InputManager.IsButtonJustPressed(Keys.Left))
+            if (InputManager.IsButtonJustPressed(Input.Menu_Left))
             {
                 selectedOption--;
                 if (selectedOption < 0)
                     selectedOption = 0;
             }
-            else if (InputManager.IsButtonJustPressed(Keys.Right))
+            else if (InputManager.IsButtonJustPressed(Input.Menu_Right))
             {
                 selectedOption++;
                 if (selectedOption > options.Length - 1)

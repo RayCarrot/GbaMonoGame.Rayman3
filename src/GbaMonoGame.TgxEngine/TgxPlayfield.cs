@@ -1,7 +1,6 @@
 ﻿using System;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.TgxEngine;
 
@@ -57,7 +56,7 @@ public abstract class TgxPlayfield
     public void Step()
     {
         // Toggle showing debug collision screen
-        if (InputManager.IsButtonJustPressed(Keys.T))
+        if (InputManager.IsButtonJustPressed(Input.Debug_ToggleCollision))
             PhysicalLayer.DebugScreen.IsEnabled = !PhysicalLayer.DebugScreen.IsEnabled;
 
         AnimatedTilekitManager?.Step();

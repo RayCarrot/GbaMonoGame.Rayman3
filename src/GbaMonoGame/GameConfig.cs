@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GbaMonoGame;
 
@@ -22,6 +25,7 @@ public class GameConfig
         InternalResolution = null;
         PlayfieldCameraScale = 1;
         HudCameraScale = 1;
+        Controls = new Dictionary<Input, Keys>();
         SfxVolume = 1;
         MusicVolume = 1;
         WriteSerializerLog = false;
@@ -49,6 +53,9 @@ public class GameConfig
     [JsonProperty("playfieldCameraScale")] public float PlayfieldCameraScale { get; set; }
     [JsonProperty("hudCameraScale")] public float HudCameraScale { get; set; }
 
+    // Controls
+    [JsonProperty("controls")] public Dictionary<Input, Keys> Controls { get; set; }
+
     // Sound
     [JsonProperty("sfxVolume")] public float SfxVolume { get; set; }
     [JsonProperty("musicVolume")] public float MusicVolume { get; set; }
@@ -68,6 +75,8 @@ public class GameConfig
             Formatting = Formatting.Indented,
         };
 
+        settings.Converters.Add(new StringEnumConverter());
+
         return settings;
     }
 
@@ -82,10 +91,21 @@ public class GameConfig
 
     public static GameConfig Load(string filePath)
     {
+        // Read the config
+        GameConfig config;
         if (File.Exists(filePath))
-            return JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(filePath), GetJsonSettings());
+            config = JsonConvert.DeserializeObject<GameConfig>(File.ReadAllText(filePath), GetJsonSettings());
         else
-            return new GameConfig();
+            config = new GameConfig();
+
+        // Make sure all inputs are defined
+        foreach (Input input in Enum.GetValues<Input>())
+        {
+            if (!config.Controls.ContainsKey(input))
+                config.Controls[input] = InputManager.GetDefaultKey(input);
+        }
+
+        return config;
     }
 
     public void Save(string filePath)

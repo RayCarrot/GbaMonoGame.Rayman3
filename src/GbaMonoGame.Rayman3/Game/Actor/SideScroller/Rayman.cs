@@ -4,7 +4,6 @@ using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
-using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -1271,7 +1270,7 @@ public sealed partial class Rayman : MovableActor
 
     private void ToggleNoClip()
     {
-        if (InputManager.IsButtonJustPressed(Keys.Z)) // TODO: Do not hard-code this key
+        if (InputManager.IsButtonJustPressed(Input.Debug_ToggleNoClip))
         {
             Debug_NoClip = !Debug_NoClip;
 

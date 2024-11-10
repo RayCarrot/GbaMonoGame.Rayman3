@@ -5,7 +5,6 @@ using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
-using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -156,7 +155,7 @@ public class Scene2D
         }
 
         // Toggle showing debug boxes
-        if (InputManager.IsButtonJustPressed(Keys.B))
+        if (InputManager.IsButtonJustPressed(Input.Debug_ToggleBoxes))
             ShowDebugBoxes = !ShowDebugBoxes;
 
         // Draw debug boxes
