@@ -105,7 +105,12 @@ public partial class SilverPirate
                 else if (IsFacingLeft && Scene.MainActor.Position.X > Position.X)
                     ActionId = Action.Idle_Right;
 
-                if (((Rayman)Scene.MainActor).ActionId is 
+                // Don't jump on fist thrown if all objects are kept active and it's not framed, otherwise
+                // you keep hearing the sound each time you punch
+                bool disableJumping = Scene.KeepAllObjectsActive && !AnimatedObject.IsFramed;
+
+                if (!disableJumping &&
+                    ((Rayman)Scene.MainActor).ActionId is 
                     Rayman.Action.EndChargeFist_Right or Rayman.Action.EndChargeFist_Left or 
                     Rayman.Action.EndChargeSecondFist_Right or Rayman.Action.EndChargeSecondFist_Left)
                 {
