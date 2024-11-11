@@ -353,10 +353,108 @@ public partial class Jano
         switch (action)
         {
             case FsmAction.Init:
+                ActionId = Action.CreateSkullPlatform1;
+                Timer = 0;
+                HasFinishedCurrentCycle = false;
                 break;
 
             case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
 
+                Timer++;
+
+                bool reachedTarget = false;
+                switch (CheckCurrentPhase())
+                {
+                    case 1:
+                        if (Position.Y > OffsetY + 152)
+                        {
+                            Position -= new Vector2(0, 2);
+                        }
+                        else if (Position.Y < OffsetY + 148)
+                        {
+                            Position += new Vector2(0, 2);
+                        }
+                        else
+                        {
+                            Position = Position with { Y = OffsetY + 150 };
+                            reachedTarget = true;
+                        }
+                        break;
+
+                    case 2:
+                        if (Position.Y > OffsetY + 110)
+                        {
+                            Position -= new Vector2(0, 2);
+                        }
+                        else if (Position.Y >= 20 && Position.Y < OffsetY + 110)
+                        {
+                            Position += new Vector2(0, 2);
+                        }
+                        else
+                        {
+                            Position = Position with { Y = OffsetY + 110 };
+                            reachedTarget = true;
+                        }
+                        break;
+
+                    case 3:
+                        if (Position.Y < OffsetY + 150)
+                        {
+                            Position += new Vector2(0, 2);
+                        }
+                        else
+                        {
+                            Position = Position with { Y = OffsetY + 150 };
+                            reachedTarget = true;
+                        }
+                        break;
+                }
+
+                int skullPlatformIndex = Array.IndexOf(SkullPlatforms, null);
+
+                if (Position.X - Scene.MainActor.Position.X < 150)
+                    Position += new Vector2(4, 0);
+
+                if (ActionId == Action.CreateSkullPlatform4 && AnimatedObject.CurrentFrame == 7 && !HasFinishedCurrentCycle) 
+                {
+                    CreateSkullPlatform(skullPlatformIndex);
+                    HasFinishedCurrentCycle = true;
+                }
+
+                if (IsActionFinished)
+                {
+                    if (ActionId == Action.CreateSkullPlatform1)
+                    {
+                        ActionId = Action.CreateSkullPlatform2;
+                    }
+                    else if (Timer > 20 && 
+                             reachedTarget && 
+                             ActionId == Action.CreateSkullPlatform2 && 
+                             skullPlatformIndex != 3)
+                    {
+                        ActionId = Action.CreateSkullPlatform3;
+                        ChangeAction();
+                    }
+                    else if (ActionId == Action.CreateSkullPlatform3)
+                    {
+                        ActionId = Action.CreateSkullPlatform4;
+                        ChangeAction();
+                    }
+                }
+
+                if (CheckCurrentPhase() != 3 && IsActionFinished && ActionId == Action.CreateSkullPlatform4)
+                {
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
+
+                if (CheckCurrentPhase() == 3 && IsActionFinished && ActionId == Action.CreateSkullPlatform4)
+                {
+                    State.MoveTo(FUN_1001d47c);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -521,6 +619,28 @@ public partial class Jano
     // TODO: Implement
     // FUN_0806b53c
     private bool FUN_1001d228(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+
+                break;
+
+            case FsmAction.Step:
+
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    // TODO: Implement
+    // FUN_0806b7cc
+    private bool FUN_1001d47c(FsmAction action)
     {
         switch (action)
         {

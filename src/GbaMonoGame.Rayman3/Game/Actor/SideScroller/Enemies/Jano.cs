@@ -109,6 +109,11 @@ public sealed partial class Jano : MovableActor
         }
     }
 
+    private void CreateSkullPlatform(int index)
+    {
+        // TODO: Implement
+    }
+
     private bool IsReadyToTurnBackAround()
     {
         int screenOffsetX;
