@@ -2,7 +2,7 @@
 
 namespace GbaMonoGame.Rayman3;
 
-public class CameraMode7 : BaseCameraMode7
+public class CameraMode7 : CameraActorMode7
 {
     public CameraMode7(Scene2D scene) : base(scene)
     {
