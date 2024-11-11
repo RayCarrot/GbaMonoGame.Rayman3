@@ -104,7 +104,7 @@ public partial class Jano
             case FsmAction.Init:
                 ActionId = IsOnLeftSide ? Action.Idle_Right : Action.Idle_Left;
                 Timer = 0;
-                field_0x6c = Scene.Playfield.Camera.Position.X + (Scene.Resolution.X - 30);
+                TargetPosition = TargetPosition with { X = Scene.Playfield.Camera.Position.X + (Scene.Resolution.X - 30) };
                 break;
 
             case FsmAction.Step:
@@ -353,7 +353,6 @@ public partial class Jano
         switch (action)
         {
             case FsmAction.Init:
-
                 break;
 
             case FsmAction.Step:
@@ -368,8 +367,160 @@ public partial class Jano
         return true;
     }
 
-    // TODO: Implement
     private bool Fsm_Attack(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = IsOnLeftSide ? Action.Attack_Right : Action.Attack_Left;
+                HasFinishedCurrentCycle = false;
+                Timer = 0;
+                TargetPosition = TargetPosition with { Y = 0 };
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
+
+                if (Timer != 0)
+                    Timer++;
+
+                // Move to target pos
+                if (ActionId is Action.Idle_Right or Action.Idle_Left && !Single.IsNaN(TargetPosition.Y))
+                {
+                    if (TargetPosition.Y + 4 < Position.Y)
+                    {
+                        Position -= new Vector2(0, 4);
+                    }
+                    else if (Position.Y < TargetPosition.Y - 4)
+                    {
+                        Position += new Vector2(0, 4);
+                    }
+                    else
+                    {
+                        Position = Position with { Y = TargetPosition.Y };
+                        TargetPosition = TargetPosition with { Y = Single.NaN };
+                    }
+                }
+
+                // Shoot
+                if (AnimatedObject.CurrentFrame == 6 && !HasFinishedCurrentCycle)
+                {
+                    Shoot();
+                    HasFinishedCurrentCycle = true;
+
+                    // Set next target pos
+                    int rand = Random.GetNumber(751);
+                    int phase = CheckCurrentPhase();
+                    if (phase == 1)
+                    {
+                        int offset = rand switch
+                        {
+                            < 376 => 110,
+                            _ => 150
+                        };
+                        TargetPosition = TargetPosition with { Y = OffsetY + offset };
+                    }
+                    else if (phase is 2 or 3)
+                    {
+                        int offset = rand switch
+                        {
+                            < 250 => 150,
+                            < 500 => 110,
+                            _ => 200
+                        };
+                        TargetPosition = TargetPosition with { Y = OffsetY + offset };
+                    }
+
+                    Timer = 1;
+                }
+
+                if (IsActionFinished && Ammo != 0 && ActionId is Action.Attack_Right or Action.Attack_Left)
+                    ActionId = ActionId == Action.Attack_Right ? Action.Idle_Right : Action.Idle_Left;
+
+                // Move away if Rayman gets too close
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                // Finished shooting, not phase 3
+                if (IsActionFinished && Ammo == 0 && CheckCurrentPhase() != 3)
+                {
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
+
+                // Finished shooting, phase 3
+                if (IsActionFinished && Ammo == 0 && CheckCurrentPhase() == 3)
+                {
+                    State.MoveTo(FUN_1001d228);
+                    return false;
+                }
+
+                // Why does the game check these again??
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (!IsOnLeftSide && Position.X - Scene.MainActor.Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 50)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                if (IsOnLeftSide && Scene.MainActor.Position.X - Position.X < 120 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_BeginMoveAway);
+                    return false;
+                }
+
+                // Attack again if reached target and waited half a second
+                if (Single.IsNaN(TargetPosition.Y) && Timer > 30)
+                {
+                    State.MoveTo(Fsm_Attack);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    // TODO: Implement
+    // FUN_0806b53c
+    private bool FUN_1001d228(FsmAction action)
     {
         switch (action)
         {

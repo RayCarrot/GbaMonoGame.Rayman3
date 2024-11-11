@@ -260,7 +260,7 @@
 | MovingUnusedPlatform   | 🟩     |                                              |
 | RotatedHelicopterBomb  | 🟩     |                                              |
 | Leaf                   | 🟩     |                                              |
-| #109                   | 🟥     |                                              |
+| JanoShot               | 🟩     |                                              |
 | MetalShieldedHoodboom  | 🟩     |                                              |
 | #111                   | 🟥     |                                              |
 | #112                   | 🟥     |                                              |

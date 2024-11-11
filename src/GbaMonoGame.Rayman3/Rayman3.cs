@@ -684,7 +684,7 @@ public class Rayman3 : GbaGame
             { ActorType.MovingUnusedPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
             { ActorType.RotatedHelicopterBomb, (instanceId, scene, resource) => new FlyingBomb(instanceId, scene, resource) },
             { ActorType.Leaf, (instanceId, scene, resource) => new Leaf(instanceId, scene, resource) },
-
+            { ActorType.JanoShot, (instanceId, scene, resource) => new JanoShot(instanceId, scene, resource) },
             { ActorType.MetalShieldedHoodboom, (instanceId, scene, resource) => new MetalShieldedHoodboom(instanceId, scene, resource) },
         }, x => ((ActorType)x).ToString());
         Dictionary<MapId, LevelFactory.CreateLevel> levelCreations = new()

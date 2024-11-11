@@ -1,4 +1,5 @@
-﻿using GbaMonoGame.AnimEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
+using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
@@ -15,8 +16,7 @@ public sealed partial class Jano : MovableActor
         SkullPlatforms = new BaseActor[3];
         
         IsOnLeftSide = false;
-        field_0x6c = 0;
-        field_0x70 = 0;
+        TargetPosition = Vector2.Zero;
         OffsetY = 0;
 
         Position = Position with { Y = OffsetY + 150 };
@@ -30,8 +30,8 @@ public sealed partial class Jano : MovableActor
     }
 
     public BaseActor[] SkullPlatforms { get; }
-    public float field_0x6c { get; set; } // TODO: Name
-    public int field_0x70 { get; set; } // TODO: Name
+    public Vector2 TargetPosition { get; set; }
+    public bool HasFinishedCurrentCycle { get; set; }
     public int OffsetY { get; set; }
     public byte Ammo { get; set; }
     public float AlphaBlend { get; set; }
@@ -58,9 +58,55 @@ public sealed partial class Jano : MovableActor
         return false;
     }
 
-    private void UnknownShots()
+    private void Shoot()
     {
-        // TODO: Implement
+        Ammo--;
+
+        JanoShot shot = Scene.CreateProjectile<JanoShot>(ActorType.JanoShot);
+
+        if (shot != null)
+        {
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__JanoShot_Mix01);
+
+            int dir;
+            if (ActionId == Action.Attack_Right)
+            {
+                shot.ActionId = JanoShot.Action.Move_Right;
+                dir = 1;
+            }
+            else
+            {
+                shot.ActionId = JanoShot.Action.Move_Left;
+                dir = -1;
+            }
+
+            shot.Position = new Vector2(Position.X + dir * 64, Position.Y + 32);
+
+            if (Position.Y == OffsetY + 110)
+                shot.MechModel.Speed = new Vector2(dir * 2.5f, 0.625f);
+            else if (Position.Y == OffsetY + 200)
+                shot.MechModel.Speed = new Vector2(dir * 2, -0.75f);
+            else
+                shot.MechModel.Speed = new Vector2(dir * 2, 0);
+        }
+    }
+
+    private void ShootMultiple()
+    {
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__JanoShot_Mix01);
+
+        for (int i = 0; i < 10; i++)
+        {
+            JanoShot shot = Scene.CreateProjectile<JanoShot>(ActorType.JanoShot);
+
+            if (shot != null)
+            {
+                shot.ActionId = JanoShot.Action.Move_Down;
+                shot.Position = new Vector2(
+                    x: Scene.MainActor.Position.X + i * 25 + -100, 
+                    y: i * -25 + (Random.GetNumber(26) + 25) * -1 - (i > 5 ? 30 : 0));
+            }
+        }
     }
 
     private bool IsReadyToTurnBackAround()
@@ -128,7 +174,7 @@ public sealed partial class Jano : MovableActor
                 return true;
 
             case Message.Exploded:
-                UnknownShots();
+                ShootMultiple();
                 return true;
 
             default:

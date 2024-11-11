@@ -12,7 +12,7 @@ public partial class Jano
     public enum Action
     {
         Idle_Left = 0,
-        Action1 = 1,
+        Attack_Left = 1,
         Grimace_Left = 2,
         Grimace_Right = 3,
         Action4 = 4,
@@ -22,7 +22,7 @@ public partial class Jano
         Action8 = 8,
         Action9 = 9,
         Action10 = 10,
-        Action11 = 11,
+        Attack_Right = 11,
         Move_Right = 12,
         Move_Left = 13,
         Idle_Right = 14,

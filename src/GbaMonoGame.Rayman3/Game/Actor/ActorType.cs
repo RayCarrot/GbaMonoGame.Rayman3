@@ -85,6 +85,6 @@ public enum ActorType
     MovingUnusedPlatform = 106, // Unused
     RotatedHelicopterBomb = 107,
     Leaf = 108,
-
+    JanoShot = 109,
     MetalShieldedHoodboom = 110,
 }
