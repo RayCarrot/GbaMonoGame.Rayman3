@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 
@@ -281,7 +282,7 @@ public partial class Jano
 
                 if (Position.X > 2050)
                 {
-                    State.MoveTo(FUN_1001c98c);
+                    State.MoveTo(Fsm_CheckComplete);
                     return false;
                 }
 
@@ -290,7 +291,7 @@ public partial class Jano
                     Scene.MainActor.Position.X > 1400 &&
                     Scene.MainActor.Speed.Y == 0)
                 {
-                    State.MoveTo(FUN_1001c98c);
+                    State.MoveTo(Fsm_CheckComplete);
                     return false;
                 }
 
@@ -451,7 +452,7 @@ public partial class Jano
 
                 if (CheckCurrentPhase() == 3 && IsActionFinished && ActionId == Action.CreateSkullPlatform4)
                 {
-                    State.MoveTo(FUN_1001d47c);
+                    State.MoveTo(Fsm_StandAside);
                     return false;
                 }
                 break;
@@ -570,7 +571,7 @@ public partial class Jano
                 // Finished shooting, phase 3
                 if (IsActionFinished && Ammo == 0 && CheckCurrentPhase() == 3)
                 {
-                    State.MoveTo(FUN_1001d228);
+                    State.MoveTo(Fsm_SwitchSide);
                     return false;
                 }
 
@@ -615,18 +616,63 @@ public partial class Jano
         return true;
     }
 
-    // TODO: Implement
-    // FUN_0806b53c
-    private bool FUN_1001d228(FsmAction action)
+    private bool Fsm_SwitchSide(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-
+                ActionId = IsOnLeftSide ? Action.Move_Right : Action.Move_Left;
                 break;
 
             case FsmAction.Step:
+                bool isFinished = false;
 
+                if (!FsmStep_CheckHit())
+                    return false;
+
+                if (Position.Y > 20)
+                    Position -= new Vector2(0, 4);
+                else
+                    Position = Position with { Y = 20 };
+
+                if (!IsOnLeftSide)
+                {
+                    if (Scene.MainActor.Position.X - Position.X > Scene.Resolution.X)
+                    {
+                        IsOnLeftSide = true;
+                        isFinished = true;
+
+                        Timer = (ushort)Random.GetNumber(751);
+                        Position = Timer switch
+                        {
+                            < 250 => Position with { Y = OffsetY + 150 },
+                            < 500 => Position with { Y = OffsetY + 110 },
+                            _ => Position with { Y = OffsetY + 200 }
+                        };
+                    }
+                }
+                else
+                {
+                    if (Position.X - Scene.MainActor.Position.X > 170)
+                    {
+                        IsOnLeftSide = false;
+                        isFinished = true;
+                    }
+                }
+
+                if (isFinished && IsOnLeftSide)
+                {
+                    RefillAmmo();
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
+
+                if (isFinished && !IsOnLeftSide)
+                {
+                    RefillAmmo();
+                    State.MoveTo(Fsm_CreateSkullPlatform);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -637,18 +683,34 @@ public partial class Jano
         return true;
     }
 
-    // TODO: Implement
-    // FUN_0806b7cc
-    private bool FUN_1001d47c(FsmAction action)
+    private bool Fsm_StandAside(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-
+                ActionId = Action.TurnAroundSlow_Left;
                 break;
 
             case FsmAction.Step:
+                if (ActionId is Action.TurnAroundSlow_Right or Action.TurnAroundSlow_Left && IsActionFinished)
+                    ActionId = Action.Move_Right;
 
+                if (ActionId is Action.Move_Right or Action.Move_Left && ScreenPosition.X > Scene.Resolution.X + 40)
+                    ActionId = Action.Idle_Left;
+
+                bool hasActiveSkullPlatforms = SkullPlatforms.Any(x => x != null);
+
+                if (Scene.MainActor.LinkedMovementActor != null)
+                {
+                    State.MoveTo(Fsm_MoveAway);
+                    return false;
+                }
+
+                if (!hasActiveSkullPlatforms)
+                {
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -659,22 +721,73 @@ public partial class Jano
         return true;
     }
 
-    // TODO: Implement
-    // FUN_0806acd4
-    private bool FUN_1001c98c(FsmAction action)
+    private bool Fsm_CheckComplete(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-
+                ActionId = Action.Idle_Left;
+                Timer = 1;
                 break;
 
             case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
 
+                if (Position.X < 1900)
+                    Position += new Vector2(2, 0);
+
+                if (CheckCurrentPhase() == 4 && 
+                    Position.X > 1750 && 
+                    Scene.MainActor.Speed.Y == 0 &&
+                    !((Rayman)Scene.MainActor).IsInHangOnEdgeState)
+                {
+                    State.MoveTo(Fsm_Complete);
+                    return false;
+                }
+
+                if (Scene.MainActor.Position.X < 1400 && Scene.MainActor.Speed.Y == 0)
+                {
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
                 break;
 
             case FsmAction.UnInit:
                 // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_Complete(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Complete;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__ScalDead_Mix02);
+                Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
+                Timer = 0;
+                Position = Position with { Y = OffsetY + 150 };
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckHit())
+                    return false;
+
+                Timer++;
+
+                if (Timer > 90)
+                {
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
 

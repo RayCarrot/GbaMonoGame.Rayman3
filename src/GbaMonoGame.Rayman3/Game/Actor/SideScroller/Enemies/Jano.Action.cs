@@ -8,18 +8,17 @@ public partial class Jano
         set => base.ActionId = (int)value;
     }
 
-    // TODO: Name
     public enum Action
     {
         Idle_Left = 0,
         Attack_Left = 1,
         Grimace_Left = 2,
         Grimace_Right = 3,
-        Action4 = 4,
+        Complete = 4,
         CreateSkullPlatform2 = 5,
         TurnAroundSlow_Left = 6,
         TurnAroundFast_Left = 7,
-        Action8 = 8,
+        Action8 = 8, // Unused
         CreateSkullPlatform1 = 9,
         CreateSkullPlatform4 = 10,
         Attack_Right = 11,

@@ -190,7 +190,7 @@
 | #36                    | 🟥     |                                              |
 | Butterfly              | 🟩     |                                              |
 | #38                    | 🟥     |                                              |
-| Jano                   | 🟨     |                                              |
+| Jano                   | 🟩     |                                              |
 | JanoSkullPlatform      | 🟩     |                                              |
 | #41                    | 🟥     |                                              |
 | #42                    | 🟥     |                                              |

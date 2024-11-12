@@ -168,6 +168,7 @@ public sealed partial class Rayman : MovableActor
     public bool IsInDyingState => State == Fsm_Dying;
     public bool IsInEndMapState => State == Fsm_EndMap;
     public bool IsInCrouchState => State == Fsm_Crouch || State == Fsm_Crawl;
+    public bool IsInHangOnEdgeState => State == Fsm_HangOnEdge;
 
     // Disable collision when debug mode is on
     public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
