@@ -115,6 +115,8 @@ public sealed partial class Jano : MovableActor
 
         if (skullPlatform != null)
         {
+            SkullPlatforms[index] = skullPlatform;
+            skullPlatform.SkullPlatformIndex = index;
             skullPlatform.Position = Position + new Vector2(-32, 60);
 
             switch (CheckCurrentPhase())

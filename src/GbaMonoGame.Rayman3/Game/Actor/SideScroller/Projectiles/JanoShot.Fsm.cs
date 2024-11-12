@@ -52,8 +52,8 @@ public partial class JanoShot
                     if (ScreenPosition.X > Scene.Resolution.X + 1 && Speed.X > 0 || 
                         ScreenPosition.X < 0 && Speed.X < 0 ||
                         Speed.X == 0 || 
-                        ScreenPosition.Y < -9 || 
-                        ScreenPosition.Y >= 170) // TODO: Should be relative to the Y res, but it's 170 on both GBA and N-Gage
+                        ScreenPosition.Y <= -10 || 
+                        ScreenPosition.Y >= Scene.Resolution.Y + 10) // TODO: This is incorrectly set to 170 (GBA + 10) on N-Gage - should we keep that?
                     {
                         if (Speed.X == 0)
                         {

@@ -13,7 +13,7 @@ public sealed partial class JanoSkullPlatform : MovableActor
 
     public Jano Jano { get; }
     public float TargetY { get; set; }
-    public byte SkullPlatformIndex { get; set; }
+    public int SkullPlatformIndex { get; set; }
     public ushort Timer { get; set; }
 
     private void SpawnHitEffect()
