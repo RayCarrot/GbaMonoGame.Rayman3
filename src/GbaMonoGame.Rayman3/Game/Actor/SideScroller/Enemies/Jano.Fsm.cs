@@ -215,10 +215,10 @@ public partial class Jano
         switch (action)
         {
             case FsmAction.Init:
-                if (field_0x7e == 0)
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Janogrrr_Mix03);
+                if (FirstTimeMovingAway)
+                    FirstTimeMovingAway = false;
                 else
-                    field_0x7e = 0;
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Janogrrr_Mix03);
 
                 if (ActionId is not (Action.Move_Right or Action.Move_Left))
                     ActionId = IsOnLeftSide ? Action.TurnAroundSlow_Right : Action.TurnAroundSlow_Left;
@@ -347,7 +347,6 @@ public partial class Jano
         return true;
     }
 
-    // TODO: Implement
     private bool Fsm_CreateSkullPlatform(FsmAction action)
     {
         switch (action)

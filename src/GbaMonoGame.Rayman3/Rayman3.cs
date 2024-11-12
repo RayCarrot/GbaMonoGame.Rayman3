@@ -640,6 +640,7 @@ public class Rayman3 : GbaGame
             { ActorType.Butterfly, (instanceId, scene, resource) => new Scenery(instanceId, scene, resource) },
 
             { ActorType.Jano, (instanceId, scene, resource) => new Jano(instanceId, scene, resource) },
+            { ActorType.JanoSkullPlatform, (instanceId, scene, resource) => new JanoSkullPlatform(instanceId, scene, resource) },
 
             { ActorType.WoodenShieldedHoodboom, (instanceId, scene, resource) => new WoodenShieldedHoodboom(instanceId, scene, resource) },
 

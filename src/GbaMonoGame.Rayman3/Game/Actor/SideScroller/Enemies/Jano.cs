@@ -11,9 +11,9 @@ public sealed partial class Jano : MovableActor
     {
         Ammo = 2;
         AlphaBlend = 0x10;
-        field_0x7e = 1;
+        FirstTimeMovingAway = true;
         
-        SkullPlatforms = new BaseActor[3];
+        SkullPlatforms = new JanoSkullPlatform[3];
         
         IsOnLeftSide = false;
         TargetPosition = Vector2.Zero;
@@ -29,14 +29,14 @@ public sealed partial class Jano : MovableActor
         AnimatedObject.IsAlphaBlendEnabled = true;
     }
 
-    public BaseActor[] SkullPlatforms { get; }
+    public JanoSkullPlatform[] SkullPlatforms { get; }
     public Vector2 TargetPosition { get; set; }
     public bool HasFinishedCurrentCycle { get; set; }
     public int OffsetY { get; set; }
     public byte Ammo { get; set; }
     public float AlphaBlend { get; set; }
     public bool IsOnLeftSide { get; set; }
-    public byte field_0x7e { get; set; } // TODO: Name
+    public bool FirstTimeMovingAway { get; set; }
     public ushort Timer { get; set; }
 
     private bool IsBeingAttacked()
@@ -111,7 +111,39 @@ public sealed partial class Jano : MovableActor
 
     private void CreateSkullPlatform(int index)
     {
-        // TODO: Implement
+        JanoSkullPlatform skullPlatform = Scene.CreateProjectile<JanoSkullPlatform>(ActorType.JanoSkullPlatform);
+
+        if (skullPlatform != null)
+        {
+            skullPlatform.Position = Position + new Vector2(-32, 60);
+
+            switch (CheckCurrentPhase())
+            {
+                case 1:
+                    skullPlatform.ActionId = JanoSkullPlatform.Action.Move_Left;
+                    skullPlatform.TargetY = OffsetY + 235;
+                    break;
+
+                case 2:
+                    skullPlatform.ActionId = JanoSkullPlatform.Action.Move_DownLeft;
+                    skullPlatform.TargetY = OffsetY + 235;
+                    break;
+
+                case 3:
+                    skullPlatform.ActionId = JanoSkullPlatform.Action.SolidMove_Spawn;
+                    skullPlatform.Position = skullPlatform.Position with { X = Position.X - 96 };
+                    skullPlatform.TargetY = OffsetY + 250;
+                    break;
+
+                case 4:
+                    skullPlatform.ActionId = JanoSkullPlatform.Action.SolidMove_Spawn;
+                    skullPlatform.Position = skullPlatform.Position with { X = 1600 };
+                    break;
+            }
+
+            skullPlatform.ChangeAction();
+            skullPlatform.Speed = skullPlatform.Speed with { X = -1 };
+        }
     }
 
     private bool IsReadyToTurnBackAround()
@@ -129,7 +161,7 @@ public sealed partial class Jano : MovableActor
                (ScreenPosition.X >= screenOffsetX + -30 && IsOnLeftSide);
     }
 
-    private int CheckCurrentPhase()
+    public int CheckCurrentPhase()
     {
         if (Scene.MainActor.Position.X < 800)
         {
