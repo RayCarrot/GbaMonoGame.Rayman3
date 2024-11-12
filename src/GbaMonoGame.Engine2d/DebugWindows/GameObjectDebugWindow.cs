@@ -6,6 +6,8 @@ namespace GbaMonoGame.Engine2d;
 
 public class GameObjectDebugWindow : DebugWindow
 {
+    private readonly MechModel _dummyMechModel = new();
+
     public override string Name => "Game Object";
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
@@ -28,13 +30,15 @@ public class GameObjectDebugWindow : DebugWindow
                 ImGui.Spacing();
                 ImGui.SeparatorText("Actions");
 
-                if (ImGui.BeginTable("_actions", 5))
+                if (ImGui.BeginTable("_actions", 7))
                 {
-                    ImGui.TableSetupColumn("Current", ImGuiTableColumnFlags.WidthFixed);
+                    ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed);
                     ImGui.TableSetupColumn("Id", ImGuiTableColumnFlags.WidthFixed);
-                    ImGui.TableSetupColumn("Animation", ImGuiTableColumnFlags.WidthFixed);
+                    ImGui.TableSetupColumn("Anim", ImGuiTableColumnFlags.WidthFixed);
                     ImGui.TableSetupColumn("Flags", ImGuiTableColumnFlags.WidthFixed);
-                    ImGui.TableSetupColumn("MechModel");
+                    ImGui.TableSetupColumn("Speed");
+                    ImGui.TableSetupColumn("Accel");
+                    ImGui.TableSetupColumn("Target");
                     ImGui.TableHeadersRow();
 
                     // Attempt to get enum for actions
@@ -64,8 +68,38 @@ public class GameObjectDebugWindow : DebugWindow
                         ImGui.TableNextColumn();
                         ImGui.Text($"{action.Flags}");
 
-                        ImGui.TableNextColumn();
-                        ImGui.Text($"{action.MechModelType}");
+                        if (action.MechModelType != null)
+                        {
+                            // Default to NaN so we can tell if a value was changed or not
+                            _dummyMechModel.Speed = new Vector2(Single.NaN);
+                            _dummyMechModel.Acceleration = new Vector2(Single.NaN);
+                            _dummyMechModel.TargetSpeed = new Vector2(Single.NaN);
+
+                            // Init from the action
+                            _dummyMechModel.Init(action.MechModelType.Value, action.MechModel?.Params);
+
+                            ImGui.TableNextColumn();
+                            ImGui.Text($"{formatValue(_dummyMechModel.Speed.X)} x {formatValue(_dummyMechModel.Speed.Y)}");
+
+                            ImGui.TableNextColumn();
+                            ImGui.Text($"{formatValue(_dummyMechModel.Acceleration.X)} x {formatValue(_dummyMechModel.Acceleration.Y)}");
+
+                            ImGui.TableNextColumn();
+                            ImGui.Text($"{formatValue(_dummyMechModel.TargetSpeed.X)} x {formatValue(_dummyMechModel.TargetSpeed.Y)}");
+
+                            string formatValue(float value)
+                            {
+                                // Unchanged
+                                if (Single.IsNaN(value))
+                                    return "_";
+                                // 0
+                                else if (value == 0)
+                                    return "0";
+                                // Value, limit to two decimals
+                                else
+                                    return $"{value:##}";
+                            }
+                        }
                     }
 
                     ImGui.EndTable();

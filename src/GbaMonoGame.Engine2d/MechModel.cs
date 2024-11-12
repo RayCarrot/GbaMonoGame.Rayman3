@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer;
 
 namespace GbaMonoGame.Engine2d;
 
@@ -285,9 +286,23 @@ public class MechModel
         UpdateSpeedAction = SetAcceleratedSpeedY;
     }
 
+    public void Init(int type, FixedPointInt32[] mechParams)
+    {
+        float[] floatParams = new float[mechParams?.Length ?? 0];
+        for (int i = 0; i < floatParams.Length; i++)
+            floatParams[i] = mechParams![i];
+
+        Init(type, floatParams);
+    }
+
     public void Init(int type, float[] mechParams)
     {
         InitActions[type](mechParams, 0);
+    }
+
+    public void Init(int type)
+    {
+        InitActions[type](null, 0);
     }
 
     public void Reset()

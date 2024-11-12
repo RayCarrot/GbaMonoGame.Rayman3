@@ -127,12 +127,7 @@ public abstract class ActionActor : BaseActor
         AnimatedObject.FlipY = (action.Flags & ActionFlags.FlipY) != 0;
 
         if (action.MechModelType != null && this is MovableActor movableActor)
-        {
-            float[] mechParams = new float[action.MechModel?.Params.Length ?? 0];
-            for (int i = 0; i < mechParams.Length; i++)
-                mechParams[i] = action.MechModel.Params[i];
-            movableActor.MechModel.Init(action.MechModelType.Value, mechParams);
-        }
+            movableActor.MechModel.Init(action.MechModelType.Value, action.MechModel?.Params);
 
         NewAction = false;
     }

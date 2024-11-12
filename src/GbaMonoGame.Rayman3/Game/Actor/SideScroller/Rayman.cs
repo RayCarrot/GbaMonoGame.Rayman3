@@ -1736,7 +1736,7 @@ public sealed partial class Rayman : MovableActor
         ToggleNoClip();
 
         if (SlideType != null && NewAction)
-            MechModel.Init(1, null);
+            MechModel.Init(1);
 
         // TODO: Implement
     }
