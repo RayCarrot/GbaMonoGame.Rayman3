@@ -172,7 +172,7 @@ public class World : FrameWorldSideScroller
 
         PaletteFade = new PaletteFadeEffectObject()
         {
-            SpritePriority = 0,
+            BgPriority = 0,
         };
 
         InitEntering();

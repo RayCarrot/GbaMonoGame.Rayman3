@@ -23,8 +23,8 @@ public abstract class BaseActor : GameObject
         // Initialize the animated object. In the original game this is optional since the
         // animated object can be user defined and set to another AObject type.
         animatedObject.CurrentAnimation = 0;
-        animatedObject.SpritePriority = ActorDrawPriority;
-        animatedObject.YPriority = 32;
+        animatedObject.BgPriority = ActorDrawPriority;
+        animatedObject.ObjPriority = 32;
         animatedObject.Camera = scene.Playfield.Camera;
 
         _viewBox = new Box(ActorModel.ViewBox);
@@ -122,7 +122,7 @@ public abstract class BaseActor : GameObject
 
         ImGui.Text($"State: {State}");
         ImGui.Text($"Direction: {(IsFacingLeft ? "Left" : "Right")}");
-        ImGui.Text($"Y-prio: {AnimatedObject.YPriority}");
+        ImGui.Text($"Obj-prio: {AnimatedObject.ObjPriority}");
         ImGui.Text($"Animation: {AnimatedObject.CurrentAnimation}");
     }
 }

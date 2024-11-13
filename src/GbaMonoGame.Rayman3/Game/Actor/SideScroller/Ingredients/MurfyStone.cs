@@ -7,7 +7,7 @@ public sealed partial class MurfyStone : BaseActor
     public MurfyStone(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         MurfyId = actorResource.Links[0];
-        AnimatedObject.YPriority = 63;
+        AnimatedObject.ObjPriority = 63;
         Timer = 181;
         State.SetTo(Fsm_Default);
     }

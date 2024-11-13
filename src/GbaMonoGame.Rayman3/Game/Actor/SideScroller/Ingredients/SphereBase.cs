@@ -7,7 +7,7 @@ public sealed partial class SphereBase : ActionActor
 {
     public SphereBase(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        AnimatedObject.YPriority = 15;
+        AnimatedObject.ObjPriority = 15;
 
         Resource = actorResource;
         Color = (Action)actorResource.FirstActionId switch

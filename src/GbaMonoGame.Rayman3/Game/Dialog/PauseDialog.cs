@@ -230,8 +230,8 @@ public partial class PauseDialog : Dialog
         {
             SleepModeBackground = new WhiteScreenEffectObject()
             {
-                YPriority = 0,
-                SpritePriority = 0,
+                ObjPriority = 0,
+                BgPriority = 0,
             };
 
             string[] textLines = Localization.GetText(11, 15);
@@ -242,8 +242,8 @@ public partial class PauseDialog : Dialog
                 SleepModeTexts[i] = new SpriteTextObject()
                 {
                     Text = i < textLines.Length ? textLines[i] : "",
-                    SpritePriority = 0,
-                    YPriority = 0,
+                    BgPriority = 0,
+                    ObjPriority = 0,
                     Color = TextColor.SleepMode,
                     FontSize = FontSize.Font16,
                 };

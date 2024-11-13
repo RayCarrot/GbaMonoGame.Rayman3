@@ -8,7 +8,7 @@ public sealed partial class SwingSparkle : BaseActor
     public SwingSparkle(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.CurrentAnimation = actorResource.FirstActionId;
-        AnimatedObject.YPriority = 48;
+        AnimatedObject.ObjPriority = 48;
         State.SetTo(Fsm_Default);
     }
 

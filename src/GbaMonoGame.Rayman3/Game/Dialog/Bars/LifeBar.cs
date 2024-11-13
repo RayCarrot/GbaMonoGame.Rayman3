@@ -33,8 +33,8 @@ public class LifeBar : Bar
             IsFramed = true,
             CurrentAnimation = 15,
             ScreenPos = new Vector2(-4, 0),
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
         
@@ -43,8 +43,8 @@ public class LifeBar : Bar
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(49, 20),
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
         
@@ -53,8 +53,8 @@ public class LifeBar : Bar
             IsFramed = true,
             CurrentAnimation = 0,
             ScreenPos = new Vector2(61, 20),
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

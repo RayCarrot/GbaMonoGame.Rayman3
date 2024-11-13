@@ -44,8 +44,8 @@ public class Intro : Frame, IHasPlayfield
         PressStartObj = new AnimatedObject(introAnimResource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 150),
@@ -60,8 +60,8 @@ public class Intro : Frame, IHasPlayfield
             GameloftLogoObj = new AnimatedObject(introAnimResource, false)
             {
                 IsFramed = true,
-                SpritePriority = 0,
-                YPriority = 0,
+                BgPriority = 0,
+                ObjPriority = 0,
                 ScreenPos = new Vector2(88, 208),
                 CurrentAnimation = 23
             };
@@ -70,8 +70,8 @@ public class Intro : Frame, IHasPlayfield
         BlackLumAndLogoObj = new AnimatedObject(introAnimResource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 128),
@@ -158,7 +158,7 @@ public class Intro : Frame, IHasPlayfield
 
         PaletteFade = new PaletteFadeEffectObject()
         {
-            SpritePriority = 0,
+            BgPriority = 0,
         };
 
         CurrentStepAction = Step_1;

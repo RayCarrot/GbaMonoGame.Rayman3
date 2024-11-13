@@ -14,7 +14,7 @@ public abstract class EffectObject : AObject
         {
             Texture = Gfx.Pixel,
             Position = position,
-            Priority = SpritePriority,
+            Priority = BgPriority,
             Center = false,
             AffineMatrix = new AffineMatrix(0, size),
             Color = color,

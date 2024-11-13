@@ -68,7 +68,7 @@ public class AObjectFog : AObject
             Position = new Vector2(screenPos.X, screenPos.Y),
             FlipX = false,
             FlipY = false,
-            Priority = SpritePriority,
+            Priority = BgPriority,
             Center = true,
             AffineMatrix = null,
             Alpha = IsAlphaBlendEnabled ? Alpha : null,

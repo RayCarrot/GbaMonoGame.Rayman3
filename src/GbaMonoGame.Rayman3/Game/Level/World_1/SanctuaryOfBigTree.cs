@@ -19,7 +19,7 @@ public class SanctuaryOfBigTree : FrameSideScroller
             leaf.AnimationSet = Random.GetNumber(9) / 3;
             leaf.ActionId = (Leaf.Action)(leaf.AnimationSet * 3);
             
-            leaf.AnimatedObject.SpritePriority = Random.GetNumber(2) + 1;
+            leaf.AnimatedObject.BgPriority = Random.GetNumber(2) + 1;
 
             int rand = Random.GetNumber(0x2001);
             leaf.MechModel.Speed = new Vector2(

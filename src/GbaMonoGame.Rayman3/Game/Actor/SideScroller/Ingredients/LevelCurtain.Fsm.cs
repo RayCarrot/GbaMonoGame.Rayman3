@@ -127,7 +127,7 @@ public partial class LevelCurtain
                     }
                     else if (ActionId == 31)
                     {
-                        AnimatedObject.YPriority = 0;
+                        AnimatedObject.ObjPriority = 0;
                         ActionId = 32;
                     }
                     else

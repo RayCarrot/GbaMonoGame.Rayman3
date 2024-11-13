@@ -20,8 +20,8 @@ public class BossMachineBar : Bar
             CurrentAnimation = BossDamage,
             ScreenPos = new Vector2(-60, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

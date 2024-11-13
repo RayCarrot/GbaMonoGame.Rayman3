@@ -25,7 +25,7 @@ public class DebugBoxAObject : AObject
         {
             Texture = Gfx.Pixel,
             Position = point1,
-            Priority = SpritePriority,
+            Priority = BgPriority,
             Center = false,
             AffineMatrix = new AffineMatrix(angle, new Vector2(distance, thickness)),
             Color = Color,
@@ -43,7 +43,7 @@ public class DebugBoxAObject : AObject
             {
                 Texture = Gfx.Pixel,
                 Position = Position,
-                Priority = SpritePriority,
+                Priority = BgPriority,
                 Center = false,
                 AffineMatrix = new AffineMatrix(0, Size),
                 Color = new Color(Color, alpha),

@@ -44,8 +44,8 @@ public class LumsBar : Bar
             CurrentAnimation = 24,
             ScreenPos = new Vector2(-77, 8),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -55,8 +55,8 @@ public class LumsBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-52, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -66,8 +66,8 @@ public class LumsBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-40, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -77,8 +77,8 @@ public class LumsBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-22, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -88,8 +88,8 @@ public class LumsBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-10, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

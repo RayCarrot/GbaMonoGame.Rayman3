@@ -55,7 +55,7 @@ public class CircleWindowEffectObject : EffectObject
             Position = position,
             FlipX = flipX,
             FlipY = flipY,
-            Priority = SpritePriority,
+            Priority = BgPriority,
             Color = Color.Black,
             Camera = Camera,
         });

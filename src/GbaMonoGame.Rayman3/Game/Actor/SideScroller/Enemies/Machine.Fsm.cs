@@ -82,7 +82,7 @@ public partial class Machine
                 else if (BossHealth == 3)
                     ActionId = Action.CogWheel3;
 
-                AnimatedObject.YPriority = 30;
+                AnimatedObject.ObjPriority = 30;
                 break;
 
             case FsmAction.Step:

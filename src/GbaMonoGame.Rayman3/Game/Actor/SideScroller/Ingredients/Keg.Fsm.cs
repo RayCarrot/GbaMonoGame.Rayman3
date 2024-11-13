@@ -95,7 +95,7 @@ public partial class Keg
         {
             case FsmAction.Init:
                 Timer = 0;
-                AnimatedObject.SpritePriority = 3;
+                AnimatedObject.BgPriority = 3;
                 ActionId = Action.Respawn;
 
                 if (Engine.Settings.Platform == Platform.GBA)
@@ -136,7 +136,7 @@ public partial class Keg
             case FsmAction.UnInit:
                 if (AnimatedObject.IsFramed)
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__WoodImp_Mix03);
-                AnimatedObject.SpritePriority = 1;
+                AnimatedObject.BgPriority = 1;
                 break;
         }
 

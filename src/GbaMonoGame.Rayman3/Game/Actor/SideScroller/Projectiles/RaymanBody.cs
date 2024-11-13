@@ -8,7 +8,7 @@ public sealed partial class RaymanBody : MovableActor
     public RaymanBody(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Rayman = Scene.MainActor;
-        AnimatedObject.YPriority = 18;
+        AnimatedObject.ObjPriority = 18;
         State.SetTo(Fsm_Wait);
     }
 
@@ -28,7 +28,7 @@ public sealed partial class RaymanBody : MovableActor
             hitEffectActor.Position = Position;
             hitEffectActor.CheckAgainstMapCollision = false;
             hitEffectActor.ActionId = 25;
-            hitEffectActor.AnimatedObject.YPriority = 1;
+            hitEffectActor.AnimatedObject.ObjPriority = 1;
             hitEffectActor.ChangeAction();
         }
     }

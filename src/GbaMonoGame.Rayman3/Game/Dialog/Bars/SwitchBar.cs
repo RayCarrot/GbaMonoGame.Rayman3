@@ -33,8 +33,8 @@ public class SwitchBar : Bar
             ScreenPos = new Vector2(-40, -4),
             HorizontalAnchor = HorizontalAnchorMode.Right,
             VerticalAnchor = VerticalAnchorMode.Bottom,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 

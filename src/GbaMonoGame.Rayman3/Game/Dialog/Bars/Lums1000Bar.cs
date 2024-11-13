@@ -30,8 +30,8 @@ public class Lums1000Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-88, 8),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -40,8 +40,8 @@ public class Lums1000Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-72, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -50,8 +50,8 @@ public class Lums1000Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-61, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -60,8 +60,8 @@ public class Lums1000Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-50, 24),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

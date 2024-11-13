@@ -284,7 +284,7 @@ public partial class RaymanBody
                 HitActor = null;
                 CheckAgainstMapCollision = true;
                 ProcessMessage(this, Message.Destroy);
-                AnimatedObject.YPriority = 32;
+                AnimatedObject.ObjPriority = 32;
                 break;
         }
 

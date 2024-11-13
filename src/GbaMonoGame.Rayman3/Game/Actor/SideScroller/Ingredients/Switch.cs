@@ -8,7 +8,7 @@ public sealed partial class Switch : InteractableActor
     {
         Links = actorResource.Links;
 
-        AnimatedObject.YPriority = 55;
+        AnimatedObject.ObjPriority = 55;
 
         State.SetTo(Fsm_Deactivated);
     }

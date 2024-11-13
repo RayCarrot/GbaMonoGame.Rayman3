@@ -9,7 +9,7 @@ public sealed partial class Gate : InteractableActor
     public Gate(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         IsOpen = false;
-        AnimatedObject.YPriority = 61;
+        AnimatedObject.ObjPriority = 61;
 
         RemainingSwitches = (Action)actorResource.FirstActionId switch
         {

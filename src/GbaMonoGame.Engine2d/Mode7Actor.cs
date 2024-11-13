@@ -12,7 +12,7 @@ public abstract class Mode7Actor : MovableActor
         Direction = 0;
         field_0x60 = 0;
         field_0x63 = 32;
-        AnimatedObject.SpritePriority = 0;
+        AnimatedObject.BgPriority = 0;
     }
 
     public short field_0x60 { get; set; }

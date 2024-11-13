@@ -356,7 +356,7 @@ public class AnimatedObject : AObject
                         Position = new Vector2(xPos, yPos),
                         FlipX = channel.FlipX ^ FlipX,
                         FlipY = channel.FlipY ^ FlipY,
-                        Priority = SpritePriority,
+                        Priority = BgPriority,
                         Center = true,
                         AffineMatrix = affineMatrix,
                         Alpha = IsAlphaBlendEnabled ? Alpha : null,

@@ -9,7 +9,7 @@ public sealed partial class ChainedSparkles : BaseActor
         : base(instanceId, scene, actorResource, new AObjectChain(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic))
     {
         AnimatedObject.Init(6, Position, 0, true);
-        AnimatedObject.YPriority = 10;
+        AnimatedObject.ObjPriority = 10;
 
         // TODO: Set static field DAT_03000dfc to 0
 

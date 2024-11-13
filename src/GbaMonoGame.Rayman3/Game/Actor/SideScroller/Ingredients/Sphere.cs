@@ -7,7 +7,7 @@ public sealed partial class Sphere : MovableActor
 {
     public Sphere(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        AnimatedObject.YPriority = 60;
+        AnimatedObject.ObjPriority = 60;
         Color = (Action)actorResource.FirstActionId == Action.Init_Purple ? SphereColor.Purple : SphereColor.Yellow;
 
         if (Color == SphereColor.Purple)

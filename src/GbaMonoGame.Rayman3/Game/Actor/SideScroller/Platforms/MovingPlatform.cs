@@ -12,7 +12,7 @@ public sealed partial class MovingPlatform : MovableActor
     {
         Resource = actorResource;
         
-        AnimatedObject.YPriority = 50;
+        AnimatedObject.ObjPriority = 50;
         ReturnXPosition = Position.X - 48;
         
         Setup();

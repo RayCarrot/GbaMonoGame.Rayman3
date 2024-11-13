@@ -9,7 +9,7 @@ public sealed partial class Keg : MovableActor
     public Keg(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         Links = actorResource.Links;
-        AnimatedObject.YPriority = 60;
+        AnimatedObject.ObjPriority = 60;
         ShouldDraw = true;
 
         if ((Action)actorResource.FirstActionId == Action.Fall)

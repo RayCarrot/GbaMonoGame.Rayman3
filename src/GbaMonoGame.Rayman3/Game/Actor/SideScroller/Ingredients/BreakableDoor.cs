@@ -7,7 +7,7 @@ public sealed partial class BreakableDoor : InteractableActor
 {
     public BreakableDoor(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        AnimatedObject.YPriority = 63;
+        AnimatedObject.ObjPriority = 63;
         State.SetTo(Fsm_Idle);
     }
 

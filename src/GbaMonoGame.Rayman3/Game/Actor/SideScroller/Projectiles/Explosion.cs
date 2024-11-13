@@ -6,7 +6,7 @@ public sealed partial class Explosion : BaseActor
 {
     public Explosion(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        AnimatedObject.YPriority = 25;
+        AnimatedObject.ObjPriority = 25;
         State.SetTo(Fsm_Default);
     }
 

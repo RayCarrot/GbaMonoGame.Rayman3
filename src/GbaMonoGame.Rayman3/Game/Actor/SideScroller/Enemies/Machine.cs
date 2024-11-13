@@ -14,12 +14,12 @@ public sealed partial class Machine : MovableActor
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MachMotr_Mix01, this);
             BossHealth = 4;
-            AnimatedObject.YPriority = 62;
+            AnimatedObject.ObjPriority = 62;
         }
         else
         {
             BossHealth = -1;
-            AnimatedObject.YPriority = 63;
+            AnimatedObject.ObjPriority = 63;
         }
 
         CogDestroyed = false;

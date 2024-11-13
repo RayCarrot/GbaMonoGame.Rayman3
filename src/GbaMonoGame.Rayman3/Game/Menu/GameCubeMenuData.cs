@@ -52,8 +52,8 @@ public class GameCubeMenuData
         Wheel1 = new AnimatedObject(animations, animations.IsDynamic)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(6, 106),
             CurrentAnimation = 0,
             AffineMatrix = AffineMatrix.Identity
@@ -62,8 +62,8 @@ public class GameCubeMenuData
         Wheel2 = new AnimatedObject(animations, animations.IsDynamic)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(132, 105),
             CurrentAnimation = 1,
             AffineMatrix = AffineMatrix.Identity
@@ -72,8 +72,8 @@ public class GameCubeMenuData
         Wheel3 = new AnimatedObject(animations, animations.IsDynamic)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 32,
+            BgPriority = 0,
+            ObjPriority = 32,
             ScreenPos = new Vector2(172, 108),
             CurrentAnimation = 2,
             AffineMatrix = AffineMatrix.Identity
@@ -82,8 +82,8 @@ public class GameCubeMenuData
         Wheel4 = new AnimatedObject(animations, animations.IsDynamic)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(66, 138),
             CurrentAnimation = 1,
             AffineMatrix = AffineMatrix.Identity
@@ -96,16 +96,16 @@ public class GameCubeMenuData
             LumIcons[i] = new AnimatedObject(animations, animations.IsDynamic)
             {
                 IsFramed = true,
-                SpritePriority = 0,
-                YPriority = 0,
+                BgPriority = 0,
+                ObjPriority = 0,
                 ScreenPos = new Vector2(170, 36 + i * 24),
                 CurrentAnimation = 3,
             };
             LevelChecks[i] = new AnimatedObject(levelCheckAnimations, levelCheckAnimations.IsDynamic)
             {
                 IsFramed = true,
-                SpritePriority = 0,
-                YPriority = 0,
+                BgPriority = 0,
+                ObjPriority = 0,
                 ScreenPos = new Vector2(69, 50 + i * 24),
             };
         }

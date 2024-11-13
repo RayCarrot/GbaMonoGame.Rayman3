@@ -97,7 +97,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         // Add the circle FX as an effect object. On the GBA this is done using a window.
         CircleEffect = new CircleWindowEffectObject
         {
-            SpritePriority = 0,
+            BgPriority = 0,
         };
     }
 

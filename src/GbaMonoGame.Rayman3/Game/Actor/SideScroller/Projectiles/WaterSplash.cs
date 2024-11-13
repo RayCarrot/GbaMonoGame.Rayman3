@@ -6,7 +6,7 @@ public sealed partial class WaterSplash : BaseActor
 {
     public WaterSplash(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
-        AnimatedObject.YPriority = 15;
+        AnimatedObject.ObjPriority = 15;
         State.SetTo(Fsm_Default);
     }
 }

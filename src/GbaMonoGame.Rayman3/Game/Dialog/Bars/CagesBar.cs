@@ -32,8 +32,8 @@ public class CagesBar : Bar
             CurrentAnimation = 22,
             ScreenPos = new Vector2(-44, 41),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -43,8 +43,8 @@ public class CagesBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-28, 45),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -54,8 +54,8 @@ public class CagesBar : Bar
             CurrentAnimation = 0,
             ScreenPos = new Vector2(-10, 45),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

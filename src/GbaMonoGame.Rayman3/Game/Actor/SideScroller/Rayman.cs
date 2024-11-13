@@ -91,8 +91,8 @@ public sealed partial class Rayman : MovableActor
                         MultiplayerData!.FlagArrows[i] = new AnimatedObject(arrowResource, arrowResource.IsDynamic)
                         {
                             IsFramed = true,
-                            SpritePriority = 0,
-                            YPriority = 2,
+                            BgPriority = 0,
+                            ObjPriority = 2,
                             CurrentAnimation = 1,
                             AffineMatrix = AffineMatrix.Identity,
                         };
@@ -1636,7 +1636,7 @@ public sealed partial class Rayman : MovableActor
 
     public override void Init(ActorResource actorResource)
     {
-        AnimatedObject.YPriority = IsLocalPlayer ? 16 : 17;
+        AnimatedObject.ObjPriority = IsLocalPlayer ? 16 : 17;
 
         Timer = 0;
         InvulnerabilityStartTime = 0;

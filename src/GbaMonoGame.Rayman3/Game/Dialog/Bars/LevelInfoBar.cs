@@ -86,8 +86,8 @@ public class LevelInfoBar : Bar
         Canvas = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(85, 8),
             HorizontalAnchor = HorizontalAnchorMode.Scale,
             VerticalAnchor = VerticalAnchorMode.Bottom,
@@ -98,8 +98,8 @@ public class LevelInfoBar : Bar
         CollectedLumsDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 77,
@@ -115,8 +115,8 @@ public class LevelInfoBar : Bar
         CollectedLumsDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 86,
@@ -132,8 +132,8 @@ public class LevelInfoBar : Bar
         TotalLumsDigit1 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 101,
@@ -149,8 +149,8 @@ public class LevelInfoBar : Bar
         TotalLumsDigit2 = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 110,
@@ -166,8 +166,8 @@ public class LevelInfoBar : Bar
         CollectedCagesDigit = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 151,
@@ -183,8 +183,8 @@ public class LevelInfoBar : Bar
         TotalCagesDigit = new AnimatedObject(resource, false)
         {
             IsFramed = true,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = new Vector2(Engine.Settings.Platform switch
             {
                 Platform.GBA => 166,

@@ -14,8 +14,8 @@ public class EditableActor : EditableGameObject
         AnimatedObject = new AnimatedObject(actorResource.Model.AnimatedObject, actorResource.IsAnimatedObjectDynamic)
         {
             CurrentAnimation = actorResource.Model.Actions.ElementAtOrDefault(actorResource.FirstActionId)?.AnimationIndex ?? actorResource.FirstActionId,
-            SpritePriority = 1,
-            YPriority = 32,
+            BgPriority = 1,
+            ObjPriority = 32,
             Camera = scene.Camera
         };
 

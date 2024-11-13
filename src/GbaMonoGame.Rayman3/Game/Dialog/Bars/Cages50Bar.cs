@@ -22,8 +22,8 @@ public class Cages50Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-68, 41),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -32,8 +32,8 @@ public class Cages50Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-56, 45),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -42,8 +42,8 @@ public class Cages50Bar : Bar
             IsFramed = true,
             ScreenPos = new Vector2(-44, 45),
             HorizontalAnchor = HorizontalAnchorMode.Right,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
     }

@@ -10,7 +10,7 @@ public sealed partial class BreakableGround : MovableActor
     {
         QuickFinishBodyAttack = (Action)actorResource.FirstActionId == Action.Idle_QuickFinishBodyShotAttack;
 
-        AnimatedObject.YPriority = 60;
+        AnimatedObject.ObjPriority = 60;
 
         // Destroy actor if the one in the hub world and we've defeated the boss
         if ((Action)actorResource.FirstActionId == Action.Idle_World &&

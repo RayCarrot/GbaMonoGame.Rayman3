@@ -28,8 +28,8 @@ public class FogDialog : Dialog
 
         Fog = new AObjectFog(resource)
         {
-            SpritePriority = 0,
-            YPriority = 63,
+            BgPriority = 0,
+            ObjPriority = 63,
             IsAlphaBlendEnabled = true,
             GbaAlpha = 6,
             Camera = Playfield.Camera

@@ -7,7 +7,7 @@ public sealed partial class FlowerFire : BaseActor
     public FlowerFire(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)
     {
         AnimatedObject.CurrentAnimation = 0;
-        AnimatedObject.YPriority = 15;
+        AnimatedObject.ObjPriority = 15;
 
         State.SetTo(Fsm_Default);
     }

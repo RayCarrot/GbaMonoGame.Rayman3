@@ -63,8 +63,8 @@ public class GameOver : Frame
 
             Countdown2.GbaAlpha = 15 - Timer / 2f;
 
-            Countdown1.YPriority = 33;
-            Countdown2.YPriority = 32;
+            Countdown1.ObjPriority = 33;
+            Countdown2.ObjPriority = 32;
         }
         else
         {
@@ -81,8 +81,8 @@ public class GameOver : Frame
 
             Countdown2.GbaAlpha = (Timer - 30) / 2f;
 
-            Countdown1.YPriority = 32;
-            Countdown2.YPriority = 33;
+            Countdown1.ObjPriority = 32;
+            Countdown2.ObjPriority = 33;
         }
 
         if (Mode == GameOverMode.Countdown && (Countdown2.CurrentAnimation != 9 || Timer < 30))
@@ -138,8 +138,8 @@ public class GameOver : Frame
         {
             IsFramed = true,
             CurrentAnimation = 1,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(120, 150),
@@ -152,8 +152,8 @@ public class GameOver : Frame
         {
             IsFramed = true,
             CurrentAnimation = 9,
-            SpritePriority = 0,
-            YPriority = 32,
+            BgPriority = 0,
+            ObjPriority = 32,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(104, 40),
@@ -165,8 +165,8 @@ public class GameOver : Frame
         {
             IsFramed = true,
             CurrentAnimation = 9,
-            SpritePriority = 0,
-            YPriority = 32,
+            BgPriority = 0,
+            ObjPriority = 32,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(104, 40),
@@ -180,8 +180,8 @@ public class GameOver : Frame
         {
             IsFramed = true,
             CurrentAnimation = 8,
-            SpritePriority = 0,
-            YPriority = 33,
+            BgPriority = 0,
+            ObjPriority = 33,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(173, 41),
@@ -193,8 +193,8 @@ public class GameOver : Frame
         {
             IsFramed = true,
             CurrentAnimation = 7,
-            SpritePriority = 0,
-            YPriority = 33,
+            BgPriority = 0,
+            ObjPriority = 33,
             ScreenPos = Engine.Settings.Platform switch
             {
                 Platform.GBA => new Vector2(42, 140),

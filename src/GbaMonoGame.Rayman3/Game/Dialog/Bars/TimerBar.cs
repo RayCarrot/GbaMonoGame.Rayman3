@@ -22,8 +22,8 @@ public class TimerBar : Bar
             CurrentAnimation = 14,
             ScreenPos = new Vector2(82, 20),
             HorizontalAnchor = HorizontalAnchorMode.Scale,
-            SpritePriority = 0,
-            YPriority = 0,
+            BgPriority = 0,
+            ObjPriority = 0,
             Camera = Scene.HudCamera,
         };
 
@@ -44,8 +44,8 @@ public class TimerBar : Bar
                     _ => throw new ArgumentOutOfRangeException()
                 } + 8, 18),
                 HorizontalAnchor = HorizontalAnchorMode.Scale,
-                SpritePriority = 0,
-                YPriority = 0,
+                BgPriority = 0,
+                ObjPriority = 0,
                 Camera = Scene.HudCamera,
             };
         }
