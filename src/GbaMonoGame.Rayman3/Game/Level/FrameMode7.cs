@@ -5,7 +5,7 @@ using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
 
-public class FrameMode7 : Frame
+public class FrameMode7 : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
 
@@ -32,6 +32,13 @@ public class FrameMode7 : Frame
     public bool CanPause { get; set; }
     public byte MultiplayerPauseFrame { get; set; }
     public uint Timer { get; set; }
+
+    #endregion
+
+    #region Interface Properties
+
+    Scene2D IHasScene.Scene => Scene;
+    TgxPlayfield IHasPlayfield.Playfield => Scene.Playfield;
 
     #endregion
 

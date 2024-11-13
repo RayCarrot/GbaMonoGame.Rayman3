@@ -12,7 +12,7 @@ public abstract class CameraActor2D : CameraActor
         bool isFramed = viewBox.Intersects(camBox);
 
         if (isFramed)
-            actor.AnimatedObject.ScreenPos = actor.Position - Scene.Playfield.Camera.Position;
+            actor.ScreenPosition = actor.Position - Scene.Playfield.Camera.Position;
 
         return isFramed;
     }

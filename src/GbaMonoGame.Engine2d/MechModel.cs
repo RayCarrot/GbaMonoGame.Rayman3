@@ -28,7 +28,8 @@ public class MechModel
             SetSpeedX_SetAccelerationX_SetTargetSpeedX,
             SetSpeedY_SetAccelerationY_SetTargetSpeedY,
 
-            // TODO: Implement these
+            // TODO: Implement these - they're for Mode7
+            Dummy,
             Dummy,
             Dummy,
             Dummy,

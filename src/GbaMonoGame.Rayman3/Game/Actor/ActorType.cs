@@ -34,6 +34,7 @@ public enum ActorType
     Depart = 30,
     RedShell = 31,
     KegFire = 32,
+    RaymanMode7 = 33,
 
     Caterpillar = 35,
 

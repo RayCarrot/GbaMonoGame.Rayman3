@@ -25,6 +25,12 @@ public static class MathHelpers
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float Atan2_256(float x, float y)
+    {
+        return MathF.Atan2(y, x) / (2 * MathF.PI) * 256;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float FromFixedPoint(int x)
     {
         return (float)x / 0x10000;
