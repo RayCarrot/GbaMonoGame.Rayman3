@@ -1611,7 +1611,7 @@ public sealed partial class Rayman : MovableActor
                 if (State == Fsm_RidingWalkingShell)
                 {
                     AttachedObject = (BaseActor)param;
-                    Position -= new Vector2(-16, 0);
+                    Position -= new Vector2(16, 0);
                     State.MoveTo(Fsm_HitKnockback);
                 }
                 return false;
