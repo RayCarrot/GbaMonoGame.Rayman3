@@ -97,7 +97,7 @@ public partial class Rayman
         if (IsLocalPlayer &&
             State != Fsm_Jump &&
             State != Fsm_BodyShotAttack &&
-            State != FUN_080284ac &&
+            State != Fsm_RidingWalkingShell &&
             State != Fsm_EnterLevelCurtain &&
             State != Fsm_LockedLevelCurtain &&
             !IsInFrontOfLevelCurtain)
@@ -3223,15 +3223,15 @@ public partial class Rayman
                 {
                     PlaySound(Rayman3SoundEvent.Play__OnoGO_Mix02);
 
-                    if (Flag1_B)
+                    if (SongAlternation)
                     {
                         SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel_BA, 3);
-                        Flag1_B = false;
+                        SongAlternation = false;
                     }
                     else
                     {
                         SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel, 3);
-                        Flag1_B = true;
+                        SongAlternation = true;
                     }
 
                     StartFlyingWithKegRight = false;
@@ -3241,15 +3241,15 @@ public partial class Rayman
                 {
                     PlaySound(Rayman3SoundEvent.Play__OnoGO_Mix02);
 
-                    if (Flag1_B)
+                    if (SongAlternation)
                     {
                         SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel_BA, 3);
-                        Flag1_B = false;
+                        SongAlternation = false;
                     }
                     else
                     {
                         SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__barrel, 3);
-                        Flag1_B = true;
+                        SongAlternation = true;
                     }
 
                     StartFlyingWithKegLeft = false;
@@ -4012,8 +4012,41 @@ public partial class Rayman
         return true;
     }
 
+    private bool Fsm_RidingWalkingShell(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                NextActionId = null;
+
+                if (SongAlternation)
+                {
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__rocket_BA, 3);
+                    SongAlternation = false;
+                }
+                else
+                {
+                    SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__rocket, 3);
+                    SongAlternation = true;
+                }
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckDeath())
+                    return false;
+
+                ManageHit();
+                break;
+
+            case FsmAction.UnInit:
+                SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.Play__bigtrees, 3);
+                break;
+        }
+
+        return true;
+    }
+
     // TODO: Implement all of these
-    private bool FUN_080284ac(FsmAction action) => true;
     private bool FUN_0802ddac(FsmAction action) => true;
     private bool Fsm_MultiplayerDying(FsmAction action) => true;
     private bool FUN_080224f4(FsmAction action) => true;

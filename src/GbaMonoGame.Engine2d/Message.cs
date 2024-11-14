@@ -78,6 +78,11 @@ public enum Message
 
     Cam_SetPosition = 1062,
 
+    Main_MountWalkingShell = 1064,
+    Main_UnmountWalkingShell = 1065,
+
+    Main_JumpOffWalkingShell = 1077,
+
     UserInfo_Pause = 1079,
     UserInfo_Unpause = 1080,
     UserInfo_GameCubeLevel = 1081,

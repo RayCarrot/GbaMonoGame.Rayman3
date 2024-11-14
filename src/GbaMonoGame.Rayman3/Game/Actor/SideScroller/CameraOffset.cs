@@ -7,6 +7,8 @@ public static class CameraOffset
 {
     public static float Multiplayer => 95;
 
+    public static float WalkingShell => 30;
+
     public static float Default => Engine.Settings.Platform switch
     {
         Platform.GBA => 40,

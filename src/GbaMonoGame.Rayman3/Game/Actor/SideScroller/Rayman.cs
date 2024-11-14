@@ -140,7 +140,7 @@ public sealed partial class Rayman : MovableActor
     public bool StartFlyingWithKegLeft { get; set; }
     public bool StopFlyingWithKeg { get; set; }
     public bool DropObject { get; set; }
-    public bool Flag1_B { get; set; }
+    public bool SongAlternation { get; set; }
     public bool Flag1_C { get; set; }
     public bool Flag1_D { get; set; }
     public bool FinishedMap { get; set; }
@@ -1191,7 +1191,7 @@ public sealed partial class Rayman : MovableActor
 
         if (HitPoints == 0 || type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.Lava or PhysicalTypeValue.Water or PhysicalTypeValue.MoltenLava)
         {
-            if (State == FUN_080284ac && type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
+            if (State == Fsm_RidingWalkingShell && type is PhysicalTypeValue.InstaKill or PhysicalTypeValue.MoltenLava)
                 return false;
 
             if (AttachedObject != null)
@@ -1602,6 +1602,28 @@ public sealed partial class Rayman : MovableActor
                 }
                 return false;
 
+            case Message.Main_MountWalkingShell:
+                if (State != Fsm_RidingWalkingShell && State != Fsm_Dying)
+                    State.MoveTo(Fsm_RidingWalkingShell);
+                return false;
+
+            case Message.Main_UnmountWalkingShell:
+                if (State == Fsm_RidingWalkingShell)
+                {
+                    AttachedObject = (BaseActor)param;
+                    Position -= new Vector2(-16, 0);
+                    State.MoveTo(Fsm_HitKnockback);
+                }
+                return false;
+
+            case Message.Main_JumpOffWalkingShell:
+                if (State == Fsm_RidingWalkingShell)
+                {
+                    ActionId = IsFacingRight ? Action.BouncyJump_Right : Action.BouncyJump_Left;
+                    State.MoveTo(Fsm_Jump);
+                }
+                return false;
+
             case Message.Main_EnterLevelCurtain:
                 if (State != Fsm_EnterLevelCurtain)
                     State.MoveTo(Fsm_EnterLevelCurtain);
@@ -1654,7 +1676,7 @@ public sealed partial class Rayman : MovableActor
         StartFlyingWithKegLeft = false;
         StopFlyingWithKeg = false;
         DropObject = false;
-        Flag1_B = false;
+        SongAlternation = false;
         Flag1_C = false;
         Flag1_D = false;
         FinishedMap = false;

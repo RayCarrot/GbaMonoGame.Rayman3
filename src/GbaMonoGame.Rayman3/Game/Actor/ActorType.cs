@@ -66,6 +66,7 @@ public enum ActorType
 
     Bats = 72,
 
+    WalkingShell = 76,
     WoodenBar = 77,
     Ly = 78,
     Flag = 79,
