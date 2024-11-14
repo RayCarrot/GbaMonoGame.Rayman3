@@ -93,7 +93,7 @@ public class AnimatedObject : AObject
                     int framesDiff = _currentFrame - value;
 
                     for (int i = 0; i < framesDiff; i++)
-                        ChannelIndex += anim.ChannelsPerFrame[_currentFrame - i - 1];
+                        ChannelIndex -= anim.ChannelsPerFrame[_currentFrame - i - 1];
                 }
 
                 _currentFrame = value;
