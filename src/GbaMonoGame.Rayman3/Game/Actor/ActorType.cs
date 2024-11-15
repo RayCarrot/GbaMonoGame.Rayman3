@@ -74,6 +74,7 @@ public enum ActorType
     KegDebris = 82,
 
     Machine = 84,
+    Balloon = 85,
 
     Skull = 89,
 
