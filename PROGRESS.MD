@@ -252,7 +252,7 @@
 | #98                    | 🟥     |                                              |
 | #99                    | 🟥     |                                              |
 | Urchin                 | 🟩     |                                              |
-| Arrive                 | 🟨     | Not implemented when linked to Murfy         |
+| Arrive                 | 🟩     |                                              |
 | SpikyBomb              | 🟨     |                                              |
 | #103                   | 🟥     |                                              |
 | #104                   | 🟥     |                                              |

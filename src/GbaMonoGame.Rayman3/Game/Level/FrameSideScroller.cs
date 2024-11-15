@@ -235,7 +235,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
         {
             GameTime.Pause();
-            CurrentStepAction = Fog != null ? Step_Pause_DisableFog :Step_Pause_Init;
+            CurrentStepAction = Fog != null ? Step_Pause_DisableFog : Step_Pause_Init;
         }
     }
 
