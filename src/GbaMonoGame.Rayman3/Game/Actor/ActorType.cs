@@ -77,6 +77,7 @@ public enum ActorType
 
     Skull = 89,
 
+    SpikyBag = 91,
     MurfyStone = 92,
 
     Teensies = 95,

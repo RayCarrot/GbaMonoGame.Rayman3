@@ -676,6 +676,7 @@ public class Rayman3 : GbaGame
 
             { ActorType.Skull, (instanceId, scene, resource) => new Skull(instanceId, scene, resource) },
             
+            { ActorType.SpikyBag, (instanceId, scene, resource) => new SpikyBag(instanceId, scene, resource) },
             { ActorType.MurfyStone, (instanceId, scene, resource) => new MurfyStone(instanceId, scene, resource) },
 
             { ActorType.Teensies, (instanceId, scene, resource) => new Teensies(instanceId, scene, resource) },

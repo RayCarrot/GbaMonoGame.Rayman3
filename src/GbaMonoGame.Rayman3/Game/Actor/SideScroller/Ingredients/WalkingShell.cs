@@ -18,7 +18,7 @@ public sealed partial class WalkingShell : MovableActor
         CurrentType = PhysicalTypeValue.None;
         CurrentBottomType = PhysicalTypeValue.None;
 
-        State.MoveTo(Fsm_Idle);
+        State.SetTo(Fsm_Idle);
     }
 
     private const int LoopRadius = 56;
