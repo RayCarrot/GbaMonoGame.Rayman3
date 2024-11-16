@@ -613,12 +613,13 @@ public class Rayman3 : GbaGame
             { ActorType.Missile, (instanceId, scene, resource) => new Missile(instanceId, scene, resource) },
             { ActorType.BouncyPlatform, (instanceId, scene, resource) => new BouncyPlatform(instanceId, scene, resource) },
             { ActorType.MovingFlowerPlatform, (instanceId, scene, resource) => new MovingPlatform(instanceId, scene, resource) },
-
+            { ActorType.FallingChainedPlatform, (instanceId, scene, resource) => new FallingPlatform(instanceId, scene, resource) },
             { ActorType.Switch, (instanceId, scene, resource) => new Switch(instanceId, scene, resource) },
             { ActorType.Gate, (instanceId, scene, resource) => new Gate(instanceId, scene, resource) },
             { ActorType.Lums, (instanceId, scene, resource) => new Lums(instanceId, scene, resource) },
             { ActorType.Cage, (instanceId, scene, resource) => new Cage(instanceId, scene, resource) },
             { ActorType.LevelCurtain, (instanceId, scene, resource) => new LevelCurtain(instanceId, scene, resource) },
+            { ActorType.FallingWoodenPlatform, (instanceId, scene, resource) => new FallingPlatform(instanceId, scene, resource) },
 
             { ActorType.BreakableDoor, (instanceId, scene, resource) => new BreakableDoor(instanceId, scene, resource) },
             { ActorType.Keg, (instanceId, scene, resource) => new Keg(instanceId, scene, resource) },

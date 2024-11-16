@@ -11,12 +11,13 @@ public enum ActorType
     Missile = 6,
     BouncyPlatform = 7,
     MovingFlowerPlatform = 8,
-
+    FallingChainedPlatform = 9,
     Switch = 10,
     Gate = 11,
     Lums = 12,
     Cage = 13,
     LevelCurtain = 14,
+    FallingWoodenPlatform = 15,
 
     BreakableDoor = 17,
     Keg = 18,

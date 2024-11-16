@@ -160,13 +160,13 @@
 | Missile                | 🟩     |                                              |
 | BouncyPlatform         | 🟩     |                                              |
 | MovingFlowerPlatform   | 🟩     |                                              |
-| #9                     | 🟥     |                                              |
+| FallingChainedPlatform | 🟩     |                                              |
 | Switch                 | 🟩     |                                              |
 | Gate                   | 🟩     |                                              |
 | Lums                   | 🟨     | Not implemented blue lums among other states |
 | Cage                   | 🟩     |                                              |
 | LevelCurtain           | 🟩     |                                              |
-| #15                    | 🟥     |                                              |
+| FallingWoodenPlatform  | 🟩     |                                              |
 | #16                    | 🟥     |                                              |
 | BreakableDoor          | 🟩     |                                              |
 | Keg                    | 🟩     |                                              |

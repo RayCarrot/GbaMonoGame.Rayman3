@@ -90,8 +90,8 @@ public class Scene2D
 
     public MovableActor MainActor => (MovableActor)(RSMultiplayer.IsActive ? GetGameObject(RSMultiplayer.MachineId) : GetGameObject(0));
 
-    // TODO: This causes ResurrectActors to stop working. Perhaps we should still use
-    //       knots to handle game logic, but still draw and step all actors in the scene?
+    // TODO: This causes ResurrectActors to stop working, which is an issue for actors which respawn, such as FallingPlatform.
+    //       Perhaps we should still use knots to handle game logic, but still draw and step all actors in the scene?
     // If we're playing in a different resolution than the original we can't use
     // the knots (object sectors). Instead we keep all objects active at all times.
     public bool KeepAllObjectsActive => Playfield.Camera.Resolution != Engine.GameViewPort.OriginalGameResolution;
