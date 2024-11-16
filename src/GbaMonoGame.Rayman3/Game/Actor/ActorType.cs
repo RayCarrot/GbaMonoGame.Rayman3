@@ -83,6 +83,7 @@ public enum ActorType
 
     Teensies = 95,
 
+    MechanicalPlatform = 99,
     Urchin = 100,
     Arrive = 101,
     SpikyBomb = 102,

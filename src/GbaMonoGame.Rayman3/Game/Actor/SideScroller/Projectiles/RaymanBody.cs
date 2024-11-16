@@ -19,6 +19,9 @@ public sealed partial class RaymanBody : MovableActor
     public byte BaseActionId { get; set; }
     public InteractableActor HitActor { get; set; }
 
+    // TODO: Maybe we should just make the state methods public to avoid this?
+    public bool IsInMoveBackwardsState => State == Fsm_MoveBackwards;
+
     private void SpawnHitEffect()
     {
         RaymanBody hitEffectActor = Scene.CreateProjectile<RaymanBody>(ActorType.RaymanBody);

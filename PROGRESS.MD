@@ -250,7 +250,7 @@
 | #96                    | 🟥     |                                              |
 | #97                    | 🟥     |                                              |
 | #98                    | 🟥     |                                              |
-| #99                    | 🟥     |                                              |
+| MechanicalPlatform     | 🟩     |                                              |
 | Urchin                 | 🟩     |                                              |
 | Arrive                 | 🟩     |                                              |
 | SpikyBomb              | 🟨     |                                              |

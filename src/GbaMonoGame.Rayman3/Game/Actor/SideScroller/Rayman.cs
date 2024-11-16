@@ -149,7 +149,7 @@ public sealed partial class Rayman : MovableActor
     // Unknown flags 2
     public bool Flag2_0 { get; set; }
     public bool Flag2_1 { get; set; } // TODO: Seems to be some general purpose flag. Name something like "TestFlag" or "TempFlag"?
-    public bool Flag2_2 { get; set; }
+    public bool CanJump { get; set; }
     public bool IsLocalPlayer { get; set; }
     public bool CanSafetyJump { get; set; } // Coyote jump
     public bool Flag2_5 { get; set; }
@@ -1365,7 +1365,7 @@ public sealed partial class Rayman : MovableActor
 
             case Message.Main_UnlinkMovement:
                 LinkedMovementActor = null;
-                Flag2_2 = true;
+                CanJump = true;
                 return false;
 
             case Message.Main_BeginBounce:
@@ -1699,7 +1699,7 @@ public sealed partial class Rayman : MovableActor
         Flag2_0 = false;
         field27_0x9c = 0;
         Flag2_1 = false;
-        Flag2_2 = true;
+        CanJump = true;
 
         CheckAgainstMapCollision = true;
         CheckAgainstObjectCollision = true;

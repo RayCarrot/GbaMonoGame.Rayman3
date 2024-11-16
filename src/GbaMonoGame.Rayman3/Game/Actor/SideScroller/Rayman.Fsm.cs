@@ -353,7 +353,7 @@ public partial class Rayman
                 }
 
                 // Jump
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && Flag2_2)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && CanJump)
                 {
                     PlaySound(Rayman3SoundEvent.Stop__Grimace1_Mix04);
                     State.MoveTo(Fsm_Jump);
@@ -1498,7 +1498,7 @@ public partial class Rayman
                 }
 
                 // Jump
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !topType.IsSolid && Flag2_2)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !topType.IsSolid && CanJump)
                 {
                     State.MoveTo(Fsm_Jump);
                     return false;
