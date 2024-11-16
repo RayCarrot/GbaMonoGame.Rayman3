@@ -280,6 +280,7 @@ public partial class Rayman
                 {
                     if (ActionId is not (Action.LookUp_Right or Action.LookUp_Left) && SlideType == null)
                     {
+                        // TODO: If you look up while the grimace sfx is playing then it loop. This is a bug from the original game. Fix?
                         ActionId = IsFacingRight ? Action.LookUp_Right : Action.LookUp_Left;
                         NextActionId = null;
                     }

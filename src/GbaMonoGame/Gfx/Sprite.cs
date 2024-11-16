@@ -16,7 +16,7 @@ public class Sprite
     public AffineMatrix? AffineMatrix { get; set; }
     public Color Color { get; set; } = Color.White;
 
-    // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other.
+    // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other. Very noticeable when setting it on Rayman and looking up - Rayman gets 4 eyes then! Although this might be how it is on N-Gage?
     public float? Alpha { get; set; }
 
     public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
