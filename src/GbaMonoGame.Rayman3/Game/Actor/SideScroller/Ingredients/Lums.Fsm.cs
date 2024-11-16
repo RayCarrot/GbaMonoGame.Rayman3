@@ -18,7 +18,7 @@ public partial class Lums
             case FsmAction.Step:
                 bool collected = false;
                 
-                if (Scene.IsDetectedMainActor(GetViewBox()))
+                if (Scene.MainActor.GetDetectionBox().Intersects(GetViewBox()))
                 {
                     if (ActionId == Action.BlueLum)
                         collected = CheckCollision();

@@ -99,12 +99,12 @@ public sealed partial class Lums : BaseActor
 
     private bool CheckCollision()
     {
-        return Scene.IsDetectedMainActor(GetCollisionBox());
+        return Scene.MainActor.GetDetectionBox().Intersects(GetCollisionBox());
     }
 
     private bool CheckCollisionAndAttract()
     {
-        bool collided = Scene.IsDetectedMainActor(GetCollisionBox());
+        bool collided = Scene.MainActor.GetDetectionBox().Intersects(GetCollisionBox());
 
         // Move the lum towards the main actor
         if (!collided)

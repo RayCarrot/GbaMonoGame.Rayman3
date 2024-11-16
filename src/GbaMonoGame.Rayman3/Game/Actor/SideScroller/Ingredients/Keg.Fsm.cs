@@ -26,7 +26,7 @@ public partial class Keg
                 actionBox = new Box(actionBox.MinX, actionBox.MinY, actionBox.MaxX, actionBox.MaxY + 100);
 
                 // Spawn debris
-                if (Timer >= 30 && SpawnedDebrisCount < 2 && Scene.IsDetectedMainActor(actionBox))
+                if (Timer >= 30 && SpawnedDebrisCount < 2 && Scene.MainActor.GetDetectionBox().Intersects(actionBox))
                 {
                     SpawnedDebrisCount++;
                     SpawnDebris();
@@ -36,7 +36,7 @@ public partial class Keg
                 }
 
                 // Fall
-                if (Timer > 90 && Scene.IsDetectedMainActor(actionBox) && SpawnedDebrisCount > 0)
+                if (Timer > 90 && Scene.MainActor.GetDetectionBox().Intersects(actionBox) && SpawnedDebrisCount > 0)
                 {
                     ShouldDraw = true;
                     State.MoveTo(Fsm_Falling);

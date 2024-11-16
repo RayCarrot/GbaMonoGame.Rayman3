@@ -39,7 +39,7 @@ public partial class ZombieChicken
                 else
                     actionBox = new Box(actionBox.MinX - 75, actionBox.MinY, actionBox.MaxX + Scene.Resolution.X, actionBox.MaxY);
 
-                if (Scene.IsDetectedMainActor(actionBox))
+                if (Scene.MainActor.GetDetectionBox().Intersects(actionBox))
                 {
                     State.MoveTo(Fsm_MoveDown);
                     return false;

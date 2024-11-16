@@ -420,27 +420,32 @@ public class Scene2D
 
     public bool IsDetectedMainActor(ActionActor actor)
     {
-        return IsDetectedMainActor(actor.GetActionBox());
+        Box mainActorDetectionBox = MainActor.GetDetectionBox();
+        Box actionBox = actor.GetActionBox();
+
+        return mainActorDetectionBox.Intersects(actionBox);
     }
 
     public bool IsDetectedMainActor(ActionActor actor, float addMaxY, float addMinY, float addMinX, float addMaxX)
     {
+        Box mainActorDetectionBox = MainActor.GetDetectionBox();
         Box actionBox = actor.GetActionBox();
-        return IsDetectedMainActor(new Box(
+
+        actionBox = new Box(
             minX: actionBox.MinX + addMinX,
             minY: actionBox.MinY + addMinY,
             maxX: actionBox.MaxX + addMaxX,
-            maxY: actionBox.MaxY + addMaxY));
-    }
+            maxY: actionBox.MaxY + addMaxY);
 
-    public bool IsDetectedMainActor(Box box)
-    {
-        return box.Intersects(MainActor.GetDetectionBox());
+        return mainActorDetectionBox.Intersects(actionBox);
     }
 
     public bool IsHitMainActor(InteractableActor actor)
     {
-        return actor.GetAttackBox().Intersects(MainActor.GetVulnerabilityBox());
+        Box mainActorVulnerabilityBox = MainActor.GetVulnerabilityBox();
+        Box attackBox = actor.GetAttackBox();
+
+        return mainActorVulnerabilityBox.Intersects(attackBox);
     }
 
     public InteractableActor IsHitActor(InteractableActor actor)

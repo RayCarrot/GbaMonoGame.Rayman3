@@ -14,7 +14,7 @@ public partial class MurfyStone
                 break;
 
             case FsmAction.Step:
-                if (Scene.IsDetectedMainActor(GetViewBox()) && MurfyId != null)
+                if (Scene.MainActor.GetDetectionBox().Intersects(GetViewBox()) && MurfyId != null)
                 {
                     if (!HasTriggered)
                     {
