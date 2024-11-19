@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using ImGuiNET;
 using Action = BinarySerializer.Ubisoft.GbaEngine.Action;
 
@@ -23,6 +25,28 @@ public class GameObjectDebugWindow : DebugWindow
                 selectedGameObject.Position = new Vector2(pos.X, pos.Y);
 
             selectedGameObject.DrawDebugLayout(debugLayout, textureManager);
+
+            if (selectedGameObject is BaseActor actor)
+            {
+                ImGui.Spacing();
+                ImGui.Spacing();
+
+                MethodInfo currentStateMethodInfo = actor.State.GetCurrentStateMethodInfo();
+                if (ImGui.BeginCombo("State", currentStateMethodInfo != null ? currentStateMethodInfo.Name.AsSpan()[4..] : "NULL"))
+                {
+                    foreach (MethodInfo stateMethodInfo in actor.GetType().
+                                 GetMethods(BindingFlags.NonPublic | BindingFlags.Instance).
+                                 Where(x => x.Name.StartsWith("Fsm_")))
+                    {
+                        bool isSelected = actor.State.GetCurrentStateMethodInfo() == stateMethodInfo;
+
+                        if (ImGui.Selectable(stateMethodInfo.Name.AsSpan()[4..], isSelected))
+                            actor.State.MoveTo(stateMethodInfo.CreateDelegate<FiniteStateMachine.Fsm>(actor));
+                    }
+
+                    ImGui.EndCombo();
+                }
+            }
 
             if (selectedGameObject is ActionActor actionActor)
             {

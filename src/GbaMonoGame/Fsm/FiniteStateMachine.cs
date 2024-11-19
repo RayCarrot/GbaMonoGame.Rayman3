@@ -1,10 +1,14 @@
-﻿namespace GbaMonoGame;
+﻿using System.Reflection;
+
+namespace GbaMonoGame;
 
 #pragma warning disable CS0660, CS0661
 public class FiniteStateMachine
 #pragma warning restore CS0660, CS0661
 {
     private Fsm CurrentState { get; set; }
+
+    public MethodInfo GetCurrentStateMethodInfo() => CurrentState?.Method;
 
     /// <summary>
     /// Sets the current state without uninitializing the previous one
