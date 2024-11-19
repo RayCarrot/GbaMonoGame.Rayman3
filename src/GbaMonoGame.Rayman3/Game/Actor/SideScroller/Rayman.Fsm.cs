@@ -104,7 +104,7 @@ public partial class Rayman
         {
             Message message;
 
-            if (State != FUN_0802ddac &&
+            if (State != Fsm_SuperHelico &&
                 IsDirectionalButtonPressed(GbaInput.Down) &&
                 (Speed.Y > 0 || State == Fsm_Crouch) &&
                 State != Fsm_Climb)
@@ -117,7 +117,7 @@ public partial class Rayman
                 CameraTargetY = 160;
                 message = Message.Cam_FollowPositionY;
             }
-            else if (State == Fsm_Helico && field27_0x9c == 0)
+            else if (State == Fsm_Helico && !IsSuperHelicoActive)
             {
                 message = Message.Cam_DoNotFollowPositionY;
             }
@@ -126,7 +126,7 @@ public partial class Rayman
                 CameraTargetY = 65;
                 message = Message.Cam_FollowPositionY;
             }
-            else if (State == Fsm_Climb || State == FUN_0802ddac)
+            else if (State == Fsm_Climb || State == Fsm_SuperHelico)
             {
                 CameraTargetY = 112;
                 message = Message.Cam_FollowPositionY;
@@ -861,15 +861,15 @@ public partial class Rayman
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c == 0)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !IsSuperHelicoActive)
                 {
                     State.MoveTo(Fsm_Helico);
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c != 0)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
 
@@ -956,15 +956,16 @@ public partial class Rayman
                 }
 
                 // Helico
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c == 0 && GameTime.ElapsedFrames - Timer >= 6)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !IsSuperHelicoActive && GameTime.ElapsedFrames - Timer >= 6)
                 {
                     State.MoveTo(Fsm_Helico);
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c != 0 && GameTime.ElapsedFrames - Timer >= 6)
+                // Super helico
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && IsSuperHelicoActive && GameTime.ElapsedFrames - Timer >= 6)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
 
@@ -1085,15 +1086,15 @@ public partial class Rayman
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c == 0)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !IsSuperHelicoActive)
                 {
                     State.MoveTo(Fsm_Helico);
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c != 0)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
 
@@ -1216,9 +1217,9 @@ public partial class Rayman
                     return false;
                 }
 
-                if (field27_0x9c != 0)
+                if (IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
                 break;
@@ -1233,6 +1234,242 @@ public partial class Rayman
 
                 if (GameTime.ElapsedFrames - Timer <= 40)
                     PlaySound(Rayman3SoundEvent.Play__HeliCut_Mix01);
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_SuperHelico(FsmAction action)
+    {
+        CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
+
+        switch (action)
+        {
+            case FsmAction.Init:
+                PlaySound(Rayman3SoundEvent.Play__Helico01_Mix10);
+                NextActionId = null;
+
+                if (ActionId is Action.BouncyJump_Right or Action.BouncyJump_Left)
+                    ActionId = IsFacingRight ? Action.BouncyHelico_Right : Action.BouncyHelico_Left;
+                else
+                    ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
+
+                Timer = GameTime.ElapsedFrames;
+
+                if (IsSuperHelicoActive)
+                {
+                    cam.HorizontalOffset = CameraOffset.Center;
+                    PreviousXSpeed = 0;
+                }
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_DoInTheAir())
+                    return false;
+
+                // Begin charging fist
+                if (MultiJoyPad.IsButtonPressed(InstanceId, GbaInput.B) &&
+                    CanAttackWithFist(1) &&
+                    ActionId is not (
+                        Action.SuperHelico_BeginThrowFist_Right or Action.SuperHelico_BeginThrowFist_Left or
+                        Action.SuperHelico_ChargeFist_Right or Action.SuperHelico_ChargeFist_Left or
+                        Action.SuperHelico_ChargeSuperFist_Right or Action.SuperHelico_ChargeSuperFist_Left))
+                {
+                    ActionId = IsFacingRight ? Action.SuperHelico_BeginThrowFist_Right : Action.SuperHelico_BeginThrowFist_Left;
+                    ChangeAction();
+                    Timer = 0;
+                }
+
+                // Charge fist
+                if (IsActionFinished && ActionId is Action.SuperHelico_BeginThrowFist_Right or Action.SuperHelico_BeginThrowFist_Left)
+                {
+                    ActionId = IsFacingRight ? Action.SuperHelico_ChargeFist_Right : Action.SuperHelico_ChargeFist_Left;
+                    Timer = GameTime.ElapsedFrames;
+                }
+
+                // Charge super fist
+                if (HasPower(Power.SuperFist) &&
+                    GameTime.ElapsedFrames - Timer > 20 &&
+                    ActionId is Action.SuperHelico_ChargeFist_Right or Action.SuperHelico_ChargeFist_Left)
+                {
+                    ActionId = IsFacingRight ? Action.SuperHelico_ChargeSuperFist_Right : Action.SuperHelico_ChargeSuperFist_Left;
+                    PlaySound(Rayman3SoundEvent.Stop__Charge_Mix05);
+                    PlaySound(Rayman3SoundEvent.Play__Charge2_Mix04);
+                }
+
+                // Punch
+                if (MultiJoyPad.IsButtonReleased(InstanceId, GbaInput.B) &&
+                    CanAttackWithFist(1) &&
+                    ActionId is
+                        Action.SuperHelico_BeginThrowFist_Right or Action.SuperHelico_BeginThrowFist_Left or
+                        Action.SuperHelico_ChargeFist_Right or Action.SuperHelico_ChargeFist_Left or
+                        Action.SuperHelico_ChargeSuperFist_Right or Action.SuperHelico_ChargeSuperFist_Left)
+                {
+                    if (Timer == 0)
+                        Timer = GameTime.ElapsedFrames;
+
+                    if (ActionId is Action.SuperHelico_ChargeSuperFist_Right or Action.SuperHelico_ChargeSuperFist_Left)
+                    {
+                        Attack(GameTime.ElapsedFrames - Timer, RaymanBody.RaymanBodyPartType.SuperFist, new Vector2(16, -16), true);
+                        PlaySound(Rayman3SoundEvent.Stop__Charge2_Mix04);
+                    }
+                    else
+                    {
+                        Attack(GameTime.ElapsedFrames - Timer, RaymanBody.RaymanBodyPartType.Fist, new Vector2(16, -16), false);
+                    }
+
+                    ActionId = IsFacingRight ? Action.SuperHelico_EndChargeFist_Right : Action.SuperHelico_EndChargeFist_Left;
+                    ChangeAction();
+                }
+
+                // Finish punch
+                if (IsActionFinished && ActionId is Action.SuperHelico_EndChargeFist_Right or Action.SuperHelico_EndChargeFist_Left)
+                    ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
+
+                // Move left
+                if (IsDirectionalButtonPressed(GbaInput.Left))
+                {
+                    if (IsDirectionalButtonJustPressed(GbaInput.Left))
+                        PreviousXSpeed = MathHelpers.FromFixedPoint(0x1cccc);
+                    else if (PreviousXSpeed <= 0)
+                        PreviousXSpeed = 0;
+                    else
+                        PreviousXSpeed -= 0.25f;
+
+                    if (IsFacingRight)
+                        AnimatedObject.FlipX = true;
+
+                    MechModel.Speed = MechModel.Speed with { X = PreviousXSpeed - MathHelpers.FromFixedPoint(0x1cccc) };
+                }
+                // Move right
+                else if (IsDirectionalButtonPressed(GbaInput.Right))
+                {
+                    if (IsDirectionalButtonJustPressed(GbaInput.Right))
+                        PreviousXSpeed = -MathHelpers.FromFixedPoint(0x1cccc);
+                    else if (PreviousXSpeed >= 0)
+                        PreviousXSpeed = 0;
+                    else
+                        PreviousXSpeed += 0.25f;
+
+                    if (IsFacingLeft)
+                        AnimatedObject.FlipX = false;
+
+                    MechModel.Speed = MechModel.Speed with { X = PreviousXSpeed + MathHelpers.FromFixedPoint(0x1cccc) };
+                }
+                // Gradually slow down horizontal movement
+                else
+                {
+                    if (PreviousXSpeed == 0 && Speed.X != 0)
+                        PreviousXSpeed = Speed.X;
+
+                    if (Speed.X == 0 || 
+                        Speed.X > 0 && PreviousXSpeed < 0 || 
+                        Speed.X < 0 && PreviousXSpeed > 0)
+                    {
+                        PreviousXSpeed = 0;
+                    }
+                    else if (PreviousXSpeed <= 0)
+                    {
+                        PreviousXSpeed += MathHelpers.FromFixedPoint(0xf00);
+                        if (PreviousXSpeed > 0)
+                            PreviousXSpeed = 0;
+                    }
+                    else
+                    {
+                        PreviousXSpeed -= MathHelpers.FromFixedPoint(0xf00);
+                        if (PreviousXSpeed < 0)
+                            PreviousXSpeed = 0;
+                    }
+                    
+                    MechModel.Speed = MechModel.Speed with { X = PreviousXSpeed };
+                }
+
+                // Move up
+                if (MultiJoyPad.IsButtonPressed(InstanceId, GbaInput.A))
+                {
+                    MechModel.Speed = MechModel.Speed with { Y = -1 };
+                }
+                // Fall down
+                else if (MultiJoyPad.IsButtonReleased(InstanceId, GbaInput.A))
+                {
+                    if (MechModel.Speed.Y >= 1)
+                        MechModel.Speed = MechModel.Speed with { Y = 1 };
+                    else
+                        MechModel.Speed += new Vector2(0, 0.25f);
+                }
+
+                // Super helico ending
+                if (IsSuperHelicoActive && 
+                    MultiplayerBlueLumTimer != 1299 &&
+                    ActionId is not (
+                        Action.SuperHelico_BeginThrowFist_Right or Action.SuperHelico_BeginThrowFist_Left or
+                        Action.SuperHelico_ChargeFist_Right or Action.SuperHelico_ChargeFist_Left or
+                        Action.SuperHelico_ChargeSuperFist_Right or Action.SuperHelico_ChargeSuperFist_Left or
+                        Action.SuperHelico_EndChargeFist_Right or Action.SuperHelico_EndChargeFist_Left))
+                {
+                    int timer = RSMultiplayer.IsActive ? MultiplayerBlueLumTimer : GameInfo.BlueLumTimer;
+
+                    if (timer < 79 &&
+                        ActionId is not (Action.HelicoTimeout_Right or Action.HelicoTimeout_Left))
+                    {
+                        ActionId = IsFacingRight ? Action.HelicoTimeout_Right : Action.HelicoTimeout_Left;
+                    }
+                    else if (timer >= 79 &&
+                             ActionId is Action.HelicoTimeout_Right or Action.HelicoTimeout_Left)
+                    {
+                        ActionId = IsFacingRight ? Action.Helico_Right : Action.Helico_Left;
+                    }
+                }
+
+                if (IsNearHangableEdge())
+                {
+                    State.MoveTo(Fsm_HangOnEdge);
+                    return false;
+                }
+
+                if (HasLanded())
+                {
+                    NextActionId = IsFacingRight ? Action.Land_Right : Action.Land_Left;
+                    State.MoveTo(Fsm_Default);
+                    return false;
+                }
+
+                if (!IsSuperHelicoActive)
+                {
+                    PlaySound(Rayman3SoundEvent.Play__Tag_Mix02);
+                    State.MoveTo(Fsm_StopHelico);
+                    return false;
+                }
+
+                if (IsOnHangable())
+                {
+                    BeginHang();
+                    State.MoveTo(Fsm_Hang);
+                    return false;
+                }
+
+                if (IsOnClimbableVertical() == 1)
+                {
+                    State.MoveTo(Fsm_Climb);
+                    return false;
+                }
+
+                if (MultiJoyPad.IsButtonPressed(InstanceId, GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                PreviousXSpeed = 0;
+                cam.HorizontalOffset = CameraOffset.Default;
+                PlaySound(Rayman3SoundEvent.Stop__Helico01_Mix10);
+                PlaySound(Rayman3SoundEvent.Stop__Charge_Mix05);
+                PlaySound(Rayman3SoundEvent.Stop__Charge2_Mix04);
+                PlaySound(Rayman3SoundEvent.Play__HeliStop_Mix06);
                 break;
         }
 
@@ -1268,9 +1505,9 @@ public partial class Rayman
                     return false;
                 }
 
-                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c != 0)
+                if (MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
 
@@ -1358,9 +1595,9 @@ public partial class Rayman
                     return false;
                 }
 
-                if (field27_0x9c != 0)
+                if (IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
                 break;
@@ -1969,15 +2206,15 @@ public partial class Rayman
                 if (AnimatedObject.CurrentFrame == 6 && CanAttackWithBody())
                     Attack(90, RaymanBody.RaymanBodyPartType.Torso, Vector2.Zero, false);
 
-                if (IsActionFinished && field27_0x9c == 0)
+                if (IsActionFinished && !IsSuperHelicoActive)
                 {
                     State.MoveTo(Fsm_TimeoutHelico);
                     return false;
                 }
 
-                if (IsActionFinished && field27_0x9c != 0)
+                if (IsActionFinished && IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
                 break;
@@ -3731,15 +3968,15 @@ public partial class Rayman
                     return false;
                 }
 
-                if (HitPoints != 0 && MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c == 0)
+                if (HitPoints != 0 && MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && !IsSuperHelicoActive)
                 {
                     State.MoveTo(Fsm_Helico);
                     return false;
                 }
 
-                if (HitPoints != 0 && MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && field27_0x9c != 0)
+                if (HitPoints != 0 && MultiJoyPad.IsButtonJustPressed(InstanceId, GbaInput.A) && IsSuperHelicoActive)
                 {
-                    State.MoveTo(FUN_0802ddac);
+                    State.MoveTo(Fsm_SuperHelico);
                     return false;
                 }
 
@@ -4048,7 +4285,6 @@ public partial class Rayman
     }
 
     // TODO: Implement all of these
-    private bool FUN_0802ddac(FsmAction action) => true;
     private bool Fsm_MultiplayerDying(FsmAction action) => true;
     private bool FUN_080224f4(FsmAction action) => true;
     private bool FUN_1005dea0(FsmAction action) => true;

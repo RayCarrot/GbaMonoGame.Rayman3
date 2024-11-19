@@ -12,7 +12,7 @@ public partial class Lums
         {
             case FsmAction.Init:
                 if (GameInfo.MapId == MapId.BossRockAndLava)
-                    BossDespawnTimer = 0;
+                    Timer = 0;
                 break;
 
             case FsmAction.Step:
@@ -28,12 +28,12 @@ public partial class Lums
 
                 if (GameInfo.MapId == MapId.BossRockAndLava && !collected)
                 {
-                    BossDespawnTimer++;
+                    Timer++;
                     
-                    if (BossDespawnTimer > 120)
+                    if (Timer > 120)
                     {
                         collected = true;
-                        BossDespawnTimer = 1;
+                        Timer = 1;
                     }
                 }
 
@@ -77,10 +77,10 @@ public partial class Lums
                 if (GameInfo.MapId == MapId.BossRockAndLava)
                 {
                     // Check if the timer finished and the lum should just despawn
-                    if (BossDespawnTimer == 1)
+                    if (Timer == 1)
                         return true;
 
-                    BossDespawnTimer = 0;
+                    Timer = 0;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumBleu_Mix02);
                 }
                 else
@@ -110,7 +110,7 @@ public partial class Lums
                             break;
 
                         case Action.BlueLum:
-                            // TODO: Implement
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumBleu_Mix02);
                             break;
 
                         case Action.WhiteLum:
@@ -120,11 +120,11 @@ public partial class Lums
                             break;
 
                         case Action.BigYellowLum:
-                            // TODO: Implement
+                            // Do nothing
                             break;
 
                         case Action.BigBlueLum:
-                            // TODO: Implement
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__LumBleu_Mix02);
                             break;
                     }
                 }
@@ -147,7 +147,7 @@ public partial class Lums
             case FsmAction.Step:
                 if (IsActionFinished && ActionId == Action.BlueLum && GameInfo.MapId != MapId.BossRockAndLava)
                 {
-                    State.MoveTo(FUN_0805e6b8);
+                    State.MoveTo(Fsm_Respawn);
                     return false;
                 }
                 
@@ -167,9 +167,47 @@ public partial class Lums
         return true;
     }
 
+    private bool Fsm_Respawn(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                Timer = 0;
+                break;
+
+            case FsmAction.Step:
+                Timer++;
+
+                if (Timer >= 250)
+                {
+                    State.MoveTo(Fsm_Idle);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                Vector2 camPos = Scene.Playfield.Camera.Position;
+
+                if (Position.X - camPos.X > 0 &&
+                    Position.X - camPos.X < Scene.Resolution.X &&
+                    Position.Y - camPos.Y > 0 &&
+                    Position.Y - camPos.Y < Scene.Resolution.Y)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Appear_SocleFX1_Mix01);
+                }
+
+                if (ActionId == Action.BlueLum)
+                    AnimatedObject.CurrentAnimation = 0;
+
+                Timer = 0xFF;
+                break;
+        }
+
+        return true;
+    }
+
     // TODO: Implement
     private bool FUN_0805ed40(FsmAction action) => true;
-    private bool FUN_0805e6b8(FsmAction action) => true;
     private bool FUN_0805e83c(FsmAction action) => true;
     private bool FUN_0805e844(FsmAction action) => true;
 }

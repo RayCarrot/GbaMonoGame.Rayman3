@@ -132,7 +132,7 @@
 ## Bars
 | Name                   | State   | Info                                         |
 | ---------------------- | ------- | -------------------------------------------- |
-| BlueLumBar             | 🟥     |                                              |
+| BlueLumBar             | 🟩     |                                              |
 | LifeBar                | 🟩     |                                              |
 | LumsBar                | 🟩     |                                              |
 | Lums1000Bar            | 🟩     |                                              |
@@ -163,7 +163,7 @@
 | FallingChainedPlatform | 🟩     |                                              |
 | Switch                 | 🟩     |                                              |
 | Gate                   | 🟩     |                                              |
-| Lums                   | 🟨     | Not implemented blue lums among other states |
+| Lums                   | 🟨     | Not implemented for multiplayer              |
 | Cage                   | 🟩     |                                              |
 | LevelCurtain           | 🟩     |                                              |
 | FallingWoodenPlatform  | 🟩     |                                              |

@@ -157,10 +157,11 @@ public sealed partial class Rayman : MovableActor
     public bool Flag2_7 { get; set; }
 
     // Unknown fields
+    public ushort MultiplayerBlueLumTimer { get; set; }
     public byte field16_0x91 { get; set; }
     public byte field22_0x97 { get; set; }
     public byte field23_0x98 { get; set; }
-    public byte field27_0x9c { get; set; } // Bool?
+    public bool IsSuperHelicoActive { get; set; }
 
     // TODO: Maybe we should just make the state methods public to avoid this?
     public bool IsInDefaultState => State == Fsm_Default;
@@ -1420,7 +1421,14 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_CollectedBlueLum:
-                // TODO: Implement
+                if (!HasPower(Power.SuperHelico)) 
+                    return false;
+                
+                if (!RSMultiplayer.IsActive)
+                    GameInfo.AddBlueLumTime();
+
+                IsSuperHelicoActive = true;
+                MultiplayerBlueLumTimer = 300;
                 return false;
 
             case Message.Main_CollectedWhiteLum:
@@ -1433,7 +1441,11 @@ public sealed partial class Rayman : MovableActor
                 return false;
 
             case Message.Main_CollectedBigBlueLum:
-                // TODO: Implement
+                if (!HasPower(Power.SuperHelico))
+                    return false;
+
+                IsSuperHelicoActive = true;
+                MultiplayerBlueLumTimer = 1299;
                 return false;
 
             case Message.Main_LevelEnd:
@@ -1662,7 +1674,7 @@ public sealed partial class Rayman : MovableActor
 
         Timer = 0;
         InvulnerabilityStartTime = 0;
-        //field11_0x88 = 0;
+        MultiplayerBlueLumTimer = 0;
         NextActionId = null;
         Array.Clear(ActiveBodyParts);
         Flag1_0 = false;
@@ -1697,7 +1709,7 @@ public sealed partial class Rayman : MovableActor
         field22_0x97 = 0;
 
         Flag2_0 = false;
-        field27_0x9c = 0;
+        IsSuperHelicoActive = false;
         Flag2_1 = false;
         CanJump = true;
 
@@ -1760,6 +1772,21 @@ public sealed partial class Rayman : MovableActor
 
         if (SlideType != null && NewAction)
             MechModel.Init(1);
+
+        if (IsSuperHelicoActive && MultiplayerBlueLumTimer != 1299)
+        {
+            if (RSMultiplayer.IsActive)
+            {
+                MultiplayerBlueLumTimer--;
+                if (MultiplayerBlueLumTimer == 0)
+                    IsSuperHelicoActive = false;
+            }
+            else
+            {
+                if (GameInfo.BlueLumTimer == 0)
+                    IsSuperHelicoActive = false;
+            }
+        }
 
         // TODO: Implement
     }

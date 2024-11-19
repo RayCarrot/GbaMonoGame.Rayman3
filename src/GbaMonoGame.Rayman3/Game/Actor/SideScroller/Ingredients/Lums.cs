@@ -82,14 +82,14 @@ public sealed partial class Lums : BaseActor
         else
         {
             State.SetTo(FUN_0805e844);
-            BossDespawnTimer = -1;
+            Timer = 0xFF;
             LumId = instanceId;
             MultiplayerInfo.TagInfo.SaveLumPosition(instanceId, actorResource);
         }
     }
 
     public int LumId { get; }
-    public int BossDespawnTimer { get; set; }
+    public byte Timer { get; set; }
 
     private Box GetCollisionBox()
     {
@@ -159,7 +159,7 @@ public sealed partial class Lums : BaseActor
 
     public override void Draw(AnimationPlayer animationPlayer, bool forceDraw)
     {
-        if (State != FUN_0805ed40 && State != FUN_0805e6b8 && State != FUN_0805e83c)
+        if (State != FUN_0805ed40 && State != Fsm_Respawn && State != FUN_0805e83c)
         {
             if (Scene.Camera.IsActorFramed(this))
             {

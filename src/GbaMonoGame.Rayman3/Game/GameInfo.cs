@@ -26,6 +26,7 @@ public static class GameInfo
     public static bool field7_0x7 { get; set; }
     public static byte field12_0xf { get; set; }
     public static bool HasCollectedWhiteLum { get; set; }
+    public static ushort BlueLumTimer { get; set; }
     public static Power Powers { get; set; }
     public static Cheat Cheats { get; set; }
     public static ActorSoundFlags ActorSoundFlags { get; set; } // Defines if actor type has made sound this frame to avoid repeated sounds
@@ -142,6 +143,16 @@ public static class GameInfo
     {
         LastGreenLumAlive++;
         CheckpointPosition = pos;
+    }
+
+    public static void AddBlueLumTime()
+    {
+        if (BlueLumTimer < 79)
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__LumTimer_Mix02);
+
+        BlueLumTimer += 304;
+        if (BlueLumTimer > 416)
+            BlueLumTimer = 416;
     }
 
     public static bool GetLumStatus(int lumId)

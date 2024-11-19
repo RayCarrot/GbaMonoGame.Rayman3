@@ -17,9 +17,7 @@ public class UserInfoSideScroller : Dialog
         CagesBar = new CagesBar(scene);
 
         if (hasBlueLum)
-        {
-            // TODO: Blue lums bar
-        }
+            BlueLumBar = new BlueLumBar(scene);
 
         if (GameInfo.MapId == MapId.EchoingCaves_M1)
             SwitchBar = new SwitchBar(scene);
@@ -65,6 +63,7 @@ public class UserInfoSideScroller : Dialog
     public SwitchBar SwitchBar { get; }
     public Bar BossBar { get; }
     public CagesBar CagesBar { get; }
+    private BlueLumBar BlueLumBar { get; }
 
     public Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
 
@@ -142,7 +141,7 @@ public class UserInfoSideScroller : Dialog
                     CagesBar.MoveIn();
                 }
 
-                // TODO: Blue lums bar
+                BlueLumBar?.SetToStayHidden();
                 SwitchBar?.SetToStayHidden();
                 BossBar?.SetToStayHidden();
                 return true;
@@ -155,7 +154,7 @@ public class UserInfoSideScroller : Dialog
                     CagesBar.SetToDefault();
                 }
 
-                // TODO: Blue lums bar
+                BlueLumBar?.SetToDefault();
                 SwitchBar?.SetToDefault();
                 BossBar?.SetToDefault();
                 return true;
@@ -175,14 +174,14 @@ public class UserInfoSideScroller : Dialog
         LifeBar.Load();
         GetLumsBar().Load();
         CagesBar.Load();
-        // TODO: Blue lums bar
+        BlueLumBar?.Load();
         SwitchBar?.Load();
         BossBar?.Load();
 
         LifeBar.Set();
         GetLumsBar().Set();
         CagesBar.Set();
-        // TODO: Blue lums bar
+        BlueLumBar?.Set();
         SwitchBar?.Set();
     }
 
@@ -193,7 +192,7 @@ public class UserInfoSideScroller : Dialog
         LifeBar.Draw(animationPlayer);
         GetLumsBar().Draw(animationPlayer);
         CagesBar.Draw(animationPlayer);
-        // TODO: Blue lums bar
+        BlueLumBar?.Draw(animationPlayer);
         SwitchBar?.Draw(animationPlayer);
         BossBar?.Draw(animationPlayer);
     }

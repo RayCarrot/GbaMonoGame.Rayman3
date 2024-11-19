@@ -134,7 +134,10 @@ public partial class Rayman
         HangOnEdge_ChargeAttack_Left = 123,
         HangOnEdge_EndAttack_Right = 124,
         HangOnEdge_EndAttack_Left = 125,
-
+        SuperHelico_ChargeFist_Right = 126,
+        SuperHelico_ChargeFist_Left = 127,
+        SuperHelico_EndChargeFist_Right = 128,
+        SuperHelico_EndChargeFist_Left = 129,
         CrouchDown_Right = 130,
         CrouchDown_Left = 131,
         Climb_Idle_Right = 132,
@@ -153,6 +156,8 @@ public partial class Rayman
         HangOnEdge_BeginAttack_Left = 145,
         Idle_Bored_Right = 146,
         Idle_Bored_Left = 147,
+        SuperHelico_BeginThrowFist_Right = 148,
+        SuperHelico_BeginThrowFist_Left = 149,
 
         Idle_Yoyo_Right = 152,
         Idle_Yoyo_Left = 153,
@@ -183,7 +188,8 @@ public partial class Rayman
         Walk_Multiplayer_Left = 180,
         Climb_ChargeSuperFist_Right = 181,
         Climb_ChargeSuperFist_Left = 182,
-
+        SuperHelico_ChargeSuperFist_Right = 183,
+        SuperHelico_ChargeSuperFist_Left = 184,
         HelicoTimeout_Right = 185,
         HelicoTimeout_Left = 186,
         Hidden_Right = 187,
