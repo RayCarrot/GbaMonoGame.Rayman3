@@ -30,7 +30,7 @@ public enum ActorType
     SilverPirate = 25,
     HelicopterBomb = 26,
     ZombieChicken = 27,
-
+    FallingNet = 28,
     BarrelSplash = 29,
     Depart = 30,
     RedShell = 31,

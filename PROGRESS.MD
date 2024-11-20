@@ -179,7 +179,7 @@
 | SilverPirate           | 🟩     |                                              |
 | HelicopterBomb         | 🟩     |                                              |
 | ZombieChicken          | 🟩     |                                              |
-| #28                    | 🟥     |                                              |
+| FallingNet             | 🟩     |                                              |
 | BarrelSplash           | 🟩     |                                              |
 | Depart                 | 🟩     |                                              |
 | RedShell               | 🟩     |                                              |

@@ -1,6 +1,6 @@
 ﻿namespace GbaMonoGame.Rayman3;
 
-public partial class FallingPlatform
+public partial class FallingNet
 {
     public new Action ActionId
     {
@@ -11,9 +11,8 @@ public partial class FallingPlatform
     public enum Action
     {
         Idle = 0,
-        Shake = 1,
-        BeginFall = 2,
-        Fall = 3,
-        Action4 = 4, // Unused
+        Fall = 1,
+        Action2 = 2, // Unused
+        Shake = 3,
     }
 }

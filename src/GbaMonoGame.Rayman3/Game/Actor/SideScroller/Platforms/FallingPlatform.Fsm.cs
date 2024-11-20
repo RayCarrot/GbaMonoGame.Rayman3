@@ -136,7 +136,7 @@ public partial class FallingPlatform
                 if (AnimatedObject.IsFramed && !SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__PF1Fall_PF2Fall_Mix03))
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PF1Fall_PF2Fall_Mix03);
 
-                ActionId = Action.Action3;
+                ActionId = Action.Fall;
                 Timer = 0;
                 break;
 
