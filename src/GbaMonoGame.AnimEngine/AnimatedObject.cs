@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework.Graphics;
@@ -110,6 +111,7 @@ public class AnimatedObject : AObject
 
     public AffineMatrix? AffineMatrix { get; set; }
     public int BasePaletteIndex { get; set; }
+    public int PaletteCycleIndex { get; set; }
 
     public float Alpha { get; set; } = 1;
     public float GbaAlpha
@@ -136,11 +138,43 @@ public class AnimatedObject : AObject
     {
         AnimatedObjectResource resource = spriteDefine.Resource;
 
-        Palette palette = Engine.PaletteCache.GetOrCreateObject(
-            pointer: resource.Palettes.Offset,
-            id: spriteDefine.PaletteIndex,
-            data: resource.Palettes.Palettes[spriteDefine.PaletteIndex],
-            createObjFunc: p => new Palette(p));
+        Palette palette;
+
+        // If the palette cycle index is 0 then it's the default, unmodified, palette
+        if (spriteDefine.PaletteCycleIndex == 0)
+        {
+            palette = Engine.PaletteCache.GetOrCreateObject(
+                pointer: resource.Palettes.Offset,
+                id: spriteDefine.PaletteIndex,
+                data: resource.Palettes.Palettes[spriteDefine.PaletteIndex],
+                createObjFunc: p => new Palette(p));
+        }
+        else
+        {
+            palette = Engine.PaletteCache.GetOrCreateObject(
+                pointer: spriteDefine.PaletteCycleAnimation.Offset,
+                id: spriteDefine.PaletteCycleIndex * resource.PalettesCount + spriteDefine.PaletteIndex,
+                data: spriteDefine,
+                createObjFunc: data =>
+                {
+                    RGB555Color[] originalPal = data.Resource.Palettes.Palettes[data.PaletteIndex].Colors;
+                    RGB555Color[] newPal = new RGB555Color[originalPal.Length];
+                    Array.Copy(originalPal, newPal, originalPal.Length);
+
+                    PaletteCycleAnimation palAnim = data.PaletteCycleAnimation;
+                    int length = palAnim.ColorEndIndex - palAnim.ColorStartIndex + 1;
+
+                    for (int i = 0; i < length; i++)
+                    {
+                        int srcIndex = palAnim.ColorStartIndex + i;
+                        int dstIndex = palAnim.ColorStartIndex + (i + data.PaletteCycleIndex) % length;
+
+                        newPal[dstIndex] = originalPal[srcIndex];
+                    }
+                    
+                    return new Palette(newPal);
+                });
+        }
 
         SpriteTexture2D tex = new(resource, spriteDefine.SpriteShape, spriteDefine.SpriteSize, palette, spriteDefine.TileIndex);
 
@@ -285,8 +319,22 @@ public class AnimatedObject : AObject
 
         // --- At this point the engine loads dynamic data which we don't need to ---
 
+        // NOTE: This will only cycle the palette for this animated object instanced. This is different from the
+        //       original game where all instances of the same animation share the same palette in VRAM. Because
+        //       of this the original game "speeds up" the animations when more are on screen at once (because
+        //       each instance shifts the palette one step). This is noticeable for the blue lum bar which has
+        //       the fill area made out of multiple small animations. We could recreate this here, but it would
+        //       cause issues for the lava, which also uses this, if you zoom out to show multiple on screen.
         if (anim.Idx_PaletteCycleAnimation != 0 && !IsDelayMode)
-            throw new NotImplementedException("Not implemented animations with palette data");
+        {
+            PaletteCycleAnimation palAnim = anim.PaletteCycleAnimation;
+            int length = palAnim.ColorEndIndex - palAnim.ColorStartIndex + 1;
+
+            PaletteCycleIndex++;
+
+            if (PaletteCycleIndex >= length)
+                PaletteCycleIndex = 0;
+        }
 
         // Enumerate every channel
         int channelIndex = 0;
@@ -350,8 +398,15 @@ public class AnimatedObject : AObject
                     {
                         Texture = Engine.TextureCache.GetOrCreateObject(
                             pointer: Resource.Offset, 
-                            id: channel.TileIndex * Resource.PalettesCount + paletteIndex,
-                            data: new SpriteDefine(Resource, channel.SpriteShape, channel.SpriteSize, paletteIndex, channel.TileIndex),
+                            id: (channel.TileIndex * Resource.PalettesCount + paletteIndex) * 16 + PaletteCycleIndex,
+                            data: new SpriteDefine(
+                                resource: Resource, 
+                                spriteShape: channel.SpriteShape, 
+                                spriteSize: channel.SpriteSize, 
+                                paletteIndex: paletteIndex,
+                                paletteCycleAnimation: anim.PaletteCycleAnimation,
+                                paletteCycleIndex: PaletteCycleIndex,
+                                tileIndex: channel.TileIndex),
                             createObjFunc: CreateSpriteTexture),
                         Position = new Vector2(xPos, yPos),
                         FlipX = channel.FlipX ^ FlipX,
@@ -405,12 +460,21 @@ public class AnimatedObject : AObject
 
     private readonly struct SpriteDefine
     {
-        public SpriteDefine(AnimatedObjectResource resource, int spriteShape, int spriteSize, int paletteIndex, int tileIndex)
+        public SpriteDefine(
+            AnimatedObjectResource resource, 
+            int spriteShape, 
+            int spriteSize, 
+            int paletteIndex, 
+            PaletteCycleAnimation paletteCycleAnimation, 
+            int paletteCycleIndex, 
+            int tileIndex)
         {
             Resource = resource;
             PaletteIndex = paletteIndex;
             SpriteShape = spriteShape;
             SpriteSize = spriteSize;
+            PaletteCycleAnimation = paletteCycleAnimation;
+            PaletteCycleIndex = paletteCycleIndex;
             TileIndex = tileIndex;
         }
 
@@ -418,6 +482,8 @@ public class AnimatedObject : AObject
         public int SpriteShape { get; }
         public int SpriteSize { get; }
         public int PaletteIndex { get; }
+        public PaletteCycleAnimation PaletteCycleAnimation { get; }
+        public int PaletteCycleIndex { get; }
         public int TileIndex { get; }
     }
 

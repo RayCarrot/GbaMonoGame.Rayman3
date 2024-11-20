@@ -113,7 +113,6 @@ public class BlueLumBar : Bar
 
         scaledFillXPos += FillXPosition;
 
-        // TODO: Rewrite this using math?
         switch ((int)(scaledTimerValue % 16))
         {
             case 0:
