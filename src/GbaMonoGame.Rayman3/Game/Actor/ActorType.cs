@@ -62,6 +62,7 @@ public enum ActorType
     FlowerFire = 61,
 
     Murfy = 64,
+    LavaFall = 65,
 
     ChainedSparkles = 67,
 

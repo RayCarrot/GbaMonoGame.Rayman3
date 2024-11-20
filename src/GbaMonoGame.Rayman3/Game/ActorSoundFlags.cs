@@ -6,6 +6,7 @@ namespace GbaMonoGame.Rayman3;
 public enum ActorSoundFlags
 {
     None = 0,
+    LavaFall = 1 << 0,
     FlyingBomb = 1 << 1,
     Urchin = 1 << 3,
 }
