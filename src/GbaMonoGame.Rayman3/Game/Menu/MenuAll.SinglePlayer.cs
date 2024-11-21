@@ -10,7 +10,7 @@ public partial class MenuAll
     #region Private Properties
 
     private bool HasLoadedGameInfo { get; set; }
-    private Slot[] Slots { get; } = new Slot[3];
+    private Slot[] Slots { get; }
     private bool IsLoadingSlot { get; set; }
 
     private byte StartEraseCursorTargetIndex { get; set; }

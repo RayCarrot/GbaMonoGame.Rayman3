@@ -12,9 +12,9 @@ public partial class MenuAll
     private int GameLogoYOffset { get; set; }
     private int OtherGameLogoValue { get; set; }
     private int GameLogoSinValue { get; set; }
-    private int GameLogoMovementXOffset { get; set; } = 3;
-    private int GameLogoMovementWidth { get; set; } = 6;
-    private int GameLogoMovementXCountdown { get; set; } = 6;
+    private int GameLogoMovementXOffset { get; set; }
+    private int GameLogoMovementWidth { get; set; }
+    private int GameLogoMovementXCountdown { get; set; }
 
     #endregion
 

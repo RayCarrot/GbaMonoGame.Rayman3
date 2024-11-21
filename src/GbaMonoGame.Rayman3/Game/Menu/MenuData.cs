@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 // TODO: Add N-Gage support
 public class MenuData
 {
-    public MenuData(int multiplayerSinglePakPlayersOffsetY)
+    public MenuData(int multiplayerMultiPakPlayersOffsetY, int multiplayerSinglePakPlayersOffsetY)
     {
         AnimatedObjectResource propsAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuPropAnimations);
         AnimatedObjectResource startEraseAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuStartEraseAnimations);
@@ -249,19 +249,55 @@ public class MenuData
             };
         }
 
+        MultiplayerPlayerSelection = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 32,
+            ScreenPos = new Vector2(145, 40 - multiplayerMultiPakPlayersOffsetY),
+            CurrentAnimation = 0
+        };
+
+        MultiplayerPlayerNumberIcons = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(102, 22 - multiplayerMultiPakPlayersOffsetY),
+            CurrentAnimation = 4
+        };
+
+        MultiplayerPlayerSelectionIcons = new AnimatedObject[RSMultiplayer.MaxPlayersCount];
+        for (int i = 0; i < MultiplayerPlayerSelectionIcons.Length; i++)
+        {
+            MultiplayerPlayerSelectionIcons[i] = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
+            {
+                IsFramed = true,
+                BgPriority = 1,
+                ObjPriority = 16,
+                ScreenPos = new Vector2(104 + 24 * i, 49 - multiplayerMultiPakPlayersOffsetY),
+                CurrentAnimation = 8
+            };
+        }
+
+        MultiplayerPlayerSelectionHighlight = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(104, 26 - multiplayerMultiPakPlayersOffsetY),
+            CurrentAnimation = 10
+        };
+
         // TODO: Load data
-        // field30_0x468
-        // field31_0x488
-        // field33_0x4c8
-        // field32_0x4a8
-        // field35_0x5c0
-        // field36_0x5e0
-        // field37_0x608
-        // field38_0x628
-        // field39_0x648
-        // field40_0x668
-        // field41_0x690
-        // field42_0x6a8
+        // field_0x5c0
+        // field_0x5e0
+        // field_0x608
+        // field_0x628
+        // field_0x648
+        // field_0x668
+        // field_0x690
+        // field_0x6a8
 
         MultiplayerSinglePakPlayers = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
         {
@@ -297,5 +333,9 @@ public class MenuData
     public AnimatedObject StartEraseSelection { get; }
     public AnimatedObject StartEraseCursor { get; }
     public SpriteTextObject[] MultiplayerTexts { get; }
+    public AnimatedObject MultiplayerPlayerSelection { get; set; }
+    public AnimatedObject MultiplayerPlayerNumberIcons { get; set; }
+    public AnimatedObject[] MultiplayerPlayerSelectionIcons { get; set; }
+    public AnimatedObject MultiplayerPlayerSelectionHighlight { get; set; }
     public AnimatedObject MultiplayerSinglePakPlayers { get; }
 }

@@ -17,7 +17,41 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public MenuAll(Page initialPage)
     {
+        // TODO: Implement all
+        WheelRotation = 0;
+        SelectedOption = 0;
+        PrevSelectedOption = 0;
+        StartEraseCursorTargetIndex = 0;
+        StartEraseCursorCurrentIndex = 0;
+        CurrentStepAction = null;
+        NextStepAction = null;
+        TransitionValue = 0;
+        MultiplayerMultiPakPlayersOffsetY = 70;
+        MultiplayerSinglePakPlayersOffsetY = 70;
+        //field_0x1f = 0;
+        GameLogoMovementXOffset = 3;
+        GameLogoMovementWidth = 6;
+        PrevGameTime = 0;
+        GameLogoMovementXCountdown = 0;
+        GameLogoYOffset = 0;
+        StemMode = 0;
+        field_0x70 = 0xff;
+        field_0x71 = 0;
+        //field_0x72 = 0;
+        MultiplayerGameType = MultiplayerGameType.RayTag;
+        MultiplayerMapId = 0;
+        //field_0x80 = 0;
+        IsLoadingMultiplayerMap = false;
+        ShouldMultiplayerTextBlink = false;
+        //finishedLyChallenge1 = false;
+        //finishedLyChallenge2 = false;
+        //hasAllCages = 0;
+        field_0xe3 = false;
+        Slots = new Slot[3];
+        HasLoadedGameInfo = false;
+        IsLoadingSlot = false;
         InitialPage = initialPage;
+        field_0x66 = 0;
     }
 
     #endregion
@@ -286,7 +320,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         AnimationPlayer = new AnimationPlayer(false, null);
 
-        Data = new MenuData(MultiplayerSinglePakPlayersOffsetY);
+        Data = new MenuData(MultiplayerMultiPakPlayersOffsetY, MultiplayerSinglePakPlayersOffsetY);
         WheelRotation = 0;
 
         LoadPlayfield();
