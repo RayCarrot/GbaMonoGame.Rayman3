@@ -214,6 +214,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             _debugLayout.AddWindow(new LoggerDebugWindow());
             _debugLayout.AddWindow(new GfxDebugWindow());
             _debugLayout.AddWindow(new SoundDebugWindow());
+            _debugLayout.AddWindow(new MultiplayerDebugWindow());
             _debugLayout.AddMenu(new WindowsDebugMenu());
             AddDebugWindowsAndMenus(_debugLayout);
             _debugLayout.LoadContent(this);
