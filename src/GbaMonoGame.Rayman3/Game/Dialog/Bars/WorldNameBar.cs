@@ -21,14 +21,14 @@ public class WorldNameBar : Bar
     public AnimatedObject Canvas { get; set; }
     public SpriteTextObject WorldName { get; set; }
 
-    public void SetWorld(int worldId)
+    public void SetWorld(WorldId worldId)
     {
         string worldNameText = Localization.GetText(8, worldId switch
         {
-            0 => 31,
-            1 => 32,
-            2 => 33,
-            3 => 34,
+            WorldId.World1 => 31,
+            WorldId.World2 => 32,
+            WorldId.World3 => 33,
+            WorldId.World4 => 34,
             _ => throw new ArgumentOutOfRangeException(nameof(worldId), worldId, "Invalid world id"),
         })[0];
 

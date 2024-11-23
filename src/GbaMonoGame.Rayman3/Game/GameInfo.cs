@@ -12,7 +12,7 @@ public static class GameInfo
     public static MapId? NextMapId { get; set; }
     public static MapId MapId { get; set; }
     public static LevelType LevelType { get; set; }
-    public static int World { get; set; }
+    public static WorldId WorldId { get; set; }
     public static int LoadedYellowLums { get; set; }
     public static int LoadedCages { get; set; }
     public static int YellowLumsCount { get; set; }
@@ -478,7 +478,7 @@ public static class GameInfo
             case MapId.SanctuaryOfBigTree_M2:
             case MapId.Bonus1:
             case MapId.World1:
-                World = 0;
+                WorldId = WorldId.World1;
                 break;
 
             case MapId.MissileRace1:
@@ -493,7 +493,7 @@ public static class GameInfo
             case MapId.Bonus2:
             case MapId.ChallengeLy1:
             case MapId.World2:
-                World = 1;
+                WorldId = WorldId.World2;
                 break;
 
             case MapId.SanctuaryOfStoneAndFire_M1:
@@ -511,7 +511,7 @@ public static class GameInfo
             case MapId.SanctuaryOfRockAndLava_M3:
             case MapId.Bonus3:
             case MapId.World3:
-                World = 2;
+                WorldId = WorldId.World3;
                 break;
 
             case MapId.TombOfTheAncients_M1:
@@ -529,7 +529,7 @@ public static class GameInfo
             case MapId.ChallengeLy2:
             case MapId.ChallengeLyGCN:
             case MapId.World4:
-                World = 3;
+                WorldId = WorldId.World4;
                 break;
 
             case MapId.Power1:
@@ -538,7 +538,7 @@ public static class GameInfo
             case MapId.Power4:
             case MapId.Power5:
             case MapId.Power6:
-                World = 4;
+                WorldId = WorldId.Power;
                 break;
 
             case MapId.GbaMulti_MissileRace:
@@ -551,7 +551,7 @@ public static class GameInfo
             case MapId.NGageMulti_RayTag2:
             case MapId.NGageMulti_CatAndMouse1:
             case MapId.NGageMulti_CatAndMouse2:
-                World = 5;
+                WorldId = WorldId.Multiplayer;
                 break;
 
             case MapId.WorldMap:

@@ -3830,7 +3830,7 @@ public partial class Rayman
                     }
                     else
                     {
-                        GameInfo.LoadLevel(GameInfo.World + MapId.World1);
+                        GameInfo.LoadLevel(MapId.World1 + (int)GameInfo.WorldId);
                     }
                 }
 

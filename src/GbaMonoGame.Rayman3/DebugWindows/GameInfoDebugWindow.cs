@@ -14,7 +14,7 @@ public class GameInfoDebugWindow : DebugWindow
 
         ImGui.Text($"MapId: {GameInfo.MapId}");
         ImGui.Text($"LevelType: {GameInfo.LevelType}");
-        ImGui.Text($"World: {GameInfo.World}");
+        ImGui.Text($"World: {GameInfo.WorldId}");
 
         ImGui.Spacing();
         ImGui.SeparatorText("Powers");

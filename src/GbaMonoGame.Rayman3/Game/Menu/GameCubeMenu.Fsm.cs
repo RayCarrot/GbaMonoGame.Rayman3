@@ -164,7 +164,7 @@ public partial class GameCubeMenu
 
                 if (Timer >= 80)
                 {
-                    GameInfo.World = 0;
+                    GameInfo.WorldId = 0;
                     GameInfo.LoadLevel(MapId.WorldMap);
                     return false;
                 }

@@ -1,4 +1,5 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
+﻿using System;
+using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
@@ -16,8 +17,8 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     {
         GameInfo.SetNextMapId(mapId);
 
-        unk3 = 0;
-        WorldId = GameInfo.World;
+        CurrentMovement = WorldMapMovement.None;
+        WorldId = GameInfo.WorldId;
         unk2 = 0;
         ScrollX = Engine.Settings.Platform switch
         {
@@ -47,14 +48,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public Action CurrentExStepAction { get; set; }
 
     public float ScrollX { get; set; }
-    public byte CheatValue { get; set; }
+    public byte NGageScrollCooldown { get; set; }
+    public byte SpikyBagSinValue { get; set; }
+    public bool SpikyBagScrollDirection { get; set; }
     public byte CircleWipeFXMode { get; set; } // TODO: Enum
-    public int WorldId { get; set; }
+    public WorldMapMovement CurrentMovement { get; set; }
+    public byte CheatValue { get; set; }
+    public WorldId WorldId { get; set; }
 
     // TODO: Name
-    public byte NGageUnk1 { get; set; }
     public byte unk2 { get; set; }
-    public byte unk3 { get; set; }
     public ushort unk4 { get; set; }
     public short unk5 { get; set; }
 
@@ -69,10 +72,56 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     #region Private Methods
 
-    // TODO: Name
-    private void FUN_0808ee08()
+    private void InitScrollSpikyBag()
     {
-        // TODO: Implement
+        GfxScreen spikyBagScreen = Gfx.GetScreen(3);
+        float offsetX = Engine.Settings.Platform switch
+        {
+            Platform.GBA => 16,
+            Platform.NGage => 72,
+            _ => throw new UnsupportedPlatformException()
+        };
+
+        // In the original game it keeps the wrap, but creates a window to hide the screen on the left side of the worldmap
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            spikyBagScreen.Wrap = false;
+            offsetX += spikyBagScreen.Renderer.GetSize(spikyBagScreen).X;
+        }
+
+        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX + offsetX };
+
+        SpikyBagSinValue = 0;
+    }
+
+    private void ScrollSpikyBag()
+    {
+        GfxScreen spikyBagScreen = Gfx.GetScreen(3);
+        float offsetX = Engine.Settings.Platform switch
+        {
+            Platform.GBA => 16,
+            Platform.NGage => 165,
+            _ => throw new UnsupportedPlatformException()
+        };
+
+        // In the original game it keeps the wrap, but creates a window to hide the screen on the left side of the worldmap
+        if (Engine.Settings.Platform == Platform.GBA)
+            offsetX -= spikyBagScreen.Renderer.GetSize(spikyBagScreen).X;
+
+        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX - (4 * MathHelpers.Sin256(SpikyBagSinValue) - offsetX) };
+
+        if (!SpikyBagScrollDirection)
+        {
+            SpikyBagSinValue++;
+            if (SpikyBagSinValue == 63)
+                SpikyBagScrollDirection = true;
+        }
+        else
+        {
+            SpikyBagSinValue--;
+            if (SpikyBagSinValue == 192)
+                SpikyBagScrollDirection = false;
+        }
     }
 
     // TODO: Name
@@ -95,11 +144,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     {
         switch (WorldId)
         {
-            case 0:
+            case WorldId.World1:
                 ScrollX = 0;
                 break;
 
-            case 1:
+            case WorldId.World2:
                 ScrollX = Engine.Settings.Platform switch
                 {
                     Platform.GBA => 128,
@@ -108,8 +157,8 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 };
                 break;
             
-            case 2:
-            case 3:
+            case WorldId.World3:
+            case WorldId.World4:
                 ScrollX = Engine.Settings.Platform switch
                 {
                     Platform.GBA => MathHelpers.FromFixedPoint(0xdf3544), // ???
@@ -117,10 +166,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                     _ => throw new UnsupportedPlatformException()
                 };
                 break;
+
+            default:
+                throw new Exception("Invalid world id");
         }
 
         unk5 = 0xFF;
-        CircleWipeFXMode = 2;
+        //CircleWipeFXMode = 2;
         // TODO: Create circle wipe fx
 
         TransitionsFX = new TransitionsFX(true);
@@ -221,24 +273,14 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             Camera = Scene.HudCamera,
         };
 
-        switch (WorldId)
+        Rayman.CurrentAnimation = WorldId switch
         {
-            case 0:
-                Rayman.CurrentAnimation = 15;
-                break;
-
-            case 1:
-                Rayman.CurrentAnimation = 16;
-                break;
-            
-            case 2:
-                Rayman.CurrentAnimation = 17;
-                break;
-            
-            case 3:
-                Rayman.CurrentAnimation = 18;
-                break;
-        }
+            WorldId.World1 => 15,
+            WorldId.World2 => 16,
+            WorldId.World3 => 17,
+            WorldId.World4 => 18,
+            _ => throw new Exception("Invalid world id")
+        };
 
         if (GameInfo.PersistentInfo.UnlockedWorld2 && !GameInfo.PersistentInfo.PlayedWorld2Unlock)
             CurrentExStepAction = StepEx_UnlockWorld2;
@@ -251,7 +293,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         unk4 = 0;
 
-        FUN_0808ee08();
+        InitScrollSpikyBag();
         FUN_0808ef90();
         FUN_0808f2b4();
 
@@ -266,7 +308,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         CheatValue = 0;
 
         if (Engine.Settings.Platform == Platform.NGage)
-            NGageUnk1 = 0;
+            NGageScrollCooldown = 0;
     }
 
     public override void UnInit()
@@ -309,6 +351,310 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_Play()
     {
+        if (unk2 == 0 && CircleWipeFXMode == 0)
+        {
+            // Move forward
+            if ((JoyPad.IsButtonJustPressed(GbaInput.Right) || 
+                 (JoyPad.IsButtonJustPressed(GbaInput.Up) && WorldId is WorldId.World1 or WorldId.World3)) && 
+                CurrentMovement == WorldMapMovement.None &&
+                JoyPad.IsButtonReleased(GbaInput.Select))
+            {
+                switch (WorldId)
+                {
+                    case WorldId.World1:
+                        if (GameInfo.PersistentInfo.UnlockedWorld2)
+                        {
+                            Rayman.CurrentAnimation = 0;
+                            CurrentMovement = WorldMapMovement.World1To2;
+                            UserInfo.WorldNameBar.CanMoveIn = false;
+                            UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        }
+                        break;
+
+                    case WorldId.World2:
+                        if (GameInfo.PersistentInfo.UnlockedWorld3)
+                        {
+                            Rayman.CurrentAnimation = 2;
+                            CurrentMovement = WorldMapMovement.World2To3;
+                            UserInfo.WorldNameBar.CanMoveIn = false;
+                            UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        }
+                        break;
+
+                    case WorldId.World3:
+                        if (GameInfo.PersistentInfo.UnlockedWorld4)
+                        {
+                            Rayman.CurrentAnimation = 6;
+                            CurrentMovement = WorldMapMovement.World3To4;
+                            UserInfo.WorldNameBar.CanMoveIn = false;
+                            UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        }
+                        break;
+                }
+            }
+            // Move back
+            else if ((JoyPad.IsButtonJustPressed(GbaInput.Left) || 
+                      (JoyPad.IsButtonJustPressed(GbaInput.Down) && WorldId == WorldId.World2) || 
+                      (JoyPad.IsButtonJustPressed(GbaInput.Up) && WorldId == WorldId.World4)) && 
+                     CurrentMovement == WorldMapMovement.None && 
+                     JoyPad.IsButtonReleased(GbaInput.Select))
+            {
+                switch (WorldId)
+                {
+                    case WorldId.World1:
+                        if (Engine.Settings.Platform == Platform.GBA)
+                        {
+                            Rayman.CurrentAnimation = 22;
+                            CurrentMovement = WorldMapMovement.World1ToGameCube;
+                            unk2 = 2;
+                            UserInfo.WorldNameBar.CanMoveIn = false;
+                            UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        }
+                        break;
+
+                    case WorldId.World2:
+                        Rayman.CurrentAnimation = 13;
+                        CurrentMovement = WorldMapMovement.World2To1;
+                        UserInfo.WorldNameBar.CanMoveIn = false;
+                        UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        break;
+
+                    case WorldId.World3:
+                        Rayman.CurrentAnimation = 10;
+                        CurrentMovement = WorldMapMovement.World3To2;
+                        UserInfo.WorldNameBar.CanMoveIn = false;
+                        UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        break;
+
+                    case WorldId.World4:
+                        Rayman.CurrentAnimation = 8;
+                        CurrentMovement = WorldMapMovement.World4To3;
+                        UserInfo.WorldNameBar.CanMoveIn = false;
+                        UserInfo.WorldNameBar.MoveOutWorldNameBar();
+                        break;
+                }
+            }
+            // Select world
+            else if (JoyPad.IsButtonJustPressed(GbaInput.A) &&
+                     CurrentMovement == WorldMapMovement.None &&
+                     JoyPad.IsButtonReleased(GbaInput.Select))
+            {
+                unk2 = 2;
+                CircleWipeFXMode = 1;
+                // windowCircleWipeFX->field1_0x4 = 1; // TODO: Implement
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Spirale_Mix01);
+            }
+        }
+
+        Vector2 camDelta = Vector2.Zero;
+
+        switch (CurrentMovement)
+        {
+            case WorldMapMovement.World1To2:
+                if (Rayman.CurrentAnimation == 0)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 1;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World2;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 16;
+                    }
+                }
+
+                if ((Engine.Settings.Platform == Platform.GBA && ScrollX < 128) ||
+                    (Engine.Settings.Platform == Platform.NGage && ScrollX < 72))
+                    camDelta = new Vector2(1, 0);
+                break;
+
+            case WorldMapMovement.World2To3:
+                if (Rayman.CurrentAnimation == 2 && Rayman.EndOfAnimation)
+                    Rayman.CurrentAnimation = 3;
+
+                if (Rayman.CurrentAnimation == 3 && Rayman.EndOfAnimation)
+                    Rayman.CurrentAnimation = 4;
+
+                if (Rayman.CurrentAnimation == 4)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 5;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World3;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 17;
+                    }
+                }
+
+                if (Rayman.CurrentAnimation != 2)
+                    camDelta = new Vector2(1, 0);
+                break;
+
+            case WorldMapMovement.World3To4:
+                if (Rayman.CurrentAnimation == 6)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 7;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World4;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 18;
+                    }
+                }
+                break;
+
+            case WorldMapMovement.World4To3:
+                if (Rayman.CurrentAnimation == 8)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 9;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World3;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 17;
+                    }
+                }
+                break;
+
+            case WorldMapMovement.World3To2:
+                if (Rayman.CurrentAnimation == 10 && Rayman.EndOfAnimation)
+                    Rayman.CurrentAnimation = 11;
+
+                if (Rayman.CurrentAnimation == 11)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 12;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World2;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 16;
+                    }
+                }
+
+                if ((Engine.Settings.Platform == Platform.GBA && ScrollX > 128) ||
+                    (Engine.Settings.Platform == Platform.NGage && ScrollX > 72))
+                    camDelta = new Vector2(-1, 0);
+                break;
+
+            case WorldMapMovement.World2To1:
+                if (Rayman.CurrentAnimation == 13 && Rayman.EndOfAnimation)
+                    Rayman.CurrentAnimation = 14;
+
+                if (Rayman.CurrentAnimation == 14)
+                {
+                    if (Rayman.EndOfAnimation)
+                        Rayman.CurrentAnimation = 15;
+                }
+                else
+                {
+                    if (Rayman.EndOfAnimation)
+                    {
+                        CurrentMovement = WorldMapMovement.None;
+                        WorldId = WorldId.World1;
+                        UserInfo.WorldNameBar.SetWorld(WorldId);
+                        UserInfo.WorldNameBar.CanMoveIn = true;
+                        UserInfo.WorldNameBar.MoveInWorldNameBar();
+                        Rayman.CurrentAnimation = 15;
+                    }
+                }
+
+                camDelta = new Vector2(-1, 0);
+                break;
+
+            case WorldMapMovement.World1ToGameCube:
+                camDelta = new Vector2(-1, 0);
+                break;
+        }
+
+        TgxCamera2D cam = ((TgxPlayfield2D)Scene.Playfield).Camera;
+        TgxCluster mainCluster = cam.GetMainCluster();
+        if ((camDelta.X > 0 && !mainCluster.IsOnLimit(Edge.Right)) || 
+            (camDelta.X < 0 && !mainCluster.IsOnLimit(Edge.Left)))
+        {
+            if (Engine.Settings.Platform == Platform.NGage)
+            {
+                if (NGageScrollCooldown < 1)
+                {
+                    cam.Position += camDelta;
+                    ScrollX += camDelta.X;
+                    NGageScrollCooldown = 1;
+                }
+                else
+                {
+                    NGageScrollCooldown--;
+                }
+            }
+            else
+            {
+                cam.Position += camDelta;
+                ScrollX += camDelta.X;
+            }
+        }
+
+        float xPos = Engine.Settings.Platform switch
+        {
+            Platform.GBA => 246 - ScrollX,
+            Platform.NGage => 175 - ScrollX,
+            _ => throw new UnsupportedPlatformException()
+        };
+
+        Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
+
+        foreach (AnimatedObject worldPath in WorldPaths)
+            worldPath.ScreenPos = worldPath.ScreenPos with { X = xPos };
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            GameCubeSparkles.ScreenPos = GameCubeSparkles.ScreenPos with { X = xPos };
+
+        if (unk2 != 1)
+            Scene.AnimationPlayer.Play(Rayman);
+
+        Scene.AnimationPlayer.Play(WorldPaths[0]);
+
+        if (GameInfo.PersistentInfo.UnlockedWorld3)
+            Scene.AnimationPlayer.Play(WorldPaths[1]);
+
+        if (GameInfo.PersistentInfo.UnlockedWorld4)
+            Scene.AnimationPlayer.Play(WorldPaths[2]);
+        
+        if (Engine.Settings.Platform == Platform.GBA)
+            Scene.AnimationPlayer.Play(GameCubeSparkles);
+
+        ScrollSpikyBag();
         // TODO: Implement
     }
 
@@ -323,6 +669,22 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         LevelMusicManager.Step();
 
         // TODO: Handle pausing
+    }
+
+    #endregion
+
+    #region Data Types
+
+    public enum WorldMapMovement
+    {
+        None = 0,
+        World1To2 = 1,
+        World2To3 = 2,
+        World3To4 = 3,
+        World4To3 = 4,
+        World3To2 = 5,
+        World2To1 = 6,
+        World1ToGameCube = 7,
     }
 
     #endregion
