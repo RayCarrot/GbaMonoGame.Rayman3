@@ -123,8 +123,6 @@ public class UserInfoSideScroller : Dialog
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        // TODO: Implement remaining messages
-
         // Handle messages
         switch (message)
         {

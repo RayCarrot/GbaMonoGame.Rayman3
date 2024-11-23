@@ -7,6 +7,7 @@ public static class TextColor
 {
     public static Color LevelName { get; } = new RGB555Color(0x73be).ToColor();
     public static Color LevelNameComplete { get; } = new RGB555Color(0x03ff).ToColor();
+    public static Color WorldName { get; } = new RGB555Color(0x77ff).ToColor();
     public static Color Story { get; } = new RGB555Color(0x8aa).ToColor();
     public static Color TextBox { get; } = new RGB555Color(0x889).ToColor();
     public static Color SleepMode { get; } = new RGB555Color(0x28).ToColor();

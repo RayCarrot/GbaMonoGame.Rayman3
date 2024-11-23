@@ -146,7 +146,7 @@
 | BossMachineBar         | 🟩     |                                              |
 | BossRockAndLavaBar     | 🟥     |                                              |
 | BossScalemanBar        | 🟥     |                                              |
-| WorldNameBar           | 🟥     |                                              |
+| WorldNameBar           | 🟩     |                                              |
 
 ## Actors
 | Name                   | State   | Info                                         |

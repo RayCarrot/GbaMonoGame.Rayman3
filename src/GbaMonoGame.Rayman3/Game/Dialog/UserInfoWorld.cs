@@ -17,9 +17,7 @@ public class UserInfoWorld : Dialog
             BlueLumBar = new BlueLumBar(scene);
 
         if (GameInfo.MapId == MapId.WorldMap)
-        {
-            // TODO: World name bar
-        }
+            WorldNameBar = new WorldNameBar(scene);
 
         LifeBar.SetToStayVisible();
 
@@ -27,11 +25,12 @@ public class UserInfoWorld : Dialog
         ShouldPlayCurtainAnimation = true;
     }
 
-    private LifeBar LifeBar { get; }
-    private LevelInfoBar LevelInfoBar { get; }
-    private Lums1000Bar Lums1000Bar { get; }
-    private Cages50Bar Cages50Bar { get; }
-    private BlueLumBar BlueLumBar { get; }
+    public LifeBar LifeBar { get; }
+    public LevelInfoBar LevelInfoBar { get; }
+    public Lums1000Bar Lums1000Bar { get; }
+    public Cages50Bar Cages50Bar { get; }
+    public BlueLumBar BlueLumBar { get; }
+    public WorldNameBar WorldNameBar { get; }
 
     private bool ShouldPlayCurtainAnimation { get; set; }
     
@@ -44,8 +43,22 @@ public class UserInfoWorld : Dialog
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
-        // TODO: Implement
-        return false;
+        // Handle messages
+        switch (message)
+        {
+            case Message.UserInfo_Pause:
+                BlueLumBar?.SetToStayHidden();
+                WorldNameBar?.MoveOutWorldNameBar();
+                return true;
+
+            case Message.UserInfo_Unpause:
+                BlueLumBar?.SetToDefault();
+                WorldNameBar?.MoveInWorldNameBar();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     public void SetLevelInfoBar(int levelCurtainId)
@@ -95,6 +108,7 @@ public class UserInfoWorld : Dialog
         Lums1000Bar.Load();
         Cages50Bar.Load();
         BlueLumBar?.Load();
+        WorldNameBar?.Load();
 
         LifeBar.Set();
         LevelInfoBar.Set();
@@ -148,6 +162,7 @@ public class UserInfoWorld : Dialog
             Lums1000Bar.Draw(animationPlayer);
             Cages50Bar.Draw(animationPlayer);
             BlueLumBar?.Draw(animationPlayer);
+            WorldNameBar?.Draw(animationPlayer);
         }
     }
 }

@@ -45,12 +45,18 @@ public class LevelInfoBar : Bar
             new[] { MapId._1000Lums },
             new[] { MapId.ChallengeLyGCN },
         };
+
+        WaitTimer = 0;
+        LevelInfoBarDrawStep = BarDrawStep.Hide;
+        OffsetY = 40;
+        LevelCurtainId = 0;
     }
 
     public MapId[][] LevelMaps { get; }
 
+    public BarDrawStep LevelInfoBarDrawStep { get; set; }
     public int WaitTimer { get; set; }
-    public int OffsetY { get; set; } = 40;
+    public int OffsetY { get; set; }
     public int LevelCurtainId { get; set; }
 
     public SpriteTextObject LevelName { get; set; }
@@ -70,7 +76,7 @@ public class LevelInfoBar : Bar
 
     public void SetLevel(int levelCurtainId)
     {
-        DrawStep = BarDrawStep.MoveIn;
+        LevelInfoBarDrawStep = BarDrawStep.MoveIn;
         WaitTimer = 0;
         LevelCurtainId = levelCurtainId;
         Set();
@@ -289,7 +295,7 @@ public class LevelInfoBar : Bar
 
     public override void Draw(AnimationPlayer animationPlayer)
     {
-        switch (DrawStep)
+        switch (LevelInfoBarDrawStep)
         {
             case BarDrawStep.Hide:
                 OffsetY = 40;
@@ -305,7 +311,7 @@ public class LevelInfoBar : Bar
                 }
                 else
                 {
-                    DrawStep = BarDrawStep.Wait;
+                    LevelInfoBarDrawStep = BarDrawStep.Wait;
                 }
                 break;
 
@@ -317,7 +323,7 @@ public class LevelInfoBar : Bar
                 else
                 {
                     OffsetY = 40;
-                    DrawStep = BarDrawStep.Hide;
+                    LevelInfoBarDrawStep = BarDrawStep.Hide;
                 }
                 break;
 
@@ -325,7 +331,7 @@ public class LevelInfoBar : Bar
                 if (WaitTimer >= 20)
                 {
                     OffsetY = 0;
-                    DrawStep = BarDrawStep.MoveOut;
+                    LevelInfoBarDrawStep = BarDrawStep.MoveOut;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PannelDw_Mix01);
                 }
                 else
@@ -335,7 +341,7 @@ public class LevelInfoBar : Bar
                 break;
         }
 
-        if (DrawStep != BarDrawStep.Hide)
+        if (LevelInfoBarDrawStep != BarDrawStep.Hide)
         {
             LevelName.ScreenPos = new Vector2(
                 x: -LevelName.GetStringWidth() / 2f,

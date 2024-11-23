@@ -7,6 +7,7 @@ public abstract class Bar
     protected Bar(Scene2D scene)
     {
         Scene = scene;
+        DrawStep = BarDrawStep.Wait;
     }
 
     protected static readonly int[] BounceData =
@@ -27,7 +28,7 @@ public abstract class Bar
     public Scene2D Scene { get; }
 
     public BarMode Mode { get; set; }
-    public BarDrawStep DrawStep { get; set; } = BarDrawStep.Wait;
+    public BarDrawStep DrawStep { get; set; }
 
     public void SetToStayHidden()
     {
