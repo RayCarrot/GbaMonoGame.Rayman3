@@ -57,8 +57,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
         CreateCircleFXTransition();
 
         TransitionsFX = new TransitionsFX(true);
-        BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D(Map, x => new CameraSideScroller(x), 3);
+        Scene = new Scene2D(Map, x => new CameraSideScroller(x), 3, 1);
 
         // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, MapInfo.HasBlueLum);

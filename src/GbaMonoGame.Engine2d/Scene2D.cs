@@ -10,9 +10,10 @@ namespace GbaMonoGame.Engine2d;
 
 public class Scene2D
 {
-    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
+    public Scene2D(int id, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, int actorDrawPriority)
     {
         LayersCount = layersCount;
+        ActorDrawPriority = actorDrawPriority;
         Camera = createCameraFunc(this);
         HudCamera = new HudCamera(Engine.GameViewPort);
 
@@ -42,7 +43,7 @@ public class Scene2D
     }
 
     // Scene2DGameCube
-    public Scene2D(GameCubeMap map, Func<Scene2D, CameraActor> createCameraFunc, int layersCount)
+    public Scene2D(GameCubeMap map, Func<Scene2D, CameraActor> createCameraFunc, int layersCount, int actorDrawPriority)
     {
         LayersCount = layersCount;
         Camera = createCameraFunc(this);
@@ -73,6 +74,7 @@ public class Scene2D
     public AnimationPlayer AnimationPlayer { get; }
     public TgxPlayfield Playfield { get; }
     public int LayersCount { get; }
+    public int ActorDrawPriority { get; }
     public KnotManager KnotManager { get; }
     public int FirstActiveDialogIndex { get; set; }
 

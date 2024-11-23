@@ -50,8 +50,7 @@ public class FrameMode7 : Frame, IHasScene, IHasPlayfield
 
         TransitionsFX = new TransitionsFX(true);
         TransitionsFX.FadeInInit(1 / 16f);
-        BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraMode7(x), 3);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraMode7(x), 3, 1);
 
         // Create pause dialog, but don't add yet
         PauseDialog = new PauseDialog(Scene);

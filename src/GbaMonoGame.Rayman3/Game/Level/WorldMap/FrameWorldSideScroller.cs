@@ -54,8 +54,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         TransitionsFX = new TransitionsFX(true);
         TransitionsFX.FadeInInit(1 / 16f);
 
-        BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3, 1);
 
         // Set start position
         if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)

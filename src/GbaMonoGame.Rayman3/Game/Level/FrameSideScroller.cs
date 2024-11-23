@@ -132,8 +132,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         LevelMusicManager.Init();
         CreateCircleFXTransition();
         TransitionsFX = new TransitionsFX(true);
-        BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, 1);
 
         // Add fog
         if (GameInfo.MapId is 

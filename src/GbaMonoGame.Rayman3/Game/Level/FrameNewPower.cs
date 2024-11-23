@@ -64,8 +64,7 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
         LevelMusicManager.Init();
         TransitionsFX = new TransitionsFX(true);
         TransitionsFX.FadeInInit(1 / 16f);
-        BaseActor.ActorDrawPriority = 1;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3, 1);
 
         Scene.Init();
         Scene.Playfield.Step();

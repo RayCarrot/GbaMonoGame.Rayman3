@@ -1,6 +1,5 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
-using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework;
 
@@ -25,8 +24,7 @@ public class EchoingCaves_M2 : FrameSideScroller
         TransitionsFX = new TransitionsFX(true);
         TransitionsFX.FadeInInit(4 / 16f);
 
-        BaseActor.ActorDrawPriority = 0;
-        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3);
+        Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3, 0);
 
         // Add user info (default hud)
         UserInfo = new UserInfoSideScroller(Scene, GameInfo.Level.HasBlueLum);

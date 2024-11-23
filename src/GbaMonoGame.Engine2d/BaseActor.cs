@@ -23,14 +23,12 @@ public abstract class BaseActor : GameObject
         // Initialize the animated object. In the original game this is optional since the
         // animated object can be user defined and set to another AObject type.
         animatedObject.CurrentAnimation = 0;
-        animatedObject.BgPriority = ActorDrawPriority;
+        animatedObject.BgPriority = scene.ActorDrawPriority;
         animatedObject.ObjPriority = 32;
         animatedObject.Camera = scene.Playfield.Camera;
 
         _viewBox = new Box(ActorModel.ViewBox);
     }
-
-    public static int ActorDrawPriority { get; set; }
 
     private readonly Box _viewBox;
 
