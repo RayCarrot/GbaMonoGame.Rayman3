@@ -72,7 +72,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     #region Private Methods
 
-    private void InitScrollSpikyBag()
+    private void InitSpikyBag()
     {
         GfxScreen spikyBagScreen = Gfx.GetScreen(3);
         float offsetX = Engine.Settings.Platform switch
@@ -94,7 +94,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         SpikyBagSinValue = 0;
     }
 
-    private void ScrollSpikyBag()
+    private void StepSpikyBag()
     {
         GfxScreen spikyBagScreen = Gfx.GetScreen(3);
         float offsetX = Engine.Settings.Platform switch
@@ -124,16 +124,247 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         }
     }
 
-    // TODO: Name
-    private void FUN_0808ef90()
+    private void InitLightning()
     {
         // TODO: Implement
     }
 
-    // TODO: Name
-    private void FUN_0808f2b4()
+    private void StepLightning()
     {
         // TODO: Implement
+    }
+
+    private void InitVolcanoGlow()
+    {
+        // TODO: Implement
+    }
+
+    private void StepVolcanoGlow()
+    {
+        // TODO: Implement
+    }
+
+    private bool ProcessCheatInput(GbaInput input)
+    {
+        GbaInput[] cheatInputs =
+        [
+            GbaInput.A,
+            GbaInput.B,
+            GbaInput.Right,
+            GbaInput.Left,
+            GbaInput.Up,
+            GbaInput.Down,
+            GbaInput.R,
+            GbaInput.L
+        ];
+
+        if (JoyPad.IsButtonJustPressed(input))
+        {
+            CheatValue++;
+            return true;
+        }
+        else
+        {
+            foreach (GbaInput cheatInput in cheatInputs)
+            {
+                if (cheatInput != input && JoyPad.IsButtonJustPressed(cheatInput))
+                {
+                    CheatValue = 0;
+                    break;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    private void ManageCheats()
+    {
+        // Make sure select is held down
+        if (JoyPad.IsButtonReleased(GbaInput.Select))
+        {
+            CheatValue = 0;
+            return;
+        }
+
+        // TODO: There is currently no feedback to the player if a cheat has been entered. In the original game
+        //       you notice it since the game freezes for a second when saving. Perhaps we should play some sound
+        //       effect here?
+        switch (CheatValue)
+        {
+            // Start
+            case 0:
+                if (JoyPad.IsButtonJustPressed(GbaInput.R))
+                    CheatValue = 1;
+
+                if (JoyPad.IsButtonJustPressed(GbaInput.B))
+                    CheatValue = 32;
+
+                if (JoyPad.IsButtonJustPressed(GbaInput.Up))
+                    CheatValue = 64;
+
+                if (JoyPad.IsButtonJustPressed(GbaInput.Down))
+                    CheatValue = 100;
+                break;
+
+            // All powers (R + A + A + A)
+            case 1:
+                ProcessCheatInput(GbaInput.A);
+                break;
+            
+            case 2:
+                ProcessCheatInput(GbaInput.A);
+                break;
+
+            case 3:
+                if (ProcessCheatInput(GbaInput.A))
+                {
+                    GameInfo.EnableCheat(Scene, Cheat.AllPowers);
+                    
+                    CheatValue = 0;
+                    
+                    GameInfo.Save(GameInfo.CurrentSlot);
+                }
+                break;
+
+            // 99 lives (B + B + B + A + A + A)
+            case 32:
+                ProcessCheatInput(GbaInput.B);
+                break;
+
+            case 33:
+                ProcessCheatInput(GbaInput.B);
+                break;
+
+            case 34:
+                ProcessCheatInput(GbaInput.A);
+                break;
+
+            case 35:
+                ProcessCheatInput(GbaInput.A);
+                break;
+
+            case 36:
+                if (ProcessCheatInput(GbaInput.A))
+                {
+                    GameInfo.EnableCheat(Scene, Cheat.InfiniteLives);
+                    
+                    CheatValue = 0;
+                }
+                break;
+
+            // Unlock all levels (Up + Left + Down + Right + B + A + L + R)
+            case 64:
+                ProcessCheatInput(GbaInput.Left);
+                break;
+
+            case 65:
+                ProcessCheatInput(GbaInput.Down);
+                break;
+
+            case 66:
+                ProcessCheatInput(GbaInput.Right);
+                break;
+
+            case 67:
+                ProcessCheatInput(GbaInput.B);
+                break;
+
+            case 68:
+                ProcessCheatInput(GbaInput.A);
+                break;
+
+            case 69:
+                ProcessCheatInput(GbaInput.L);
+                break;
+
+            case 70:
+                if (ProcessCheatInput(GbaInput.R))
+                {
+                    GameInfo.EnableCheat(Scene, Cheat.AllPowers);
+                    UnlockAllLevels();
+                    
+                    CheatValue = 0;
+                 
+                    GameInfo.Save(GameInfo.CurrentSlot);
+                }
+                break;
+
+            // 100% (Down + Up + Down + Up + A + Left + B + Right)
+            case 100:
+                ProcessCheatInput(GbaInput.Up);
+                break;
+
+            case 101:
+                ProcessCheatInput(GbaInput.Down);
+                break;
+
+            case 102:
+                ProcessCheatInput(GbaInput.Up);
+                break;
+
+            case 103:
+                ProcessCheatInput(GbaInput.A);
+                break;
+
+            case 104:
+                ProcessCheatInput(GbaInput.Left);
+                break;
+
+            case 105:
+                ProcessCheatInput(GbaInput.B);
+                break;
+
+            case 106:
+                if (ProcessCheatInput(GbaInput.Right))
+                {
+                    GameInfo.PersistentInfo.FinishedLyChallenge1 = true;
+                    GameInfo.PersistentInfo.FinishedLyChallenge2 = true;
+
+                    if (Engine.Settings.Platform == Platform.GBA)
+                        GameInfo.PersistentInfo.FinishedLyChallengeGCN = true;
+                    
+                    GameInfo.PersistentInfo.PlayedAct4 = true;
+                    GameInfo.PersistentInfo.PlayedMurfyWorldHelp = true;
+                    GameInfo.PersistentInfo.UnlockedFinalBoss = true;
+
+                    if (Engine.Settings.Platform == Platform.GBA)
+                        GameInfo.PersistentInfo.CompletedGCNBonusLevels = 10;
+
+                    GameInfo.SetAllCagesAsCollected();
+                    GameInfo.SetAllYellowLumsAsCollected();
+
+                    GameInfo.EnableCheat(Scene, Cheat.InfiniteLives);
+                    GameInfo.EnableCheat(Scene, Cheat.AllPowers);
+                    UnlockAllLevels();
+                    
+                    CheatValue = 0;
+
+                    UserInfo.Lums1000Bar.Set();
+                    UserInfo.Cages50Bar.Set();
+
+                    GameInfo.Save(GameInfo.CurrentSlot);
+                }
+                break;
+        }
+    }
+
+    private void UnlockAllLevels()
+    {
+        MapId mapId = GameInfo.MapId;
+        GameInfo.MapId = MapId.BossFinal_M2;
+        GameInfo.UpdateLastCompletedLevel();
+        GameInfo.MapId = mapId;
+
+        GameInfo.PersistentInfo.UnlockedWorld2 = true;
+        GameInfo.PersistentInfo.PlayedWorld2Unlock = true;
+        GameInfo.PersistentInfo.UnlockedWorld3 = true;
+        GameInfo.PersistentInfo.PlayedWorld3Unlock = true;
+        GameInfo.PersistentInfo.UnlockedWorld4 = true;
+        GameInfo.PersistentInfo.PlayedWorld4Unlock = true;
+        GameInfo.PersistentInfo.PlayedAct4 = true;
+
+        WorldPaths[0].CurrentAnimation = 3;
     }
 
     #endregion
@@ -293,9 +524,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         unk4 = 0;
 
-        InitScrollSpikyBag();
-        FUN_0808ef90();
-        FUN_0808f2b4();
+        InitSpikyBag();
+        InitLightning();
+        InitVolcanoGlow();
 
         UserInfo.WorldNameBar.SetWorld(WorldId);
         UserInfo.WorldNameBar.CanMoveIn = true;
@@ -654,8 +885,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         if (Engine.Settings.Platform == Platform.GBA)
             Scene.AnimationPlayer.Play(GameCubeSparkles);
 
-        ScrollSpikyBag();
-        // TODO: Implement
+        StepSpikyBag();
+        StepLightning();
+        StepVolcanoGlow();
+
+        // TODO: Manage loading world or gamecube menu
+
+        ManageCheats();
     }
 
     private void Step_Normal()

@@ -336,6 +336,16 @@ public static class GameInfo
         }
     }
 
+    public static void SetAllYellowLumsAsCollected()
+    {
+        Array.Clear(PersistentInfo.Lums);
+    }
+
+    public static void SetAllCagesAsCollected()
+    {
+        Array.Clear(PersistentInfo.Cages);
+    }
+
     public static void SetPowerBasedOnMap(MapId mapId)
     {
         if (mapId >= MapId.WoodLight_M2)
