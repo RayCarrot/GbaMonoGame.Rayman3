@@ -89,6 +89,7 @@ public enum ActorType
     Urchin = 100,
     Arrive = 101,
     SpikyBomb = 102,
+    RaymanWorldMap = 103,
 
     MovingUnusedPlatform = 106, // Unused
     RotatedHelicopterBomb = 107,

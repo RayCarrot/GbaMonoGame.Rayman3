@@ -254,7 +254,7 @@
 | Urchin                 | 🟩     |                                              |
 | Arrive                 | 🟩     |                                              |
 | SpikyBomb              | 🟨     |                                              |
-| #103                   | 🟥     |                                              |
+| RaymanWorldMap         | 🟩     |                                              |
 | #104                   | 🟥     |                                              |
 | #105                   | 🟥     |                                              |
 | MovingUnusedPlatform   | 🟩     |                                              |
