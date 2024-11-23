@@ -91,7 +91,7 @@
 | World2                     | 🟩     |                                              |
 | World3                     | 🟩     |                                              |
 | World4                     | 🟩     |                                              |
-| WorldMap                   | 🟥     |                                              |
+| WorldMap                   | 🟨     |                                              |
 | Multi_MissileRace          | 🟥     |                                              |
 | Multi_MissileArena         | 🟥     |                                              |
 | Multi_RayTag1              | 🟥     |                                              |

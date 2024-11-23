@@ -1722,8 +1722,7 @@ public sealed partial class Rayman : MovableActor
         if (GameInfo.LastGreenLumAlive == 0)
         {
             // Start facing left when returning from certain levels
-            if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 &&
-                GameInfo.field12_0xf == 0)
+            if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4 && !GameInfo.IsInWorldMap)
             {
                 if ((MapId)GameInfo.PersistentInfo.LastPlayedLevel is 
                     MapId.MarshAwakening1 or 
@@ -1751,7 +1750,7 @@ public sealed partial class Rayman : MovableActor
             ChangeAction();
         }
 
-        GameInfo.field12_0xf = 0;
+        GameInfo.IsInWorldMap = false;
 
         EnableCheats();
     }

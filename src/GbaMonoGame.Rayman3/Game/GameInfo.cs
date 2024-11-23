@@ -24,7 +24,7 @@ public static class GameInfo
     public static Vector2 CheckpointPosition { get; set; }
     public static int RemainingTime { get; set; }
     public static bool field7_0x7 { get; set; }
-    public static byte field12_0xf { get; set; }
+    public static bool IsInWorldMap { get; set; }
     public static bool HasCollectedWhiteLum { get; set; }
     public static ushort BlueLumTimer { get; set; }
     public static Power Powers { get; set; }
@@ -51,7 +51,7 @@ public static class GameInfo
         Cheats = Cheat.None;
         HasCollectedWhiteLum = false;
         field7_0x7 = true;
-        field12_0xf = 0;
+        IsInWorldMap = false;
         ResetPersistentInfo();
     }
 

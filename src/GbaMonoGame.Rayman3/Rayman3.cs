@@ -771,7 +771,7 @@ public class Rayman3 : GbaGame
             { MapId.World2, mapId => new World(mapId) },
             { MapId.World3, mapId => new World(mapId) },
             { MapId.World4, mapId => new World(mapId) },
-            //{ MapId.WorldMap, mapId => new (mapId) }, // TODO: Create class for WorldMap
+            { MapId.WorldMap, mapId => new WorldMap(mapId) },
         };
 
         // TODO: Create classes for multiplayer maps

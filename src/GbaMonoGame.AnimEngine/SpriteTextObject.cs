@@ -22,6 +22,7 @@ public class SpriteTextObject : AObject
     public Color Color { get; set; }
     public FontSize FontSize { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
+    public bool field_0x14 { get; set; } // Unknown, is it unused?
 
     public int GetStringWidth() => FontManager.GetStringWidth(FontSize, TextBytes);
 
