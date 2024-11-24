@@ -3826,7 +3826,8 @@ public partial class Rayman
                     }
                     else if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     {
-                        // TODO: Load worldmap
+                        if (!((World)Frame.Current).IsTransitioningOut())
+                            GameInfo.LoadLevel(MapId.WorldMap);
                     }
                     else
                     {

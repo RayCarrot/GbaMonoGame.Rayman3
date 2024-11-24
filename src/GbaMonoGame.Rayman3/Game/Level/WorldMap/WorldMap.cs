@@ -47,6 +47,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public Action CurrentStepAction { get; set; }
     public Action CurrentExStepAction { get; set; }
 
+    public ushort Timer { get; set; }
     public float ScrollX { get; set; }
     public byte NGageScrollCooldown { get; set; }
     public byte SpikyBagSinValue { get; set; }
@@ -56,9 +57,15 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public byte CheatValue { get; set; }
     public WorldId WorldId { get; set; }
 
+    public Vector2 BaseObjPos => Engine.Settings.Platform switch
+    {
+        Platform.GBA => new Vector2(246, 84),
+        Platform.NGage => new Vector2(175, 114),
+        _ => throw new UnsupportedPlatformException()
+    };
+
     // TODO: Name
     public byte unk2 { get; set; }
-    public ushort unk4 { get; set; }
     public short unk5 { get; set; }
 
     #endregion
@@ -436,12 +443,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             CurrentAnimation = 15,
             BgPriority = 1,
             ObjPriority = 0,
-            ScreenPos = Engine.Settings.Platform switch
-            {
-                Platform.GBA => new Vector2(246 - ScrollX, 84),
-                Platform.NGage => new Vector2(175 - ScrollX, 114),
-                _ => throw new UnsupportedPlatformException()
-            },
+            ScreenPos = BaseObjPos - new Vector2(ScrollX, 0),
             Camera = Scene.Playfield.Camera,
         };
 
@@ -459,28 +461,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         }
 
         WorldPaths[0].CurrentAnimation = GameInfo.PersistentInfo.UnlockedWorld2 ? 3 : 6;
-        WorldPaths[0].ScreenPos = Engine.Settings.Platform switch
-        {
-            Platform.GBA => new Vector2(246 - ScrollX, 84),
-            Platform.NGage => new Vector2(175 - ScrollX, 114),
-            _ => throw new UnsupportedPlatformException()
-        };
+        WorldPaths[0].ScreenPos = BaseObjPos - new Vector2(ScrollX, 0);
 
         WorldPaths[1].CurrentAnimation = 4;
-        WorldPaths[1].ScreenPos = Engine.Settings.Platform switch
-        {
-            Platform.GBA => new Vector2(246 - ScrollX, 84),
-            Platform.NGage => new Vector2(175 - ScrollX, 114),
-            _ => throw new UnsupportedPlatformException()
-        };
+        WorldPaths[1].ScreenPos = BaseObjPos - new Vector2(ScrollX, 0);
 
         WorldPaths[2].CurrentAnimation = 5;
-        WorldPaths[2].ScreenPos = Engine.Settings.Platform switch
-        {
-            Platform.GBA => new Vector2(246 - ScrollX, 84),
-            Platform.NGage => new Vector2(175 - ScrollX, 114),
-            _ => throw new UnsupportedPlatformException()
-        };
+        WorldPaths[2].ScreenPos = BaseObjPos - new Vector2(ScrollX, 0);
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
@@ -490,7 +477,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 BgPriority = 1,
                 ObjPriority = 32,
                 CurrentAnimation = 7,
-                ScreenPos = new Vector2(246 - ScrollX, 84),
+                ScreenPos = BaseObjPos - new Vector2(ScrollX, 0),
                 Camera = Scene.Playfield.Camera,
             };
         }
@@ -522,7 +509,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         else
             CurrentExStepAction = StepEx_Play;
 
-        unk4 = 0;
+        Timer = 0;
 
         InitSpikyBag();
         InitLightning();
@@ -567,17 +554,134 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_UnlockWorld2()
     {
-        // TODO: Implement
+        float xPos = BaseObjPos.X - ScrollX;
+        Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
+        WorldPaths[0].ScreenPos = WorldPaths[0].ScreenPos with { X = xPos };
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            GameCubeSparkles.ScreenPos = GameCubeSparkles.ScreenPos with { X = xPos };
+
+        if (Timer <= 120)
+        {
+            if (Timer == 120)
+            {
+                WorldPaths[0].CurrentAnimation = 0;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PathFX_Mix01);
+                Scene.AnimationPlayer.Play(WorldPaths[0]);
+            }
+
+            Timer++;
+        }
+        else
+        {
+            if (WorldPaths[0].EndOfAnimation)
+            {
+                WorldPaths[0].CurrentAnimation = 3;
+                CurrentExStepAction = StepEx_Play;
+                GameInfo.PersistentInfo.PlayedWorld2Unlock = true;
+            }
+
+            Scene.AnimationPlayer.Play(WorldPaths[0]);
+        }
+
+        Scene.AnimationPlayer.Play(Rayman);
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            Scene.AnimationPlayer.Play(GameCubeSparkles);
+
+        StepSpikyBag();
+        StepLightning();
+        StepVolcanoGlow();
     }
 
     private void StepEx_UnlockWorld3()
     {
-        // TODO: Implement
+        float xPos = BaseObjPos.X - ScrollX;
+        Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
+        WorldPaths[0].ScreenPos = WorldPaths[0].ScreenPos with { X = xPos };
+        WorldPaths[1].ScreenPos = WorldPaths[1].ScreenPos with { X = xPos };
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            GameCubeSparkles.ScreenPos = GameCubeSparkles.ScreenPos with { X = xPos };
+
+        if (Timer <= 120)
+        {
+            if (Timer == 120)
+            {
+                WorldPaths[1].CurrentAnimation = 1;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PathFX_Mix01);
+                Scene.AnimationPlayer.Play(WorldPaths[1]);
+            }
+
+            Timer++;
+        }
+        else
+        {
+            if (WorldPaths[1].EndOfAnimation)
+            {
+                WorldPaths[1].CurrentAnimation = 4;
+                CurrentExStepAction = StepEx_Play;
+                GameInfo.PersistentInfo.PlayedWorld3Unlock = true;
+            }
+
+            Scene.AnimationPlayer.Play(WorldPaths[1]);
+        }
+
+        Scene.AnimationPlayer.Play(Rayman);
+        Scene.AnimationPlayer.Play(WorldPaths[0]);
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            Scene.AnimationPlayer.Play(GameCubeSparkles);
+
+        StepSpikyBag();
+        StepLightning();
+        StepVolcanoGlow();
     }
 
     private void StepEx_UnlockWorld4()
     {
-        // TODO: Implement
+        float xPos = BaseObjPos.X - ScrollX;
+        Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
+        WorldPaths[0].ScreenPos = WorldPaths[0].ScreenPos with { X = xPos };
+        WorldPaths[1].ScreenPos = WorldPaths[1].ScreenPos with { X = xPos };
+        WorldPaths[2].ScreenPos = WorldPaths[2].ScreenPos with { X = xPos };
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            GameCubeSparkles.ScreenPos = GameCubeSparkles.ScreenPos with { X = xPos };
+
+        if (Timer <= 120)
+        {
+            if (Timer == 120)
+            {
+                WorldPaths[2].CurrentAnimation = 2;
+                SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__PathFX_Mix01);
+                Scene.AnimationPlayer.Play(WorldPaths[2]);
+            }
+
+            Timer++;
+        }
+        else
+        {
+            if (WorldPaths[2].EndOfAnimation)
+            {
+                WorldPaths[2].CurrentAnimation = 5;
+                CurrentExStepAction = StepEx_Play;
+                GameInfo.PersistentInfo.PlayedWorld4Unlock = true;
+            }
+
+            Scene.AnimationPlayer.Play(WorldPaths[2]);
+        }
+
+        Scene.AnimationPlayer.Play(Rayman);
+        Scene.AnimationPlayer.Play(WorldPaths[0]);
+        Scene.AnimationPlayer.Play(WorldPaths[1]);
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            Scene.AnimationPlayer.Play(GameCubeSparkles);
+
+        StepSpikyBag();
+        StepLightning();
+        StepVolcanoGlow();
     }
 
     private void StepEx_Play()
@@ -856,12 +960,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             }
         }
 
-        float xPos = Engine.Settings.Platform switch
-        {
-            Platform.GBA => 246 - ScrollX,
-            Platform.NGage => 175 - ScrollX,
-            _ => throw new UnsupportedPlatformException()
-        };
+        float xPos = BaseObjPos.X - ScrollX;
 
         Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
 
