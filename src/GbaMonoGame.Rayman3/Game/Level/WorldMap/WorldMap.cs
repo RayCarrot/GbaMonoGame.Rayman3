@@ -82,10 +82,14 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     private void InitSpikyBag()
     {
         GfxScreen spikyBagScreen = Gfx.GetScreen(3);
+
+        // Since it scrolls with the camera we want to use the normal playfield camera instead of a parallax background one
+        spikyBagScreen.Camera = Scene.Playfield.Camera;
+
         float offsetX = Engine.Settings.Platform switch
         {
-            Platform.GBA => 16,
-            Platform.NGage => 72,
+            Platform.GBA => -16,
+            Platform.NGage => -72,
             _ => throw new UnsupportedPlatformException()
         };
 
@@ -96,7 +100,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             offsetX += spikyBagScreen.Renderer.GetSize(spikyBagScreen).X;
         }
 
-        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX + offsetX };
+        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX - offsetX };
 
         SpikyBagSinValue = 0;
     }
@@ -106,16 +110,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         GfxScreen spikyBagScreen = Gfx.GetScreen(3);
         float offsetX = Engine.Settings.Platform switch
         {
-            Platform.GBA => 16,
+            Platform.GBA => -16,
             Platform.NGage => 165,
             _ => throw new UnsupportedPlatformException()
         };
 
         // In the original game it keeps the wrap, but creates a window to hide the screen on the left side of the worldmap
         if (Engine.Settings.Platform == Platform.GBA)
-            offsetX -= spikyBagScreen.Renderer.GetSize(spikyBagScreen).X;
+            offsetX += spikyBagScreen.Renderer.GetSize(spikyBagScreen).X;
 
-        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX - (4 * MathHelpers.Sin256(SpikyBagSinValue) - offsetX) };
+        spikyBagScreen.Offset = spikyBagScreen.Offset with { X = ScrollX - (4 * MathHelpers.Sin256(SpikyBagSinValue) + offsetX) };
 
         if (!SpikyBagScrollDirection)
         {
