@@ -1,4 +1,5 @@
 ﻿using System;
+using BinarySerializer;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
@@ -32,6 +33,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
+    #region Constant Fields
+
+    // NOTE: The game uses 16, but it only updates every 8 frames. We instead update every frame.
+    private const int VolcanoGlowMaxValue = 16 * 8;
+
+    #endregion
+
     #region Public Properties
 
     public Scene2D Scene { get; set; }
@@ -47,15 +55,23 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public Action CurrentStepAction { get; set; }
     public Action CurrentExStepAction { get; set; }
 
-    public ushort Timer { get; set; }
     public float ScrollX { get; set; }
     public byte NGageScrollCooldown { get; set; }
+    public ushort Timer { get; set; }
+    public byte CircleWipeFXMode { get; set; } // TODO: Enum
+
     public byte SpikyBagSinValue { get; set; }
     public bool SpikyBagScrollDirection { get; set; }
-    public byte CircleWipeFXMode { get; set; } // TODO: Enum
+    
+    public Palette OriginalVolcanoPalette { get; set; }
+    public Palette TargetVolcanoPalette { get; set; }
+    public byte[] VolcanoTileSet { get; set; }
+    public int VolcanoGlowValue { get; set; }
+    public IScreenRenderer[] ValcanoGlowScreenRenderers { get; set; }
+
     public WorldMapMovement CurrentMovement { get; set; }
-    public byte CheatValue { get; set; }
     public WorldId WorldId { get; set; }
+    public byte CheatValue { get; set; }
 
     public Vector2 BaseObjPos => Engine.Settings.Platform switch
     {
@@ -147,12 +163,90 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void InitVolcanoGlow()
     {
-        // TODO: Implement
+        OriginalVolcanoPalette = ((TgxPlayfield2D)Scene.Playfield).Vram.Palette;
+
+        int palLength = OriginalVolcanoPalette.Colors.Length;
+
+        Color[] targetColors = new Color[palLength];
+        Array.Copy(OriginalVolcanoPalette.Colors, targetColors, palLength);
+
+        // Modify sub-palette 4
+        targetColors[16 * 4 + 0] = new RGB555Color(0x3c0c).ToColor();
+        targetColors[16 * 4 + 1] = new RGB555Color(0x32).ToColor();
+        targetColors[16 * 4 + 2] = new RGB555Color(0x72).ToColor();
+        targetColors[16 * 4 + 3] = new RGB555Color(0x115).ToColor();
+        targetColors[16 * 4 + 4] = new RGB555Color(0x94).ToColor();
+        targetColors[16 * 4 + 5] = new RGB555Color(0x2193).ToColor();
+        targetColors[16 * 4 + 6] = new RGB555Color(0xd0).ToColor();
+        targetColors[16 * 4 + 7] = new RGB555Color(0x175).ToColor();
+        targetColors[16 * 4 + 8] = new RGB555Color(0x172).ToColor();
+        targetColors[16 * 4 + 9] = new RGB555Color(0xe).ToColor();
+        targetColors[16 * 4 + 10] = new RGB555Color(0x117).ToColor();
+        targetColors[16 * 4 + 11] = new RGB555Color(0x1d6).ToColor();
+        targetColors[16 * 4 + 12] = new RGB555Color(0x219).ToColor();
+        targetColors[16 * 4 + 13] = new RGB555Color(0x178).ToColor();
+        targetColors[16 * 4 + 14] = new RGB555Color(0x51).ToColor();
+        targetColors[16 * 4 + 15] = new RGB555Color(0x53).ToColor();
+
+        TargetVolcanoPalette = new Palette(targetColors);
+
+        VolcanoGlowValue = 0;
+        ValcanoGlowScreenRenderers = new IScreenRenderer[VolcanoGlowMaxValue + 1];
+
+        // Get the tileset for the volcano layer so that we can easily re-create the texture for the glow later
+        // We also need to pad with a tile at the start since it's dynamic (meaning each tile index is index-1).
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer volcanoLayer = playfield.TileLayers[2];
+        TileMapScreenRenderer renderer = (TileMapScreenRenderer)volcanoLayer.Screen.Renderer;
+        int tileLength = renderer.Is8Bit ? 0x40 : 0x20;
+        VolcanoTileSet = new byte[renderer.TileSet.Length + tileLength];
+        Array.Copy(renderer.TileSet, 0, VolcanoTileSet, tileLength, renderer.TileSet.Length);
+        UpdateVolcanoGlowPalette();
     }
 
     private void StepVolcanoGlow()
     {
-        // TODO: Implement
+        // NOTE: The game only updates this every 8 frames
+
+        UpdateVolcanoGlowPalette();
+
+        VolcanoGlowValue++;
+
+        if (VolcanoGlowValue > VolcanoGlowMaxValue * 2)
+            VolcanoGlowValue = 0;
+    }
+
+    private void UpdateVolcanoGlowPalette()
+    {
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer volcanoLayer = playfield.TileLayers[2];
+
+        int value = VolcanoGlowValue <= VolcanoGlowMaxValue ? VolcanoGlowValue : VolcanoGlowMaxValue * 2 - VolcanoGlowValue;
+
+        // Create the renderer if not created before
+        if (ValcanoGlowScreenRenderers[value] == null)
+        {
+            int palLength = OriginalVolcanoPalette.Colors.Length;
+            Color[] colors = new Color[palLength];
+            Array.Copy(OriginalVolcanoPalette.Colors, colors, palLength);
+
+            for (int i = 0; i < 16; i++)
+            {
+                int index = 16 * 4 + i;
+                colors[index] = Color.Lerp(OriginalVolcanoPalette.Colors[index], TargetVolcanoPalette.Colors[index], value / (float)VolcanoGlowMaxValue);
+            }
+
+            Palette pal = new(colors);
+
+            ValcanoGlowScreenRenderers[value] = new TextureScreenRenderer(Engine.TextureCache.GetOrCreateObject(
+                pointer: volcanoLayer.Resource.Offset,
+                id: value,
+                data: (Layer: volcanoLayer, TileSet: VolcanoTileSet, Palette: pal),
+                createObjFunc: static data =>
+                    new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, data.Palette, data.Layer.Is8Bit)));
+        }
+
+        volcanoLayer.Screen.Renderer = ValcanoGlowScreenRenderers[value];
     }
 
     private bool ProcessCheatInput(GbaInput input)
@@ -422,9 +516,6 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         LevelMusicManager.Init();
         
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraWorldMap(x), 3, 1);
-
-        // TODO: Find way to get rid of black bar at the bottom
-        // Engine.GameViewPort.SetResolutionBounds(null, ((TgxPlayfield2D)Scene.Playfield).Size - new Vector2(0, 64));
 
         // Create pause dialog, but don't add yet
         PauseDialog = new PauseDialog(Scene);
@@ -992,7 +1083,17 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         StepLightning();
         StepVolcanoGlow();
 
-        // TODO: Manage loading world or gamecube menu
+        if (unk2 == 1)
+        {
+            if (Engine.Settings.Platform == Platform.GBA)
+            {
+                // TODO: Implement
+            }
+        }
+        else if (unk2 != 0 && CircleWipeFXMode == 5)
+        {
+            // TODO: Implement
+        }
 
         ManageCheats();
     }

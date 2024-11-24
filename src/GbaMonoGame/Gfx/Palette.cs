@@ -10,7 +10,7 @@ public class Palette
         Colors = new Color[colors.Length];
 
         for (int i = 0; i < Colors.Length; i++)
-            Colors[i] = new Color(colors[i].Red, colors[i].Green, colors[i].Blue);
+            Colors[i] = colors[i].ToColor();
     }
 
     public Palette(PaletteResource palette) : this(palette.Colors) { }

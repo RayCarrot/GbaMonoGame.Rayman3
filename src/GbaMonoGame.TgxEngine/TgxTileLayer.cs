@@ -51,7 +51,7 @@ public class TgxTileLayer : TgxGameLayer
             byte[] tileSet = Is8Bit ? tileKit.Tiles8bpp : tileKit.Tiles4bpp;
             Screen.Renderer = new TileMapScreenRenderer(
                 // Use the tilekit as the cache pointer since multiple layers can share the same tilekit and we're
-                // caching per tile,´but make the pointer differ depending on if it's 4-bit or 8-bit.
+                // caching per tile, but make the pointer differ depending on if it's 4-bit or 8-bit.
                 cachePointer: tileKit.Offset + (Is8Bit ? 1 : 0), 
                 width: Width, 
                 height: Height, 
