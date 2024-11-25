@@ -21,7 +21,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     #region Protected Properties
 
     protected CircleWindowEffectObject CircleEffect { get; set; }
-    protected int CircleFXTimer { get; set; }
+    protected int CircleFXValue { get; set; }
     protected CircleFXTransitionMode CircleFXMode { get; set; }
 
     protected FadeControl SavedFadeControl { get; set; }
@@ -62,23 +62,23 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
                 break;
 
             case CircleFXTransitionMode.In:
-                CircleFXTimer += 6;
-                if (CircleFXTimer > 252)
+                CircleFXValue += 6;
+                if (CircleFXValue > 252)
                 {
-                    CircleFXTimer = 252;
+                    CircleFXValue = 252;
                     CircleFXMode = CircleFXTransitionMode.FinishedIn;
                 }
-                CircleEffect.Radius = CircleFXTimer;
+                CircleEffect.Radius = CircleFXValue;
                 break;
 
             case CircleFXTransitionMode.Out:
-                CircleFXTimer -= 6;
-                if (CircleFXTimer < 0)
+                CircleFXValue -= 6;
+                if (CircleFXValue < 0)
                 {
-                    CircleFXTimer = 0;
+                    CircleFXValue = 0;
                     CircleFXMode = CircleFXTransitionMode.FinishedOut;
                 }
-                CircleEffect.Radius = CircleFXTimer;
+                CircleEffect.Radius = CircleFXValue;
                 break;
         }
 
@@ -92,8 +92,6 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     protected void CreateCircleFXTransition()
     {
-        Gfx.ClearColor = Color.Black;
-
         // Add the circle FX as an effect object. On the GBA this is done using a window.
         CircleEffect = new CircleWindowEffectObject
         {
@@ -109,19 +107,19 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
     {
         if (transitionIn)
         {
-            CircleFXTimer = 0;
+            CircleFXValue = 0;
             CircleFXMode = CircleFXTransitionMode.In;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideIn_Mix02);
         }
         else
         {
-            CircleFXTimer = 252;
+            CircleFXValue = 252;
             CircleFXMode = CircleFXTransitionMode.Out;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideOut_Mix01);
         }
 
         CircleEffect.Camera = Scene.Playfield.Camera;
-        CircleEffect.Init(CircleFXTimer, Scene.MainActor.ScreenPosition - new Vector2(0, 32));
+        CircleEffect.Init(CircleFXValue, Scene.MainActor.ScreenPosition - new Vector2(0, 32));
     }
 
     public override void Init()
@@ -195,7 +193,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.UnInit();
         Scene = null;
 
-        CircleFXTimer = 0;
+        CircleFXValue = 0;
         CircleFXMode = CircleFXTransitionMode.None;
         CircleEffect = null;
 

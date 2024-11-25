@@ -49,7 +49,7 @@ public class EchoingCaves_M1 : FrameSideScroller
             Scene.Camera.ProcessMessage(this, Message.Cam_Lock, gatePos);
             
             // Change the position of the circle effect
-            CircleEffect.Init(CircleFXTimer, new Vector2(120, 80));
+            CircleEffect.Init(CircleFXValue, new Vector2(120, 80));
 
             // NOTE: Game calls Vsync here on GBA and renders tiles
             Scene.Playfield.Step();

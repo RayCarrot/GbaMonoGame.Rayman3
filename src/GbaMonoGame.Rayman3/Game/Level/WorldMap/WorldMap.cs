@@ -44,6 +44,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     public Scene2D Scene { get; set; }
     public TransitionsFX TransitionsFX { get; set; }
+    public CircleWindowWipeEffectObject CircleWipeEffect { get; set; }
     public UserInfoWorld UserInfo { get; set; }
     public PauseDialog PauseDialog { get; set; }
 
@@ -58,7 +59,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public float ScrollX { get; set; }
     public byte NGageScrollCooldown { get; set; }
     public ushort Timer { get; set; }
-    public byte CircleWipeFXMode { get; set; } // TODO: Enum
+    public CircleWipeFXTransitionMode CircleWipeFXMode { get; set; }
 
     public byte SpikyBagSinValue { get; set; }
     public bool SpikyBagScrollDirection { get; set; }
@@ -82,7 +83,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     // TODO: Name
     public byte unk2 { get; set; }
-    public short unk5 { get; set; }
+    public int CircleWipeFXValue { get; set; }
 
     #endregion
 
@@ -507,9 +508,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 throw new Exception("Invalid world id");
         }
 
-        unk5 = 0xFF;
-        //CircleWipeFXMode = 2;
-        // TODO: Create circle wipe fx
+        CircleWipeFXValue = 0xFF;
+        CircleWipeFXMode = CircleWipeFXTransitionMode.In;
+        
+        // Add the circle wipe FX as an effect object. On the GBA this is done using a window.
+        CircleWipeEffect = new CircleWindowWipeEffectObject
+        {
+            BgPriority = 0,
+            IsEnabled = true,
+            Value = CircleWipeFXValue,
+        };
 
         TransitionsFX = new TransitionsFX(true);
         GameInfo.InitLevel(LevelType.Normal);
@@ -522,6 +530,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         Scene.Init();
         Scene.Playfield.Step();
+
+        // We have to show the circle wipe effect already now or we have one game frame with the level visible
+        Scene.AnimationPlayer.PlayFront(CircleWipeEffect);
 
         Scene.AnimationPlayer.Execute();
 
@@ -781,7 +792,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_Play()
     {
-        if (unk2 == 0 && CircleWipeFXMode == 0)
+        if (unk2 == 0 && CircleWipeFXMode == CircleWipeFXTransitionMode.None)
         {
             // Move forward
             if ((JoyPad.IsButtonJustPressed(GbaInput.Right) || 
@@ -870,7 +881,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                      JoyPad.IsButtonReleased(GbaInput.Select))
             {
                 unk2 = 2;
-                CircleWipeFXMode = 1;
+                CircleWipeFXMode = CircleWipeFXTransitionMode.Out;
                 // windowCircleWipeFX->field1_0x4 = 1; // TODO: Implement
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Spirale_Mix01);
             }
@@ -1090,7 +1101,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 // TODO: Implement
             }
         }
-        else if (unk2 != 0 && CircleWipeFXMode == 5)
+        else if (unk2 != 0 && CircleWipeFXMode == CircleWipeFXTransitionMode.FinishedOut)
         {
             // TODO: Implement
         }
@@ -1102,7 +1113,33 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     {
         Scene.Step();
 
-        // TODO: Update circle wipe
+        if (CircleWipeFXMode != CircleWipeFXTransitionMode.None)
+        {
+            CircleWipeEffect.Value = CircleWipeFXValue;
+            Scene.AnimationPlayer.PlayFront(CircleWipeEffect);
+        }
+
+        if (CircleWipeFXMode == CircleWipeFXTransitionMode.Out)
+        {
+            CircleWipeFXValue += 4;
+
+            if (CircleWipeFXValue >= 255)
+            {
+                CircleWipeFXMode = CircleWipeFXTransitionMode.FinishedOut;
+                CircleWipeFXValue = 0;
+            }
+        }
+        else if (CircleWipeFXMode == CircleWipeFXTransitionMode.In)
+        {
+            CircleWipeFXValue -= 4;
+
+            if (CircleWipeFXValue <= 0)
+            {
+                CircleWipeFXMode = CircleWipeFXTransitionMode.None;
+                CircleWipeFXValue = 0;
+                CircleWipeEffect.IsEnabled = false;
+            }
+        }
 
         Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
@@ -1113,7 +1150,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Data Types
+    #region Enums
 
     public enum WorldMapMovement
     {
@@ -1125,6 +1162,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         World3To2 = 5,
         World2To1 = 6,
         World1ToGameCube = 7,
+    }
+
+    public enum CircleWipeFXTransitionMode
+    {
+        None = 0,
+        Out = 1,
+        In = 2,
+        Mode3 = 3, // Unused
+        Mode4 = 4, // Unused
+        FinishedOut = 5,
     }
 
     #endregion
