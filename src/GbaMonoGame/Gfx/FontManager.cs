@@ -194,7 +194,7 @@ public static class FontManager
         return lines.ToArray();
     }
 
-    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, Color color, GfxCamera camera)
+    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, float? alpha, Color color, GfxCamera camera)
     {
         LoadedFont loadedFont = fontSize switch
         {
@@ -212,6 +212,7 @@ public static class FontManager
             Priority = priority,
             Center = true,
             AffineMatrix = affineMatrix,
+            Alpha = alpha,
             Color = color,
             Camera = camera
         };

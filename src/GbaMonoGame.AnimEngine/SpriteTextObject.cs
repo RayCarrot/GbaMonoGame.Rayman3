@@ -22,7 +22,14 @@ public class SpriteTextObject : AObject
     public Color Color { get; set; }
     public FontSize FontSize { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
-    public bool field_0x14 { get; set; } // Unknown, is it unused?
+    public bool IsAlphaBlendEnabled { get; set; }
+
+    public float Alpha { get; set; } = 1;
+    public float GbaAlpha
+    {
+        get => Alpha * 16;
+        set => Alpha = value / 16;
+    }
 
     public int GetStringWidth() => FontManager.GetStringWidth(FontSize, TextBytes);
 
@@ -36,7 +43,15 @@ public class SpriteTextObject : AObject
         foreach (byte c in TextBytes)
         {
             // TODO: Option to always draw with the highest resolution font (but scale to fit original size)
-            Gfx.AddSprite(FontManager.GetCharacterSprite(c, FontSize, ref pos, BgPriority, AffineMatrix, Color, Camera));
+            Gfx.AddSprite(FontManager.GetCharacterSprite(
+                c: c, 
+                fontSize: FontSize, 
+                position: ref pos, 
+                priority: BgPriority, 
+                affineMatrix: AffineMatrix, 
+                alpha: IsAlphaBlendEnabled ? Alpha : null, 
+                color: Color, 
+                camera: Camera));
         }
     }
 }

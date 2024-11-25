@@ -20,7 +20,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         CurrentMovement = WorldMapMovement.None;
         WorldId = GameInfo.WorldId;
-        unk2 = 0;
+        SelectedWorldType = WorldType.None;
         ScrollX = Engine.Settings.Platform switch
         {
             Platform.GBA => 56,
@@ -44,14 +44,12 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     public Scene2D Scene { get; set; }
     public TransitionsFX TransitionsFX { get; set; }
-    public CircleWindowWipeEffectObject CircleWipeEffect { get; set; }
     public UserInfoWorld UserInfo { get; set; }
     public PauseDialog PauseDialog { get; set; }
 
     public AnimatedObject Rayman { get; set; }
     public AnimatedObject[] WorldPaths { get; set; }
     public AnimatedObject GameCubeSparkles { get; set; }
-    public SpriteTextObject FullWorldName { get; set; }
 
     public Action CurrentStepAction { get; set; }
     public Action CurrentExStepAction { get; set; }
@@ -59,11 +57,20 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public float ScrollX { get; set; }
     public byte NGageScrollCooldown { get; set; }
     public ushort Timer { get; set; }
+
+    public SpriteTextObject FullWorldName { get; set; }
+    public float WorldNameAlpha { get; set; }
+    public int EnterWorldStep { get; set; }
+
+    public CircleWindowWipeEffectObject CircleWipeEffect { get; set; }
+    public int CircleWipeFXValue { get; set; }
     public CircleWipeFXTransitionMode CircleWipeFXMode { get; set; }
 
     public byte SpikyBagSinValue { get; set; }
     public bool SpikyBagScrollDirection { get; set; }
     
+    public int unk1 { get; set; }
+
     public Palette OriginalVolcanoPalette { get; set; }
     public Palette TargetVolcanoPalette { get; set; }
     public byte[] VolcanoTileSet { get; set; }
@@ -71,6 +78,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public IScreenRenderer[] ValcanoGlowScreenRenderers { get; set; }
 
     public WorldMapMovement CurrentMovement { get; set; }
+    public WorldType SelectedWorldType { get; set; }
     public WorldId WorldId { get; set; }
     public byte CheatValue { get; set; }
 
@@ -80,10 +88,6 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Platform.NGage => new Vector2(175, 114),
         _ => throw new UnsupportedPlatformException()
     };
-
-    // TODO: Name
-    public byte unk2 { get; set; }
-    public int CircleWipeFXValue { get; set; }
 
     #endregion
 
@@ -473,6 +477,43 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         WorldPaths[0].CurrentAnimation = 3;
     }
 
+    private void SelectWorld()
+    {
+        string worldNameText = Localization.GetText(8, WorldId switch
+        {
+            WorldId.World1 => 31,
+            WorldId.World2 => 32,
+            WorldId.World3 => 33,
+            WorldId.World4 => 34,
+            _ => throw new ArgumentOutOfRangeException(nameof(WorldId), WorldId, "Invalid world id"),
+        })[0];
+
+        FullWorldName.Text = worldNameText;
+        FullWorldName.ScreenPos = new Vector2(-FullWorldName.GetStringWidth() / 2f, 64);
+
+        WorldNameAlpha = 0;
+        EnterWorldStep = 0;
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            unk1 = 0;
+
+        FullWorldName.GbaAlpha = WorldNameAlpha;
+
+        // NOTE: The original game hides the background and sprites by setting all palette colors to fully black. Since
+        //       we can't do that here the easiest seems to be to just remove all screens, dialogs and pending sprites.
+        Gfx.ClearScreens();
+        while (Scene.Dialogs.Count > 0)
+            Scene.RemoveLastDialog();
+        Scene.AnimationPlayer.Clear();
+
+        CurrentExStepAction = StepEx_EnterWorld;
+    }
+
+    private void SelectGameCube()
+    {
+        // TODO: Implement
+    }
+
     #endregion
 
     #region Public Methods
@@ -591,9 +632,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         FullWorldName = new SpriteTextObject()
         {
             Color = TextColor.FullWorldName,
+            FontSize = FontSize.Font16,
             ScreenPos = new Vector2(120, 60),
+            HorizontalAnchor = HorizontalAnchorMode.Center,
             Text = "",
-            field_0x14 = true,
+            IsAlphaBlendEnabled = true,
             Camera = Scene.HudCamera,
         };
 
@@ -792,7 +835,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_Play()
     {
-        if (unk2 == 0 && CircleWipeFXMode == CircleWipeFXTransitionMode.None)
+        if (SelectedWorldType == WorldType.None && CircleWipeFXMode == CircleWipeFXTransitionMode.None)
         {
             // Move forward
             if ((JoyPad.IsButtonJustPressed(GbaInput.Right) || 
@@ -847,7 +890,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                         {
                             Rayman.CurrentAnimation = 22;
                             CurrentMovement = WorldMapMovement.World1ToGameCube;
-                            unk2 = 2;
+                            SelectedWorldType = WorldType.GameCube;
                             UserInfo.WorldNameBar.CanMoveIn = false;
                             UserInfo.WorldNameBar.MoveOutWorldNameBar();
                         }
@@ -880,9 +923,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                      CurrentMovement == WorldMapMovement.None &&
                      JoyPad.IsButtonReleased(GbaInput.Select))
             {
-                unk2 = 2;
+                SelectedWorldType = WorldType.World;
                 CircleWipeFXMode = CircleWipeFXTransitionMode.Out;
-                // windowCircleWipeFX->field1_0x4 = 1; // TODO: Implement
+                CircleWipeEffect.IsEnabled = true;
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Spirale_Mix01);
             }
         }
@@ -1076,7 +1119,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         if (Engine.Settings.Platform == Platform.GBA)
             GameCubeSparkles.ScreenPos = GameCubeSparkles.ScreenPos with { X = xPos };
 
-        if (unk2 != 1)
+        if (SelectedWorldType != WorldType.GameCube)
             Scene.AnimationPlayer.Play(Rayman);
 
         Scene.AnimationPlayer.Play(WorldPaths[0]);
@@ -1094,19 +1137,69 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         StepLightning();
         StepVolcanoGlow();
 
-        if (unk2 == 1)
+        if (SelectedWorldType == WorldType.GameCube)
         {
             if (Engine.Settings.Platform == Platform.GBA)
-            {
-                // TODO: Implement
-            }
+                SelectGameCube();
         }
-        else if (unk2 != 0 && CircleWipeFXMode == CircleWipeFXTransitionMode.FinishedOut)
+        else if (SelectedWorldType != WorldType.None && CircleWipeFXMode == CircleWipeFXTransitionMode.FinishedOut)
         {
-            // TODO: Implement
+            SelectWorld();
+            CircleWipeEffect.IsEnabled = false;
         }
 
         ManageCheats();
+    }
+
+    private void StepEx_EnterWorld()
+    {
+        // TODO: Update every frame
+        if ((GameTime.ElapsedFrames & 3) == 0)
+        {
+            // Fade in text
+            if (EnterWorldStep == 0)
+            {
+                WorldNameAlpha++;
+
+                if (WorldNameAlpha == 16)
+                    EnterWorldStep = 1;
+            }
+            // Wait
+            else if (EnterWorldStep == 1)
+            {
+                if (unk1 < 11)
+                    unk1++;
+                else
+                    EnterWorldStep = 2;
+            }
+            // Fade out text
+            else if (EnterWorldStep == 2)
+            {
+                WorldNameAlpha--;
+
+                if (WorldNameAlpha == 0)
+                    EnterWorldStep = 3;
+            }
+            // Finish
+            else if (EnterWorldStep == 3)
+            {
+                if (WorldId == WorldId.World4 && !GameInfo.PersistentInfo.PlayedAct4)
+                {
+                    FrameManager.SetNextFrame(new Act4());
+                    SoundEventsManager.StopAllSongs();
+                    GameInfo.PersistentInfo.PlayedAct4 = true;
+                    GameInfo.Save(GameInfo.CurrentSlot);
+                }
+                else
+                {
+                    GameInfo.LoadLevel(MapId.World1 + (int)WorldId);
+                }
+            }
+
+            FullWorldName.GbaAlpha = WorldNameAlpha;
+        }
+
+        Scene.AnimationPlayer.PlayFront(FullWorldName);
     }
 
     private void Step_Normal()
@@ -1172,6 +1265,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Mode3 = 3, // Unused
         Mode4 = 4, // Unused
         FinishedOut = 5,
+    }
+
+    public enum WorldType
+    {
+        None = 0,
+        GameCube = 1,
+        World = 2,
     }
 
     #endregion

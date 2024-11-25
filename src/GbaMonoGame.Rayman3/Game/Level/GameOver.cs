@@ -305,9 +305,7 @@ public class GameOver : Frame
                         Mode = GameOverMode.ReturnToMenu;
                         TransitionsFX.FadeOutInit(2 / 16f);
 
-                        // Why doesn't N-Gage do this?
-                        if (Engine.Settings.Platform == Platform.GBA)
-                            SoundEventsManager.StopAllSongs();
+                        SoundEventsManager.StopAllSongs();
                     }
                 }
                 else if (Rayman.CurrentAnimation == 7 && Rayman.CurrentFrame == 25 && !Rayman.IsDelayMode)

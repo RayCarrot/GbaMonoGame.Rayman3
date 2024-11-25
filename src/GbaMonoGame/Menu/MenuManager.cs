@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace GbaMonoGame;
 
@@ -90,7 +89,7 @@ public class MenuManager
         AffineMatrix? matrix = animate ? new AffineMatrix(0, new Vector2(1, TransitionTextValue)) : null;
         foreach (byte b in text)
         {
-            Sprite sprite = FontManager.GetCharacterSprite(b, fontSize, ref position, 0, matrix, color, Camera);
+            Sprite sprite = FontManager.GetCharacterSprite(b, fontSize, ref position, 0, matrix, null, color, Camera);
             Sprites.Add(sprite);
         }
     }

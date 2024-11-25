@@ -3677,15 +3677,11 @@ public partial class Rayman
                         return true;
                     }
 
-                    // TODO: N-Gage already returns here - why?
-                    if (Engine.Settings.Platform == Platform.GBA)
-                    {
-                        if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
-                            SoundEventsManager.StopAllSongs();
+                    if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+                        SoundEventsManager.StopAllSongs();
 
-                        if (FinishedMap)
-                            SoundEventsManager.StopAllSongs();
-                    }
+                    if (FinishedMap)
+                        SoundEventsManager.StopAllSongs();
 
                     return true;
                 }

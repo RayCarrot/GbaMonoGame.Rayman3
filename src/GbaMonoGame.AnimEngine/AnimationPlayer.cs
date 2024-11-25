@@ -56,4 +56,10 @@ public class AnimationPlayer
         UnsortedObjects.Clear();
         SortedObjects.Clear();
     }
+
+    public void Clear()
+    {
+        UnsortedObjects.Clear();
+        SortedObjects.Clear();
+    }
 }
