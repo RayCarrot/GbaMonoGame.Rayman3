@@ -48,6 +48,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     public override void Init()
     {
+        MapId prevMap = GameInfo.MapId;
         GameInfo.InitLevel(LevelType.Normal);
         LevelMusicManager.Init();
 
@@ -57,7 +58,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 3, 1);
 
         // Set start position
-        if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
+        if (prevMap != MapId.WorldMap && GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
         {
             // Get the actor to spawn the main actor at (either default position or at a curtain)
             int startActorId = GameInfo.PersistentInfo.LastPlayedLevel == 0xFF
