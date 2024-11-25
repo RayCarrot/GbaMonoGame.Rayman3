@@ -42,8 +42,7 @@ public class CircleWindowWipeEffectObject : EffectObject
         else if (Value < quarterCircle * 2)
         {
             // Fill bottom-right
-            for (float y = halfRes.Y; y < res.Y; y++)
-                DrawLine(new Vector2(halfRes.X, y), new Vector2(res.X, y), Color.Black);
+            DrawRectangle(halfRes, halfRes, Color.Black);
 
             float horizontalScale = scalingFactor * MathHelpers.Cos256(quarterCircle * 1 - Value);
             float verticalScale = scalingFactor * MathHelpers.Sin256(quarterCircle * 3 - Value);
@@ -63,8 +62,7 @@ public class CircleWindowWipeEffectObject : EffectObject
         else if (Value < quarterCircle * 3)
         {
             // Fill bottom-right
-            for (float y = halfRes.Y; y < res.Y; y++)
-                DrawLine(new Vector2(halfRes.X, y), new Vector2(res.X, y), Color.Black);
+            DrawRectangle(halfRes, halfRes, Color.Black);
 
             float horizontalScale = scalingFactor * MathHelpers.Cos256(quarterCircle * 3 - Value);
             float verticalScale = scalingFactor * MathHelpers.Sin256(quarterCircle * 3 - Value);
@@ -84,12 +82,10 @@ public class CircleWindowWipeEffectObject : EffectObject
         else
         {
             // Fill top
-            for (float y = 0; y < halfRes.Y; y++)
-                DrawLine(new Vector2(0, y), new Vector2(res.X, y), Color.Black);
+            DrawRectangle(Vector2.Zero, new Vector2(res.X, halfRes.Y), Color.Black);
 
             // Fill bottom-right
-            for (float y = halfRes.Y; y < res.Y; y++)
-                DrawLine(new Vector2(halfRes.X, y), new Vector2(res.X, y), Color.Black);
+            DrawRectangle(halfRes, halfRes, Color.Black);
 
             float horizontalScale = scalingFactor * MathHelpers.Cos256(quarterCircle * 3 - Value);
             float verticalScale = scalingFactor * MathHelpers.Sin256(quarterCircle * 5 - Value);
