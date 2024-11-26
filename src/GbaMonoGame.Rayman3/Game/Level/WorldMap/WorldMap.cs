@@ -6,6 +6,7 @@ using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -71,11 +72,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     
     public int unk1 { get; set; }
 
-    public Palette OriginalVolcanoPalette { get; set; }
-    public Palette TargetVolcanoPalette { get; set; }
-    public byte[] VolcanoTileSet { get; set; }
     public int VolcanoGlowValue { get; set; }
-    public IScreenRenderer[] ValcanoGlowScreenRenderers { get; set; }
 
     public WorldMapMovement CurrentMovement { get; set; }
     public WorldType SelectedWorldType { get; set; }
@@ -168,90 +165,85 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void InitVolcanoGlow()
     {
-        OriginalVolcanoPalette = ((TgxPlayfield2D)Scene.Playfield).Vram.Palette;
+        // Create a texture for each modified palette frame
+        Texture2D[] textures = new Texture2D[VolcanoGlowMaxValue + 1];
 
-        int palLength = OriginalVolcanoPalette.Colors.Length;
+        // Get the original colors
+        Color[] originalColors = ((TgxPlayfield2D)Scene.Playfield).Vram.Palette.Colors;
+        int palLength = originalColors.Length;
 
-        Color[] targetColors = new Color[palLength];
-        Array.Copy(OriginalVolcanoPalette.Colors, targetColors, palLength);
+        // Create the target colors for sub-palette 4
+        Color[] targetColors =
+        [
+            new RGB555Color(0x3c0c).ToColor(),
+            new RGB555Color(0x32).ToColor(),
+            new RGB555Color(0x72).ToColor(),
+            new RGB555Color(0x115).ToColor(),
+            new RGB555Color(0x94).ToColor(),
+            new RGB555Color(0x2193).ToColor(),
+            new RGB555Color(0xd0).ToColor(),
+            new RGB555Color(0x175).ToColor(),
+            new RGB555Color(0x172).ToColor(),
+            new RGB555Color(0xe).ToColor(),
+            new RGB555Color(0x117).ToColor(),
+            new RGB555Color(0x1d6).ToColor(),
+            new RGB555Color(0x219).ToColor(),
+            new RGB555Color(0x178).ToColor(),
+            new RGB555Color(0x51).ToColor(),
+            new RGB555Color(0x53).ToColor(),
+        ];
 
-        // Modify sub-palette 4
-        targetColors[16 * 4 + 0] = new RGB555Color(0x3c0c).ToColor();
-        targetColors[16 * 4 + 1] = new RGB555Color(0x32).ToColor();
-        targetColors[16 * 4 + 2] = new RGB555Color(0x72).ToColor();
-        targetColors[16 * 4 + 3] = new RGB555Color(0x115).ToColor();
-        targetColors[16 * 4 + 4] = new RGB555Color(0x94).ToColor();
-        targetColors[16 * 4 + 5] = new RGB555Color(0x2193).ToColor();
-        targetColors[16 * 4 + 6] = new RGB555Color(0xd0).ToColor();
-        targetColors[16 * 4 + 7] = new RGB555Color(0x175).ToColor();
-        targetColors[16 * 4 + 8] = new RGB555Color(0x172).ToColor();
-        targetColors[16 * 4 + 9] = new RGB555Color(0xe).ToColor();
-        targetColors[16 * 4 + 10] = new RGB555Color(0x117).ToColor();
-        targetColors[16 * 4 + 11] = new RGB555Color(0x1d6).ToColor();
-        targetColors[16 * 4 + 12] = new RGB555Color(0x219).ToColor();
-        targetColors[16 * 4 + 13] = new RGB555Color(0x178).ToColor();
-        targetColors[16 * 4 + 14] = new RGB555Color(0x51).ToColor();
-        targetColors[16 * 4 + 15] = new RGB555Color(0x53).ToColor();
-
-        TargetVolcanoPalette = new Palette(targetColors);
-
-        VolcanoGlowValue = 0;
-        ValcanoGlowScreenRenderers = new IScreenRenderer[VolcanoGlowMaxValue + 1];
-
-        // Get the tileset for the volcano layer so that we can easily re-create the texture for the glow later
-        // We also need to pad with a tile at the start since it's dynamic (meaning each tile index is index-1).
+        // Get the tileset for the volcano layer. We need to pad with a tile at the start since it's dynamic (meaning each tile index is index-1).
         TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
         TgxTileLayer volcanoLayer = playfield.TileLayers[2];
         TileMapScreenRenderer renderer = (TileMapScreenRenderer)volcanoLayer.Screen.Renderer;
         int tileLength = renderer.Is8Bit ? 0x40 : 0x20;
-        VolcanoTileSet = new byte[renderer.TileSet.Length + tileLength];
-        Array.Copy(renderer.TileSet, 0, VolcanoTileSet, tileLength, renderer.TileSet.Length);
-        UpdateVolcanoGlowPalette();
+        byte[] tileSet = new byte[renderer.TileSet.Length + tileLength];
+        Array.Copy(renderer.TileSet, 0, tileSet, tileLength, renderer.TileSet.Length);
+
+        // Create an array for the new colors
+        Color[] colors = new Color[palLength];
+        Array.Copy(originalColors, colors, palLength);
+
+        // Create a texture and renderer for each 
+        for (int value = 0; value < textures.Length; value++)
+        {
+            // Lerp the colors in sub-palette 4
+            for (int subPaletteIndex = 0; subPaletteIndex < 16; subPaletteIndex++)
+            {
+                int fullPalIndex = 16 * 4 + subPaletteIndex;
+                colors[fullPalIndex] = Color.Lerp(originalColors[fullPalIndex], targetColors[subPaletteIndex], value / (float)VolcanoGlowMaxValue);
+            }
+
+            // Create the texture with the new palette
+            textures[value] = Engine.TextureCache.GetOrCreateObject(
+                pointer: volcanoLayer.Resource.Offset,
+                id: value,
+                data: (Layer: volcanoLayer, TileSet: tileSet, Palette: new Palette(colors)),
+                createObjFunc: static data =>
+                    new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, data.Palette, data.Layer.Is8Bit));
+        }
+
+        // Replace the renderer
+        volcanoLayer.Screen.Renderer = new MultiTextureScreenRenderer(textures);
+
+        VolcanoGlowValue = 0;
     }
 
     private void StepVolcanoGlow()
     {
         // NOTE: The game only updates this every 8 frames
 
-        UpdateVolcanoGlowPalette();
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer volcanoLayer = playfield.TileLayers[2];
+        MultiTextureScreenRenderer renderer = (MultiTextureScreenRenderer)volcanoLayer.Screen.Renderer;
+
+        renderer.CurrentTextureIndex = VolcanoGlowValue <= VolcanoGlowMaxValue ? VolcanoGlowValue : VolcanoGlowMaxValue * 2 - VolcanoGlowValue;
 
         VolcanoGlowValue++;
 
         if (VolcanoGlowValue > VolcanoGlowMaxValue * 2)
             VolcanoGlowValue = 0;
-    }
-
-    private void UpdateVolcanoGlowPalette()
-    {
-        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
-        TgxTileLayer volcanoLayer = playfield.TileLayers[2];
-
-        int value = VolcanoGlowValue <= VolcanoGlowMaxValue ? VolcanoGlowValue : VolcanoGlowMaxValue * 2 - VolcanoGlowValue;
-
-        // Create the renderer if not created before
-        if (ValcanoGlowScreenRenderers[value] == null)
-        {
-            int palLength = OriginalVolcanoPalette.Colors.Length;
-            Color[] colors = new Color[palLength];
-            Array.Copy(OriginalVolcanoPalette.Colors, colors, palLength);
-
-            for (int i = 0; i < 16; i++)
-            {
-                int index = 16 * 4 + i;
-                colors[index] = Color.Lerp(OriginalVolcanoPalette.Colors[index], TargetVolcanoPalette.Colors[index], value / (float)VolcanoGlowMaxValue);
-            }
-
-            Palette pal = new(colors);
-
-            ValcanoGlowScreenRenderers[value] = new TextureScreenRenderer(Engine.TextureCache.GetOrCreateObject(
-                pointer: volcanoLayer.Resource.Offset,
-                id: value,
-                data: (Layer: volcanoLayer, TileSet: VolcanoTileSet, Palette: pal),
-                createObjFunc: static data =>
-                    new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, data.Palette, data.Layer.Is8Bit)));
-        }
-
-        volcanoLayer.Screen.Renderer = ValcanoGlowScreenRenderers[value];
     }
 
     private bool ProcessCheatInput(GbaInput input)
