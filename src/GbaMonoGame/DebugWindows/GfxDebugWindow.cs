@@ -68,16 +68,17 @@ public class GfxDebugWindow : DebugWindow
         ImGui.Spacing();
         ImGui.SeparatorText("Screens");
 
-        if (ImGui.BeginTable("_screens", 8))
+        if (ImGui.BeginTable("_screens", 9))
         {
             ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Wrap", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Id", ImGuiTableColumnFlags.WidthFixed);
-            ImGui.TableSetupColumn("Priority", ImGuiTableColumnFlags.WidthFixed);
-            ImGui.TableSetupColumn("Offset");
-            ImGui.TableSetupColumn("Size");
+            ImGui.TableSetupColumn("Prio", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Offset", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Size", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Bpp", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("Camera");
-            ImGui.TableSetupColumn("Color mode");
+            ImGui.TableSetupColumn("Renderer");
             ImGui.TableHeadersRow();
 
             foreach (GfxScreen screen in Gfx.GetScreens().OrderBy(x => x.Id))
@@ -103,15 +104,18 @@ public class GfxDebugWindow : DebugWindow
                 ImGui.Text($"{screen.Renderer?.GetSize(screen).X:0.00} x {screen.Renderer?.GetSize(screen).Y:0.00}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{screen.Camera.GetType().Name}");
-
-                ImGui.TableNextColumn();
                 ImGui.Text(screen.Is8Bit switch
                 {
                     null => String.Empty,
-                    true => "8-bit",
-                    false => "4-bit",
+                    true => "8",
+                    false => "4",
                 });
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Camera.GetType().Name}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{screen.Renderer?.GetType().Name}");
             }
             ImGui.EndTable();
         }
