@@ -1,3 +1,5 @@
-﻿namespace GbaMonoGame;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-public record struct RenderOptions(bool Alpha, GfxCamera Camera);
+namespace GbaMonoGame;
+
+public record struct RenderOptions(bool Alpha, Effect Shader, GfxCamera Camera);

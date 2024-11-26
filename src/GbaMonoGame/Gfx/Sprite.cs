@@ -19,11 +19,13 @@ public class Sprite
     // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other. Very noticeable when setting it on Rayman and looking up - Rayman gets 4 eyes then! Although this might be how it is on N-Gage?
     public float? Alpha { get; set; }
 
+    public Effect Shader { get; set; }
+
     public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
 
     public void Draw(GfxRenderer renderer)
     {
-        renderer.BeginRender(new RenderOptions(Alpha != null, Camera));
+        renderer.BeginRender(new RenderOptions(Alpha != null, Shader, Camera));
 
         Color color = Color;
         if (Alpha != null)

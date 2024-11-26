@@ -47,6 +47,7 @@ public class GfxRenderer
             // Begin a new batch
             SpriteBatch.Begin(
                 samplerState: SamplerState.PointClamp,
+                effect: options.Shader,
                 blendState: options.Alpha ? new BlendState
                 {
                     ColorSourceBlend = Blend.SourceAlpha,

@@ -459,7 +459,7 @@ public class MenuManager
             }
         }
 
-        renderer.BeginRender(new RenderOptions(false, Engine.ScreenCamera));
+        renderer.BeginRender(new RenderOptions(false, null, Engine.ScreenCamera));
 
         // Fade out the game
         renderer.DrawFilledRectangle(Vector2.Zero, Engine.GameViewPort.GameResolution, Color.Black * MathHelper.Lerp(0.0f, 0.7f, TransitionValue));
