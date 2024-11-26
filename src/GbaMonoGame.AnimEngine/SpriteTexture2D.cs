@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GbaMonoGame;
+namespace GbaMonoGame.AnimEngine;
 
 public class SpriteTexture2D : Texture2D
 {
