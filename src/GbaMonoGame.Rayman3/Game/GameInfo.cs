@@ -561,7 +561,7 @@ public static class GameInfo
             case MapId.NGageMulti_RayTag2:
             case MapId.NGageMulti_CatAndMouse1:
             case MapId.NGageMulti_CatAndMouse2:
-                WorldId = WorldId.Multiplayer;
+                WorldId = WorldId.Special;
                 break;
 
             case MapId.WorldMap:

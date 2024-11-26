@@ -11,6 +11,7 @@ using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Fix widescreen
 public class WorldMap : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
@@ -73,6 +74,8 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public int unk1 { get; set; }
 
     public int VolcanoGlowValue { get; set; }
+
+    public byte field_0xda { get; set; }
 
     public WorldMapMovement CurrentMovement { get; set; }
     public WorldType SelectedWorldType { get; set; }
@@ -503,7 +506,17 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void SelectGameCube()
     {
-        // TODO: Implement
+        // Disable the spiky bag layer. We don't really need to do this here, but might
+        // as well. The game does it because of the window values being set here.
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer spikyBagLayer = playfield.TileLayers[3];
+        spikyBagLayer.Screen.IsEnabled = false;
+
+        field_0xda = 0;
+        Timer = 0;
+        CurrentMovement = WorldMapMovement.None;
+        WorldId = WorldId.Special;
+        CurrentExStepAction = StepEx_EnterGameCubeMenu;
     }
 
     #endregion
@@ -1192,6 +1205,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         }
 
         Scene.AnimationPlayer.PlayFront(FullWorldName);
+    }
+
+    private void StepEx_EnterGameCubeMenu()
+    {
+        // TODO: Implement
     }
 
     private void Step_Normal()

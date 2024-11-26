@@ -7,5 +7,5 @@ public enum WorldId
     World3 = 2,
     World4 = 3,
     Power = 4,
-    Multiplayer = 5,
+    Special = 5,
 }
