@@ -1,6 +1,7 @@
 ﻿using System;
 using BinarySerializer.Ubisoft.GbaEngine;
 using GbaMonoGame.AnimEngine;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -49,22 +50,31 @@ public class AObjectFog : AObject
 
     private void DrawSprite(AnimationChannel channel, Vector2 screenPos)
     {
+        // Get or create the sprite texture
+        Texture2D texture = Engine.TextureCache.GetOrCreateObject(
+            pointer: Resource.Offset,
+            id: channel.TileIndex,
+            data: new SpriteDefine(
+                resource: Resource,
+                spriteShape: channel.SpriteShape,
+                spriteSize: channel.SpriteSize,
+                tileIndex: channel.TileIndex),
+            createObjFunc: static data => new IndexedSpriteTexture2D(data.Resource, data.SpriteShape, data.SpriteSize, data.TileIndex));
+
+        int paletteIndex = channel.PalIndex;
+
+        PaletteTexture paletteTexture = new(
+            Texture: Engine.TextureCache.GetOrCreateObject(
+                pointer: Resource.Palettes.Offset,
+                id: 0,
+                data: Resource.Palettes,
+                createObjFunc: static p => new PaletteTexture2D(p.Palettes)),
+            PaletteIndex: paletteIndex);
+
         Sprite sprite = new()
         {
-            Texture = Engine.TextureCache.GetOrCreateObject(
-                pointer: Resource.Offset,
-                id: channel.TileIndex * Resource.PalettesCount + channel.PalIndex,
-                data: new SpriteDefine(Resource, channel.SpriteShape, channel.SpriteSize, channel.PalIndex, channel.TileIndex),
-                createObjFunc: static x =>
-                {
-                    Palette palette = Engine.PaletteCache.GetOrCreateObject(
-                        pointer: x.Resource.Palettes.Offset,
-                        id: x.PaletteIndex,
-                        data: x.Resource.Palettes.Palettes[x.PaletteIndex],
-                        createObjFunc: p => new Palette(p));
-
-                    return new SpriteTexture2D(x.Resource, x.SpriteShape, x.SpriteSize, palette, x.TileIndex);
-                }),
+            Texture = texture,
+            PaletteTexture = paletteTexture,
             Position = new Vector2(screenPos.X, screenPos.Y),
             FlipX = false,
             FlipY = false,
@@ -95,22 +105,16 @@ public class AObjectFog : AObject
 
     #region Data Types
 
-    private readonly struct SpriteDefine
+    private readonly struct SpriteDefine(
+        AnimatedObjectResource resource,
+        int spriteShape,
+        int spriteSize,
+        int tileIndex)
     {
-        public SpriteDefine(AnimatedObjectResource resource, int spriteShape, int spriteSize, int paletteIndex, int tileIndex)
-        {
-            Resource = resource;
-            PaletteIndex = paletteIndex;
-            SpriteShape = spriteShape;
-            SpriteSize = spriteSize;
-            TileIndex = tileIndex;
-        }
-
-        public AnimatedObjectResource Resource { get; }
-        public int SpriteShape { get; }
-        public int SpriteSize { get; }
-        public int PaletteIndex { get; }
-        public int TileIndex { get; }
+        public AnimatedObjectResource Resource { get; } = resource;
+        public int SpriteShape { get; } = spriteShape;
+        public int SpriteSize { get; } = spriteSize;
+        public int TileIndex { get; } = tileIndex;
     }
 
     #endregion
