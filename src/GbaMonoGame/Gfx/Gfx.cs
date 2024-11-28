@@ -20,6 +20,7 @@ public static class Gfx
     }
 
     public static Texture2D Pixel { get; }
+    public static Effect PaletteShader { get; private set; }
 
     /// <summary>
     /// The game screens. These are the equivalent of backgrounds on the GBA
@@ -48,6 +49,11 @@ public static class Gfx
         set => Fade = value / 16;
     }
     public static FadeControl FadeControl { get; set; } // The equivalent of BLDCNT on GBA. This is not implemented on the N-Gage.
+
+    public static void Load(Effect paletteShader)
+    {
+        PaletteShader = paletteShader;
+    }
 
     public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
     public static GfxScreen GetScreen(int id) => Screens[id];

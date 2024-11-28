@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame;
@@ -29,6 +28,33 @@ public static class DrawHelpers
 
                 if (v2 != 0)
                     texColors[imgBufferOffset] = pal.Colors[palOffset + v2];
+                imgBufferOffset++;
+
+                tileSetIndex++;
+            }
+
+            imgBufferOffset += width - Tile.Size;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void DrawTile_4bpp(byte[] texColorIndexes, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex)
+    {
+        int imgBufferOffset = yPos * width + xPos;
+
+        for (int y = 0; y < Tile.Size; y++)
+        {
+            for (int x = 0; x < Tile.Size; x += 2)
+            {
+                byte value = tileSet[tileSetIndex];
+
+                int v1 = value & 0xF;
+                int v2 = value >> 4;
+
+                texColorIndexes[imgBufferOffset] = (byte)v1;
+                imgBufferOffset++;
+
+                texColorIndexes[imgBufferOffset] = (byte)v2;
                 imgBufferOffset++;
 
                 tileSetIndex++;
@@ -146,6 +172,27 @@ public static class DrawHelpers
                 // Set the pixel if not 0 (transparent)
                 if (value != 0)
                     texColors[imgBufferOffset] = pal.Colors[value];
+
+                imgBufferOffset++;
+                tileSetIndex++;
+            }
+
+            imgBufferOffset += width - Tile.Size;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void DrawTile_8bpp(byte[] texColorIndexes, int xPos, int yPos, int width, byte[] tileSet, ref int tileSetIndex)
+    {
+        int imgBufferOffset = yPos * width + xPos;
+
+        for (int y = 0; y < Tile.Size; y++)
+        {
+            for (int x = 0; x < Tile.Size; x++)
+            {
+                byte value = tileSet[tileSetIndex];
+
+                texColorIndexes[imgBufferOffset] = value;
 
                 imgBufferOffset++;
                 tileSetIndex++;

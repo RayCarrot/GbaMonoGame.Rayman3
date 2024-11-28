@@ -44,10 +44,20 @@ public class GfxRenderer
 
             RenderOptions = options;
 
+            // If we have a palette texture specified then we use the palette shader and pass in the params
+            Effect shader = null;
+            if (options.PaletteTexture != null)
+            {
+                shader = Gfx.PaletteShader;
+                shader.Parameters["PaletteTexture"].SetValue(options.PaletteTexture.Texture);
+                shader.Parameters["PaletteWidth"].SetValue((float)options.PaletteTexture.Texture.Width);
+                shader.Parameters["PaletteY"].SetValue(options.PaletteTexture.PaletteIndex / (float)options.PaletteTexture.Texture.Height);
+            }
+
             // Begin a new batch
             SpriteBatch.Begin(
                 samplerState: SamplerState.PointClamp,
-                effect: options.Shader,
+                effect: shader,
                 blendState: options.Alpha ? new BlendState
                 {
                     ColorSourceBlend = Blend.SourceAlpha,

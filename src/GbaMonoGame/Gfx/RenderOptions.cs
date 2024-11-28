@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿namespace GbaMonoGame;
 
-namespace GbaMonoGame;
-
-public record struct RenderOptions(bool Alpha, Effect Shader, GfxCamera Camera);
+// Have this be a record so we get automatic equality comparisons implemented
+public record struct RenderOptions(bool Alpha, PaletteTexture PaletteTexture, GfxCamera Camera);

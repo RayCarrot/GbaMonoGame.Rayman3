@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
@@ -132,61 +131,6 @@ public class AnimatedObject : AObject
 
         for (int i = 0; i < anim.ChannelsPerFrame[CurrentFrame]; i++)
             yield return anim.Channels[i + ChannelIndex];
-    }
-
-    private static Texture2D CreateSpriteTexture(SpriteDefine spriteDefine)
-    {
-        AnimatedObjectResource resource = spriteDefine.Resource;
-
-        Palette palette;
-
-        // If the palette cycle index is 0 then it's the default, unmodified, palette
-        if (spriteDefine.PaletteCycleIndex == 0)
-        {
-            palette = Engine.PaletteCache.GetOrCreateObject(
-                pointer: resource.Palettes.Offset,
-                id: spriteDefine.PaletteIndex,
-                data: resource.Palettes.Palettes[spriteDefine.PaletteIndex],
-                createObjFunc: p => new Palette(p));
-        }
-        else
-        {
-            palette = Engine.PaletteCache.GetOrCreateObject(
-                pointer: spriteDefine.PaletteCycleAnimation.Offset,
-                id: spriteDefine.PaletteCycleIndex * resource.PalettesCount + spriteDefine.PaletteIndex,
-                data: spriteDefine,
-                createObjFunc: data =>
-                {
-                    RGB555Color[] originalPal = data.Resource.Palettes.Palettes[data.PaletteIndex].Colors;
-                    RGB555Color[] newPal = new RGB555Color[originalPal.Length];
-                    Array.Copy(originalPal, newPal, originalPal.Length);
-
-                    PaletteCycleAnimation palAnim = data.PaletteCycleAnimation;
-                    int length = palAnim.ColorEndIndex - palAnim.ColorStartIndex + 1;
-
-                    for (int i = 0; i < length; i++)
-                    {
-                        int srcIndex = palAnim.ColorStartIndex + i;
-                        int dstIndex = palAnim.ColorStartIndex + (i + data.PaletteCycleIndex) % length;
-
-                        newPal[dstIndex] = originalPal[srcIndex];
-                    }
-                    
-                    return new Palette(newPal);
-                });
-        }
-
-        SpriteTexture2D tex = new(resource, spriteDefine.SpriteShape, spriteDefine.SpriteSize, palette, spriteDefine.TileIndex);
-
-        if (Engine.Config.DumpSprites)
-        {
-            string outputDir = Path.Combine("Sprites", resource.Offset.StringAbsoluteOffset);
-            Directory.CreateDirectory(outputDir);
-            using Stream fileStream = File.Create(Path.Combine(outputDir, $"{spriteDefine.TileIndex}_{spriteDefine.PaletteIndex}.png"));
-            tex.SaveAsPng(fileStream, tex.Width, tex.Height);
-        }
-
-        return tex;
     }
 
     #endregion
@@ -388,7 +332,60 @@ public class AnimatedObject : AObject
                             pd: matrix.Pd);
                     }
 
+                    // Get or create the sprite texture
+                    Texture2D texture = Engine.TextureCache.GetOrCreateObject(
+                        pointer: Resource.Offset,
+                        id: channel.TileIndex,
+                        data: new SpriteDefine(
+                            resource: Resource,
+                            spriteShape: channel.SpriteShape,
+                            spriteSize: channel.SpriteSize,
+                            tileIndex: channel.TileIndex),
+                        createObjFunc: data => new IndexedSpriteTexture2D(data.Resource, data.SpriteShape, data.SpriteSize, data.TileIndex));
+
                     int paletteIndex = BasePaletteIndex + channel.PalIndex;
+                    PaletteTexture paletteTexture;
+
+                    // If the palette cycle index is 0 or not the animated palette then it's the default, unmodified, palette
+                    if (PaletteCycleIndex == 0 || anim.PaletteCycleAnimation.PaletteIndex != paletteIndex)
+                    {
+                        paletteTexture = new PaletteTexture(
+                            Texture: Engine.TextureCache.GetOrCreateObject(
+                                pointer: Resource.Palettes.Offset,
+                                id: 0,
+                                data: Resource.Palettes,
+                                createObjFunc: p => new PaletteTexture2D(p.Palettes, p.Pre_Is8Bit)),
+                            PaletteIndex: paletteIndex);
+                    }
+                    else
+                    {
+                        paletteTexture = new PaletteTexture(
+                            Texture: Engine.TextureCache.GetOrCreateObject(
+                                pointer: anim.PaletteCycleAnimation.Offset,
+                                id: PaletteCycleIndex,
+                                data: new PaletteAnimationDefine(Resource.Palettes, anim.PaletteCycleAnimation, PaletteCycleIndex),
+                                createObjFunc: data =>
+                                {
+                                    PaletteCycleAnimation palAnim = data.PaletteCycleAnimation;
+
+                                    RGB555Color[] originalPal = data.SpritePalettes.Palettes[palAnim.PaletteIndex].Colors;
+                                    RGB555Color[] newPal = new RGB555Color[originalPal.Length];
+                                    Array.Copy(originalPal, newPal, originalPal.Length);
+
+                                    int length = palAnim.ColorEndIndex - palAnim.ColorStartIndex + 1;
+
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        int srcIndex = palAnim.ColorStartIndex + i;
+                                        int dstIndex = palAnim.ColorStartIndex + (i + data.PaletteCycleIndex) % length;
+
+                                        newPal[dstIndex] = originalPal[srcIndex];
+                                    }
+
+                                    return new PaletteTexture2D(newPal, data.SpritePalettes.Pre_Is8Bit);
+                                }),
+                            PaletteIndex: 0);
+                    }
 
                     // Add the sprite to vram. In the original engine this part
                     // is more complicated. If the object is dynamic then it loads
@@ -396,18 +393,8 @@ public class AnimatedObject : AObject
                     // entry to the list of object attributes in OAM memory.
                     Sprite sprite = new()
                     {
-                        Texture = Engine.TextureCache.GetOrCreateObject(
-                            pointer: Resource.Offset, 
-                            id: (channel.TileIndex * Resource.PalettesCount + paletteIndex) * 16 + PaletteCycleIndex,
-                            data: new SpriteDefine(
-                                resource: Resource, 
-                                spriteShape: channel.SpriteShape, 
-                                spriteSize: channel.SpriteSize, 
-                                paletteIndex: paletteIndex,
-                                paletteCycleAnimation: anim.PaletteCycleAnimation,
-                                paletteCycleIndex: PaletteCycleIndex,
-                                tileIndex: channel.TileIndex),
-                            createObjFunc: CreateSpriteTexture),
+                        Texture = texture,
+                        PaletteTexture = paletteTexture,
                         Position = new Vector2(xPos, yPos),
                         FlipX = channel.FlipX ^ FlipX,
                         FlipY = channel.FlipY ^ FlipY,
@@ -458,33 +445,19 @@ public class AnimatedObject : AObject
 
     #region Data Types
 
-    private readonly struct SpriteDefine
+    private readonly struct SpriteDefine(AnimatedObjectResource resource, int spriteShape, int spriteSize, int tileIndex)
     {
-        public SpriteDefine(
-            AnimatedObjectResource resource, 
-            int spriteShape, 
-            int spriteSize, 
-            int paletteIndex, 
-            PaletteCycleAnimation paletteCycleAnimation, 
-            int paletteCycleIndex, 
-            int tileIndex)
-        {
-            Resource = resource;
-            PaletteIndex = paletteIndex;
-            SpriteShape = spriteShape;
-            SpriteSize = spriteSize;
-            PaletteCycleAnimation = paletteCycleAnimation;
-            PaletteCycleIndex = paletteCycleIndex;
-            TileIndex = tileIndex;
-        }
+        public AnimatedObjectResource Resource { get; } = resource;
+        public int SpriteShape { get; } = spriteShape;
+        public int SpriteSize { get; } = spriteSize;
+        public int TileIndex { get; } = tileIndex;
+    }
 
-        public AnimatedObjectResource Resource { get; }
-        public int SpriteShape { get; }
-        public int SpriteSize { get; }
-        public int PaletteIndex { get; }
-        public PaletteCycleAnimation PaletteCycleAnimation { get; }
-        public int PaletteCycleIndex { get; }
-        public int TileIndex { get; }
+    private readonly struct PaletteAnimationDefine(SpritePalettes spritePalettes, PaletteCycleAnimation paletteCycleAnimation, int paletteCycleIndex)
+    {
+        public SpritePalettes SpritePalettes { get; } = spritePalettes;
+        public PaletteCycleAnimation PaletteCycleAnimation { get; } = paletteCycleAnimation;
+        public int PaletteCycleIndex { get; } = paletteCycleIndex;
     }
 
     #endregion

@@ -44,3 +44,9 @@
 /processorParam:TextureFormat=Color
 /build:N-Gage.png
 
+#begin PaletteShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:PaletteShader.fx
+

@@ -46,6 +46,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
     private Texture2D _gbaIcon;
     private Texture2D _nGageIcon;
     private SpriteFont _font;
+    private Effect _paletteShader;
     private GfxRenderer _gfxRenderer;
     private MenuManager _menu;
     private DebugLayout _debugLayout;
@@ -180,6 +181,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
             GameViewPort gameViewPort = new(Engine.Settings);
             gameViewPort.SetRequestedResolution(Engine.Config.InternalResolution?.ToVector2());
             Engine.LoadMonoGame(GraphicsDevice, Content, new ScreenCamera(gameViewPort), gameViewPort);
+            Gfx.Load(_paletteShader);
 
             // Load engine sounds and fonts
             SoundEventsManager.Load(Engine.Settings.Platform switch
@@ -358,6 +360,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         _gbaIcon = Content.Load<Texture2D>("GBA");
         _nGageIcon = Content.Load<Texture2D>("N-Gage");
         _font = Content.Load<SpriteFont>("Font");
+        _paletteShader = Content.Load<Effect>("PaletteShader");
 
         // If there's only one game installation we load that directly
         if (_gameInstallations.Count == 1)
