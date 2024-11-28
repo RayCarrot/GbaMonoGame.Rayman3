@@ -5,7 +5,7 @@ namespace GbaMonoGame;
 
 public class IndexedTiledTexture2D : Texture2D
 {
-    public IndexedTiledTexture2D(byte[] tileSet, int tileIndex, bool is8Bit) :
+    public IndexedTiledTexture2D(byte[] tileSet, int tileIndex, bool is8Bit, int colorOffset) :
         base(Engine.GraphicsDevice, Tile.Size, Tile.Size, false, SurfaceFormat.Alpha8)
     {
         byte[] texColorIndexes = new byte[Width * Height];
@@ -18,7 +18,7 @@ public class IndexedTiledTexture2D : Texture2D
         else
         {
             int tilePixelIndex = tileIndex * 0x20;
-            DrawHelpers.DrawTile_4bpp(texColorIndexes, 0, 0, Width, tileSet, ref tilePixelIndex, 0);
+            DrawHelpers.DrawTile_4bpp(texColorIndexes, 0, 0, Width, tileSet, ref tilePixelIndex, colorOffset);
         }
 
         SetData(texColorIndexes);

@@ -44,6 +44,14 @@ public class TgxTileLayer : TgxGameLayer
 
     public void LoadRenderer(TileKit tileKit, GbaVram vram)
     {
+        PaletteTexture paletteTexture = new(
+            Texture: Engine.TextureCache.GetOrCreateObject(
+                pointer: vram.SelectedPalette.Offset,
+                id: 0,
+                data: vram.SelectedPalette,
+                createObjFunc: static p => new PaletteTexture2D(p.Palette)),
+            PaletteIndex: 0);
+
         // The game has two ways of allocating tilesets. If it's dynamic then it reserves space in vram for dynamically loading
         // the tile graphics as they're being displayed on screen (as the camera scrolls). If it's static then it's all pre-loaded.
         if (IsDynamic)
@@ -57,7 +65,7 @@ public class TgxTileLayer : TgxGameLayer
                 height: Height, 
                 tileMap: TileMap, 
                 tileSet: tileSet, 
-                palette: vram.Palette, 
+                paletteTexture: paletteTexture, 
                 is8Bit: Is8Bit);
         }
         else
@@ -69,14 +77,6 @@ public class TgxTileLayer : TgxGameLayer
                 id: 0,
                 data: (Vram: vram, Layer: this),
                 createObjFunc: static data => new IndexedTiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.Layer.Is8Bit));
-
-            PaletteTexture paletteTexture = new(
-                Texture: Engine.TextureCache.GetOrCreateObject(
-                    pointer: vram.SelectedPalette.Offset,
-                    id: 0,
-                    data: vram.SelectedPalette,
-                    createObjFunc: static p => new PaletteTexture2D(p.Palette)),
-                PaletteIndex: 0);
 
             Screen.Renderer = new TextureScreenRenderer(layerTexture)
             {

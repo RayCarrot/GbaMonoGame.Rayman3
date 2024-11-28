@@ -9,14 +9,21 @@ namespace GbaMonoGame.TgxEngine;
 
 public class TileMapScreenRenderer : IScreenRenderer
 {
-    public TileMapScreenRenderer(Pointer cachePointer, int width, int height, MapTile[] tileMap, byte[] tileSet, Palette palette, bool is8Bit)
+    public TileMapScreenRenderer(
+        Pointer cachePointer, 
+        int width, 
+        int height, 
+        MapTile[] tileMap, 
+        byte[] tileSet, 
+        PaletteTexture paletteTexture, 
+        bool is8Bit)
     {
         CachePointer = cachePointer;
         Width = width;
         Height = height;
         TileMap = tileMap;
         TileSet = tileSet;
-        Palette = palette;
+        PaletteTexture = paletteTexture;
         Is8Bit = is8Bit;
 
         ReplacedTiles = new Dictionary<int, int>();
@@ -29,7 +36,7 @@ public class TileMapScreenRenderer : IScreenRenderer
     public int Height { get; }
     public MapTile[] TileMap { get; }
     public byte[] TileSet { get; }
-    public Palette Palette { get; }
+    public PaletteTexture PaletteTexture { get; }
     public bool Is8Bit { get; }
 
     private Rectangle GetVisibleTilesArea(Vector2 position, GfxScreen screen)
@@ -57,7 +64,7 @@ public class TileMapScreenRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
-        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, null, screen.Camera));
+        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, PaletteTexture, screen.Camera));
 
         Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
@@ -80,17 +87,14 @@ public class TileMapScreenRenderer : IScreenRenderer
                     if (ReplacedTiles.TryGetValue(tileIndex, out int newTileIndex))
                         tileIndex = newTileIndex;
 
-                    int texKey = tileIndex * 16 + tile.PaletteIndex;
-
                     Texture2D tex = textureCache.GetOrCreateObject(
-                        id: texKey,
-                        data: new TileDefine(TileSet, tileIndex, Palette, tile.PaletteIndex, Is8Bit),
-                        createObjFunc: static t => new TiledTexture2D(
+                        id: tileIndex,
+                        data: new TileDefine(TileSet, tileIndex, tile.PaletteIndex, Is8Bit),
+                        createObjFunc: static t => new IndexedTiledTexture2D(
                             tileSet: t.TileSet, 
                             tileIndex: t.TileIndex - 1, 
-                            paletteIndex: t.PaletteIndex, 
-                            palette: t.Palette, 
-                            is8Bit: t.Is8Bit));
+                            is8Bit: t.Is8Bit,
+                            colorOffset: t.PaletteIndex * 16));
 
                     SpriteEffects effects = SpriteEffects.None;
 
@@ -109,21 +113,11 @@ public class TileMapScreenRenderer : IScreenRenderer
         }
     }
 
-    private readonly struct TileDefine
+    private readonly struct TileDefine(byte[] tileSet, int tileIndex, int paletteIndex, bool is8Bit)
     {
-        public TileDefine(byte[] tileSet, int tileIndex, Palette palette, int paletteIndex, bool is8Bit)
-        {
-            TileSet = tileSet;
-            TileIndex = tileIndex;
-            Palette = palette;
-            PaletteIndex = paletteIndex;
-            Is8Bit = is8Bit;
-        }
-
-        public byte[] TileSet { get; }
-        public int TileIndex { get; }
-        public Palette Palette { get; }
-        public int PaletteIndex { get; }
-        public bool Is8Bit { get; }
+        public byte[] TileSet { get; } = tileSet;
+        public int TileIndex { get; } = tileIndex;
+        public int PaletteIndex { get; } = paletteIndex;
+        public bool Is8Bit { get; } = is8Bit;
     }
 }
