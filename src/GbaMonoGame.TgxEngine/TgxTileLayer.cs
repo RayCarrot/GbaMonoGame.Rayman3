@@ -46,10 +46,10 @@ public class TgxTileLayer : TgxGameLayer
     {
         PaletteTexture paletteTexture = new(
             Texture: Engine.TextureCache.GetOrCreateObject(
-                pointer: vram.SelectedPalette.Offset,
+                pointer: vram.SelectedPalette.CachePointer,
                 id: 0,
                 data: vram.SelectedPalette,
-                createObjFunc: static p => new PaletteTexture2D(p.Palette)),
+                createObjFunc: static p => new PaletteTexture2D(p)),
             PaletteIndex: 0);
 
         // The game has two ways of allocating tilesets. If it's dynamic then it reserves space in vram for dynamically loading

@@ -22,6 +22,8 @@ public class PaletteTexture2D : Texture2D
         SetData(texColors);
     }
 
+    public PaletteTexture2D(Palette palette) : this(palette.Colors) { }
+
     public PaletteTexture2D(Color[] palette) : base(Engine.GraphicsDevice, TextureWidth, GetHeight(palette.Length))
     {
         Color[] texColors = new Color[Width * Height];

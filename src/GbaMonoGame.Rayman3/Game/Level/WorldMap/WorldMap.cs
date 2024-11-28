@@ -173,7 +173,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         // Get the original colors
         GbaVram vram = ((TgxPlayfield2D)Scene.Playfield).Vram;
-        Color[] originalColors = vram.Palette.Colors;
+        Color[] originalColors = vram.SelectedPalette.Colors;
         int palLength = originalColors.Length;
 
         // Create the target colors for sub-palette 4
@@ -213,7 +213,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
             VolcanoPaletteTextures[value] = new PaletteTexture(
                 Texture: Engine.TextureCache.GetOrCreateObject(
-                    pointer: vram.SelectedPalette.Offset,
+                    pointer: vram.SelectedPalette.CachePointer,
                     id: value,
                     data: colors,
                     createObjFunc: static c => new PaletteTexture2D(c)),

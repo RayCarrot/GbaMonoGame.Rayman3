@@ -5,10 +5,9 @@ namespace GbaMonoGame.TgxEngine;
 
 public class GbaVram
 {
-    private GbaVram(byte[] tileSet, Palette palette, TilePalette[] palettes, int selectedPaletteIndex)
+    private GbaVram(byte[] tileSet, Palette[] palettes, int selectedPaletteIndex)
     {
         TileSet = tileSet;
-        Palette = palette;
         Palettes = palettes;
         SelectedPaletteIndex = selectedPaletteIndex;
     }
@@ -17,11 +16,10 @@ public class GbaVram
     private const int TileSize8bpp = 0x40;
 
     public byte[] TileSet { get; }
-    public Palette Palette { get; } // TODO: Remove?
 
-    public TilePalette[] Palettes { get; }
+    public Palette[] Palettes { get; }
     public int SelectedPaletteIndex { get; }
-    public TilePalette SelectedPalette => Palettes[SelectedPaletteIndex];
+    public Palette SelectedPalette => Palettes[SelectedPaletteIndex];
 
     public static GbaVram AllocateStatic(TileKit tileKit, TileMappingTable tileMappingTable, int vramLength8bpp, bool isAffine, int defaultPalette)
     {
@@ -48,13 +46,19 @@ public class GbaVram
             Array.Copy(tileKit.Tiles8bpp, value * TileSize8bpp, tileSet, (i + offset) * TileSize8bpp, TileSize8bpp);
         }
 
-        // Load palette
-        Palette pal = Engine.PaletteCache.GetOrCreateObject(
-            pointer: tileKit.Offset,
-            id: defaultPalette,
-            data: tileKit.Palettes[defaultPalette].Palette,
-            createObjFunc: p => new Palette(p));
-        
-        return new GbaVram(tileSet, pal, tileKit.Palettes, defaultPalette);
+        // Load palettes
+        Palette[] palettes = new Palette[tileKit.Palettes.Length];
+
+        for (int i = 0; i < palettes.Length; i++)
+        {
+            PaletteResource paletteResource = tileKit.Palettes[i].Palette;
+            palettes[i] = Engine.PaletteCache.GetOrCreateObject(
+                pointer: paletteResource.Offset,
+                id: 0,
+                data: paletteResource,
+                createObjFunc: p => new Palette(p));
+        }
+
+        return new GbaVram(tileSet, palettes, defaultPalette);
     }
 }

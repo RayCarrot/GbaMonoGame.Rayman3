@@ -134,7 +134,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         
         renderer.PaletteTexture = new PaletteTexture(
             Texture: Engine.TextureCache.GetOrCreateObject(
-                pointer: vram.SelectedPalette.Offset,
+                pointer: vram.SelectedPalette.CachePointer,
                 id: index + 1, // +1 since 0 is the default
                 data: index,
                 createObjFunc: static i => new PaletteTexture2D(GetBackgroundPalette(i))),

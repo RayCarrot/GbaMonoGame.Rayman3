@@ -51,13 +51,14 @@ public class TgxRotscaleLayerMode7 : TgxGameLayer
 
     public void LoadRenderer(TileKit tileKit, GbaVram vram)
     {
+        // TODO: Use indexed texture with palette texture
         // TODO: This doesn't work with animated tiles! We probably need to use the TileMap renderer and convert the
         //       TileMap like Ray1Map does (since it's static and not dynamic).
         Texture2D tex = Engine.TextureCache.GetOrCreateObject(
             pointer: Resource.Offset,
             id: 0,
             data: (Vram: vram, Layer: this, BaseTileIndex: BaseTileIndex),
-            createObjFunc: static data => new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.BaseTileIndex, data.Vram.Palette, true));
+            createObjFunc: static data => new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.BaseTileIndex, data.Vram.SelectedPalette, true));
         Screen.Renderer = new TextureScreenRenderer(tex);
     }
 }
