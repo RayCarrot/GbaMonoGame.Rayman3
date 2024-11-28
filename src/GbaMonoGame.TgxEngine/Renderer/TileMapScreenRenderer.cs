@@ -36,7 +36,7 @@ public class TileMapScreenRenderer : IScreenRenderer
     public int Height { get; }
     public MapTile[] TileMap { get; }
     public byte[] TileSet { get; }
-    public PaletteTexture PaletteTexture { get; }
+    public PaletteTexture PaletteTexture { get; set; }
     public bool Is8Bit { get; }
 
     private Rectangle GetVisibleTilesArea(Vector2 position, GfxScreen screen)

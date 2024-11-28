@@ -6,7 +6,6 @@ using GbaMonoGame.AnimEngine;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -74,6 +73,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public int unk1 { get; set; }
 
     public int VolcanoGlowValue { get; set; }
+    public PaletteTexture[] VolcanoPaletteTextures { get; set; }
 
     public byte field_0xda { get; set; }
 
@@ -168,11 +168,12 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void InitVolcanoGlow()
     {
-        // Create a texture for each modified palette frame
-        Texture2D[] textures = new Texture2D[VolcanoGlowMaxValue + 1];
+        // Create a palette texture for each modified palette frame
+        VolcanoPaletteTextures = new PaletteTexture[VolcanoGlowMaxValue + 1];
 
         // Get the original colors
-        Color[] originalColors = ((TgxPlayfield2D)Scene.Playfield).Vram.Palette.Colors;
+        GbaVram vram = ((TgxPlayfield2D)Scene.Playfield).Vram;
+        Color[] originalColors = vram.Palette.Colors;
         int palLength = originalColors.Length;
 
         // Create the target colors for sub-palette 4
@@ -196,20 +197,12 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             new RGB555Color(0x53).ToColor(),
         ];
 
-        // Get the tileset for the volcano layer. We need to pad with a tile at the start since it's dynamic (meaning each tile index is index-1).
-        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
-        TgxTileLayer volcanoLayer = playfield.TileLayers[2];
-        TileMapScreenRenderer renderer = (TileMapScreenRenderer)volcanoLayer.Screen.Renderer;
-        int tileLength = renderer.Is8Bit ? 0x40 : 0x20;
-        byte[] tileSet = new byte[renderer.TileSet.Length + tileLength];
-        Array.Copy(renderer.TileSet, 0, tileSet, tileLength, renderer.TileSet.Length);
-
         // Create an array for the new colors
         Color[] colors = new Color[palLength];
         Array.Copy(originalColors, colors, palLength);
 
         // Create a texture and renderer for each 
-        for (int value = 0; value < textures.Length; value++)
+        for (int value = 0; value < VolcanoPaletteTextures.Length; value++)
         {
             // Lerp the colors in sub-palette 4
             for (int subPaletteIndex = 0; subPaletteIndex < 16; subPaletteIndex++)
@@ -218,17 +211,14 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 colors[fullPalIndex] = Color.Lerp(originalColors[fullPalIndex], targetColors[subPaletteIndex], value / (float)VolcanoGlowMaxValue);
             }
 
-            // Create the texture with the new palette
-            textures[value] = Engine.TextureCache.GetOrCreateObject(
-                pointer: volcanoLayer.Resource.Offset,
-                id: value,
-                data: (Layer: volcanoLayer, TileSet: tileSet, Palette: new Palette(colors)),
-                createObjFunc: static data =>
-                    new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, data.Palette, data.Layer.Is8Bit));
+            VolcanoPaletteTextures[value] = new PaletteTexture(
+                Texture: Engine.TextureCache.GetOrCreateObject(
+                    pointer: vram.SelectedPalette.Offset,
+                    id: value,
+                    data: colors,
+                    createObjFunc: static c => new PaletteTexture2D(c)),
+                PaletteIndex: 0);
         }
-
-        // Replace the renderer
-        volcanoLayer.Screen.Renderer = new MultiTextureScreenRenderer(textures);
 
         VolcanoGlowValue = 0;
     }
@@ -239,9 +229,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
         TgxTileLayer volcanoLayer = playfield.TileLayers[2];
-        MultiTextureScreenRenderer renderer = (MultiTextureScreenRenderer)volcanoLayer.Screen.Renderer;
+        TileMapScreenRenderer renderer = (TileMapScreenRenderer)volcanoLayer.Screen.Renderer;
 
-        renderer.CurrentTextureIndex = VolcanoGlowValue <= VolcanoGlowMaxValue ? VolcanoGlowValue : VolcanoGlowMaxValue * 2 - VolcanoGlowValue;
+        int index = VolcanoGlowValue <= VolcanoGlowMaxValue
+            ? VolcanoGlowValue
+            : VolcanoGlowMaxValue * 2 - VolcanoGlowValue;
+
+        renderer.PaletteTexture = VolcanoPaletteTextures[index];
 
         VolcanoGlowValue++;
 

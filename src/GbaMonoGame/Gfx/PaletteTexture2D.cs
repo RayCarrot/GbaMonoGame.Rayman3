@@ -22,6 +22,17 @@ public class PaletteTexture2D : Texture2D
         SetData(texColors);
     }
 
+    public PaletteTexture2D(Color[] palette) : base(Engine.GraphicsDevice, TextureWidth, GetHeight(palette.Length))
+    {
+        Color[] texColors = new Color[Width * Height];
+        
+        // Set the palette colors, skipping the first color since it's the transparent color
+        for (int colorIndex = 1; colorIndex < palette.Length; colorIndex++)
+            texColors[colorIndex] = palette[colorIndex];
+
+        SetData(texColors);
+    }
+
     public PaletteTexture2D(PaletteResource[] palettes) : base(Engine.GraphicsDevice, TextureWidth, GetHeight(palettes.Sum(x => x.Colors.Length)))
     {
         Color[] texColors = new Color[Width * Height];
