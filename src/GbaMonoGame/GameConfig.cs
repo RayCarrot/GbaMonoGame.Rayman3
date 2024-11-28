@@ -29,7 +29,6 @@ public class GameConfig
         SfxVolume = 1;
         MusicVolume = 1;
         WriteSerializerLog = false;
-        DumpSprites = false;
     }
 
     #endregion
@@ -62,7 +61,6 @@ public class GameConfig
 
     // Debug
     [JsonProperty("writeSerializerLog")] public bool WriteSerializerLog { get; set; }
-    [JsonProperty("dumpSprites")] public bool DumpSprites { get; set; }
 
     #endregion
 

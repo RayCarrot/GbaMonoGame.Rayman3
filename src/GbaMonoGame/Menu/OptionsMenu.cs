@@ -219,18 +219,6 @@ public class OptionsMenu : Menu
                 setData: data => Engine.Config.WriteSerializerLog = data,
                 getCustomName: _ => null),
 
-            // Dump sprites
-            new MultiSelectionMenuOption<bool>(
-                name: "Dump sprites",
-                items:
-                [
-                    new MultiSelectionMenuOption<bool>.Item("Disabled", false),
-                    new MultiSelectionMenuOption<bool>.Item("Enabled", true),
-                ],
-                getData: _ => Engine.Config.DumpSprites,
-                setData: data => Engine.Config.DumpSprites = data,
-                getCustomName: _ => null),
-
             #endregion
         ];
 
