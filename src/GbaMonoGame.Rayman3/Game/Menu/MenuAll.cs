@@ -5,7 +5,6 @@ using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.AnimEngine;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -91,7 +90,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     #region Private Methods
 
-    private static Palette GetBackgroundPalette(int index)
+    private static RGB555Color[] GetBackgroundPalette(int index)
     {
         RGB555Color[] colors = index switch
         {
@@ -125,25 +124,21 @@ public partial class MenuAll : Frame, IHasPlayfield
         RGB555Color[] allColors = new RGB555Color[49];
         Array.Fill(allColors, new RGB555Color(), 0, 31);
         Array.Copy(colors, 0, allColors, 31, colors.Length);
-        return new Palette(allColors);
+        return allColors;
     }
 
     private void SetBackgroundPalette(int index)
     {
-        ((MultiTextureScreenRenderer)Playfield.TileLayers[0].Screen.Renderer).CurrentTextureIndex = index;
-    }
-
-    private Texture2D CreateBackgroundTexture(TgxTileLayer bgLayer, int index)
-    {
-        return Engine.TextureCache.GetOrCreateObject(
-            pointer: bgLayer.Resource.Offset,
-            id: index + 1, // +1 since 0 is the default
-            data: (Layer: bgLayer, TileSet: Playfield.Vram.TileSet, Index: index),
-            createObjFunc: static data =>
-            {
-                Palette pal = GetBackgroundPalette(data.Index);
-                return new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.TileSet, data.Layer.TileMap, pal, data.Layer.Is8Bit);
-            });
+        GbaVram vram = Playfield.Vram;
+        TextureScreenRenderer renderer = (TextureScreenRenderer)Playfield.TileLayers[0].Screen.Renderer;
+        
+        renderer.PaletteTexture = new PaletteTexture(
+            Texture: Engine.TextureCache.GetOrCreateObject(
+                pointer: vram.SelectedPalette.Offset,
+                id: index + 1, // +1 since 0 is the default
+                data: index,
+                createObjFunc: static i => new PaletteTexture2D(GetBackgroundPalette(i))),
+            PaletteIndex: 0);
     }
 
     private void LoadPlayfield()
@@ -153,15 +148,6 @@ public partial class MenuAll : Frame, IHasPlayfield
         Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
         Playfield.Camera.FixedResolution = true;
 
-        // The background layer can have multiple palettes, so we need to create a texture for each
-        TgxTileLayer bgLayer = Playfield.TileLayers[0];
-        bgLayer.Screen.Renderer = new MultiTextureScreenRenderer(new[]
-        { 
-            CreateBackgroundTexture(bgLayer, 0),
-            CreateBackgroundTexture(bgLayer, 1),
-            CreateBackgroundTexture(bgLayer, 2),
-            CreateBackgroundTexture(bgLayer, 3),
-        });
         SetBackgroundPalette(3);
 
         Gfx.ClearColor = Color.Black;
