@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Linq;
+using System.Numerics;
 using BinarySerializer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,8 +9,9 @@ namespace GbaMonoGame;
 
 public class PaletteTexture2D : Texture2D
 {
-    public PaletteTexture2D(RGB555Color[] palette, bool is8Bit) :
-        base(Engine.GraphicsDevice, GetWidth(is8Bit), 1)
+    public PaletteTexture2D(PaletteResource palette) : this(palette.Colors) { }
+
+    public PaletteTexture2D(RGB555Color[] palette) : base(Engine.GraphicsDevice, TextureWidth, GetHeight(palette.Length))
     {
         Color[] texColors = new Color[Width * Height];
         
@@ -19,8 +22,7 @@ public class PaletteTexture2D : Texture2D
         SetData(texColors);
     }
 
-    public PaletteTexture2D(PaletteResource[] palettes, bool is8Bit) :
-        base(Engine.GraphicsDevice, GetWidth(is8Bit), GetHeight(palettes.Length))
+    public PaletteTexture2D(PaletteResource[] palettes) : base(Engine.GraphicsDevice, TextureWidth, GetHeight(palettes.Sum(x => x.Colors.Length)))
     {
         Color[] texColors = new Color[Width * Height];
         
@@ -37,14 +39,19 @@ public class PaletteTexture2D : Texture2D
                 texColors[texColorIndex] = pal.Colors[colorIndex].ToColor();
                 texColorIndex++;
             }
+
+            if ((texColorIndex % 16) != 0)
+                throw new Exception("Invalid palette size");
         }
 
         SetData(texColors);
     }
 
-    // The width is the full size of the palette, so we fit one palette per row
-    private static int GetWidth(bool is8Bit) => is8Bit ? 256 : 16;
+    private const int TextureWidth = 16;
 
-    // The height is the number of palettes, rounded up to power of 2 to avoid issues in the shader
-    private static int GetHeight(int palettesCount) => (int)BitOperations.RoundUpToPowerOf2((uint)palettesCount);
+    // The height is the number of 16-color palettes, rounded up to power of 2 to avoid issues in the shader
+    private static int GetHeight(int colorsCount)
+    {
+        return (int)BitOperations.RoundUpToPowerOf2((uint)Math.Ceiling(colorsCount / (float)TextureWidth));
+    }
 }

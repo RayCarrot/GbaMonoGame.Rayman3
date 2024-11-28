@@ -17,11 +17,11 @@ public class LevelCloudsRenderer : IScreenRenderer
         TextureHeight = texture.Height;
     }
 
+    public Texture2D Texture { get; }
+    public PaletteTexture PaletteTexture { get; set; }
+    private int[] Splits { get; }
     private int TextureWidth { get; }
     private int TextureHeight { get; }
-    private int[] Splits { get; }
-
-    public Texture2D Texture { get; }
 
     private float[] GetScrollOffsets() =>
     [
@@ -35,6 +35,8 @@ public class LevelCloudsRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
+        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, PaletteTexture, screen.Camera));
+
         int offsetY = 0;
         int index = 0;
         foreach (float scrollOffset in GetScrollOffsets())

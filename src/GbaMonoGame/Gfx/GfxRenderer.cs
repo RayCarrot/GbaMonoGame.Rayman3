@@ -50,8 +50,8 @@ public class GfxRenderer
             {
                 shader = Gfx.PaletteShader;
                 shader.Parameters["PaletteTexture"].SetValue(options.PaletteTexture.Texture);
-                shader.Parameters["PaletteWidth"].SetValue((float)options.PaletteTexture.Texture.Width);
-                shader.Parameters["PaletteY"].SetValue(options.PaletteTexture.PaletteIndex / (float)options.PaletteTexture.Texture.Height);
+                shader.Parameters["PaletteIndex"].SetValue(options.PaletteTexture.PaletteIndex);
+                shader.Parameters["PaletteHeight"].SetValue(options.PaletteTexture.Texture.Height);
             }
 
             // Begin a new batch

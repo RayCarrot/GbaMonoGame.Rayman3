@@ -38,8 +38,10 @@ public class CavesOfBadDreams : FrameSideScroller
         // TODO: Add config option for sine wave on N-Gage
         if (Engine.Settings.Platform == Platform.GBA)
         {
-            skullScreen.Renderer = new SineWaveRenderer(((TextureScreenRenderer)skullScreen.Renderer).Texture)
+            TextureScreenRenderer renderer = ((TextureScreenRenderer)skullScreen.Renderer);
+            skullScreen.Renderer = new SineWaveRenderer(renderer.Texture)
             {
+                PaletteTexture = renderer.PaletteTexture,
                 Amplitude = 24
             };
         }

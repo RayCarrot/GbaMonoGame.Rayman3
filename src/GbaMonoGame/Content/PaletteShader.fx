@@ -12,8 +12,9 @@ extern Texture2D SpriteTexture;
 
 // The palette parameters
 extern Texture2D PaletteTexture;
-extern float PaletteWidth;
-extern float PaletteY;
+extern int PaletteIndex;
+const float PaletteWidth = 16;
+extern float PaletteHeight;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -47,11 +48,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     // Multiply by 255 to get a range from 0-255, thus getting the original byte value.
     colorIndex *= 255;
     
-    // Divide by the palette width to get a range of 0-1, needed for the UV x coordinate.
-    float paletteX = colorIndex / PaletteWidth;
+    // The color index might be greater than the width, so we have to wrap.
+    float paletteX = colorIndex % PaletteWidth;
+    float paletteY = colorIndex / PaletteWidth;
+    
+    // Add the base palette index to the y value.
+    paletteY += PaletteIndex;
+    
+    // Divide by the palette dimensions to get a range of 0-1, needed for the UV coordinates.
+    paletteX /= PaletteWidth;
+    paletteY /= PaletteHeight;
     
     // Get the color from the palette texture.
-    float4 paletteColor = tex2D(PaletteTextureSampler, float2(paletteX, PaletteY));
+    float4 paletteColor = tex2D(PaletteTextureSampler, float2(paletteX, paletteY));
     
     // Return and multiply by the input color.
     return paletteColor * input.Color;

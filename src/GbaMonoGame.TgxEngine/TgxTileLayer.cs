@@ -64,12 +64,24 @@ public class TgxTileLayer : TgxGameLayer
         {
             // NOTE: Using a single texture is more optimized, but won't work if tiles should be animated! Luckily static tile layers
             //       are never animated in Rayman 3, so we can do this.
-            Texture2D tex = Engine.TextureCache.GetOrCreateObject(
+            Texture2D layerTexture = Engine.TextureCache.GetOrCreateObject(
                 pointer: Resource.Offset,
                 id: 0,
                 data: (Vram: vram, Layer: this),
-                createObjFunc: static data => new TiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.Vram.Palette, data.Layer.Is8Bit));
-            Screen.Renderer = new TextureScreenRenderer(tex);
+                createObjFunc: static data => new IndexedTiledTexture2D(data.Layer.Width, data.Layer.Height, data.Vram.TileSet, data.Layer.TileMap, data.Layer.Is8Bit));
+
+            PaletteTexture paletteTexture = new(
+                Texture: Engine.TextureCache.GetOrCreateObject(
+                    pointer: vram.SelectedPalette.Offset,
+                    id: 0,
+                    data: vram.SelectedPalette,
+                    createObjFunc: static p => new PaletteTexture2D(p.Palette)),
+                PaletteIndex: 0);
+
+            Screen.Renderer = new TextureScreenRenderer(layerTexture)
+            {
+                PaletteTexture = paletteTexture,
+            };
         }
     }
 }

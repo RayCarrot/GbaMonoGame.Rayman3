@@ -5,17 +5,23 @@ namespace GbaMonoGame.TgxEngine;
 
 public class GbaVram
 {
-    private GbaVram(byte[] tileSet, Palette palette)
+    private GbaVram(byte[] tileSet, Palette palette, TilePalette[] palettes, int selectedPaletteIndex)
     {
         TileSet = tileSet;
         Palette = palette;
+        Palettes = palettes;
+        SelectedPaletteIndex = selectedPaletteIndex;
     }
 
     private const int TileSize4bpp = 0x20;
     private const int TileSize8bpp = 0x40;
 
     public byte[] TileSet { get; }
-    public Palette Palette { get; }
+    public Palette Palette { get; } // TODO: Remove?
+
+    public TilePalette[] Palettes { get; }
+    public int SelectedPaletteIndex { get; }
+    public TilePalette SelectedPalette => Palettes[SelectedPaletteIndex];
 
     public static GbaVram AllocateStatic(TileKit tileKit, TileMappingTable tileMappingTable, int vramLength8bpp, bool isAffine, int defaultPalette)
     {
@@ -49,6 +55,6 @@ public class GbaVram
             data: tileKit.Palettes[defaultPalette].Palette,
             createObjFunc: p => new Palette(p));
         
-        return new GbaVram(tileSet, pal);
+        return new GbaVram(tileSet, pal, tileKit.Palettes, defaultPalette);
     }
 }

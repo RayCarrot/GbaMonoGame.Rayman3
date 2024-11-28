@@ -18,10 +18,10 @@ public class WoodLight_M1 : FrameSideScroller
         TextureScreenRenderer renderer = (TextureScreenRenderer)cloudsLayer.Screen.Renderer;
         if (Engine.Settings.Platform == Platform.GBA)
         {
-            cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(renderer.Texture, new[]
+            cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(renderer.Texture, [32, 120, 227])
             {
-                32, 120, 227
-            });
+                PaletteTexture = renderer.PaletteTexture
+            };
         }
         else
         {

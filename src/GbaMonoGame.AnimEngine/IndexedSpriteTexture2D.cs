@@ -12,7 +12,7 @@ public class IndexedSpriteTexture2D : Texture2D
     public IndexedSpriteTexture2D(AnimatedObjectResource resource, Constants.Size shape, int tileIndex) :
         base(Engine.GraphicsDevice, shape.Width, shape.Height, false, SurfaceFormat.Alpha8)
     {
-        byte[] texColors = new byte[Width * Height];
+        byte[] texColorIndexes = new byte[Width * Height];
         byte[] tileSet = resource.SpriteTable.Data;
         int tileSetIndex = tileIndex * 0x20;
 
@@ -26,7 +26,7 @@ public class IndexedSpriteTexture2D : Texture2D
 
                 for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
                 {
-                    DrawHelpers.DrawTile_8bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex);
+                    DrawHelpers.DrawTile_8bpp(texColorIndexes, absTileX, absTileY, Width, tileSet, ref tileSetIndex);
 
                     absTileX += Tile.Size;
                 }
@@ -44,7 +44,7 @@ public class IndexedSpriteTexture2D : Texture2D
 
                 for (int tileX = 0; tileX < shape.TilesWidth; tileX++)
                 {
-                    DrawHelpers.DrawTile_4bpp(texColors, absTileX, absTileY, Width, tileSet, ref tileSetIndex);
+                    DrawHelpers.DrawTile_4bpp(texColorIndexes, absTileX, absTileY, Width, tileSet, ref tileSetIndex, 0);
 
                     absTileX += Tile.Size;
                 }
@@ -53,6 +53,6 @@ public class IndexedSpriteTexture2D : Texture2D
             }
         }
 
-        SetData(texColors);
+        SetData(texColorIndexes);
     }
 }

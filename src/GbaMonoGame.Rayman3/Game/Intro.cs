@@ -114,7 +114,14 @@ public class Intro : Frame, IHasPlayfield
 
         // TODO: Allow scrolling on N-Gage too?
         if (Engine.Settings.Platform == Platform.GBA)
-            Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer).Texture);
+        {
+            TextureScreenRenderer renderer = ((TextureScreenRenderer)Playfield.TileLayers[3].Screen.Renderer);
+
+            Playfield.TileLayers[3].Screen.Renderer = new IntroCloudsRenderer(renderer.Texture)
+            {
+                PaletteTexture = renderer.PaletteTexture
+            };
+        }
     }
 
     private void Skip()

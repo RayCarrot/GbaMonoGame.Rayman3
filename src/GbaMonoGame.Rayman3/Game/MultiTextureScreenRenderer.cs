@@ -17,6 +17,8 @@ public class MultiTextureScreenRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
+        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, null, screen.Camera));
+
         renderer.Draw(Textures[CurrentTextureIndex], position, color);
     }
 }

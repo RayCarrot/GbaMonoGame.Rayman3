@@ -341,9 +341,13 @@ public class AnimatedObject : AObject
                             spriteShape: channel.SpriteShape,
                             spriteSize: channel.SpriteSize,
                             tileIndex: channel.TileIndex),
-                        createObjFunc: data => new IndexedSpriteTexture2D(data.Resource, data.SpriteShape, data.SpriteSize, data.TileIndex));
+                        createObjFunc: static data => new IndexedSpriteTexture2D(data.Resource, data.SpriteShape, data.SpriteSize, data.TileIndex));
 
                     int paletteIndex = BasePaletteIndex + channel.PalIndex;
+
+                    if (paletteIndex > 0 && Resource.Is8Bit)
+                        throw new Exception("Can't use a palette index when 8-bit");
+
                     PaletteTexture paletteTexture;
 
                     // If the palette cycle index is 0 or not the animated palette then it's the default, unmodified, palette
@@ -354,7 +358,7 @@ public class AnimatedObject : AObject
                                 pointer: Resource.Palettes.Offset,
                                 id: 0,
                                 data: Resource.Palettes,
-                                createObjFunc: p => new PaletteTexture2D(p.Palettes, p.Pre_Is8Bit)),
+                                createObjFunc: static p => new PaletteTexture2D(p.Palettes)),
                             PaletteIndex: paletteIndex);
                     }
                     else
@@ -364,7 +368,7 @@ public class AnimatedObject : AObject
                                 pointer: anim.PaletteCycleAnimation.Offset,
                                 id: PaletteCycleIndex,
                                 data: new PaletteAnimationDefine(Resource.Palettes, anim.PaletteCycleAnimation, PaletteCycleIndex),
-                                createObjFunc: data =>
+                                createObjFunc: static data =>
                                 {
                                     PaletteCycleAnimation palAnim = data.PaletteCycleAnimation;
 
@@ -382,7 +386,7 @@ public class AnimatedObject : AObject
                                         newPal[dstIndex] = originalPal[srcIndex];
                                     }
 
-                                    return new PaletteTexture2D(newPal, data.SpritePalettes.Pre_Is8Bit);
+                                    return new PaletteTexture2D(newPal);
                                 }),
                             PaletteIndex: 0);
                     }

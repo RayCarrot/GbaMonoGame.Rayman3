@@ -40,6 +40,8 @@ public class CollisionMapScreenRenderer : IScreenRenderer
     public Vector2 GetSize(GfxScreen screen) => new(Width * Tile.Size, Height * Tile.Size);
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
+        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, null, screen.Camera));
+
         Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
         float absTileY = position.Y + visibleTilesArea.Y * Tile.Size;

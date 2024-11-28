@@ -57,6 +57,8 @@ public class TileMapScreenRenderer : IScreenRenderer
 
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
+        renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, null, screen.Camera));
+
         Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
 
         LocationCache<Texture2D> textureCache = Engine.TextureCache.GetOrCreateLocationCache(CachePointer);

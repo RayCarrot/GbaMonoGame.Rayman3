@@ -87,10 +87,11 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
             if (Engine.Settings.Platform == Platform.GBA)
             {
                 TgxTileLayer cloudsLayer = ((TgxPlayfield2D)Scene.Playfield).TileLayers[0];
-                cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(((TextureScreenRenderer)cloudsLayer.Screen.Renderer).Texture, new[]
+                TextureScreenRenderer renderer = (TextureScreenRenderer)cloudsLayer.Screen.Renderer;
+                cloudsLayer.Screen.Renderer = new LevelCloudsRenderer(renderer.Texture, [56, 120, 227])
                 {
-                    56, 120, 227
-                });
+                    PaletteTexture = renderer.PaletteTexture
+                };
             }
         }
         else if (GameInfo.MapId == MapId.Power2)
