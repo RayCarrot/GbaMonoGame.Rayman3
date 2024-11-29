@@ -63,6 +63,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public float WorldNameAlpha { get; set; }
     public int EnterWorldStep { get; set; }
 
+    public WindowEffectObject GameCubeTransitionWindow { get; set; }
+    public int EnterGameCubeMenuStep { get; set; }
+
     public CircleWindowWipeEffectObject CircleWipeEffect { get; set; }
     public int CircleWipeFXValue { get; set; }
     public CircleWipeFXTransitionMode CircleWipeFXMode { get; set; }
@@ -74,8 +77,6 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     public int VolcanoGlowValue { get; set; }
     public PaletteTexture[] VolcanoPaletteTextures { get; set; }
-
-    public byte field_0xda { get; set; }
 
     public WorldMapMovement CurrentMovement { get; set; }
     public WorldType SelectedWorldType { get; set; }
@@ -500,13 +501,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void SelectGameCube()
     {
-        // Disable the spiky bag layer. We don't really need to do this here, but might
-        // as well. The game does it because of the window values being set here.
-        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
-        TgxTileLayer spikyBagLayer = playfield.TileLayers[3];
-        spikyBagLayer.Screen.IsEnabled = false;
+        // NOTE: The game disables the spiky bag layer here due to it creating a new window for the
+        //       transition. We however don't want to do that because it might be visible if in widescreen.
 
-        field_0xda = 0;
+        GameCubeTransitionWindow = new WindowEffectObject()
+        {
+            BgPriority = 0,
+            Window = new Box(Vector2.Zero, Engine.ScreenCamera.Resolution)
+        };
+
+        EnterGameCubeMenuStep = 0;
         Timer = 0;
         CurrentMovement = WorldMapMovement.None;
         WorldId = WorldId.Special;
@@ -1203,7 +1207,94 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_EnterGameCubeMenu()
     {
-        // TODO: Implement
+        // Wait
+        if (EnterGameCubeMenuStep == 0)
+        {
+            if (Timer < 60)
+            {
+                Timer++;
+            }
+            else
+            {
+                EnterGameCubeMenuStep = 1;
+                Timer = 0;
+            }
+        }
+        // Zoom in
+        else if (EnterGameCubeMenuStep == 1)
+        {
+            // TODO: Update this for widescreen
+            GameCubeTransitionWindow.Window = new Box(
+                minX: Timer * MathHelpers.FromFixedPoint(0x1113), // Around 0.066
+                minY: Timer * MathHelpers.FromFixedPoint(0x9999), // Around 0.6
+                maxX: 240 - Timer,
+                maxY: 160 - Timer * MathHelpers.FromFixedPoint(0x1113)); // Around 0.066
+
+            if (Timer < 120)
+            {
+                Timer += 2;
+            }
+            else
+            {
+                EnterGameCubeMenuStep = 2;
+                Timer = 0;
+            }
+        }
+        // Square
+        else if (EnterGameCubeMenuStep == 2)
+        {
+            GameCubeTransitionWindow.Window = new Box(
+                minX: 8,
+                minY: 72 + Timer * MathHelpers.FromFixedPoint(0x1fff), // Around 0.125
+                maxX: 120 - Timer,
+                maxY: 152 - Timer * MathHelpers.FromFixedPoint(0x5fff)); // Around 0.375
+
+            if (Timer < 64)
+            {
+                Timer++;
+            }
+            else
+            {
+                EnterGameCubeMenuStep = 3;
+                Timer = 0;
+            }
+        }
+        // Wait
+        else if (EnterGameCubeMenuStep == 3)
+        {
+            if (Rayman.EndOfAnimation)
+            {
+                EnterGameCubeMenuStep = 4;
+                Timer = 0;
+            }
+        }
+        // Zoom in
+        else
+        {
+            GameCubeTransitionWindow.Window = new Box(
+                minX: MathF.Min(Timer + 8, 32),
+                minY: MathF.Min(Timer + 80, 104),
+                maxX: MathF.Max(56 - Timer, 32),
+                maxY: MathF.Max(128 - Timer, 104));
+
+            if (Timer >= 48)
+                FrameManager.SetNextFrame(new GameCubeMenu());
+
+            Timer++;
+        }
+
+        if (EnterGameCubeMenuStep <= 3)
+            Scene.AnimationPlayer.Play(Rayman);
+
+        Scene.AnimationPlayer.Play(WorldPaths[0]);
+
+        if (GameInfo.PersistentInfo.UnlockedWorld3)
+            Scene.AnimationPlayer.Play(WorldPaths[1]);
+
+        if (GameInfo.PersistentInfo.UnlockedWorld4)
+            Scene.AnimationPlayer.Play(WorldPaths[2]);
+
+        Scene.AnimationPlayer.Play(GameCubeSparkles);
     }
 
     private void Step_Normal()
@@ -1237,6 +1328,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 CircleWipeEffect.IsEnabled = false;
             }
         }
+
+        // NOTE: The game doesn't manage the window here, but since we're doing it through the animation
+        //       player we have to make sure it's processed after the scene so it covers the HUD.
+        if (GameCubeTransitionWindow != null)
+            Scene.AnimationPlayer.PlayFront(GameCubeTransitionWindow);
 
         Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
