@@ -1223,12 +1223,16 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         // Zoom in
         else if (EnterGameCubeMenuStep == 1)
         {
-            // TODO: Update this for widescreen
+            // Scale for widescreen
+            Vector2 max = new(120, 120 * MathHelpers.FromFixedPoint(0x1113));
+            Vector2 range = Engine.ScreenCamera.Resolution - max;
+            Vector2 scale = range / (Engine.GameViewPort.OriginalGameResolution - max);
+
             GameCubeTransitionWindow.Window = new Box(
                 minX: Timer * MathHelpers.FromFixedPoint(0x1113), // Around 0.066
                 minY: Timer * MathHelpers.FromFixedPoint(0x9999), // Around 0.6
-                maxX: 240 - Timer,
-                maxY: 160 - Timer * MathHelpers.FromFixedPoint(0x1113)); // Around 0.066
+                maxX: Engine.ScreenCamera.Resolution.X - Timer * scale.X,
+                maxY: Engine.ScreenCamera.Resolution.Y - Timer * MathHelpers.FromFixedPoint(0x1113) * scale.Y); // Around 0.066
 
             if (Timer < 120)
             {
