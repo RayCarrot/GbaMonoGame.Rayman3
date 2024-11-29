@@ -10,6 +10,7 @@ public class TgxCamera2D : TgxCamera
     public TgxCamera2D(GameViewPort gameViewPort) : base(gameViewPort) { }
 
     private bool _fixedResolution;
+    private Vector2? _maxResolution;
 
     private TgxCluster MainCluster { get; set; }
     private List<TgxCluster> Clusters { get; } = new();
@@ -24,6 +25,20 @@ public class TgxCamera2D : TgxCamera
         set
         {
             _fixedResolution = value;
+            UpdateResolution();
+        }
+    }
+
+    /// <summary>
+    /// Defines a custom maximum resolution. This is needed for the worldmap which has
+    /// 8 pixels of blank space on the bottom.
+    /// </summary>
+    public Vector2? MaxResolution
+    {
+        get => _maxResolution;
+        set
+        {
+            _maxResolution = value;
             UpdateResolution();
         }
     }
@@ -90,10 +105,9 @@ public class TgxCamera2D : TgxCamera
         {
             Vector2 newGameResolution = gameViewPort.GameResolution * Engine.Config.PlayfieldCameraScale;
 
-            if (MainCluster != null)
+            Vector2? maxRes = MaxResolution ?? MainCluster?.Size;
+            if (maxRes is { } max)
             {
-                Vector2 max = MainCluster.Size;
-
                 if (newGameResolution.X > newGameResolution.Y)
                 {
                     if (newGameResolution.Y > max.Y)

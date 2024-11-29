@@ -569,6 +569,10 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraWorldMap(x), 3, 1);
 
+        // For some reason this playfield has 8 pixels of blank space on the bottom, so we have to limit the vertical resolution
+        TgxCamera2D cam = (TgxCamera2D)Scene.Playfield.Camera;
+        cam.MaxResolution = new Vector2(cam.GetMainCluster().Size.X, Engine.GameViewPort.OriginalGameResolution.Y);
+
         // Create pause dialog, but don't add yet
         PauseDialog = new PauseDialog(Scene);
 
