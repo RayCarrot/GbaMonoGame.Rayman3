@@ -1228,15 +1228,15 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         else if (EnterGameCubeMenuStep == 1)
         {
             // Scale for widescreen
-            Vector2 max = new(120, 120 * MathHelpers.FromFixedPoint(0x1113));
+            Vector2 max = new(120, 8);
             Vector2 range = Engine.ScreenCamera.Resolution - max;
             Vector2 scale = range / (Engine.GameViewPort.OriginalGameResolution - max);
 
             GameCubeTransitionWindow.Window = new Box(
-                minX: Timer * MathHelpers.FromFixedPoint(0x1113), // Around 0.066
-                minY: Timer * MathHelpers.FromFixedPoint(0x9999), // Around 0.6
+                minX: Timer * 8 / 120f,
+                minY: Timer * 72 / 120f,
                 maxX: Engine.ScreenCamera.Resolution.X - Timer * scale.X,
-                maxY: Engine.ScreenCamera.Resolution.Y - Timer * MathHelpers.FromFixedPoint(0x1113) * scale.Y); // Around 0.066
+                maxY: Engine.ScreenCamera.Resolution.Y - Timer * 8 / 120f * scale.Y);
 
             if (Timer < 120)
             {
@@ -1253,9 +1253,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         {
             GameCubeTransitionWindow.Window = new Box(
                 minX: 8,
-                minY: 72 + Timer * MathHelpers.FromFixedPoint(0x1fff), // Around 0.125
+                minY: 72 + Timer * 8 / 64f,
                 maxX: 120 - Timer,
-                maxY: 152 - Timer * MathHelpers.FromFixedPoint(0x5fff)); // Around 0.375
+                maxY: 152 - Timer * 24 / 64f);
 
             if (Timer < 64)
             {
