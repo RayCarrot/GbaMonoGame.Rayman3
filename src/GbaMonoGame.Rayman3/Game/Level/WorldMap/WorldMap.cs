@@ -560,7 +560,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         {
             BgPriority = 0,
             IsEnabled = true,
-            Value = CircleWipeFXValue,
+            Value = 256,
         };
 
         TransitionsFX = new TransitionsFX(true);

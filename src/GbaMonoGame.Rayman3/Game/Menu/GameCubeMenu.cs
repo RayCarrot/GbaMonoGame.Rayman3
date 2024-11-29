@@ -27,6 +27,9 @@ public partial class GameCubeMenu : Frame
     private GameCubeMenuData Data { get; set; }
     public FiniteStateMachine State { get; } = new();
 
+    public GameCubeMenuTransitionInEffectObject TransitionIn { get; set; }
+    public GameCubeMenuTransitionOutEffectObject TransitionOut { get; set; }
+
     private bool UseJoyBus { get; set; }
     private JoyBus JoyBus { get; set; }
     private bool IsJoyBusActive { get; set; }
@@ -172,6 +175,14 @@ public partial class GameCubeMenu : Frame
 
         WheelRotation = 0;
         Gfx.ClearColor = Color.Black;
+
+        TransitionIn = new GameCubeMenuTransitionInEffectObject()
+        {
+            BgPriority = 0,
+        };
+        AnimationPlayer.PlayFront(TransitionIn);
+        AnimationPlayer.Execute();
+
         WaitingForConnection = false;
         IsActive = true;
         State.MoveTo(Fsm_PreInit);
@@ -237,6 +248,13 @@ public partial class GameCubeMenu : Frame
 
         if (WaitingForConnection || State == Fsm_DownloadMap || State == Fsm_SelectMap || State == Fsm_DownloadMapAck)
             AnimationPlayer.Play(Data.StatusText);
+
+        // NOTE: The game doesn't manage the window here, but since we're doing it through the animation
+        //       player we have to make sure it's processed after the scene so it covers the other objects.
+        if (TransitionIn != null)
+            AnimationPlayer.PlayFront(TransitionIn);
+        if (TransitionOut != null)
+            AnimationPlayer.PlayFront(TransitionOut);
 
         TransitionsFX.StepAll();
         AnimationPlayer.Execute();

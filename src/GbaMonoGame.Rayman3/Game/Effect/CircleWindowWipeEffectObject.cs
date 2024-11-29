@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 public class CircleWindowWipeEffectObject : EffectObject
 {
     public bool IsEnabled { get; set; }
-    public int Value { get; set; } // 0-255
+    public int Value { get; set; } // 0-256
 
     // NOTE: This math will be a bit different from the original game due to the usage of floats
     public override void Execute(Action<short> soundEventCallback)

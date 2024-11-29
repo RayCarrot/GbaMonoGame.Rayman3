@@ -25,15 +25,13 @@ public partial class GameCubeMenu
         {
             case FsmAction.Init:
                 ShowPleaseConnectText();
-                // TODO: Set up window transition. Rects with heights 54, 52 and 54.
                 TransitionsFX = new TransitionsFX(true);
                 Timer = 0;
                 break;
 
             case FsmAction.Step:
+                TransitionIn.Value = Timer;
                 Timer += 8;
-                
-                // TODO: Update transition
 
                 if (Timer >= 240)
                 {
@@ -43,7 +41,7 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.UnInit:
-                // Do nothing
+                TransitionIn = null;
                 break;
         }
 
@@ -153,14 +151,16 @@ public partial class GameCubeMenu
         {
             case FsmAction.Init:
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
-                // TODO: Set up window transition
+                TransitionOut = new GameCubeMenuTransitionOutEffectObject()
+                {
+                    BgPriority = 0,
+                };
                 Timer = 0;
                 break;
 
             case FsmAction.Step:
+                TransitionOut.Value = Timer;
                 Timer++;
-
-                // TODO: Update transition
 
                 if (Timer >= 80)
                 {
@@ -171,7 +171,7 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.UnInit:
-                // Do nothing
+                TransitionOut = null;
                 break;
         }
 
