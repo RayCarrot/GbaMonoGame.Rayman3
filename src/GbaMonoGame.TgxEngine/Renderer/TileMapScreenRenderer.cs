@@ -38,6 +38,7 @@ public class TileMapScreenRenderer : IScreenRenderer
     public byte[] TileSet { get; }
     public PaletteTexture PaletteTexture { get; set; }
     public bool Is8Bit { get; }
+    public Rectangle? TilesClip { get; set; } // Optional
 
     private Rectangle GetVisibleTilesArea(Vector2 position, GfxScreen screen)
     {
@@ -67,6 +68,9 @@ public class TileMapScreenRenderer : IScreenRenderer
         renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, PaletteTexture, screen.Camera));
 
         Rectangle visibleTilesArea = GetVisibleTilesArea(position, screen);
+
+        if (TilesClip != null)
+            visibleTilesArea = Rectangle.Intersect(visibleTilesArea, TilesClip.Value);
 
         LocationCache<Texture2D> textureCache = Engine.TextureCache.GetOrCreateLocationCache(CachePointer);
 

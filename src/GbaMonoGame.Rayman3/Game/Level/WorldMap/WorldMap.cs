@@ -7,6 +7,7 @@ using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
 using Microsoft.Xna.Framework;
 using Action = System.Action;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -38,6 +39,9 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     // NOTE: The game uses 16, but it only updates every 8 frames. We instead update every frame.
     private const int VolcanoGlowMaxValue = 16 * 8;
+
+    // NOTE: The game uses 8, but it only updates every 4 frames. We instead update every frame.
+    private const int LightningMaxValue = 8 * 4;
 
     #endregion
 
@@ -73,7 +77,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public byte SpikyBagSinValue { get; set; }
     public bool SpikyBagScrollDirection { get; set; }
     
-    public int unk1 { get; set; }
+    public int LightningCountdown { get; set; }
+    public byte LightningValue { get; set; }
+    public bool LightningAlternation { get; set; }
+    public bool ShouldSetLightningAlpha { get; set; }
+    public PaletteTexture[] LightningSkyPaletteTextures { get; set; }
 
     public int VolcanoGlowValue { get; set; }
     public PaletteTexture[] VolcanoPaletteTextures { get; set; }
@@ -159,12 +167,159 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void InitLightning()
     {
-        // TODO: Implement
+        // Create a palette texture for each modified palette frame (+4 because of N-Gage doing one additional one for some reason)
+        LightningSkyPaletteTextures = new PaletteTexture[LightningMaxValue + 4 + 1];
+
+        // Get the original colors
+        GbaVram vram = ((TgxPlayfield2D)Scene.Playfield).Vram;
+        Color[] originalColors = vram.SelectedPalette.Colors;
+        int palLength = originalColors.Length;
+
+        // Create an array for the new colors
+        Color[] colors = new Color[palLength];
+        Array.Copy(originalColors, colors, palLength);
+
+        // Create a palette texture for each 
+        for (int value = 0; value < LightningSkyPaletteTextures.Length; value++)
+        {
+            // Lerp the colors in sub-palettes 1 and 2
+            for (int subPaletteIndex = 0; subPaletteIndex < 32; subPaletteIndex++)
+            {
+                if (subPaletteIndex > 4 && 
+                    subPaletteIndex != 6 &&
+                    subPaletteIndex != 7 && 
+                    subPaletteIndex is not 8 and not 11 && 
+                    subPaletteIndex != 13 &&
+                    subPaletteIndex != 14)
+                {
+                    int fullPalIndex = 16 * 1 + subPaletteIndex;
+                    Vector3 originalColorVector = originalColors[fullPalIndex].ToVector3();
+
+                    Vector3 newColorVector = originalColorVector + (Vector3.One - originalColorVector) * (value / (LightningMaxValue * 2f));
+
+                    colors[fullPalIndex] = new Color(newColorVector);
+                }
+            }
+
+            LightningSkyPaletteTextures[value] = new PaletteTexture(
+                Texture: Engine.TextureCache.GetOrCreateObject(
+                    pointer: vram.SelectedPalette.CachePointer,
+                    id: value,
+                    data: colors,
+                    createObjFunc: static c => new PaletteTexture2D(c)),
+                PaletteIndex: 0);
+        }
+
+        LightningCountdown = Random.GetNumber(120) + 120;
+        LightningValue = 8;
+        LightningAlternation = false;
+        ShouldSetLightningAlpha = true;
+        
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer lightningLayer = playfield.TileLayers[1];
+        lightningLayer.Screen.IsEnabled = false;
     }
 
     private void StepLightning()
     {
-        // TODO: Implement
+        TgxPlayfield2D playfield = (TgxPlayfield2D)Scene.Playfield;
+        TgxTileLayer lightningSkyLayer = playfield.TileLayers[0];
+        TileMapScreenRenderer lightningSkyRenderer = (TileMapScreenRenderer)lightningSkyLayer.Screen.Renderer;
+        TgxTileLayer lightningLayer = playfield.TileLayers[1];
+        TileMapScreenRenderer lightningRenderer = (TileMapScreenRenderer)lightningLayer.Screen.Renderer;
+
+        // NOTE: In the original game the clip, which is done using a window, is set to mask away 392-420 or 420-464.
+        //       This however masks half tiles which would be really annoying to implement, since we'd need to clip
+        //       individual tiles then, and also seems to be a miscalculation by the game since it produces graphical
+        //       artifact of a few pixels that are left on both sides.
+        int lightningClip = Engine.Settings.Platform switch
+        {
+            Platform.GBA => 416,
+            Platform.NGage => 352,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        Vector2 size = lightningRenderer.GetSize(lightningLayer.Screen);
+
+        // TODO: Allow this effect on N-Gage
+        if (Engine.Settings.Platform == Platform.GBA)
+        {
+            // NOTE: The game only does this if ScrollX > 152, but we can ignore that
+
+            // Show the right flash
+            if (LightningAlternation)
+            {
+                lightningRenderer.TilesClip = new Rectangle(
+                    x: lightningClip / Tile.Size, 
+                    y: 0, 
+                    width: ((int)size.X - lightningClip) / Tile.Size, 
+                    height: (int)size.Y / Tile.Size);
+            }
+            // Show the left flash
+            else
+            {
+                lightningRenderer.TilesClip = new Rectangle(
+                    x: 0, 
+                    y: 0, 
+                    width: lightningClip / Tile.Size, 
+                    height: (int)size.Y / Tile.Size);
+            }
+        }
+
+        if (ShouldSetLightningAlpha)
+        {
+            lightningLayer.Screen.IsAlphaBlendEnabled = true;
+            lightningLayer.Screen.GbaAlpha = 8;
+
+            ShouldSetLightningAlpha = false;
+        }
+
+        if (LightningCountdown < 1)
+        {
+            // NOTE: The game only updates this every 4 frames
+            const int factor = 4;
+
+            lightningLayer.Screen.IsEnabled = LightningValue < 10 * factor;
+
+            int value = LightningValue;
+
+            int max = Engine.Settings.Platform switch
+            {
+                Platform.GBA => LightningMaxValue,
+                Platform.NGage => LightningMaxValue + 1 * factor, // Why does it do this?
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            if (LightningValue > max)
+            {
+                value = LightningMaxValue * 2 - LightningValue;
+
+                if (LightningValue == 12 * factor && LightningCountdown != -1 && Random.GetNumber(100) > 50)
+                {
+                    LightningValue = LightningMaxValue;
+                    value = LightningMaxValue;
+                    LightningCountdown = -1;
+
+                    lightningLayer.Screen.IsEnabled = true;
+
+                    LightningAlternation = Random.GetNumber(100) >= 50;
+                }
+            }
+
+            lightningSkyRenderer.PaletteTexture = LightningSkyPaletteTextures[value];
+
+            LightningValue++;
+
+            if (LightningValue > LightningMaxValue * 2)
+            {
+                LightningCountdown = Random.GetNumber(120) + 120;
+                LightningValue = LightningMaxValue;
+                LightningAlternation = Random.GetNumber(100) >= 50;
+            }
+        }
+        else
+        {
+            LightningCountdown--;
+        }
     }
 
     private void InitVolcanoGlow()
@@ -202,7 +357,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Color[] colors = new Color[palLength];
         Array.Copy(originalColors, colors, palLength);
 
-        // Create a texture and renderer for each 
+        // Create a palette texture for each 
         for (int value = 0; value < VolcanoPaletteTextures.Length; value++)
         {
             // Lerp the colors in sub-palette 4
@@ -215,7 +370,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             VolcanoPaletteTextures[value] = new PaletteTexture(
                 Texture: Engine.TextureCache.GetOrCreateObject(
                     pointer: vram.SelectedPalette.CachePointer,
-                    id: value,
+                    id: LightningSkyPaletteTextures.Length + value,
                     data: colors,
                     createObjFunc: static c => new PaletteTexture2D(c)),
                 PaletteIndex: 0);
@@ -485,7 +640,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         EnterWorldStep = 0;
 
         if (Engine.Settings.Platform == Platform.GBA)
-            unk1 = 0;
+            LightningCountdown = 0;
 
         FullWorldName.GbaAlpha = WorldNameAlpha;
 
@@ -1174,8 +1329,8 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             // Wait
             else if (EnterWorldStep == 1)
             {
-                if (unk1 < 11)
-                    unk1++;
+                if (LightningCountdown < 11)
+                    LightningCountdown++;
                 else
                     EnterWorldStep = 2;
             }
