@@ -93,8 +93,10 @@ public class GfxScreen
             // Calculate the start and end positions to draw the background
             float startX = camMinX - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
             float startY = camMinY - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
-            float endX = camMaxX + size.X - camMaxX % size.X;
-            float endY = camMaxY + size.Y - camMaxY % size.Y;
+            float width = camMaxX + size.X - camMaxX % size.X;
+            float height = camMaxY + size.Y - camMaxY % size.Y;
+            float endX = width + startX;
+            float endY = height + startY;
 
             // Extend for the visible area if needed.
             // NOTE: This only accounts for if the render box is bigger than then the size, which we do to prevent pop-in.
