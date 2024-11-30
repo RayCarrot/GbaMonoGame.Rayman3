@@ -64,7 +64,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public ushort Timer { get; set; }
 
     public SpriteTextObject FullWorldName { get; set; }
-    public float WorldNameAlpha { get; set; }
+    public int WorldNameAlpha { get; set; }
     public int EnterWorldStep { get; set; }
 
     public WindowEffectObject GameCubeTransitionWindow { get; set; }
@@ -1322,51 +1322,50 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_EnterWorld()
     {
-        // TODO: Update every frame
-        if ((GameTime.ElapsedFrames & 3) == 0)
+        // NOTE: The game only updates this every 4 frames
+        const int factor = 4;
+
+        // Fade in text
+        if (EnterWorldStep == 0)
         {
-            // Fade in text
-            if (EnterWorldStep == 0)
-            {
-                WorldNameAlpha++;
+            WorldNameAlpha++;
 
-                if (WorldNameAlpha == 16)
-                    EnterWorldStep = 1;
-            }
-            // Wait
-            else if (EnterWorldStep == 1)
-            {
-                if (LightningCountdown < 11)
-                    LightningCountdown++;
-                else
-                    EnterWorldStep = 2;
-            }
-            // Fade out text
-            else if (EnterWorldStep == 2)
-            {
-                WorldNameAlpha--;
-
-                if (WorldNameAlpha == 0)
-                    EnterWorldStep = 3;
-            }
-            // Finish
-            else if (EnterWorldStep == 3)
-            {
-                if (WorldId == WorldId.World4 && !GameInfo.PersistentInfo.PlayedAct4)
-                {
-                    FrameManager.SetNextFrame(new Act4());
-                    SoundEventsManager.StopAllSongs();
-                    GameInfo.PersistentInfo.PlayedAct4 = true;
-                    GameInfo.Save(GameInfo.CurrentSlot);
-                }
-                else
-                {
-                    GameInfo.LoadLevel(MapId.World1 + (int)WorldId);
-                }
-            }
-
-            FullWorldName.GbaAlpha = WorldNameAlpha;
+            if (WorldNameAlpha == 16 * factor)
+                EnterWorldStep = 1;
         }
+        // Wait
+        else if (EnterWorldStep == 1)
+        {
+            if (LightningCountdown < 11 * factor)
+                LightningCountdown++;
+            else
+                EnterWorldStep = 2;
+        }
+        // Fade out text
+        else if (EnterWorldStep == 2)
+        {
+            WorldNameAlpha--;
+
+            if (WorldNameAlpha == 0)
+                EnterWorldStep = 3;
+        }
+        // Finish
+        else if (EnterWorldStep == 3)
+        {
+            if (WorldId == WorldId.World4 && !GameInfo.PersistentInfo.PlayedAct4)
+            {
+                FrameManager.SetNextFrame(new Act4());
+                SoundEventsManager.StopAllSongs();
+                GameInfo.PersistentInfo.PlayedAct4 = true;
+                GameInfo.Save(GameInfo.CurrentSlot);
+            }
+            else
+            {
+                GameInfo.LoadLevel(MapId.World1 + (int)WorldId);
+            }
+        }
+
+        FullWorldName.GbaAlpha = WorldNameAlpha / (float)factor;
 
         Scene.AnimationPlayer.PlayFront(FullWorldName);
     }
