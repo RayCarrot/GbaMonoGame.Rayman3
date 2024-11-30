@@ -11,7 +11,6 @@ using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GbaMonoGame.Rayman3;
 
-// TODO: Fix widescreen
 public class WorldMap : Frame, IHasScene, IHasPlayfield
 {
     #region Constructor
@@ -853,6 +852,13 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     public override void Step()
     {
+        // The game doesn't do this, but since we support widescreen it means the scroll value might be too big, for example
+        // from the initial value or from changing resolution, which would desync it with the camera. So we do this to sync
+        // the values and by setting the position in the camera we also make sure it doesn't go beyond the max value.
+        TgxCamera cam = Scene.Playfield.Camera;
+        cam.Position = cam.Position with { X = ScrollX };
+        ScrollX = cam.Position.X;
+
         if (CurrentStepAction == Step_Normal)
             CurrentExStepAction();
 
