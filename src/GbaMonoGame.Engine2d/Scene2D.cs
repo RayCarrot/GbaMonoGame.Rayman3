@@ -306,7 +306,7 @@ public class Scene2D
             Dialogs[FirstActiveDialogIndex].Load();
             Dialogs[FirstActiveDialogIndex].Init();
         }
-        // No ned modal dialog has been added, so just reload the animation data for what's there from before
+        // No new modal dialog has been added, so just reload the animation data for what's there from before
         else
         {
             for (int i = FirstActiveDialogIndex; i < Dialogs.Count; i++)
