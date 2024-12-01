@@ -41,8 +41,10 @@ public static class Gfx
     /// </summary>
     private static List<Sprite> BackSprites { get; } = new();
 
+    private static ScreenEffect ScreenEffect { get; set; }
+
     public static Color ClearColor { get; set; } = Color.Black; // Background palette color 0 on GBA. This is not implemented on the N-Gage.
-    public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
+    public static float Fade { get; set; } = 0; // The equivalent of BLDY/BLDALPHA on GBA. This is not implemented on the N-Gage.
     public static float GbaFade
     {
         get => Fade * 16;
@@ -67,6 +69,10 @@ public static class Gfx
         Sprites.Clear();
         BackSprites.Clear();
     }
+
+    // Used in place for screen effects made using GBA features such as windows
+    public static void SetScreenEffect(ScreenEffect screenEffect) => ScreenEffect = screenEffect;
+    public static void ClearScreenEffect() => ScreenEffect = null;
 
     private static void DrawFade(GfxRenderer renderer)
     {
@@ -120,7 +126,11 @@ public static class Gfx
                 DrawFade(renderer);
         }
 
+        // Draw screen fade if no special flag is set
         if (FadeControl.Flags == FadeFlags.Default)
             DrawFade(renderer);
+
+        // Draw the screen effect if there is one
+        ScreenEffect?.Draw(renderer);
     }
 }

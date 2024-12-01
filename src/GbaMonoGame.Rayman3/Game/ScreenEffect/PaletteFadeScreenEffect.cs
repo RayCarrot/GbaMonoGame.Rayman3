@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -8,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 /// the game mainly uses BLD for this there are cases where it modifies the palette instead.
 /// Unlike the BLD effect this is also fully supported on N-Gage.
 /// </summary>
-public class PaletteFadeEffectObject : EffectObject
+public class PaletteFadeScreenEffect : ScreenEffect
 {
     // Palette fading runs during 34 frames (17*2) since the game always alternates
     // fading the background and object palettes, with each fading 0-16.
@@ -19,10 +18,12 @@ public class PaletteFadeEffectObject : EffectObject
 
     public void SetFadeFromTimer(int timer) => Fade = 1 - timer / (float)MaxFadeTime;
 
-    public override void Execute(Action<short> soundEventCallback)
+    public override void Draw(GfxRenderer renderer)
     {
+        renderer.BeginRender(new RenderOptions(false, null, Camera));
+
         // We draw a black, faded, texture over the screen to emulate fading the palette
         if (Fade is > 0 and <= 1)
-            DrawRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
+            renderer.DrawFilledRectangle(Vector2.Zero, Camera.Resolution, Color.Black * Fade);
     }
 }

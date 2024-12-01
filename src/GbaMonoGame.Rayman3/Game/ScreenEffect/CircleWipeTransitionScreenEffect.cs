@@ -1,20 +1,20 @@
-﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
-public class CircleWindowWipeEffectObject : EffectObject
+public class CircleWipeTransitionScreenEffect : ScreenEffect
 {
-    public bool IsEnabled { get; set; }
     public int Value { get; set; } // 0-256
 
     // NOTE: This math will be a bit different from the original game due to the usage of floats
-    public override void Execute(Action<short> soundEventCallback)
+    public override void Draw(GfxRenderer renderer)
     {
         // TODO: Add option to use this on N-Gage
         if (Engine.Settings.Platform == Platform.NGage)
             return;
+
+        renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         float scalingFactor = MathHelpers.FromFixedPoint(0x39b07); // Around 3.6
         Vector2 res = Camera.Resolution;
@@ -37,7 +37,7 @@ public class CircleWindowWipeEffectObject : EffectObject
                     if (length > halfRes.X)
                         length = halfRes.X;
 
-                    DrawLine(new Vector2(halfRes.X, y), new Vector2(halfRes.X + length, y), Color.Black);
+                    renderer.DrawLine(new Vector2(halfRes.X, y), new Vector2(halfRes.X + length, y), Color.Black);
                 }
             }
         }
@@ -45,7 +45,7 @@ public class CircleWindowWipeEffectObject : EffectObject
         else if (Value < quarterCircle * 2)
         {
             // Fill bottom-right
-            DrawRectangle(halfRes, halfRes, Color.Black);
+            renderer.DrawFilledRectangle(halfRes, halfRes, Color.Black);
 
             if (Value != quarterCircle * 1)
             {
@@ -60,7 +60,7 @@ public class CircleWindowWipeEffectObject : EffectObject
                     if (length > halfRes.X)
                         length = halfRes.X;
 
-                    DrawLine(new Vector2(halfRes.X + length, y), new Vector2(res.X, y), Color.Black);
+                    renderer.DrawLine(new Vector2(halfRes.X + length, y), new Vector2(res.X, y), Color.Black);
                 }
             }
         }
@@ -68,7 +68,7 @@ public class CircleWindowWipeEffectObject : EffectObject
         else if (Value < quarterCircle * 3)
         {
             // Fill right
-            DrawRectangle(new Vector2(halfRes.X, 0), new Vector2(halfRes.X, res.Y), Color.Black);
+            renderer.DrawFilledRectangle(new Vector2(halfRes.X, 0), new Vector2(halfRes.X, res.Y), Color.Black);
 
             if (Value != quarterCircle * 2)
             {
@@ -83,7 +83,7 @@ public class CircleWindowWipeEffectObject : EffectObject
                     if (length > halfRes.X)
                         length = halfRes.X;
 
-                    DrawLine(new Vector2(halfRes.X - length, y), new Vector2(halfRes.X, y), Color.Black);
+                    renderer.DrawLine(new Vector2(halfRes.X - length, y), new Vector2(halfRes.X, y), Color.Black);
                 }
             }
         }
@@ -91,10 +91,10 @@ public class CircleWindowWipeEffectObject : EffectObject
         else
         {
             // Fill top
-            DrawRectangle(Vector2.Zero, new Vector2(res.X, halfRes.Y), Color.Black);
+            renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(res.X, halfRes.Y), Color.Black);
 
             // Fill bottom-right
-            DrawRectangle(halfRes, halfRes, Color.Black);
+            renderer.DrawFilledRectangle(halfRes, halfRes, Color.Black);
 
             if (Value != quarterCircle * 3)
             {
@@ -109,7 +109,7 @@ public class CircleWindowWipeEffectObject : EffectObject
                     if (length > halfRes.X)
                         length = halfRes.X;
 
-                    DrawLine(new Vector2(0, y), new Vector2(halfRes.X - length, y), Color.Black);
+                    renderer.DrawLine(new Vector2(0, y), new Vector2(halfRes.X - length, y), Color.Black);
                 }
             }
         }

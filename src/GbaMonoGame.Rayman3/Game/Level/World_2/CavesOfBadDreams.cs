@@ -55,7 +55,7 @@ public class CavesOfBadDreams : FrameSideScroller
 
         // Don't show skull screen on GBA if transitioning or paused
         if (Engine.Settings.Platform == Platform.GBA && 
-            (CircleFXMode != CircleFXTransitionMode.None || CurrentStepAction != Step_Normal))
+            (CircleTransitionMode != TransitionMode.None || CurrentStepAction != Step_Normal))
         {
             skullScreen.IsEnabled = false;
             return;
@@ -148,7 +148,7 @@ public class CavesOfBadDreams : FrameSideScroller
                     else
                         rayman.Timer = 80;
 
-                    InitNewCircleFXTransition(false);
+                    InitNewCircleTransition(false);
                     
                     Mode = FadeMode.Ended;
                     Timer = 0;

@@ -23,7 +23,7 @@ public class Intro : Frame, IHasPlayfield
     private int AlphaTimer { get; set; }
     private int ScrollY { get; set; }
     private bool IsSkipping { get; set; }
-    private PaletteFadeEffectObject PaletteFade { get; set; }
+    private PaletteFadeScreenEffect PaletteFadeScreenEffect { get; set; }
     private int PaletteFadeTimer { get; set; }
     private int SkippedTimer { get; set; }
 
@@ -126,10 +126,12 @@ public class Intro : Frame, IHasPlayfield
 
     private void Skip()
     {
+        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
+
         // NOTE: We might be 1 game frame off here since the game uses GameTime.ElapsedFrames to alternate between fading
         //       the background and object palettes, with only the object palette fading checking if finished.
-        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
-        if (PaletteFadeTimer == PaletteFade.MinFadeTime)
+        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
+        if (PaletteFadeTimer == PaletteFadeScreenEffect.MinFadeTime)
         {
             CurrentStepAction = Step_Skip_1;
             SkippedTimer = 0;
@@ -138,7 +140,6 @@ public class Intro : Frame, IHasPlayfield
         {
             PaletteFadeTimer--;
         }
-        AnimationPlayer.PlayFront(PaletteFade);
     }
 
     #endregion
@@ -163,10 +164,7 @@ public class Intro : Frame, IHasPlayfield
         LoadAnimations();
         LoadPlayfield();
 
-        PaletteFade = new PaletteFadeEffectObject()
-        {
-            BgPriority = 0,
-        };
+        PaletteFadeScreenEffect = new PaletteFadeScreenEffect();
 
         CurrentStepAction = Step_1;
 
@@ -174,7 +172,7 @@ public class Intro : Frame, IHasPlayfield
         Timer = 0;
         ScrollY = 0;
         IsSkipping = false;
-        PaletteFadeTimer = PaletteFade.MaxFadeTime;
+        PaletteFadeTimer = PaletteFadeScreenEffect.MaxFadeTime;
 
         SoundEventsManager.SetVolumeForType(SoundType.Music, 0);
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__sadslide);
@@ -445,20 +443,23 @@ public class Intro : Frame, IHasPlayfield
         {
             CurrentStepAction = Step_Skip_2;
         }
-
-        AnimationPlayer.PlayFront(PaletteFade);
     }
 
     private void Step_Skip_2()
     {
         // NOTE: We might be 1 game frame off here since the game uses GameTime.ElapsedFrames to alternate between fading
         //       the background and object palettes, with only the object palette fading checking if finished.
-        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
+        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
         PaletteFadeTimer++;
-        if (PaletteFadeTimer == PaletteFade.MaxFadeTime - 2)
+        if (PaletteFadeTimer == PaletteFadeScreenEffect.MaxFadeTime - 2)
+        {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme__After__sadslide);
-        else if (PaletteFadeTimer > PaletteFade.MaxFadeTime)
+        }
+        else if (PaletteFadeTimer > PaletteFadeScreenEffect.MaxFadeTime)
+        {
             CurrentStepAction = Step_6;
+            Gfx.ClearScreenEffect();
+        }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)
             AnimationPlayer.PlayFront(PressStartObj);
@@ -468,8 +469,6 @@ public class Intro : Frame, IHasPlayfield
 
         BlackLumAndLogoObj.FrameChannelSprite();
         AnimationPlayer.PlayFront(BlackLumAndLogoObj);
-
-        AnimationPlayer.PlayFront(PaletteFade);
     }
 
     #endregion

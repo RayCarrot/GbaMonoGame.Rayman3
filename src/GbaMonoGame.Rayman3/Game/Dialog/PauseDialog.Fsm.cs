@@ -220,6 +220,12 @@ public partial class PauseDialog
             case FsmAction.Init:
                 IsInSleepMode = true;
                 SleepModeTimer = 0;
+                
+                SavedFadeControl = Gfx.FadeControl;
+                SavedFade = Gfx.Fade;
+
+                Gfx.FadeControl = new FadeControl(FadeMode.BrightnessIncrease, FadeFlags.Screen0);
+                Gfx.Fade = 1;
                 break;
 
             case FsmAction.Step:
@@ -235,6 +241,10 @@ public partial class PauseDialog
 
             case FsmAction.UnInit:
                 IsInSleepMode = false;
+
+                Gfx.FadeControl = SavedFadeControl;
+                Gfx.Fade = SavedFade;
+
                 DrawStep = PauseDialogDrawStep.Hide;
                 break;
         }

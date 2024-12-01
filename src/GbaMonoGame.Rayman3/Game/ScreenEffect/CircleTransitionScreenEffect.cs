@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GbaMonoGame.Rayman3;
 
-public class CircleWindowEffectObject : EffectObject
+public class CircleTransitionScreenEffect : ScreenEffect
 {
-    static CircleWindowEffectObject()
+    static CircleTransitionScreenEffect()
     {
         // In the game this table is pre-calculated (located at 0x0820e9a4 in the EU version), but we can calculate it during runtime
         RadiusWidthsTable = new byte[MaxRadius][];
@@ -47,18 +47,15 @@ public class CircleWindowEffectObject : EffectObject
         return CachedCircleTextures[radius - 1];
     }
 
-    private void DrawCirclePart(Texture2D texture, Vector2 position, bool flipX, bool flipY)
+    private void DrawCirclePart(GfxRenderer renderer, Texture2D texture, Vector2 position, bool flipX, bool flipY)
     {
-        Gfx.AddSprite(new Sprite
-        {
-            Texture = texture,
-            Position = position,
-            FlipX = flipX,
-            FlipY = flipY,
-            Priority = BgPriority,
-            Color = Color.Black,
-            Camera = Camera,
-        });
+        SpriteEffects spriteEffects = SpriteEffects.None;
+        if (flipX)
+            spriteEffects |= SpriteEffects.FlipHorizontally;
+        if (flipY)
+            spriteEffects |= SpriteEffects.FlipVertically;
+
+        renderer.Draw(texture, position, spriteEffects, Color.Black);
     }
 
     public int Radius { get; set; }
@@ -70,11 +67,13 @@ public class CircleWindowEffectObject : EffectObject
         CirclePosition = pos;
     }
     
-    public override void Execute(Action<short> soundEventCallback)
+    public override void Draw(GfxRenderer renderer)
     {
         // TODO: Add option to use this on N-Gage
         if (Engine.Settings.Platform == Platform.NGage)
             return;
+
+        renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         Vector2 pos = CirclePosition;
 
@@ -84,18 +83,18 @@ public class CircleWindowEffectObject : EffectObject
         {
             // Draw circle
             Texture2D tex = GetCircleTexture(Radius);
-            DrawCirclePart(tex, pos + new Vector2(0, 0), false, false); // Top-left
-            DrawCirclePart(tex, pos + new Vector2(Radius, 0), true, false); // Top-right
-            DrawCirclePart(tex, pos + new Vector2(0, Radius), false, true); // Bottom-left
-            DrawCirclePart(tex, pos + new Vector2(Radius, Radius), true, true); // Bottom-right
+            DrawCirclePart(renderer, tex, pos + new Vector2(0, 0), false, false); // Top-left
+            DrawCirclePart(renderer, tex, pos + new Vector2(Radius, 0), true, false); // Top-right
+            DrawCirclePart(renderer, tex, pos + new Vector2(0, Radius), false, true); // Bottom-left
+            DrawCirclePart(renderer, tex, pos + new Vector2(Radius, Radius), true, true); // Bottom-right
         }
 
         Vector2 res = Camera.Resolution;
 
         // Draw black around circle to fill screen
-        DrawRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top
-        DrawRectangle(new Vector2(0, pos.Y + Radius * 2), new Vector2(res.X, res.Y - (pos.Y + Radius * 2)), Color.Black); // Bottom
-        DrawRectangle(new Vector2(0, pos.Y), new Vector2(pos.X, Radius * 2), Color.Black); // Left
-        DrawRectangle(new Vector2(pos.X + Radius * 2, pos.Y), new Vector2(res.X - (pos.X + Radius * 2), Radius * 2), Color.Black); // Right
+        renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(res.X, pos.Y), Color.Black); // Top
+        renderer.DrawFilledRectangle(new Vector2(0, pos.Y + Radius * 2), new Vector2(res.X, res.Y - (pos.Y + Radius * 2)), Color.Black); // Bottom
+        renderer.DrawFilledRectangle(new Vector2(0, pos.Y), new Vector2(pos.X, Radius * 2), Color.Black); // Left
+        renderer.DrawFilledRectangle(new Vector2(pos.X + Radius * 2, pos.Y), new Vector2(res.X - (pos.X + Radius * 2), Radius * 2), Color.Black); // Right
     }
 }

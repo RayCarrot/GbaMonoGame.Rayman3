@@ -19,7 +19,7 @@ public class EchoingCaves_M2 : FrameSideScroller
         CanPause = true;
         Fog = null;
         LevelMusicManager.Init();
-        CreateCircleFXTransition();
+        CircleTransitionScreenEffect = new CircleTransitionScreenEffect();
         
         TransitionsFX = new TransitionsFX(true);
         TransitionsFX.FadeInInit(4 / 16f);
@@ -36,10 +36,7 @@ public class EchoingCaves_M2 : FrameSideScroller
         Scene.Init();
         Scene.Playfield.Step();
 
-        InitNewCircleFXTransition(true);
-
-        // We have to show the circle effect already now or we have one game frame with the level visible
-        Scene.AnimationPlayer.PlayFront(CircleEffect);
+        InitNewCircleTransition(true);
 
         Scene.AnimationPlayer.Execute();
 
@@ -83,7 +80,7 @@ public class EchoingCaves_M2 : FrameSideScroller
             return;
         }
 
-        if (Timer < 120 || CircleFXMode is CircleFXTransitionMode.Out or CircleFXTransitionMode.FinishedOut)
+        if (Timer < 120 || CircleTransitionMode is TransitionMode.Out or TransitionMode.FinishedOut)
         {
             Timer++;
             Gfx.FadeControl = FadeControl.None;

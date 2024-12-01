@@ -41,9 +41,10 @@ public static class FrameManager
         {
             CurrentFrame?.UnInit();
 
-            // Clear all screens for the new frame. The game doesn't do this, but it makes
-            // more sense with how this code is structured.
+            // Clear all screens and effects for the new frame. The game doesn't do this, but it
+            // makes more sense with how this code is structured.
             Gfx.ClearScreens();
+            Gfx.ClearScreenEffect();
 
             // TODO: Add option not to clear cache? Makes loading faster, but uses more memory.
             // Clear cache if loading a new frame

@@ -24,9 +24,10 @@ public partial class PauseDialog : Dialog
     private AnimatedObject SfxVolume { get; set; }
 
     // Custom properties to simulate sleep mode
-    public WhiteScreenEffectObject SleepModeBackground { get; set; } // Set using BLD on GBA
     public bool IsInSleepMode { get; set; }
     public int SleepModeTimer { get; set; }
+    public FadeControl SavedFadeControl { get; set; }
+    public float SavedFade { get; set; }
 
     public byte MultiJoyPadFrame { get; set; }
 
@@ -228,12 +229,6 @@ public partial class PauseDialog : Dialog
 
         if (Engine.Settings.Platform == Platform.GBA)
         {
-            SleepModeBackground = new WhiteScreenEffectObject()
-            {
-                ObjPriority = 0,
-                BgPriority = 0,
-            };
-
             string[] textLines = Localization.GetText(11, 15);
 
             SleepModeTexts = new SpriteTextObject[4];
@@ -322,8 +317,6 @@ public partial class PauseDialog : Dialog
         // the game loop while in the simulated sleep mode we have to do it here
         if (IsInSleepMode)
         {
-            animationPlayer.Play(SleepModeBackground);
-
             foreach (SpriteTextObject text in SleepModeTexts)
                 animationPlayer.Play(text);
             return;

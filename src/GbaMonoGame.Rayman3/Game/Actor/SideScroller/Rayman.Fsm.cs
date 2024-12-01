@@ -3730,7 +3730,7 @@ public partial class Rayman
 
                                 case CavesOfBadDreams.FadeMode.Invisible:
                                     cavesOfBadDreams.Mode = CavesOfBadDreams.FadeMode.Ended;
-                                    ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
+                                    ((FrameSideScroller)Frame.Current).InitNewCircleTransition(false);
                                     break;
                             }
                             break;
@@ -3754,7 +3754,7 @@ public partial class Rayman
                             break;
 
                         default:
-                            ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
+                            ((FrameSideScroller)Frame.Current).InitNewCircleTransition(false);
                             break;
                     }
 
@@ -4053,7 +4053,7 @@ public partial class Rayman
                 }
                 else
                 {
-                    ((FrameSideScroller)Frame.Current).InitNewCircleFXTransition(false);
+                    ((FrameSideScroller)Frame.Current).InitNewCircleTransition(false);
                 }
 
                 if (AttachedObject != null)

@@ -17,25 +17,30 @@ public class World : FrameWorldSideScroller
     private byte MurfyLevelCurtainTargetId { get; set; }
     private byte MurfyId { get; set; }
 
-    private PaletteFadeEffectObject PaletteFade { get; set; }
+    private PaletteFadeScreenEffect PaletteFadeScreenEffect { get; set; }
     private int PaletteFadeTimer { get; set; }
     private bool FinishedTransitioningOut { get; set; }
 
     public void InitEntering()
     {
+        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
+        PaletteFadeScreenEffect.Fade = 1;
+
         FinishedTransitioningOut = false;
-        PaletteFade.Fade = 1;
         UserInfo.Hide = true;
         CurrentExStepAction = StepEx_MoveInCurtains;
-        PaletteFadeTimer = PaletteFade.MinFadeTime;
+        PaletteFadeTimer = PaletteFadeScreenEffect.MinFadeTime;
         Gfx.FadeControl = FadeControl.None;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
     }
 
     public void InitExiting()
     {
+        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
+        PaletteFadeScreenEffect.Fade = 0;
+
         CurrentExStepAction = StepEx_FadeOut;
-        PaletteFadeTimer = PaletteFade.MaxFadeTime;
+        PaletteFadeTimer = PaletteFadeScreenEffect.MaxFadeTime;
         FinishedTransitioningOut = false;
         UserInfo.Hide = true;
         BlockPause = true;
@@ -170,15 +175,9 @@ public class World : FrameWorldSideScroller
             UserInfo.Hide = true;
         }
 
-        PaletteFade = new PaletteFadeEffectObject()
-        {
-            BgPriority = 0,
-        };
+        PaletteFadeScreenEffect = new PaletteFadeScreenEffect();
 
         InitEntering();
-
-        // We have to show the palette fade already now or we have one game frame with the level visible
-        Scene.AnimationPlayer.PlayFront(PaletteFade);
 
         Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
@@ -186,8 +185,6 @@ public class World : FrameWorldSideScroller
 
     public override void Step()
     {
-        Scene.AnimationPlayer.PlayFront(PaletteFade);
-
         base.Step();
 
         if (!IsBusy())
@@ -208,16 +205,17 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
+        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
 
         PaletteFadeTimer++;
-        if (PaletteFadeTimer > PaletteFade.MaxFadeTime)
+        if (PaletteFadeTimer > PaletteFadeScreenEffect.MaxFadeTime)
         {
             if (NextExStepAction == null)
                 UserInfo.Hide = false;
 
             BlockPause = false;
             CurrentExStepAction = NextExStepAction;
+            Gfx.ClearScreenEffect();
         }
     }
 
@@ -227,9 +225,9 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        PaletteFade.SetFadeFromTimer(PaletteFadeTimer);
+        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
 
-        if (PaletteFadeTimer == PaletteFade.MinFadeTime)
+        if (PaletteFadeTimer == PaletteFadeScreenEffect.MinFadeTime)
         {
             CurrentExStepAction = StepEx_MoveOutCurtains;
             UserInfo.MoveOutCurtains();

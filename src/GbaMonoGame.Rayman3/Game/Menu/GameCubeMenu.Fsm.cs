@@ -30,7 +30,7 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.Step:
-                TransitionIn.Value = Timer;
+                TransitionInScreenEffect.Value = Timer;
                 Timer += 8;
 
                 if (Timer >= 240)
@@ -41,7 +41,7 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.UnInit:
-                TransitionIn = null;
+                Gfx.ClearScreenEffect();
                 break;
         }
 
@@ -151,15 +151,13 @@ public partial class GameCubeMenu
         {
             case FsmAction.Init:
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
-                TransitionOut = new GameCubeMenuTransitionOutEffectObject()
-                {
-                    BgPriority = 0,
-                };
+                TransitionOutScreenEffect = new GameCubeMenuTransitionOutScreenEffect();
+                Gfx.SetScreenEffect(TransitionOutScreenEffect);
                 Timer = 0;
                 break;
 
             case FsmAction.Step:
-                TransitionOut.Value = Timer;
+                TransitionOutScreenEffect.Value = Timer;
                 Timer++;
 
                 if (Timer >= 80)
@@ -171,7 +169,7 @@ public partial class GameCubeMenu
                 break;
 
             case FsmAction.UnInit:
-                TransitionOut = null;
+                // Do nothing
                 break;
         }
 

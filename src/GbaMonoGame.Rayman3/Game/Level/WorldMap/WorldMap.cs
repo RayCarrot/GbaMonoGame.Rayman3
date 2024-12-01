@@ -67,12 +67,12 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     public int WorldNameAlpha { get; set; }
     public int EnterWorldStep { get; set; }
 
-    public WindowEffectObject GameCubeTransitionWindow { get; set; }
+    public SquareTransitionScreenEffect GameCubeTransitionScreenEffect { get; set; }
     public int EnterGameCubeMenuStep { get; set; }
 
-    public CircleWindowWipeEffectObject CircleWipeEffect { get; set; }
-    public int CircleWipeFXValue { get; set; }
-    public CircleWipeFXTransitionMode CircleWipeFXMode { get; set; }
+    public CircleWipeTransitionScreenEffect CircleWipeTransitionScreenEffect { get; set; }
+    public int CircleWipeTransitionValue { get; set; }
+    public TransitionMode CircleWipeTransitionMode { get; set; }
 
     public byte SpikyBagSinValue { get; set; }
     public bool SpikyBagScrollDirection { get; set; }
@@ -659,11 +659,11 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         // NOTE: The game disables the spiky bag layer here due to it creating a new window for the
         //       transition. We however don't want to do that because it might be visible if in widescreen.
 
-        GameCubeTransitionWindow = new WindowEffectObject()
+        GameCubeTransitionScreenEffect = new SquareTransitionScreenEffect()
         {
-            BgPriority = 0,
-            Window = new Box(Vector2.Zero, Engine.ScreenCamera.Resolution)
+            Square = new Box(Vector2.Zero, Engine.ScreenCamera.Resolution)
         };
+        Gfx.SetScreenEffect(GameCubeTransitionScreenEffect);
 
         EnterGameCubeMenuStep = 0;
         Timer = 0;
@@ -707,16 +707,12 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                 throw new Exception("Invalid world id");
         }
 
-        CircleWipeFXValue = 0xFF;
-        CircleWipeFXMode = CircleWipeFXTransitionMode.In;
+        CircleWipeTransitionValue = 0xFF;
+        CircleWipeTransitionMode = TransitionMode.In;
         
-        // Add the circle wipe FX as an effect object. On the GBA this is done using a window.
-        CircleWipeEffect = new CircleWindowWipeEffectObject
-        {
-            BgPriority = 0,
-            IsEnabled = true,
-            Value = 256,
-        };
+        // Add the circle wipe transition as a screen effect. On the GBA this is done using a window.
+        CircleWipeTransitionScreenEffect = new CircleWipeTransitionScreenEffect { Value = 256, };
+        Gfx.SetScreenEffect(CircleWipeTransitionScreenEffect);
 
         TransitionsFX = new TransitionsFX(true);
         GameInfo.InitLevel(LevelType.Normal);
@@ -733,9 +729,6 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         Scene.Init();
         Scene.Playfield.Step();
-
-        // We have to show the circle wipe effect already now or we have one game frame with the level visible
-        Scene.AnimationPlayer.PlayFront(CircleWipeEffect);
 
         Scene.AnimationPlayer.Execute();
 
@@ -848,6 +841,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Scene.UnInit();
         Scene = null;
 
+        Gfx.ClearScreenEffect();
         Gfx.ClearColor = Color.Black;
     }
 
@@ -1004,7 +998,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     private void StepEx_Play()
     {
-        if (SelectedWorldType == WorldType.None && CircleWipeFXMode == CircleWipeFXTransitionMode.None)
+        if (SelectedWorldType == WorldType.None && CircleWipeTransitionMode == TransitionMode.None)
         {
             // Move forward
             if ((JoyPad.IsButtonJustPressed(GbaInput.Right) || 
@@ -1093,8 +1087,8 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
                      JoyPad.IsButtonReleased(GbaInput.Select))
             {
                 SelectedWorldType = WorldType.World;
-                CircleWipeFXMode = CircleWipeFXTransitionMode.Out;
-                CircleWipeEffect.IsEnabled = true;
+                CircleWipeTransitionMode = TransitionMode.Out;
+                Gfx.SetScreenEffect(CircleWipeTransitionScreenEffect);
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Spirale_Mix01);
             }
         }
@@ -1311,10 +1305,10 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             if (Engine.Settings.Platform == Platform.GBA)
                 SelectGameCube();
         }
-        else if (SelectedWorldType != WorldType.None && CircleWipeFXMode == CircleWipeFXTransitionMode.FinishedOut)
+        else if (SelectedWorldType != WorldType.None && CircleWipeTransitionMode == TransitionMode.FinishedOut)
         {
             SelectWorld();
-            CircleWipeEffect.IsEnabled = false;
+            Gfx.ClearScreenEffect();
         }
 
         ManageCheats();
@@ -1393,7 +1387,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
             Vector2 range = Engine.ScreenCamera.Resolution - max;
             Vector2 scale = range / (Engine.GameViewPort.OriginalGameResolution - max);
 
-            GameCubeTransitionWindow.Window = new Box(
+            GameCubeTransitionScreenEffect.Square = new Box(
                 minX: Timer * 8 / 120f,
                 minY: Timer * 72 / 120f,
                 maxX: Engine.ScreenCamera.Resolution.X - Timer * scale.X,
@@ -1412,7 +1406,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         // Square
         else if (EnterGameCubeMenuStep == 2)
         {
-            GameCubeTransitionWindow.Window = new Box(
+            GameCubeTransitionScreenEffect.Square = new Box(
                 minX: 8,
                 minY: 72 + Timer * 8 / 64f,
                 maxX: 120 - Timer,
@@ -1440,7 +1434,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         // Zoom in
         else
         {
-            GameCubeTransitionWindow.Window = new Box(
+            GameCubeTransitionScreenEffect.Square = new Box(
                 minX: MathF.Min(Timer + 8, 32),
                 minY: MathF.Min(Timer + 80, 104),
                 maxX: MathF.Max(56 - Timer, 32),
@@ -1470,38 +1464,30 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
     {
         Scene.Step();
 
-        if (CircleWipeFXMode != CircleWipeFXTransitionMode.None)
-        {
-            CircleWipeEffect.Value = CircleWipeFXValue;
-            Scene.AnimationPlayer.PlayFront(CircleWipeEffect);
-        }
+        if (CircleWipeTransitionMode != TransitionMode.None)
+            CircleWipeTransitionScreenEffect.Value = CircleWipeTransitionValue;
 
-        if (CircleWipeFXMode == CircleWipeFXTransitionMode.Out)
+        if (CircleWipeTransitionMode == TransitionMode.Out)
         {
-            CircleWipeFXValue += 4;
+            CircleWipeTransitionValue += 4;
 
-            if (CircleWipeFXValue >= 255)
+            if (CircleWipeTransitionValue >= 255)
             {
-                CircleWipeFXMode = CircleWipeFXTransitionMode.FinishedOut;
-                CircleWipeFXValue = 0;
+                CircleWipeTransitionMode = TransitionMode.FinishedOut;
+                CircleWipeTransitionValue = 0;
             }
         }
-        else if (CircleWipeFXMode == CircleWipeFXTransitionMode.In)
+        else if (CircleWipeTransitionMode == TransitionMode.In)
         {
-            CircleWipeFXValue -= 4;
+            CircleWipeTransitionValue -= 4;
 
-            if (CircleWipeFXValue <= 0)
+            if (CircleWipeTransitionValue <= 0)
             {
-                CircleWipeFXMode = CircleWipeFXTransitionMode.None;
-                CircleWipeFXValue = 0;
-                CircleWipeEffect.IsEnabled = false;
+                CircleWipeTransitionMode = TransitionMode.None;
+                CircleWipeTransitionValue = 0;
+                Gfx.ClearScreenEffect();
             }
         }
-
-        // NOTE: The game doesn't manage the window here, but since we're doing it through the animation
-        //       player we have to make sure it's processed after the scene so it covers the HUD.
-        if (GameCubeTransitionWindow != null)
-            Scene.AnimationPlayer.PlayFront(GameCubeTransitionWindow);
 
         Scene.Playfield.Step();
         Scene.AnimationPlayer.Execute();
@@ -1509,7 +1495,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         if (JoyPad.IsButtonJustPressed(GbaInput.Start) && 
             CurrentExStepAction == StepEx_Play &&
-            CircleWipeFXMode == CircleWipeFXTransitionMode.None)
+            CircleWipeTransitionMode == TransitionMode.None)
         {
             CurrentStepAction = Step_Pause_Init;
             GameTime.Pause();
@@ -1617,7 +1603,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         World1ToGameCube = 7,
     }
 
-    public enum CircleWipeFXTransitionMode
+    public enum TransitionMode
     {
         None = 0,
         Out = 1,

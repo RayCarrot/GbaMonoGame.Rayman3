@@ -2,7 +2,6 @@
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
 using GbaMonoGame.TgxEngine;
-using Microsoft.Xna.Framework;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -20,9 +19,9 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Protected Properties
 
-    protected CircleWindowEffectObject CircleEffect { get; set; }
-    protected int CircleFXValue { get; set; }
-    protected CircleFXTransitionMode CircleFXMode { get; set; }
+    protected CircleTransitionScreenEffect CircleTransitionScreenEffect { get; set; }
+    protected int CircleTransitionValue { get; set; }
+    protected TransitionMode CircleTransitionMode { get; set; }
 
     protected FadeControl SavedFadeControl { get; set; }
 
@@ -53,73 +52,62 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Private Methods
 
-    private void StepCircleFX()
+    private void StepCircleTransition()
     {
-        switch (CircleFXMode)
+        switch (CircleTransitionMode)
         {
-            case CircleFXTransitionMode.FinishedIn:
-                CircleFXMode = CircleFXTransitionMode.None;
+            case TransitionMode.FinishedIn:
+                Gfx.ClearScreenEffect();
+                CircleTransitionMode = TransitionMode.None;
                 break;
 
-            case CircleFXTransitionMode.In:
-                CircleFXValue += 6;
-                if (CircleFXValue > 252)
+            case TransitionMode.In:
+                CircleTransitionValue += 6;
+                if (CircleTransitionValue > 252)
                 {
-                    CircleFXValue = 252;
-                    CircleFXMode = CircleFXTransitionMode.FinishedIn;
+                    CircleTransitionValue = 252;
+                    CircleTransitionMode = TransitionMode.FinishedIn;
                 }
-                CircleEffect.Radius = CircleFXValue;
+                CircleTransitionScreenEffect.Radius = CircleTransitionValue;
                 break;
 
-            case CircleFXTransitionMode.Out:
-                CircleFXValue -= 6;
-                if (CircleFXValue < 0)
+            case TransitionMode.Out:
+                CircleTransitionValue -= 6;
+                if (CircleTransitionValue < 0)
                 {
-                    CircleFXValue = 0;
-                    CircleFXMode = CircleFXTransitionMode.FinishedOut;
+                    CircleTransitionValue = 0;
+                    CircleTransitionMode = TransitionMode.FinishedOut;
                 }
-                CircleEffect.Radius = CircleFXValue;
+                else
+                {
+                    CircleTransitionScreenEffect.Radius = CircleTransitionValue;
+                }
                 break;
         }
-
-        if (CircleFXMode != CircleFXTransitionMode.None)
-            Scene.AnimationPlayer.PlayFront(CircleEffect);
-    }
-
-    #endregion
-
-    #region Protected Methods
-
-    protected void CreateCircleFXTransition()
-    {
-        // Add the circle FX as an effect object. On the GBA this is done using a window.
-        CircleEffect = new CircleWindowEffectObject
-        {
-            BgPriority = 0,
-        };
     }
 
     #endregion
 
     #region Pubic Methods
 
-    public void InitNewCircleFXTransition(bool transitionIn)
+    public void InitNewCircleTransition(bool transitionIn)
     {
         if (transitionIn)
         {
-            CircleFXValue = 0;
-            CircleFXMode = CircleFXTransitionMode.In;
+            CircleTransitionValue = 0;
+            CircleTransitionMode = TransitionMode.In;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideIn_Mix02);
         }
         else
         {
-            CircleFXValue = 252;
-            CircleFXMode = CircleFXTransitionMode.Out;
+            CircleTransitionValue = 252;
+            CircleTransitionMode = TransitionMode.Out;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__SlideOut_Mix01);
         }
 
-        CircleEffect.Camera = Scene.Playfield.Camera;
-        CircleEffect.Init(CircleFXValue, Scene.MainActor.ScreenPosition - new Vector2(0, 32));
+        CircleTransitionScreenEffect.Camera = Scene.Playfield.Camera;
+        CircleTransitionScreenEffect.Init(CircleTransitionValue, Scene.MainActor.ScreenPosition - new Vector2(0, 32));
+        Gfx.SetScreenEffect(CircleTransitionScreenEffect);
     }
 
     public override void Init()
@@ -128,7 +116,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
         CanPause = true;
         LevelMusicManager.Init();
-        CreateCircleFXTransition();
+        CircleTransitionScreenEffect = new CircleTransitionScreenEffect();
         TransitionsFX = new TransitionsFX(true);
         Scene = new Scene2D((int)GameInfo.MapId, x => new CameraSideScroller(x), 4, 1);
 
@@ -174,10 +162,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.Init();
         Scene.Playfield.Step();
 
-        InitNewCircleFXTransition(true);
-
-        // We have to show the circle effect already now or we have one game frame with the level visible
-        Scene.AnimationPlayer.PlayFront(CircleEffect);
+        InitNewCircleTransition(true);
 
         Scene.AnimationPlayer.Execute();
 
@@ -193,9 +178,10 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.UnInit();
         Scene = null;
 
-        CircleFXValue = 0;
-        CircleFXMode = CircleFXTransitionMode.None;
-        CircleEffect = null;
+        CircleTransitionValue = 0;
+        CircleTransitionMode = TransitionMode.None;
+        CircleTransitionScreenEffect = null;
+        Gfx.ClearScreenEffect();
 
         GameInfo.StopLevelMusic();
         SoundEventsManager.StopAllSongs();
@@ -218,7 +204,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.Step();
         Scene.Playfield.Step();
         TransitionsFX.StepAll();
-        StepCircleFX();
+        StepCircleTransition();
         Scene.AnimationPlayer.Execute();
         LevelMusicManager.Step();
         
@@ -229,7 +215,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
         }
 
         // Pause
-        if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleFXMode == CircleFXTransitionMode.None && CanPause)
+        if (JoyPad.IsButtonJustPressed(GbaInput.Start) && CircleTransitionMode == TransitionMode.None && CanPause)
         {
             GameTime.Pause();
             CurrentStepAction = Fog != null ? Step_Pause_DisableFog : Step_Pause_Init;
@@ -336,7 +322,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Enums
 
-    protected enum CircleFXTransitionMode
+    protected enum TransitionMode
     {
         None = 0,
         FinishedIn = 1,

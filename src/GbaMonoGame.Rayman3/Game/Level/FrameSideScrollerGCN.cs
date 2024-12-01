@@ -54,7 +54,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
         if (MapInfo.StartMusicSoundEvent != Rayman3SoundEvent.None)
             SoundEventsManager.ProcessEvent(MapInfo.StartMusicSoundEvent);
 
-        CreateCircleFXTransition();
+        CircleTransitionScreenEffect = new CircleTransitionScreenEffect();
 
         TransitionsFX = new TransitionsFX(true);
         Scene = new Scene2D(Map, x => new CameraSideScroller(x), 3, 1);
@@ -70,10 +70,7 @@ public class FrameSideScrollerGCN : FrameSideScroller
         Scene.Init();
         Scene.Playfield.Step();
 
-        InitNewCircleFXTransition(true);
-
-        // We have to show the circle effect already now or we have one game frame with the level visible
-        Scene.AnimationPlayer.PlayFront(CircleEffect);
+        InitNewCircleTransition(true);
 
         Scene.AnimationPlayer.Execute();
 
