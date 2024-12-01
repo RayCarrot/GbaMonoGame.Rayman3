@@ -338,7 +338,7 @@ public class GfxRenderer
             null,
             color,
             angle,
-            new Vector2(0, (float)Gfx.Pixel.Height / 2),
+            Vector2.Zero, 
             new Vector2(length, thickness),
             SpriteEffects.None,
             0);
