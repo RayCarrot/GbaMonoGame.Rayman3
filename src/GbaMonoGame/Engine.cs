@@ -11,7 +11,7 @@ public static class Engine
 {
     #region Paths
 
-    private const string InstalledGamesDirName = "Games";
+    public const string InstalledGamesDirName = "Games";
     public static string ConfigFileName => "Config.json";
     public static string ImgGuiConfigFileName => "imgui.ini";
     public static string SerializerLogFileName => "SerializerLog.txt";
