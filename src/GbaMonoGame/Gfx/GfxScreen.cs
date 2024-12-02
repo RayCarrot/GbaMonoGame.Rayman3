@@ -79,20 +79,25 @@ public class GfxScreen
             // Get the actual area we render the background to as some backgrounds might render outside their normal size.
             Box renderBox = Renderer.GetRenderBox(this);
 
-            // Get the background position and wrap it
-            Vector2 wrappedPos = new(MathHelpers.Mod(-Offset.X, size.X), MathHelpers.Mod(-Offset.Y, size.Y));
-            
             // Get the camera bounds
             const float camMinX = 0;
             const float camMinY = 0;
             float camMaxX = Camera.Resolution.X;
             float camMaxY = Camera.Resolution.Y;
 
+            // Get the background position and wrap it
+            Vector2 wrappedPos = new(MathHelpers.Mod(-Offset.X, size.X), MathHelpers.Mod(-Offset.Y, size.Y));
+
             // Calculate the start and end positions to draw the background
             float startX = camMinX - size.X + (wrappedPos.X == 0 ? size.X : wrappedPos.X);
             float startY = camMinY - size.Y + (wrappedPos.Y == 0 ? size.Y : wrappedPos.Y);
-            float endX = camMaxX;
-            float endY = camMaxY;
+
+            float fullWidth = startX + camMaxX;
+            float fullHeight = startY + camMaxY;
+
+            Vector2 wrappedEnd = new(fullWidth % size.X, fullHeight % size.Y);
+            float endX = camMaxX + size.X - (wrappedEnd.X == 0 ? size.X : wrappedEnd.X);
+            float endY = camMaxY + size.Y - (wrappedEnd.Y == 0 ? size.Y : wrappedEnd.Y);
 
             // Extend for the visible area if needed.
             // NOTE: This only accounts for if the render box is bigger than then the size, which we do to prevent pop-in.
