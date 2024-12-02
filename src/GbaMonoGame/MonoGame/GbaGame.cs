@@ -33,8 +33,6 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
     #region Private Fields
 
-    private const string InstalledGamesDirName = "Games";
-
     // The GBA framerate is actually 59.727500569606, but we do 60
     private const float Framerate = 60;
 
@@ -333,7 +331,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         ApplyDisplayConfig();
 
         // Find all installed games
-        foreach (string gameDir in Directory.EnumerateDirectories(InstalledGamesDirName))
+        foreach (string gameDir in Directory.EnumerateDirectories(FileManager.GetDataDirectory(Engine.InstalledGamesDirName)))
         {
             foreach (string gameFile in Directory.EnumerateFiles(gameDir))
             {

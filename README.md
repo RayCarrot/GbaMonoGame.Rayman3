@@ -24,7 +24,7 @@ Besides graphical enhancements there are various quality of life improvements an
 ## Playing
 *NOTE: This port is still in development which is why there are no releases published. Most levels are not yet playable.*
 
-In order to play the game you will need to place your game ROMs in the `Games` folder, inside a sub-folder for each game. The name of the ROM file doesn't matter, as long as it has the correct file extension (.gba for GBA and .app for N-Gage). Additionally the N-Gage version requires a .dat file with the same name as the .app file.
+In order to play the game you will need to place your game ROMs in the `Data/Games` folder, inside a sub-folder for each game. The name of the ROM file doesn't matter, as long as it has the correct file extension (.gba for GBA and .app for N-Gage). Additionally the N-Gage version requires a .dat file with the same name as the .app file.
 
 This is an example of a folder structure which will allow you to play both the GBA and N-Gage versions:
 

@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
@@ -20,13 +23,31 @@ public class DebugLayout
     public T GetMenu<T>() where T : DebugMenu => _menus.FirstOrDefault(x => x is T) as T;
     public IReadOnlyCollection<DebugMenu> GetMenus() => _menus;
 
-    public void LoadContent(Game game)
+    public unsafe void LoadContent(Game game)
     {
         _guiRenderer = new ImGuiRenderer(game);
         _guiRenderer.RebuildFontAtlas();
 
         ImGuiIOPtr io = ImGui.GetIO();
         io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+
+        // Get the config file path
+        string iniFilePath = FileManager.GetDataFile(Engine.ImgGuiConfigFileName);
+        
+        // Convert to ASCII bytes
+        byte[] iniFilePathBytes = Encoding.ASCII.GetBytes(iniFilePath);
+        
+        // Allocate to unmanaged memory
+        IntPtr iniFilePathBytesPointer = Marshal.AllocHGlobal(iniFilePathBytes.Length + 1);
+        
+        // Copy over the bytes
+        Marshal.Copy(iniFilePathBytes, 0, iniFilePathBytesPointer, iniFilePathBytes.Length);
+        
+        // Null terminate
+        *((byte*)iniFilePathBytesPointer + iniFilePathBytes.Length) = 0;
+        
+        // Set the path
+        io.NativePtr->IniFilename = (byte*)iniFilePathBytesPointer;
 
         _textureManager = new DebugLayoutTextureManager(_guiRenderer);
     }

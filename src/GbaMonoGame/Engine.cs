@@ -11,8 +11,10 @@ public static class Engine
 {
     #region Paths
 
-    public static string ConfigFilePath => "Config.json";
-    public static string SerializerLogFilePath => "SerializerLog.txt";
+    private const string InstalledGamesDirName = "Games";
+    public static string ConfigFileName => "Config.json";
+    public static string ImgGuiConfigFileName => "imgui.ini";
+    public static string SerializerLogFileName => "SerializerLog.txt";
 
     #endregion
 
@@ -68,7 +70,7 @@ public static class Engine
     private static void LoadRom()
     {
         ISerializerLogger serializerLogger = Config.WriteSerializerLog
-            ? new FileSerializerLogger(SerializerLogFilePath)
+            ? new FileSerializerLogger(FileManager.GetDataFile(SerializerLogFileName))
             : null;
 
         Context = new Context(String.Empty, serializerLogger: serializerLogger, systemLogger: new BinarySerializerSystemLogger());
@@ -121,12 +123,12 @@ public static class Engine
 
     internal static void LoadConfig()
     {
-        Config = GameConfig.Load(ConfigFilePath);
+        Config = GameConfig.Load(FileManager.GetDataFile(ConfigFileName));
     }
 
     internal static void SaveConfig()
     {
-        Config.Save(ConfigFilePath);
+        Config.Save(FileManager.GetDataFile(ConfigFileName));
     }
 
     internal static void LoadGameInstallation(GameInstallation gameInstallation)
