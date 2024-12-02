@@ -62,12 +62,10 @@ public class GfxScreen
     /// </summary>
     public IScreenRenderer Renderer { get; set; }
 
-    public void Draw(GfxRenderer renderer)
+    public void Draw(GfxRenderer renderer, Color color)
     {
         if (Renderer == null)
             return;
-
-        Color color = Color.White;
 
         // TODO: Add config option to use GBA fading on N-Gage
         if (Engine.Settings.Platform == Platform.GBA && IsAlphaBlendEnabled)

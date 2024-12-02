@@ -1,6 +1,7 @@
 ﻿using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using GbaMonoGame.Engine2d;
+using Microsoft.Xna.Framework;
 using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
@@ -8,6 +9,9 @@ namespace GbaMonoGame.Rayman3;
 public class World : FrameWorldSideScroller
 {
     public World(MapId mapId) : base(mapId) { }
+
+    // NOTE: The game uses 16, but it only updates every 2 frames. We instead update every frame.
+    private const int PaletteFadeMaxValue = 16 * 2;
 
     private Action CurrentExStepAction { get; set; }
     private Action NextExStepAction { get; set; }
@@ -17,30 +21,24 @@ public class World : FrameWorldSideScroller
     private byte MurfyLevelCurtainTargetId { get; set; }
     private byte MurfyId { get; set; }
 
-    private PaletteFadeScreenEffect PaletteFadeScreenEffect { get; set; }
-    private int PaletteFadeTimer { get; set; }
+    private int PaletteFadeValue { get; set; }
     private bool FinishedTransitioningOut { get; set; }
 
     public void InitEntering()
     {
-        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
-        PaletteFadeScreenEffect.Fade = 1;
-
         FinishedTransitioningOut = false;
+        Gfx.Color = Color.Black;
         UserInfo.Hide = true;
         CurrentExStepAction = StepEx_MoveInCurtains;
-        PaletteFadeTimer = PaletteFadeScreenEffect.MinFadeTime;
+        PaletteFadeValue = 0;
         Gfx.FadeControl = FadeControl.None;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Curtain_YoyoMove_Mix02);
     }
 
     public void InitExiting()
     {
-        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
-        PaletteFadeScreenEffect.Fade = 0;
-
         CurrentExStepAction = StepEx_FadeOut;
-        PaletteFadeTimer = PaletteFadeScreenEffect.MaxFadeTime;
+        PaletteFadeValue = PaletteFadeMaxValue;
         FinishedTransitioningOut = false;
         UserInfo.Hide = true;
         BlockPause = true;
@@ -175,8 +173,6 @@ public class World : FrameWorldSideScroller
             UserInfo.Hide = true;
         }
 
-        PaletteFadeScreenEffect = new PaletteFadeScreenEffect();
-
         InitEntering();
 
         Scene.Playfield.Step();
@@ -205,17 +201,18 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
+        float colorValue = PaletteFadeValue / (float)PaletteFadeMaxValue;
+        Gfx.Color = new Color(colorValue, colorValue, colorValue, 1);
 
-        PaletteFadeTimer++;
-        if (PaletteFadeTimer > PaletteFadeScreenEffect.MaxFadeTime)
+        PaletteFadeValue++;
+
+        if (PaletteFadeValue > PaletteFadeMaxValue)
         {
             if (NextExStepAction == null)
                 UserInfo.Hide = false;
 
             BlockPause = false;
             CurrentExStepAction = NextExStepAction;
-            Gfx.ClearScreenEffect();
         }
     }
 
@@ -225,16 +222,17 @@ public class World : FrameWorldSideScroller
         // that it cycles between every second frame. The first one modifies
         // the background palette and second one the object palette.
 
-        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
+        float colorValue = PaletteFadeValue / (float)PaletteFadeMaxValue;
+        Gfx.Color = new Color(colorValue, colorValue, colorValue, 1);
 
-        if (PaletteFadeTimer == PaletteFadeScreenEffect.MinFadeTime)
+        if (PaletteFadeValue == 0)
         {
             CurrentExStepAction = StepEx_MoveOutCurtains;
             UserInfo.MoveOutCurtains();
         }
         else
         {
-            PaletteFadeTimer--;
+            PaletteFadeValue--;
         }
     }
 

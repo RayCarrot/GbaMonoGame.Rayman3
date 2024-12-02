@@ -9,6 +9,13 @@ namespace GbaMonoGame.Rayman3;
 
 public class Intro : Frame, IHasPlayfield
 {
+    #region Constant Fields
+
+    // NOTE: The game uses 16, but it only updates every 2 frames. We instead update every frame.
+    private const int PaletteFadeMaxValue = 16 * 2;
+
+    #endregion
+
     #region Public Properties
 
     private AnimationPlayer AnimationPlayer { get; set; }
@@ -23,8 +30,7 @@ public class Intro : Frame, IHasPlayfield
     private int AlphaTimer { get; set; }
     private int ScrollY { get; set; }
     private bool IsSkipping { get; set; }
-    private PaletteFadeScreenEffect PaletteFadeScreenEffect { get; set; }
-    private int PaletteFadeTimer { get; set; }
+    private int PaletteFadeValue { get; set; }
     private int SkippedTimer { get; set; }
 
     #endregion
@@ -37,8 +43,39 @@ public class Intro : Frame, IHasPlayfield
 
     #region Private Methods
 
-    private void LoadAnimations()
+    private void Skip()
     {
+        PaletteFadeValue--;
+
+        float colorValue = PaletteFadeValue / (float)PaletteFadeMaxValue;
+        Gfx.Color = new Color(colorValue, colorValue, colorValue, 1);
+
+        if (PaletteFadeValue == 0)
+        {
+            CurrentStepAction = Step_Skip_1;
+            SkippedTimer = 0;
+        }
+    }
+
+    #endregion
+
+    #region Pubic Override Methods
+
+    public override void Init()
+    {
+        SoundEngineInterface.SetNbVoices(10);
+
+        // Pre-load the menu
+        Menu = new MenuAll(Engine.Settings.Platform switch
+        {
+            Platform.GBA => MenuAll.Page.SelectLanguage,
+            Platform.NGage => MenuAll.Page.NGage,
+            _ => throw new UnsupportedPlatformException(),
+        });
+        Menu.LoadGameInfo();
+
+        AnimationPlayer = new AnimationPlayer(true, SoundEventsManager.ProcessEvent);
+
         AnimatedObjectResource introAnimResource = Storage.LoadResource<AnimatedObjectResource>(GameResource.IntroAnimations);
 
         PressStartObj = new AnimatedObject(introAnimResource, false)
@@ -80,10 +117,7 @@ public class Intro : Frame, IHasPlayfield
             },
             CurrentAnimation = 0
         };
-    }
 
-    private void LoadPlayfield()
-    {
         PlayfieldResource introPlayfield = Storage.LoadResource<PlayfieldResource>(GameResource.IntroPlayfield);
         Playfield = TgxPlayfield.Load<TgxPlayfield2D>(introPlayfield);
         Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
@@ -122,49 +156,8 @@ public class Intro : Frame, IHasPlayfield
                 PaletteTexture = renderer.PaletteTexture
             };
         }
-    }
 
-    private void Skip()
-    {
-        Gfx.SetScreenEffect(PaletteFadeScreenEffect);
-
-        // NOTE: We might be 1 game frame off here since the game uses GameTime.ElapsedFrames to alternate between fading
-        //       the background and object palettes, with only the object palette fading checking if finished.
-        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
-        if (PaletteFadeTimer == PaletteFadeScreenEffect.MinFadeTime)
-        {
-            CurrentStepAction = Step_Skip_1;
-            SkippedTimer = 0;
-        }
-        else
-        {
-            PaletteFadeTimer--;
-        }
-    }
-
-    #endregion
-
-    #region Pubic Override Methods
-
-    public override void Init()
-    {
-        SoundEngineInterface.SetNbVoices(10);
-
-        // Pre-load the menu
-        Menu = new MenuAll(Engine.Settings.Platform switch
-        {
-            Platform.GBA => MenuAll.Page.SelectLanguage,
-            Platform.NGage => MenuAll.Page.NGage,
-            _ => throw new UnsupportedPlatformException(),
-        });
-        Menu.LoadGameInfo();
-
-        AnimationPlayer = new AnimationPlayer(true, SoundEventsManager.ProcessEvent);
-
-        LoadAnimations();
-        LoadPlayfield();
-
-        PaletteFadeScreenEffect = new PaletteFadeScreenEffect();
+        Gfx.FadeControl = FadeControl.None;
 
         CurrentStepAction = Step_1;
 
@@ -172,7 +165,7 @@ public class Intro : Frame, IHasPlayfield
         Timer = 0;
         ScrollY = 0;
         IsSkipping = false;
-        PaletteFadeTimer = PaletteFadeScreenEffect.MaxFadeTime;
+        PaletteFadeValue = PaletteFadeMaxValue;
 
         SoundEventsManager.SetVolumeForType(SoundType.Music, 0);
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__sadslide);
@@ -447,18 +440,21 @@ public class Intro : Frame, IHasPlayfield
 
     private void Step_Skip_2()
     {
-        // NOTE: We might be 1 game frame off here since the game uses GameTime.ElapsedFrames to alternate between fading
-        //       the background and object palettes, with only the object palette fading checking if finished.
-        PaletteFadeScreenEffect.SetFadeFromTimer(PaletteFadeTimer);
-        PaletteFadeTimer++;
-        if (PaletteFadeTimer == PaletteFadeScreenEffect.MaxFadeTime - 2)
+        PaletteFadeValue++;
+
+        if (PaletteFadeValue <= PaletteFadeMaxValue)
+        {
+            float colorValue = PaletteFadeValue / (float)PaletteFadeMaxValue;
+            Gfx.Color = new Color(colorValue, colorValue, colorValue, 1);
+        }
+
+        if (PaletteFadeValue == PaletteFadeMaxValue - 2)
         {
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__raytheme__After__sadslide);
         }
-        else if (PaletteFadeTimer > PaletteFadeScreenEffect.MaxFadeTime)
+        else if (PaletteFadeValue > PaletteFadeMaxValue)
         {
             CurrentStepAction = Step_6;
-            Gfx.ClearScreenEffect();
         }
 
         if ((GameTime.ElapsedFrames & 0x10) != 0)

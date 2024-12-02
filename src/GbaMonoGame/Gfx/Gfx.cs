@@ -43,8 +43,9 @@ public static class Gfx
 
     private static ScreenEffect ScreenEffect { get; set; }
 
+    public static Color Color { get; set; } = Color.White; // Color of all textures, can be used to simulate fading a palette
     public static Color ClearColor { get; set; } = Color.Black; // Background palette color 0 on GBA. This is not implemented on the N-Gage.
-    public static float Fade { get; set; } = 0; // The equivalent of BLDY/BLDALPHA on GBA. This is not implemented on the N-Gage.
+    public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
     public static float GbaFade
     {
         get => Fade * 16;
@@ -111,16 +112,16 @@ public static class Gfx
         {
             // Draw screens
             foreach (GfxScreen screen in Screens.Values.Where(x => x.IsEnabled && x.Priority == i))
-                screen.Draw(renderer);
+                screen.Draw(renderer, Color);
 
             if ((FadeControl.Flags & (FadeFlags)(1 << i)) != 0)
                 DrawFade(renderer);
 
             // Draw sprites
             foreach (Sprite sprite in BackSprites.Where(x => x.Priority == i))
-                sprite.Draw(renderer);
+                sprite.Draw(renderer, Color);
             foreach (Sprite sprite in Sprites.Where(x => x.Priority == i).Reverse())
-                sprite.Draw(renderer);
+                sprite.Draw(renderer, Color);
 
             if ((FadeControl.Flags & (FadeFlags)(1 << (i + 4))) != 0)
                 DrawFade(renderer);
@@ -130,7 +131,9 @@ public static class Gfx
         if (FadeControl.Flags == FadeFlags.Default)
             DrawFade(renderer);
 
-        // Draw the screen effect if there is one
-        ScreenEffect?.Draw(renderer);
+        // TODO: Add option to use this on N-Gage
+        // Draw the screen effect on GBA if there is one
+        if (Engine.Settings.Platform == Platform.GBA)
+            ScreenEffect?.Draw(renderer);
     }
 }

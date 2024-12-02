@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -9,9 +8,6 @@ public class SquareTransitionScreenEffect : ScreenEffect
 
     public override void Draw(GfxRenderer renderer)
     {
-        if (Engine.Settings.Platform == Platform.NGage)
-            return;
-
         renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         renderer.DrawFilledRectangle(Vector2.Zero, new Vector2(Square.MinX, Camera.Resolution.Y), Color.Black); // Left

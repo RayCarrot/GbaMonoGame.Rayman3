@@ -466,7 +466,7 @@ public class MenuManager
 
         // Draw the sprites
         foreach (Sprite sprite in Sprites)
-            sprite.Draw(renderer);
+            sprite.Draw(renderer, Color.White);
     }
 
     #endregion

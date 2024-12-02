@@ -1,4 +1,6 @@
-﻿namespace GbaMonoGame;
+﻿using Microsoft.Xna.Framework;
+
+namespace GbaMonoGame;
 
 /// <summary>
 /// Manages the currently active frame.
@@ -45,6 +47,7 @@ public static class FrameManager
             // makes more sense with how this code is structured.
             Gfx.ClearScreens();
             Gfx.ClearScreenEffect();
+            Gfx.Color = Color.White;
 
             // TODO: Add option not to clear cache? Makes loading faster, but uses more memory.
             // Clear cache if loading a new frame

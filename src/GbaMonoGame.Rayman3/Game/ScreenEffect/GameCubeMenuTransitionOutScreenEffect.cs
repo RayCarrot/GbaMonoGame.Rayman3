@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -9,9 +8,6 @@ public class GameCubeMenuTransitionOutScreenEffect : ScreenEffect
 
     public override void Draw(GfxRenderer renderer)
     {
-        if (Engine.Settings.Platform == Platform.NGage)
-            return;
-
         renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         Vector2 size = new(Value * 1.5f, Value);

@@ -16,17 +16,22 @@ public class Sprite
     public bool Center { get; set; }
     public AffineMatrix? AffineMatrix { get; set; }
     public Color Color { get; set; } = Color.White;
+    public bool OverrideGfxColor { get; set; } // Needed for the curtains in the worldmap which are not effected by the palette fading
 
     // TODO: There are multiple issues with how alpha is implemented here compared to on GBA. Most noticeably sprites should not effect each other. Very noticeable when setting it on Rayman and looking up - Rayman gets 4 eyes then! Although this might be how it is on N-Gage?
     public float? Alpha { get; set; }
 
     public GfxCamera Camera { get; set; } = Engine.ScreenCamera;
 
-    public void Draw(GfxRenderer renderer)
+    public void Draw(GfxRenderer renderer, Color color)
     {
         renderer.BeginRender(new RenderOptions(Alpha != null, PaletteTexture, Camera));
 
-        Color color = Color;
+        if (OverrideGfxColor)
+            color = Color;
+        else
+            color = new Color(Color.ToVector4() * color.ToVector4());
+        
         if (Alpha != null)
             color = new Color(color, Alpha.Value);
 

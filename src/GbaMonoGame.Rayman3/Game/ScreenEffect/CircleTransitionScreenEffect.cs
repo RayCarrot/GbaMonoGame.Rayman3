@@ -1,5 +1,4 @@
 ﻿using System;
-using BinarySerializer.Ubisoft.GbaEngine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -69,10 +68,6 @@ public class CircleTransitionScreenEffect : ScreenEffect
     
     public override void Draw(GfxRenderer renderer)
     {
-        // TODO: Add option to use this on N-Gage
-        if (Engine.Settings.Platform == Platform.NGage)
-            return;
-
         renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         Vector2 pos = CirclePosition;

@@ -1,5 +1,4 @@
-﻿using BinarySerializer.Ubisoft.GbaEngine;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -10,10 +9,6 @@ public class CircleWipeTransitionScreenEffect : ScreenEffect
     // NOTE: This math will be a bit different from the original game due to the usage of floats
     public override void Draw(GfxRenderer renderer)
     {
-        // TODO: Add option to use this on N-Gage
-        if (Engine.Settings.Platform == Platform.NGage)
-            return;
-
         renderer.BeginRender(new RenderOptions(false, null, Camera));
 
         float scalingFactor = MathHelpers.FromFixedPoint(0x39b07); // Around 3.6

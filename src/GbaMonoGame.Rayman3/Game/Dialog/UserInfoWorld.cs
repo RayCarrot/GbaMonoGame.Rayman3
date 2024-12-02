@@ -125,6 +125,7 @@ public class UserInfoWorld : Dialog
                 IsFramed = true,
                 CurrentAnimation = ShouldPlayCurtainAnimation ? 1 : 0,
                 ScreenPos = new Vector2(120, 56),
+                OverrideGfxColor = true, // Should not be effected by the palette fading
             };
             CurtainsRight = new AnimatedObject(resource, false)
             {
@@ -132,6 +133,7 @@ public class UserInfoWorld : Dialog
                 CurrentAnimation = ShouldPlayCurtainAnimation ? 1 : 0,
                 ScreenPos = new Vector2(-120, 56),
                 HorizontalAnchor = HorizontalAnchorMode.Right,
+                OverrideGfxColor = true, // Should not be effected by the palette fading
             };
 
             for (int i = 0; i < 6; i++)

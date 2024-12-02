@@ -119,6 +119,8 @@ public class AnimatedObject : AObject
         set => Alpha = value / 16;
     }
 
+    public bool OverrideGfxColor { get; set; } // Needed for the curtains in the worldmap which are not effected by the palette fading
+
     public BoxTable BoxTable { get; set; }
 
     #endregion
@@ -405,6 +407,7 @@ public class AnimatedObject : AObject
                         Priority = BgPriority,
                         Center = true,
                         AffineMatrix = affineMatrix,
+                        OverrideGfxColor = OverrideGfxColor,
                         Alpha = IsAlphaBlendEnabled ? Alpha : null,
                         Camera = Camera
                     };
