@@ -120,6 +120,12 @@ public class GfxDebugWindow : DebugWindow
             ImGui.EndTable();
         }
 
+        ImGui.Spacing();
+        ImGui.SeparatorText("Effects");
+
+        ImGui.Text($"Screen effect: {Gfx.GetScreenEffect()?.GetType().Name}");
+        ImGui.Text($"Color: {Gfx.Color}");
+
         // TODO: Implement way to view sprites
         /*
         ImGui.Spacing();

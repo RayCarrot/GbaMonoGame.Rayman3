@@ -72,6 +72,7 @@ public static class Gfx
     }
 
     // Used in place for screen effects made using GBA features such as windows
+    public static ScreenEffect GetScreenEffect() => ScreenEffect;
     public static void SetScreenEffect(ScreenEffect screenEffect) => ScreenEffect = screenEffect;
     public static void ClearScreenEffect() => ScreenEffect = null;
 
