@@ -492,7 +492,7 @@ public abstract class MovableActor : InteractableActor
             return;
 
         // Update the speed
-        Speed = MechModel.UpdateSpeedAction();
+        Speed = MechModel.UpdateSpeedAction(this);
 
         if (LinkedMovementActor != null)
         {
