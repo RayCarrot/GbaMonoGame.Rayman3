@@ -30,7 +30,7 @@ public class DebugLayout
 
         ImGuiIOPtr io = ImGui.GetIO();
         io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
-
+        
         // Get the config file path
         string iniFilePath = FileManager.GetDataFile(Engine.ImgGuiConfigFileName);
         
@@ -82,20 +82,18 @@ public class DebugLayout
                 {
                     bool open = window.IsOpen;
 
-                    open = ImGui.Begin(window.Name, ref open);
-
-                    if (open)
-                    {
+                    if (ImGui.Begin(window.Name, ref open))
                         window.Draw(this, _textureManager);
-                        ImGui.End();
-                    }
+
+                    window.IsOpen = open;
                 }
                 else
                 {
-                    ImGui.Begin(window.Name);
-                    window.Draw(this, _textureManager);
-                    ImGui.End();
+                    if (ImGui.Begin(window.Name))
+                        window.Draw(this, _textureManager);
                 }
+
+                ImGui.End();
             }
         }
 
