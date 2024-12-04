@@ -126,7 +126,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Destroyed(FsmAction action)
+    private bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -135,36 +135,140 @@ public partial class FlyingBomb
                 break;
 
             case FsmAction.Step:
-                Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
+                if (!FsmStep_CheckDeath())
+                    return false;
 
-                if (AnimatedObject.IsFramed)
+                if (Scene.IsDetectedMainActor(this))
                 {
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__BangGen1_Mix07);
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__BombFly_Mix03);
-                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BangGen1_Mix07);
+                    State.MoveTo(Fsm_Shake);
+                    return false;
                 }
-
-                if (explosion != null)
-                    explosion.Position = Position;
-
-                State.MoveTo(Fsm_Move);
-                return false;
+                break;
 
             case FsmAction.UnInit:
-                CurrentDirectionalType = null;
-                Destroyed = false;
-                HitPoints = 1;
-                ProcessMessage(this, Message.Destroy);
+                // Do nothing
                 break;
         }
 
         return true;
     }
 
-    // FUN_0803a2fc
-    private bool FUN_10011270(FsmAction action)
+    private bool Fsm_Shake(FsmAction action)
     {
-        throw new NotImplementedException();
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Shake;
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckDeath())
+                    return false;
+
+                // Play sound for helicopter bombs
+                if ((ActorType)Type == ActorType.HelicopterBomb)
+                {
+                    if (SoundDelay != 0)
+                    {
+                        SoundDelay--;
+                    }
+                    else if (AnimatedObject.IsFramed && (GameInfo.ActorSoundFlags & ActorSoundFlags.FlyingBomb) == 0)
+                    {
+                        if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__BombFly_Mix03))
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BombFly_Mix03);
+
+                        SoundDelay = 60;
+                    }
+
+                    if (AnimatedObject.IsFramed)
+                        GameInfo.ActorSoundFlags |= ActorSoundFlags.FlyingBomb;
+                }
+
+                if (Scene.IsDetectedMainActor(this))
+                {
+                    State.MoveTo(Fsm_Attack);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_Attack(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                ActionId = Action.Attack;
+                ChangeAction();
+
+                Vector2 dist = Scene.MainActor.Position - Position;
+
+                Vector2 speed = Math.Abs(dist.Y) < Math.Abs(dist.X) 
+                    ? new Vector2(2, 1) 
+                    : new Vector2(1, 2);
+
+                if (dist.X < 0)
+                    speed.X = -speed.X;
+
+                if (dist.Y < 0)
+                    speed.Y = -speed.Y;
+                
+                MechModel.Speed = speed;
+
+                if ((ActorType)Type == ActorType.SpikyBomb)
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Laser4_Mix01);
+                break;
+
+            case FsmAction.Step:
+                if (!FsmStep_CheckDeath())
+                    return false;
+
+                // Play sound for helicopter bombs
+                if ((ActorType)Type == ActorType.HelicopterBomb)
+                {
+                    if (SoundDelay != 0)
+                    {
+                        SoundDelay--;
+                    }
+                    else if (AnimatedObject.IsFramed && (GameInfo.ActorSoundFlags & ActorSoundFlags.FlyingBomb) == 0)
+                    {
+                        if (SoundEventsManager.IsSongPlaying(Rayman3SoundEvent.Play__BombFly_Mix03))
+                            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BombFly_Mix03);
+
+                        SoundDelay = 60;
+                    }
+
+                    if (AnimatedObject.IsFramed)
+                        GameInfo.ActorSoundFlags |= ActorSoundFlags.FlyingBomb;
+                }
+
+                // Damage main actor
+                if (Scene.IsHitMainActor(this))
+                {
+                    Scene.MainActor.ReceiveDamage(AttackPoints);
+                    Destroyed = true;
+                    Scene.MainActor.ProcessMessage(this, Message.Damaged);
+                }
+
+                if (Destroyed || HitWall())
+                {
+                    State.MoveTo(Fsm_Destroyed);
+                    return false;
+                }
+                break;
+
+            case FsmAction.UnInit:
+                // Do nothing
+                break;
+        }
+
+        return true;
     }
 
     private bool Fsm_Stationary(FsmAction action)
@@ -196,6 +300,41 @@ public partial class FlyingBomb
 
             case FsmAction.UnInit:
                 // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_Destroyed(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                // Do nothing
+                break;
+
+            case FsmAction.Step:
+                Explosion explosion = Scene.CreateProjectile<Explosion>(ActorType.Explosion);
+
+                if (AnimatedObject.IsFramed)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__BangGen1_Mix07);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Stop__BombFly_Mix03);
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__BangGen1_Mix07);
+                }
+
+                if (explosion != null)
+                    explosion.Position = Position;
+
+                State.MoveTo(Fsm_Move);
+                return false;
+
+            case FsmAction.UnInit:
+                CurrentDirectionalType = null;
+                Destroyed = false;
+                HitPoints = 1;
+                ProcessMessage(this, Message.Destroy);
                 break;
         }
 

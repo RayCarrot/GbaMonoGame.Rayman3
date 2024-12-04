@@ -253,7 +253,7 @@
 | MechanicalPlatform     | 🟩     |                                              |
 | Urchin                 | 🟩     |                                              |
 | Arrive                 | 🟩     |                                              |
-| SpikyBomb              | 🟨     |                                              |
+| SpikyBomb              | 🟩     |                                              |
 | RaymanWorldMap         | 🟩     |                                              |
 | #104                   | 🟥     |                                              |
 | #105                   | 🟥     |                                              |

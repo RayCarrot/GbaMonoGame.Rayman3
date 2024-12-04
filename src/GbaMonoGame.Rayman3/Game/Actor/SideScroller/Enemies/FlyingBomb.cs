@@ -28,9 +28,9 @@ public sealed partial class FlyingBomb : MovableActor
             }
         }
 
-        if (firstActionId == Action.Action_4)
+        if (firstActionId == Action.Wait)
         {
-            State.SetTo(FUN_10011270);
+            State.SetTo(Fsm_Wait);
         }
         else if (firstActionId == Action.Stationary)
         {
