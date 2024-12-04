@@ -65,6 +65,7 @@ public static class Gfx
 
     public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
     public static void AddBackSprite(Sprite sprite) => BackSprites.Add(sprite);
+    public static IEnumerable<Sprite> GetSprites() => Sprites;
     public static void ClearSprites()
     {
         Sprites.Clear();
