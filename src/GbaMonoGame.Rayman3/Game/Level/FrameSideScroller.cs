@@ -220,6 +220,14 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
             GameTime.Pause();
             CurrentStepAction = Fog != null ? Step_Pause_DisableFog : Step_Pause_Init;
         }
+
+        // TODO: Only allow this if in debug mode
+        // NOTE: These cheats are not included in the retail versions of the games
+        if (JoyPad.IsButtonJustPressed(GbaInput.Select) && JoyPad.IsButtonPressed(GbaInput.L))
+            Scene.MainActor.ProcessMessage(this, Message.Main_LevelEnd);
+
+        if (JoyPad.IsButtonJustPressed(GbaInput.Select) && JoyPad.IsButtonPressed(GbaInput.R))
+            GameInfo.EnableCheat(Scene, Cheat.Invulnerable);
     }
 
     public void Step_Pause_DisableFog()
