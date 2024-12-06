@@ -192,6 +192,15 @@ public class Intro : Frame, IHasPlayfield
             SoundEventsManager.SetVolumeForType(SoundType.Music, GameTime.ElapsedFrames * 2);
 
         CurrentStepAction();
+
+        // TODO: Only allow this if in debug mode
+        // NOTE: This cheat is not included in the retail versions of the games
+        if (JoyPad.IsButtonJustPressed(GbaInput.L))
+        {
+            FrameManager.SetNextFrame(new LevelSelect());
+            Localization.SetLanguage(0);
+            Random.SetSeed(GameTime.ElapsedFrames);
+        }
     }
 
     #endregion

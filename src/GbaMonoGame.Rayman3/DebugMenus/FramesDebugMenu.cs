@@ -13,6 +13,7 @@ public class FramesDebugMenu : DebugMenu
         new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
         new("GameCubeMenu", () => new GameCubeMenu()),
         new("Game Over", () => new GameOver()),
+        new("Level Select", () => new LevelSelect()),
         new("Story", null, new FrameMenuItem[]
         {
             new("NGage Splash Screens", () => new NGageSplashScreensAct()),

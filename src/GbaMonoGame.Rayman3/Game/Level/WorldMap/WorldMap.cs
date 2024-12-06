@@ -646,6 +646,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
         // NOTE: The original game hides the background and sprites by setting all palette colors to fully black. Since
         //       we can't do that here the easiest seems to be to just remove all screens, dialogs and pending sprites.
+        Gfx.ClearColor = Color.Black;
         Gfx.ClearScreens();
         while (Scene.Dialogs.Count > 0)
             Scene.RemoveLastDialog();
