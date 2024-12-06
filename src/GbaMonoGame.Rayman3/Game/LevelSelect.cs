@@ -450,7 +450,7 @@ public class LevelSelect : Frame
             if (SelectedSaveSlotIndex < 0)
                 SelectedSaveSlotIndex = 2;
             
-            Rows[0].Text = $"Slot #{SelectedSaveSlotIndex}";
+            Rows[0].Text = $"Slot #{SelectedSaveSlotIndex + 1}";
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.Right))
         {
@@ -459,7 +459,7 @@ public class LevelSelect : Frame
             if (SelectedSaveSlotIndex > 2)
                 SelectedSaveSlotIndex = 0;
 
-            Rows[0].Text = $"Slot #{SelectedSaveSlotIndex}";
+            Rows[0].Text = $"Slot #{SelectedSaveSlotIndex + 1}";
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {
