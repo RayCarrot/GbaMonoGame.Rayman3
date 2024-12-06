@@ -6,6 +6,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
+// Original name: InGameDlg
 public partial class TextBoxDialog : Dialog
 {
     #region Constructor

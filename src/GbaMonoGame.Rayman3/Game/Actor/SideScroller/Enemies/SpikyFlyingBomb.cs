@@ -4,7 +4,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// BombePiquante
+// Original name: BombePiquante
 public sealed partial class SpikyFlyingBomb : MovableActor
 {
     public SpikyFlyingBomb(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

@@ -4,7 +4,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// SacPieux
+// Original name: SacPieux
 public sealed partial class SpikyBag : InteractableActor
 {
     public SpikyBag(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

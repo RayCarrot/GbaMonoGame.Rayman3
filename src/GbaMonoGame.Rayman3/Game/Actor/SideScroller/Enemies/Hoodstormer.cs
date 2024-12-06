@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// CagoulardVolant
+// Original name: CagoulardVolant
 public sealed partial class Hoodstormer : MovableActor
 {
     public Hoodstormer(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene,

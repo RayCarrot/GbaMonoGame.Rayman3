@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// PetitsEtres
+// Original name: PetitsEtres
 public sealed partial class Teensies : ActionActor
 {
     public Teensies(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

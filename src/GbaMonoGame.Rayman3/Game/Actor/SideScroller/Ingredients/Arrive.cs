@@ -2,6 +2,7 @@
 
 namespace GbaMonoGame.Rayman3;
 
+// Original name: Arrivee
 public sealed partial class Arrive : ActionActor
 {
     public Arrive(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

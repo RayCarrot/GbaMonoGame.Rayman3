@@ -8,6 +8,7 @@ using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
 
+// Original name: Cheat
 public class LevelSelect : Frame
 {
     #region Constructor
@@ -207,11 +208,11 @@ public class LevelSelect : Frame
         Rows[1].Text = "Level :";
         Rows[2].Text = "Unlock Lums: true";
         Rows[3].Text = "Unlock Cages: true";
-        UpdateSelectStartingLevelText();
+        SetMapText();
         CurrentStepAction = Step_SelectStartingLevel;
     }
 
-    private void UpdateSelectStartingLevelText()
+    private void SetMapText()
     {
         Rows[0].Text = WorldNames[SelectedWorldIndex];
 
@@ -550,7 +551,7 @@ public class LevelSelect : Frame
                     break;
             }
 
-            UpdateSelectStartingLevelText();
+            SetMapText();
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.Right))
         {
@@ -578,7 +579,7 @@ public class LevelSelect : Frame
                     break;
             }
 
-            UpdateSelectStartingLevelText();
+            SetMapText();
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {

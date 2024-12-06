@@ -4,7 +4,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// CagoulardDeux
+// Original name: CagoulardDeux
 public sealed partial class MetalShieldedHoodboom : InteractableActor
 {
     public MetalShieldedHoodboom(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene,

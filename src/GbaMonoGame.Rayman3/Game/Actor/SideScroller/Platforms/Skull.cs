@@ -2,7 +2,7 @@
 
 namespace GbaMonoGame.Rayman3;
 
-// Crane
+// Original name: Crane
 public sealed partial class Skull : MovableActor
 {
     public Skull(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

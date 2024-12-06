@@ -6,6 +6,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
+// Original name: Murphy
 public sealed partial class Murfy : MovableActor
 {
     public Murfy(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

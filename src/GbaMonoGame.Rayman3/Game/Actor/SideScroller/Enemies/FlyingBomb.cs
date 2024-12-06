@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// BombeVolante
+// Original name: BombeVolante
 public sealed partial class FlyingBomb : MovableActor
 {
     public FlyingBomb(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene, actorResource)

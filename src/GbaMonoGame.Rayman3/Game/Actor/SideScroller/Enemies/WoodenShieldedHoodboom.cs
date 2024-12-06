@@ -3,7 +3,7 @@ using GbaMonoGame.Engine2d;
 
 namespace GbaMonoGame.Rayman3;
 
-// CagoulardBouclier
+// Original name: CagoulardBouclier
 public sealed partial class WoodenShieldedHoodboom : InteractableActor
 {
     public WoodenShieldedHoodboom(int instanceId, Scene2D scene, ActorResource actorResource) : base(instanceId, scene,
