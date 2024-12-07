@@ -23,8 +23,8 @@ public class TgxTileLayer : TgxGameLayer
             Priority = 3 - LayerId,
             Wrap = true,
             Is8Bit = Resource.Is8Bit,
-            IsAlphaBlendEnabled = Resource.HasAlphaBlending,
-            GbaAlpha = Resource.AlphaCoeff,
+            IsAlphaBlendEnabled = Resource.HasAlphaBlending, // TODO: We also need to update TransitionsFX, see Beneath map 1
+            Alpha = Resource.AlphaCoeff,
         };
 
         Gfx.AddScreen(Screen);
