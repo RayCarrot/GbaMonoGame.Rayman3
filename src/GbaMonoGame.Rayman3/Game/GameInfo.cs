@@ -1,6 +1,7 @@
 ﻿using System;
 using BinarySerializer;
 using BinarySerializer.Nintendo.GBA;
+using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 
 namespace GbaMonoGame.Rayman3;
@@ -93,11 +94,21 @@ public static class GameInfo
 
         if (!context.FileExists(saveFile))
         {
-            EEPROMEncoder encoder = new(0x200);
-            context.AddFile(new EncodedLinearFile(context, saveFile, encoder)
+            if (Engine.Settings.Platform == Platform.GBA)
             {
-                IgnoreCacheOnRead = true
-            });
+                EEPROMEncoder encoder = new(0x200);
+                context.AddFile(new EncodedLinearFile(context, saveFile, encoder)
+                {
+                    IgnoreCacheOnRead = true
+                });
+            }
+            else
+            {
+                context.AddFile(new LinearFile(context, saveFile)
+                {
+                    IgnoreCacheOnRead = true
+                });
+            }
         }
 
         if (((PhysicalFile)context.GetRequiredFile(saveFile)).SourceFileExists)

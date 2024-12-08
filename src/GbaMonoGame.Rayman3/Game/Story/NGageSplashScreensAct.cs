@@ -14,7 +14,7 @@ public class NGageSplashScreensAct : Act
 
     public override void Init()
     {
-        // NOTE: The N-Gage version loads the save file here and sets the language based on what appears to be the system language
+        // TODO: Load settings from save file (volume and language)
         Init(Engine.Loader.Rayman3_NGageSplashScreens);
         IsAutomatic = true;
     }
