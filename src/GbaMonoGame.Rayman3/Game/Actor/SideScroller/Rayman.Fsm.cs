@@ -434,7 +434,7 @@ public partial class Rayman
                 if (ActionId is Action.Idle_SpinBody_Right or Action.Idle_SpinBody_Left)
                     PlaySound(Rayman3SoundEvent.Stop__RaySpin_Mix06);
 
-                if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
+                if (ActionId == NextActionId || ActionId is Action.Walk_Right or Action.Walk_Left or Action.WalkFast_Right or Action.WalkFast_Left)
                     NextActionId = null;
 
                 if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
@@ -589,7 +589,22 @@ public partial class Rayman
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                        int winnerId = userInfo.GetWinnerId();
+
+                        if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                            (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                            (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && MultiplayerData.field_00 == null))
+                        {
+                            ActionId = IsFacingRight ? Action.WalkFast_Right : Action.WalkFast_Left;
+                        }
+                        else
+                        {
+                            ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                        }
+
+                        if (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag)
+                            MultiplayerData.field_b9 = 1;
                     }
                 }
 
@@ -723,7 +738,27 @@ public partial class Rayman
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        if (ActionId is not (
+                            Action.Walk_Right or Action.Walk_Left or
+                            Action.WalkFast_Right or Action.WalkFast_Left))
+                        {
+                            UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                            int winnerId = userInfo.GetWinnerId();
+
+                            if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                                (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                                (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && MultiplayerData.field_00 == null))
+                            {
+                                ActionId = IsFacingRight ? Action.WalkFast_Right : Action.WalkFast_Left;
+                            }
+                            else
+                            {
+                                ActionId = IsFacingRight ? Action.Walk_Right : Action.Walk_Left;
+                            }
+
+                            if (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag)
+                                MultiplayerData.field_b9 = 1;
+                        }
                     }
                 }
 
@@ -731,7 +766,7 @@ public partial class Rayman
                 if (IsDirectionalButtonButtonReleased(GbaInput.Left) && IsDirectionalButtonButtonReleased(GbaInput.Right) &&
                     ActionId is
                         Action.Walk_Right or Action.Walk_Left or
-                        Action.Walk_Multiplayer_Right or Action.Walk_Multiplayer_Left)
+                        Action.WalkFast_Right or Action.WalkFast_Left)
                 {
                     State.MoveTo(Fsm_Default);
                     return false;
@@ -2145,7 +2180,6 @@ public partial class Rayman
                     return false;
                 }
 
-                // TODO: Why is this not on GBA?
                 if (Engine.Settings.Platform == Platform.NGage &&
                     ActionId is Action.Damage_Shock_Right or Action.Damage_Shock_Left)
                 {
@@ -2449,7 +2483,20 @@ public partial class Rayman
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                            int winnerId = userInfo.GetWinnerId();
+
+                            if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                                (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                                // NOTE: This appears to be a bug/oversight - winnerId is always -1 for capture the flag
+                                (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && InstanceId != winnerId))
+                            {
+                                MechModel.Speed = MechModel.Speed with { X = -2f };
+                            }
+                            else
+                            {
+                                MechModel.Speed = MechModel.Speed with { X = -1.5f };
+                            }
                         }
                     }
                     else if (Timer > 50 && !RSMultiplayer.IsActive)
@@ -2474,7 +2521,20 @@ public partial class Rayman
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                            int winnerId = userInfo.GetWinnerId();
+
+                            if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                                (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                                // NOTE: This appears to be a bug/oversight - winnerId is always -1 for capture the flag
+                                (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && InstanceId != winnerId))
+                            {
+                                MechModel.Speed = MechModel.Speed with { X = 2f };
+                            }
+                            else
+                            {
+                                MechModel.Speed = MechModel.Speed with { X = 1.5f };
+                            }
                         }
                     }
                     else if (Timer > 50 && !RSMultiplayer.IsActive)
@@ -2500,7 +2560,20 @@ public partial class Rayman
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                        int winnerId = userInfo.GetWinnerId();
+
+                        if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                            (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                            // NOTE: This appears to be a bug/oversight - winnerId is always -1 for capture the flag
+                            (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && InstanceId != winnerId))
+                        {
+                            MechModel.Speed = MechModel.Speed with { Y = -2f };
+                        }
+                        else
+                        {
+                            MechModel.Speed = MechModel.Speed with { Y = -1.5f };
+                        }
                     }
 
                     if (ActionId is not (Action.Climb_Up_Right or Action.Climb_Up_Left))
@@ -2517,7 +2590,20 @@ public partial class Rayman
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+                        int winnerId = userInfo.GetWinnerId();
+
+                        if ((MultiplayerInfo.GameType == MultiplayerGameType.RayTag && InstanceId == winnerId) ||
+                            (MultiplayerInfo.GameType == MultiplayerGameType.CatAndMouse && InstanceId != winnerId) ||
+                            // NOTE: This appears to be a bug/oversight - winnerId is always -1 for capture the flag
+                            (Engine.Settings.Platform == Platform.NGage && MultiplayerInfo.GameType == MultiplayerGameType.CaptureTheFlag && InstanceId != winnerId))
+                        {
+                            MechModel.Speed = MechModel.Speed with { Y = 2f };
+                        }
+                        else
+                        {
+                            MechModel.Speed = MechModel.Speed with { Y = 1.5f };
+                        }
                     }
 
                     if (ActionId is not (Action.Climb_Down_Right or Action.Climb_Down_Left))
@@ -3749,8 +3835,9 @@ public partial class Rayman
                             ((World)Frame.Current).InitExiting();
                             break;
 
+                        // NOTE: This is unused - the Rayman actor does not appear in the worldmap
                         case MapId.WorldMap:
-                            // TODO: Implement
+                            ((WorldMap)Frame.Current).TransitionsFX.FadeOutInit(1 / 16f);
                             break;
 
                         default:
@@ -4003,11 +4090,11 @@ public partial class Rayman
                     return false;
                 }
 
-                // TODO: Implement
-                //if (HitPoints != 0 && CheckInput2(GbaInput.L) && IsOnWallJumpable())
-                //{
-
-                //}
+                if (HitPoints != 0 && MultiJoyPad.IsButtonPressed(InstanceId, GbaInput.L) && IsOnWallJumpable())
+                {
+                    BeginWallJump();
+                    State.MoveTo(Fsm_WallJumpIdle);
+                }
                 break;
 
             case FsmAction.UnInit:
@@ -4081,6 +4168,34 @@ public partial class Rayman
 
             case FsmAction.UnInit:
                 // Do nothing
+                break;
+        }
+
+        return true;
+    }
+
+    private bool Fsm_MultiplayerDying(FsmAction action)
+    {
+        switch (action)
+        {
+            case FsmAction.Init:
+                UserInfoMulti2D userInfo = ((FrameMultiSideScroller)Frame.Current).UserInfo;
+
+                if (userInfo.GetTime(InstanceId) != 0)
+                    userInfo.RemoveTime(InstanceId, 10);
+
+                PlaySound(Rayman3SoundEvent.Play__RaDeath_Mix03);
+
+                ActionId = IsFacingRight ? Action.Dying_Right : Action.Dying_Left;
+                NextActionId = null;
+                break;
+
+            case FsmAction.Step:
+                throw new NotImplementedException();
+                break;
+
+            case FsmAction.UnInit:
+                throw new NotImplementedException();
                 break;
         }
 
@@ -4282,7 +4397,6 @@ public partial class Rayman
     }
 
     // TODO: Implement all of these
-    private bool Fsm_MultiplayerDying(FsmAction action) => true;
     private bool FUN_080224f4(FsmAction action) => true;
     private bool FUN_1005dea0(FsmAction action) => true;
     private bool FUN_1005dfa4(FsmAction action) => true;
