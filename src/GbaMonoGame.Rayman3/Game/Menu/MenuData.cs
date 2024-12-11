@@ -20,6 +20,7 @@ public class MenuData
         AnimatedObjectResource multiplayerTypeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeAnimations);
         AnimatedObjectResource multiplayerTypeFrameAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeFrameAnimations);
         AnimatedObjectResource multiplayerTypeIconAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeIconAnimations);
+        AnimatedObjectResource multiplayerMapAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerMapAnimations);
         AnimatedObjectResource steamAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSteamAnimations);
 
         Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
@@ -337,10 +338,32 @@ public class MenuData
             CurrentAnimation = 0
         };
 
-        // TODO: Load data
-        // field_0x668
-        // field_0x690
-        // field_0x6a8
+        MultiplayerMapSelection = new AnimatedObject(multiplayerMapAnimations, multiplayerMapAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 3,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(120, 82),
+            CurrentAnimation = 0
+        };
+
+        MultiplayerMapName1 = new SpriteTextObject()
+        {
+            BgPriority = 3,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(80, 56),
+            FontSize = FontSize.Font16,
+            Color = TextColor.Menu,
+        };
+
+        MultiplayerMapName2 = new SpriteTextObject()
+        {
+            BgPriority = 3,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(70, 96),
+            FontSize = FontSize.Font16,
+            Color = TextColor.Menu,
+        };
 
         MultiplayerSinglePakPlayers = new AnimatedObject(multiplayerPlayersAnimations, multiplayerPlayersAnimations.IsDynamic)
         {
@@ -385,5 +408,8 @@ public class MenuData
     public AnimatedObject MultiplayerTypeLeftArrow { get; set; }
     public AnimatedObject MultiplayerTypeRightArrow { get; set; }
     public AnimatedObject MultiplayerTypeIcon { get; set; }
+    public AnimatedObject MultiplayerMapSelection { get; set; }
+    public SpriteTextObject MultiplayerMapName1 { get; set; }
+    public SpriteTextObject MultiplayerMapName2 { get; set; }
     public AnimatedObject MultiplayerSinglePakPlayers { get; }
 }

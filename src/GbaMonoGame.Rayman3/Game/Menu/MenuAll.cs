@@ -48,7 +48,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         ReturningFromMultiplayerGame = false;
         Slots = new Slot[3];
         HasLoadedGameInfo = false;
-        IsLoadingSlot = false;
+        IsStartingGame = false;
         InitialPage = initialPage;
         PreviousMultiplayerText = 0;
     }
@@ -82,6 +82,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     private bool HasLoadedGameInfo { get; set; }
     private Slot[] Slots { get; }
+    private bool IsStartingGame { get; set; }
 
     private bool FinishedLyChallenge1 { get; set; }
     private bool FinishedLyChallenge2 { get; set; }

@@ -9,8 +9,6 @@ public partial class MenuAll
 {
     #region Private Properties
 
-    private bool IsLoadingSlot { get; set; }
-
     private byte StartEraseCursorTargetIndex { get; set; }
     private byte StartEraseCursorCurrentIndex { get; set; }
     private byte EraseSaveStage { get; set; }
@@ -141,7 +139,7 @@ public partial class MenuAll
         switch (EraseSaveStage)
         {
             case 0:
-                if (IsLoadingSlot)
+                if (IsStartingGame)
                 {
                     if (TransitionsFX.IsFadeOutFinished)
                     {
@@ -164,7 +162,7 @@ public partial class MenuAll
                         Gfx.Fade = 1;
 
                         GameInfo.CurrentSlot = SelectedOption;
-                        IsLoadingSlot = false;
+                        IsStartingGame = false;
                     }
                 }
                 // Move start/erase to start
@@ -315,7 +313,7 @@ public partial class MenuAll
                 break;
         }
 
-        if (JoyPad.IsButtonJustPressed(GbaInput.B) && TransitionsFX.IsFadeOutFinished && !IsLoadingSlot)
+        if (JoyPad.IsButtonJustPressed(GbaInput.B) && TransitionsFX.IsFadeOutFinished && !IsStartingGame)
         {
             if (EraseSaveStage == 0)
             {
@@ -364,14 +362,14 @@ public partial class MenuAll
         AnimationPlayer.Play(Data.StartEraseSelection);
         AnimationPlayer.Play(Data.StartEraseCursor);
 
-        if (!IsLoadingSlot && Data.Cursor.CurrentAnimation == 16 && Data.Cursor.EndOfAnimation)
+        if (!IsStartingGame && Data.Cursor.CurrentAnimation == 16 && Data.Cursor.EndOfAnimation)
         {
             Data.Cursor.CurrentAnimation = 0;
 
             if (StartEraseCursorTargetIndex == 0)
             {
                 SoundEventsManager.ReplaceAllSongs(Rayman3SoundEvent.None, 1);
-                IsLoadingSlot = true;
+                IsStartingGame = true;
                 TransitionsFX.FadeOutInit(2 / 16f);
             }
         }

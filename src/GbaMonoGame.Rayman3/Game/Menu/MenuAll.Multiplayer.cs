@@ -25,6 +25,7 @@ public partial class MenuAll
     private byte MultiplayerConnectionTimer { get; set; }
     private byte MultiplayerLostConnectionTimer { get; set; }
     private uint LastConnectionTime { get; set; }
+    private byte MultiplayerMapHighlightValue { get; set; }
     private bool field_0x80 { get; set; } // TODO: Name
     private MultiplayerGameType MultiplayerGameType { get; set; }
     private int MultiplayerMapId { get; set; }
@@ -103,6 +104,44 @@ public partial class MenuAll
         }
 
         IsMultiplayerConnected = true;
+    }
+
+    private void AnimateSelectedMultiplayerMapPalette()
+    {
+        // TODO: Implement
+    }
+
+    private void StartMultiplayerGame()
+    {
+        MultiplayerInfo.MapId = MultiplayerMapId;
+        Random.SetSeed(MultiplayerInfo.InitialGameTime);
+
+        switch (MultiplayerGameType)
+        {
+            case MultiplayerGameType.RayTag:
+                MultiplayerInfo.SetGameType(MultiplayerGameType.RayTag);
+
+                if (MultiplayerMapId == 0)
+                    FrameManager.SetNextFrame(new FrameMultiTag(MapId.GbaMulti_RayTag1));
+                else if (MultiplayerMapId == 1)
+                    FrameManager.SetNextFrame(new FrameMultiTag(MapId.GbaMulti_RayTag2));
+                break;
+
+            case MultiplayerGameType.CatAndMouse:
+                MultiplayerInfo.SetGameType(MultiplayerGameType.CatAndMouse);
+
+                if (MultiplayerMapId == 0)
+                    FrameManager.SetNextFrame(new FrameMultiCatAndMouse(MapId.GbaMulti_CatAndMouse1));
+                else if (MultiplayerMapId == 1)
+                    FrameManager.SetNextFrame(new FrameMultiCatAndMouse(MapId.GbaMulti_CatAndMouse2));
+                break;
+
+            case MultiplayerGameType.Missile:
+                MultiplayerInfo.SetGameType(MultiplayerGameType.Missile);
+
+                throw new NotImplementedException("Not implemented loading multiplayer missile maps");
+                break;
+        }
     }
 
     #endregion
@@ -696,7 +735,7 @@ public partial class MenuAll
                 else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.A))
                 {
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
-                    //NextStepAction = FUN_08008ee8; // TODO: Implement
+                    NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakMapSelection;
                     CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakTypeSelection;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
                 }
@@ -744,7 +783,224 @@ public partial class MenuAll
 
     private void Step_TransitionOutOfMultiplayerMultiPakTypeSelection()
     {
+        TransitionValue += 4;
 
+        if (TransitionValue <= 160)
+        {
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, -4);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = NextStepAction;
+        }
+
+        MultiplayerPlayersOffsetY += 4;
+
+        if (MultiplayerPlayersOffsetY > 112)
+            MultiplayerPlayersOffsetY = 112;
+
+        Data.MultiplayerTypeFrame.ScreenPos = Data.MultiplayerTypeFrame.ScreenPos with { Y = 35 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { Y = 50 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { Y = 50 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeIcon.ScreenPos = Data.MultiplayerTypeIcon.ScreenPos with { Y = 24 - MultiplayerPlayersOffsetY };
+
+        AnimationPlayer.Play(Data.MultiplayerTypeName);
+
+        Data.MultiplayerTypeFrame.FrameChannelSprite();
+        AnimationPlayer.Play(Data.MultiplayerTypeFrame);
+
+        if (MultiplayerGameType == MultiplayerGameType.RayTag)
+            Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 300 };
+        else
+            Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 100 };
+
+        if (MultiplayerGameType == MultiplayerGameType.Missile)
+            Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 300 };
+        else
+            Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 184 };
+
+        AnimationPlayer.Play(Data.MultiplayerTypeLeftArrow);
+        AnimationPlayer.Play(Data.MultiplayerTypeRightArrow);
+        AnimationPlayer.Play(Data.MultiplayerTypeIcon);
+    }
+
+    #endregion
+
+    #region Multi Pak Map Selection Steps
+
+    private void Step_InitializeTransitionToMultiplayerMultiPakMapSelection()
+    {
+        MultiplayerMapId = 0;
+
+        Data.MultiplayerMapSelection.CurrentAnimation = (int)MultiplayerGameType;
+
+        Data.MultiplayerMapName1.Text = Localization.GetText(11, 9 + (int)MultiplayerGameType * 2)[0];
+        Data.MultiplayerMapName1.ScreenPos = new Vector2(
+            x: Engine.ScreenCamera.Resolution.X / 2 - Data.MultiplayerMapName1.GetStringWidth() / 2f,
+            y: 56);
+
+        Data.MultiplayerMapName2.Text = Localization.GetText(11, 10 + (int)MultiplayerGameType * 2)[0];
+        Data.MultiplayerMapName2.ScreenPos = new Vector2(
+            x: Engine.ScreenCamera.Resolution.X / 2 - Data.MultiplayerMapName1.GetStringWidth() / 2f,
+            y: 96);
+
+        CurrentStepAction = Step_TransitionToMultiplayerMultiPakMapSelection;
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
+        SetBackgroundPalette(2);
+        MultiplayerPlayersOffsetY = 112;
+        ResetStem();
+        MultiplayerMapHighlightValue = 0;
+
+        if ((MultiplayerGameType == MultiplayerGameType.RayTag && !FinishedLyChallenge1) ||
+            (MultiplayerGameType == MultiplayerGameType.CatAndMouse && !FinishedLyChallenge2) ||
+            (MultiplayerGameType == MultiplayerGameType.Missile && !HasAllCages))
+        {
+            // TODO: Remove second option
+        }
+    }
+
+    private void Step_TransitionToMultiplayerMultiPakMapSelection()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 80)
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, 8);
+
+        if (TransitionValue >= 160)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = Step_MultiplayerMultiPakMapSelection;
+            GameTime.Resume();
+        }
+
+        MultiplayerPlayersOffsetY -= 4;
+
+        if (MultiplayerPlayersOffsetY < 0)
+            MultiplayerPlayersOffsetY = 0;
+
+        AnimateSelectedMultiplayerMapPalette();
+
+        Data.MultiplayerMapSelection.FrameChannelSprite();
+
+        AnimationPlayer.Play(Data.MultiplayerMapSelection);
+        AnimationPlayer.Play(Data.MultiplayerMapName1);
+        AnimationPlayer.Play(Data.MultiplayerMapName2);
+    }
+
+    private void Step_MultiplayerMultiPakMapSelection()
+    {
+        MubState state = MultiplayerManager.Step();
+
+        if (state == MubState.Connected)
+        {
+            if (MultiplayerManager.HasReadJoyPads())
+            {
+                GameTime.Resume();
+
+                if (IsStartingGame)
+                {
+                    if (TransitionsFX.IsFadeOutFinished)
+                    {
+                        StartMultiplayerGame();
+                        IsStartingGame = false;
+                    }
+                }
+                else
+                {
+                    if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.Up) && StemMode == 2)
+                    {
+                        if (MultiplayerMapId == 1)
+                        {
+                            MultiplayerMapId = 0;
+                            Data.MultiplayerMapSelection.CurrentAnimation = (int)MultiplayerGameType;
+                            SelectOption(0, true);
+                        }
+                    }
+                    else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.Down) && StemMode == 2)
+                    {
+                        if ((MultiplayerGameType == MultiplayerGameType.RayTag && FinishedLyChallenge1) ||
+                            (MultiplayerGameType == MultiplayerGameType.CatAndMouse && FinishedLyChallenge2) ||
+                            (MultiplayerGameType == MultiplayerGameType.Missile && HasAllCages))
+                        {
+                            if (MultiplayerMapId == 0)
+                            {
+                                MultiplayerMapId = 1;
+                                Data.MultiplayerMapSelection.CurrentAnimation = 3 + (int)MultiplayerGameType;
+                                SelectOption(2, true);
+                            }
+                        }
+                    }
+                    else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.A))
+                    {
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
+                        SoundEventsManager.ReplaceAllSongs(-1, 1);
+                        IsStartingGame = true;
+                        MultiplayerManager.FUN_080ae49c();
+                        Gfx.FadeControl = new FadeControl(FadeMode.None);
+                        TransitionsFX.FadeOutInit(4 / 16f);
+                    }
+                    else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.B))
+                    {
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
+                        NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakTypeSelection;
+                        CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakMapSelection;
+                        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+                        TransitionOutCursorAndStem();
+                    }
+                }
+
+                MultiplayerManager.InvalidateCurrentFrameInputs();
+            }
+            else
+            {
+                GameTime.Pause();
+            }
+
+            AnimateSelectedMultiplayerMapPalette();
+
+            Data.MultiplayerMapSelection.FrameChannelSprite();
+
+            AnimationPlayer.Play(Data.MultiplayerMapSelection);
+            AnimationPlayer.Play(Data.MultiplayerMapName1);
+            AnimationPlayer.Play(Data.MultiplayerMapName2);
+        }
+        else
+        {
+            NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+            CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakMapSelection;
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+            TransitionOutCursorAndStem();
+        }
+    }
+
+    private void Step_TransitionOutOfMultiplayerMultiPakMapSelection()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 160)
+        {
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, -4);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = NextStepAction;
+            Gfx.FadeControl = new FadeControl(FadeMode.None);
+        }
+
+        MultiplayerPlayersOffsetY += 4;
+
+        if (MultiplayerPlayersOffsetY > 112)
+            MultiplayerPlayersOffsetY = 112;
+
+        AnimateSelectedMultiplayerMapPalette();
+
+        Data.MultiplayerMapSelection.FrameChannelSprite();
+
+        AnimationPlayer.Play(Data.MultiplayerMapSelection);
+        AnimationPlayer.Play(Data.MultiplayerMapName1);
+        AnimationPlayer.Play(Data.MultiplayerMapName2);
     }
 
     #endregion

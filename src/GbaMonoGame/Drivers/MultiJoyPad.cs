@@ -74,18 +74,17 @@ public static class MultiJoyPad
         return JoyPads[machineId][MultiplayerManager.GetMachineTimer() % BufferedFramesCount];
     }
 
-    public static bool IsValid(int machineId, uint bufferIndex)
+    public static bool IsValid(int machineId, uint machineTimer)
     {
-        return ValidFlags[machineId][bufferIndex];
+        return ValidFlags[machineId][machineTimer % BufferedFramesCount];
     }
 
     public static uint? GetNextInvalidTime(int machineId, uint machineTimer)
     {
         for (int i = 0; i < BufferedFramesCount; i++)
         {
-            uint bufferIndex = (uint)((machineTimer + i) % BufferedFramesCount);
-            if (!IsValid(machineId, bufferIndex))
-                return bufferIndex;
+            if (!IsValid(machineId, (uint)(machineTimer + i)))
+                return (uint)((machineTimer + i) % BufferedFramesCount);
         }
 
         return null;
