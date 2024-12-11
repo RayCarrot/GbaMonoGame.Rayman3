@@ -18,6 +18,18 @@ public static class MultiplayerManager
         PlayersCount = RSMultiplayer.PlayersCount;
     }
 
+    public static MubState Step()
+    {
+        // TODO: Implement
+        return RSMultiplayer.MubState;
+    }
+
+    public static bool HasReadJoyPads()
+    {
+        // TODO: Implement
+        return true;
+    }
+
     public static void UpdateFromRSMultiplayer()
     {
         MachineId = RSMultiplayer.MachineId;

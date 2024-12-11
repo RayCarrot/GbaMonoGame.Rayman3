@@ -39,7 +39,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         MultiplayerLostConnectionTimer = 0;
         MultiplayerGameType = MultiplayerGameType.RayTag;
         MultiplayerMapId = 0;
-        field_0x80 = 0;
+        field_0x80 = false;
         IsLoadingMultiplayerMap = false;
         ShouldMultiplayerTextBlink = false;
         FinishedLyChallenge1 = false;

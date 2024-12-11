@@ -25,9 +25,9 @@ public partial class MenuAll
     private byte MultiplayerConnectionTimer { get; set; }
     private byte MultiplayerLostConnectionTimer { get; set; }
     private uint LastConnectionTime { get; set; }
-    private byte field_0x80 { get; set; } // TODO: Name
+    private bool field_0x80 { get; set; } // TODO: Name
     private MultiplayerGameType MultiplayerGameType { get; set; }
-    private MultiplayerGameType MultiplayerMapId { get; set; }
+    private int MultiplayerMapId { get; set; }
 
     private int SinglePakPlayersOffsetY { get; set; }
     private byte MultiplayerSinglePakConnectionTimer { get; set; }
@@ -90,10 +90,10 @@ public partial class MenuAll
                         FinishedLyChallenge2 = (packet & 0x400) != 0;
                         HasAllCages = (packet & 0x800) != 0;
 
-                        //NextStepAction = FUN_08008554; // TODO: Implement
+                        NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakTypeSelection;
                         CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakPlayerSelection;
                         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
-                        field_0x80 = 1;
+                        field_0x80 = true;
                         SelectOption(0, false);
                     }
                 }
@@ -196,7 +196,7 @@ public partial class MenuAll
 
     #endregion
 
-    #region Multi Pak Steps
+    #region Multi Pak Player Selection Steps
 
     private void Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection()
     {
@@ -491,10 +491,10 @@ public partial class MenuAll
                     MultiplayerInfo.InitialGameTime = trimmedGameTime;
                     MultiplayerManager.UpdateFromRSMultiplayer();
 
-                    //NextStepAction = FUN_08008554; // TODO: Implement
+                    NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakTypeSelection;
                     CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakPlayerSelection;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
-                    field_0x80 = 1;
+                    field_0x80 = true;
                     SelectOption(0, false);
                 }
                 else
@@ -570,7 +570,185 @@ public partial class MenuAll
 
     private void Step_TransitionOutOfMultiplayerMultiPakPlayerSelection()
     {
-        // TODO: Implement
+        TransitionValue += 4;
+
+        if (TransitionValue <= 160)
+        {
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, -4);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = NextStepAction;
+        }
+
+        if (MultiplayerPlayersOffsetY <= 70)
+            MultiplayerPlayersOffsetY += 4;
+        else
+            MultiplayerPlayersOffsetY = 70;
+
+        Data.MultiplayerPlayerSelection.ScreenPos = Data.MultiplayerPlayerSelection.ScreenPos with { Y = 40 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerPlayerNumberIcons.ScreenPos = Data.MultiplayerPlayerNumberIcons.ScreenPos with { Y = 22 - MultiplayerPlayersOffsetY };
+
+        foreach (AnimatedObject obj in Data.MultiplayerPlayerSelectionIcons)
+            obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerPlayersOffsetY };
+
+        AnimationPlayer.Play(Data.MultiplayerPlayerSelection);
+        AnimationPlayer.Play(Data.MultiplayerPlayerNumberIcons);
+
+        for (int i = 0; i < RSMultiplayer.PlayersCount; i++)
+            AnimationPlayer.Play(Data.MultiplayerPlayerSelectionIcons[i]);
+    }
+
+    #endregion
+
+    #region Multi Pak Type Selection Steps
+
+    private void Step_InitializeTransitionToMultiplayerMultiPakTypeSelection()
+    {
+        Data.MultiplayerTypeName.CurrentAnimation = (int)MultiplayerGameType + Localization.LanguageUiIndex * 3;
+        Data.MultiplayerTypeFrame.CurrentAnimation = 2;
+        Data.MultiplayerTypeLeftArrow.CurrentAnimation = 1;
+        Data.MultiplayerTypeRightArrow.CurrentAnimation = 0;
+        Data.MultiplayerTypeIcon.CurrentAnimation = (int)MultiplayerGameType;
+
+        CurrentStepAction = Step_TransitionToMultiplayerMultiPakTypeSelection;
+        SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
+        MultiplayerPlayersOffsetY = 112;
+        SetBackgroundPalette(0);
+    }
+
+    private void Step_TransitionToMultiplayerMultiPakTypeSelection()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 80)
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, 8);
+
+        if (TransitionValue >= 160)
+        {
+            TransitionValue = 0;
+            CurrentStepAction = Step_MultiplayerMultiPakTypeSelection;
+            GameTime.Resume();
+        }
+
+        MultiplayerPlayersOffsetY -= 4;
+
+        if (MultiplayerPlayersOffsetY < 0)
+            MultiplayerPlayersOffsetY = 0;
+
+        Data.MultiplayerTypeFrame.ScreenPos = Data.MultiplayerTypeFrame.ScreenPos with { Y = 35 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { Y = 50 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { Y = 50 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerTypeIcon.ScreenPos = Data.MultiplayerTypeIcon.ScreenPos with { Y = 24 - MultiplayerPlayersOffsetY };
+
+        if (TransitionValue == 152 && field_0x80)
+        {
+            // TODO: Disable for now to avoid freeze
+            //for (int id = 0; id < RSMultiplayer.PlayersCount; id++)
+            //{
+            //    while (RSMultiplayer.IsPacketPending(id))
+            //        RSMultiplayer.ReleasePacket(id);
+            //}
+
+            field_0x80 = false;
+        }
+
+        AnimationPlayer.Play(Data.MultiplayerTypeName);
+        
+        Data.MultiplayerTypeFrame.FrameChannelSprite();
+        AnimationPlayer.Play(Data.MultiplayerTypeFrame);
+
+        if (MultiplayerGameType == MultiplayerGameType.RayTag)
+            Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 300 };
+        else
+            Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 100 };
+
+        if (MultiplayerGameType == MultiplayerGameType.Missile)
+            Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 300 };
+        else
+            Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 184 };
+
+        AnimationPlayer.Play(Data.MultiplayerTypeLeftArrow);
+        AnimationPlayer.Play(Data.MultiplayerTypeRightArrow);
+        AnimationPlayer.Play(Data.MultiplayerTypeIcon);
+    }
+
+    private void Step_MultiplayerMultiPakTypeSelection()
+    {
+        MubState state = MultiplayerManager.Step();
+
+        if (state == MubState.Connected)
+        {
+            if (MultiplayerManager.HasReadJoyPads())
+            {
+                GameTime.Resume();
+
+                if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.Left) && MultiplayerGameType != MultiplayerGameType.RayTag)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    MultiplayerGameType--;
+                    Data.MultiplayerTypeName.CurrentAnimation = (int)MultiplayerGameType + Localization.LanguageUiIndex * 3;
+                    Data.MultiplayerTypeIcon.CurrentAnimation = (int)MultiplayerGameType;
+                }
+
+                if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.Right) && MultiplayerGameType != MultiplayerGameType.Missile)
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
+                    MultiplayerGameType++;
+                    Data.MultiplayerTypeName.CurrentAnimation = (int)MultiplayerGameType + Localization.LanguageUiIndex * 3;
+                    Data.MultiplayerTypeIcon.CurrentAnimation = (int)MultiplayerGameType;
+                }
+                else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.A))
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Valid01_Mix01);
+                    //NextStepAction = FUN_08008ee8; // TODO: Implement
+                    CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakTypeSelection;
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+                }
+                else if (MultiJoyPad.IsButtonJustPressed(0, GbaInput.B))
+                {
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Back01_Mix01);
+                    NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+                    CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakTypeSelection;
+                    SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+                }
+            }
+            else
+            {
+                GameTime.Pause();
+            }
+
+            AnimationPlayer.Play(Data.MultiplayerTypeName);
+
+            Data.MultiplayerTypeFrame.FrameChannelSprite();
+            AnimationPlayer.Play(Data.MultiplayerTypeFrame);
+
+            if (MultiplayerGameType == MultiplayerGameType.RayTag)
+                Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 300 };
+            else
+                Data.MultiplayerTypeLeftArrow.ScreenPos = Data.MultiplayerTypeLeftArrow.ScreenPos with { X = 100 };
+
+            if (MultiplayerGameType == MultiplayerGameType.Missile)
+                Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 300 };
+            else
+                Data.MultiplayerTypeRightArrow.ScreenPos = Data.MultiplayerTypeRightArrow.ScreenPos with { X = 184 };
+
+            AnimationPlayer.Play(Data.MultiplayerTypeLeftArrow);
+            AnimationPlayer.Play(Data.MultiplayerTypeRightArrow);
+            AnimationPlayer.Play(Data.MultiplayerTypeIcon);
+        }
+        else
+        {
+            NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+            CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakTypeSelection;
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
+        }
+    }
+
+    private void Step_TransitionOutOfMultiplayerMultiPakTypeSelection()
+    {
+
     }
 
     #endregion

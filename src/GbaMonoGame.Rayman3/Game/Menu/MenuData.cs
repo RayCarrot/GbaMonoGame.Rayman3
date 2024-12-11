@@ -17,6 +17,9 @@ public class MenuData
         AnimatedObjectResource slotEmptyAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSlotEmptyAnimations);
         AnimatedObjectResource multiplayerModeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerModeAnimations);
         AnimatedObjectResource multiplayerPlayersAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerPlayersAnimations);
+        AnimatedObjectResource multiplayerTypeAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeAnimations);
+        AnimatedObjectResource multiplayerTypeFrameAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeFrameAnimations);
+        AnimatedObjectResource multiplayerTypeIconAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuMultiplayerTypeIconAnimations);
         AnimatedObjectResource steamAnimations = Storage.LoadResource<AnimatedObjectResource>(GameResource.MenuSteamAnimations);
 
         Wheel1 = new AnimatedObject(propsAnimations, propsAnimations.IsDynamic)
@@ -289,12 +292,52 @@ public class MenuData
             CurrentAnimation = 10
         };
 
+        MultiplayerTypeName = new AnimatedObject(multiplayerTypeAnimations, multiplayerTypeAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 3,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(142, 94),
+            CurrentAnimation = 0
+        };
+
+        MultiplayerTypeFrame = new AnimatedObject(multiplayerTypeFrameAnimations, multiplayerTypeFrameAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(140, 35),
+            CurrentAnimation = 2
+        };
+
+        MultiplayerTypeLeftArrow = new AnimatedObject(multiplayerTypeFrameAnimations, multiplayerTypeFrameAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(100, 50),
+            CurrentAnimation = 1
+        };
+
+        MultiplayerTypeRightArrow = new AnimatedObject(multiplayerTypeFrameAnimations, multiplayerTypeFrameAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(184, 50),
+            CurrentAnimation = 1
+        };
+
+        MultiplayerTypeIcon = new AnimatedObject(multiplayerTypeIconAnimations, multiplayerTypeIconAnimations.IsDynamic)
+        {
+            IsFramed = true,
+            BgPriority = 1,
+            ObjPriority = 0,
+            ScreenPos = new Vector2(115, 24),
+            CurrentAnimation = 0
+        };
+
         // TODO: Load data
-        // field_0x5c0
-        // field_0x5e0
-        // field_0x608
-        // field_0x628
-        // field_0x648
         // field_0x668
         // field_0x690
         // field_0x6a8
@@ -337,5 +380,10 @@ public class MenuData
     public AnimatedObject MultiplayerPlayerNumberIcons { get; set; }
     public AnimatedObject[] MultiplayerPlayerSelectionIcons { get; set; }
     public AnimatedObject MultiplayerPlayerSelectionHighlight { get; set; }
+    public AnimatedObject MultiplayerTypeName { get; set; }
+    public AnimatedObject MultiplayerTypeFrame { get; set; }
+    public AnimatedObject MultiplayerTypeLeftArrow { get; set; }
+    public AnimatedObject MultiplayerTypeRightArrow { get; set; }
+    public AnimatedObject MultiplayerTypeIcon { get; set; }
     public AnimatedObject MultiplayerSinglePakPlayers { get; }
 }
