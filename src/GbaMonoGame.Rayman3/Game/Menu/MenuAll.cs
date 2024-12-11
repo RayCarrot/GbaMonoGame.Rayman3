@@ -25,8 +25,8 @@ public partial class MenuAll : Frame, IHasPlayfield
         CurrentStepAction = null;
         NextStepAction = null;
         TransitionValue = 0;
-        MultiplayerMultiPakPlayersOffsetY = 70;
-        MultiplayerSinglePakPlayersOffsetY = 70;
+        MultiplayerPlayersOffsetY = 70;
+        SinglePakPlayersOffsetY = 70;
         //field_0x1f = 0;
         GameLogoMovementXOffset = 3;
         GameLogoMovementWidth = 6;
@@ -34,9 +34,9 @@ public partial class MenuAll : Frame, IHasPlayfield
         GameLogoMovementXCountdown = 0;
         GameLogoYOffset = 0;
         StemMode = 0;
-        IsMultiplayerMultiPakConnected = null;
-        MultiplayerMultiPakConnectionTimer = 0;
-        MultiplayerMultiPakLostConnectionTimer = 0;
+        IsMultiplayerConnected = null;
+        MultiplayerConnectionTimer = 0;
+        MultiplayerLostConnectionTimer = 0;
         MultiplayerGameType = MultiplayerGameType.RayTag;
         MultiplayerMapId = 0;
         field_0x80 = 0;
@@ -341,7 +341,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         AnimationPlayer = new AnimationPlayer(false, null);
 
-        Data = new MenuData(MultiplayerMultiPakPlayersOffsetY, MultiplayerSinglePakPlayersOffsetY);
+        Data = new MenuData(MultiplayerPlayersOffsetY, SinglePakPlayersOffsetY);
         WheelRotation = 0;
 
         LoadPlayfield();

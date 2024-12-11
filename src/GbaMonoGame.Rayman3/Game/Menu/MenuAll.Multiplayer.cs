@@ -16,20 +16,22 @@ public partial class MenuAll
     #region Private Properties
 
     private bool ShouldMultiplayerTextBlink { get; set; }
-    private int MultiplayerMultiPakPlayersOffsetY { get; set; }
-    private int MultiplayerSinglePakPlayersOffsetY { get; set; }
+    private int PreviousMultiplayerText { get; set; }
     private int NextMultiplayerTextId { get; set; }
-    private byte MultiplayerSinglePakConnectionTimer { get; set; }
-    private byte PreviousMultiplayerText { get; set; }
-    private byte field_0xe1 { get; set; } // TODO: Name
+    
+    private int MultiplayerPlayersOffsetY { get; set; }
     private bool ReturningFromMultiplayerGame { get; set; }
-    private bool? IsMultiplayerMultiPakConnected { get; set; }
-    private byte MultiplayerMultiPakConnectionTimer { get; set; }
-    private byte MultiplayerMultiPakLostConnectionTimer { get; set; }
+    private bool? IsMultiplayerConnected { get; set; }
+    private byte MultiplayerConnectionTimer { get; set; }
+    private byte MultiplayerLostConnectionTimer { get; set; }
     private uint LastConnectionTime { get; set; }
     private byte field_0x80 { get; set; } // TODO: Name
     private MultiplayerGameType MultiplayerGameType { get; set; }
     private MultiplayerGameType MultiplayerMapId { get; set; }
+
+    private int SinglePakPlayersOffsetY { get; set; }
+    private byte MultiplayerSinglePakConnectionTimer { get; set; }
+    private byte field_0xe1 { get; set; } // TODO: Name
 
     #endregion
 
@@ -100,7 +102,7 @@ public partial class MenuAll
             }
         }
 
-        IsMultiplayerMultiPakConnected = true;
+        IsMultiplayerConnected = true;
     }
 
     #endregion
@@ -205,7 +207,7 @@ public partial class MenuAll
             IsFramed = true,
             BgPriority = 1,
             ObjPriority = 32,
-            ScreenPos = new Vector2(145, 40 - MultiplayerMultiPakPlayersOffsetY),
+            ScreenPos = new Vector2(145, 40 - MultiplayerPlayersOffsetY),
             CurrentAnimation = 0
         };
 
@@ -214,7 +216,7 @@ public partial class MenuAll
             IsFramed = true,
             BgPriority = 1,
             ObjPriority = 0,
-            ScreenPos = new Vector2(102, 22 - MultiplayerMultiPakPlayersOffsetY),
+            ScreenPos = new Vector2(102, 22 - MultiplayerPlayersOffsetY),
             CurrentAnimation = 4
         };
 
@@ -226,7 +228,7 @@ public partial class MenuAll
                 IsFramed = true,
                 BgPriority = 1,
                 ObjPriority = 16,
-                ScreenPos = new Vector2(104 + 24 * i, 49 - MultiplayerMultiPakPlayersOffsetY),
+                ScreenPos = new Vector2(104 + 24 * i, 49 - MultiplayerPlayersOffsetY),
                 CurrentAnimation = 8
             };
         }
@@ -236,7 +238,7 @@ public partial class MenuAll
             IsFramed = true,
             BgPriority = 1,
             ObjPriority = 0,
-            ScreenPos = new Vector2(104, 26 - MultiplayerMultiPakPlayersOffsetY),
+            ScreenPos = new Vector2(104, 26 - MultiplayerPlayersOffsetY),
             CurrentAnimation = 10
         };
 
@@ -247,7 +249,7 @@ public partial class MenuAll
 
             CurrentStepAction = Step_MultiplayerMultiPakPlayerSelection;
             InitialPage = Page.SelectLanguage;
-            MultiplayerMultiPakConnectionTimer = 30;
+            MultiplayerConnectionTimer = 30;
             LastConnectionTime = GameTime.ElapsedFrames;
             ReturningFromMultiplayerGame = true;
         }
@@ -297,32 +299,32 @@ public partial class MenuAll
                 Data.MultiplayerPlayerSelection.CurrentAnimation = RSMultiplayer.MachineId;
             }
             
-            MultiplayerMultiPakPlayersOffsetY -= 4;
+            MultiplayerPlayersOffsetY -= 4;
 
-            if (MultiplayerMultiPakPlayersOffsetY < 0)
-                MultiplayerMultiPakPlayersOffsetY = 0;
+            if (MultiplayerPlayersOffsetY < 0)
+                MultiplayerPlayersOffsetY = 0;
 
-            MultiplayerMultiPakConnectionTimer = 30;
-            IsMultiplayerMultiPakConnected = true;
+            MultiplayerConnectionTimer = 30;
+            IsMultiplayerConnected = true;
             LastConnectionTime = GameTime.ElapsedFrames;
         }
         else
         {
-            if (MultiplayerMultiPakPlayersOffsetY <= 70)
-                MultiplayerMultiPakPlayersOffsetY += 4;
+            if (MultiplayerPlayersOffsetY <= 70)
+                MultiplayerPlayersOffsetY += 4;
             else
-                MultiplayerMultiPakPlayersOffsetY = 70;
+                MultiplayerPlayersOffsetY = 70;
 
-            MultiplayerMultiPakConnectionTimer = 0;
-            IsMultiplayerMultiPakConnected = null;
+            MultiplayerConnectionTimer = 0;
+            IsMultiplayerConnected = null;
         }
 
-        Data.MultiplayerPlayerSelection.ScreenPos = Data.MultiplayerPlayerSelection.ScreenPos with { Y = 40 - MultiplayerMultiPakPlayersOffsetY };
-        Data.MultiplayerPlayerNumberIcons.ScreenPos = Data.MultiplayerPlayerNumberIcons.ScreenPos with { Y = 22 - MultiplayerMultiPakPlayersOffsetY };
-        Data.MultiplayerPlayerSelectionHighlight.ScreenPos = Data.MultiplayerPlayerSelectionHighlight.ScreenPos with { Y = 26 - MultiplayerMultiPakPlayersOffsetY };
+        Data.MultiplayerPlayerSelection.ScreenPos = Data.MultiplayerPlayerSelection.ScreenPos with { Y = 40 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerPlayerNumberIcons.ScreenPos = Data.MultiplayerPlayerNumberIcons.ScreenPos with { Y = 22 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerPlayerSelectionHighlight.ScreenPos = Data.MultiplayerPlayerSelectionHighlight.ScreenPos with { Y = 26 - MultiplayerPlayersOffsetY };
 
         foreach (AnimatedObject obj in Data.MultiplayerPlayerSelectionIcons)
-            obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerMultiPakPlayersOffsetY };
+            obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerPlayersOffsetY };
 
         DrawMutliplayerText();
         AnimationPlayer.Play(Data.MultiplayerPlayerSelection);
@@ -339,67 +341,67 @@ public partial class MenuAll
         RSMultiplayer.CheckForLostConnection();
 
         // Disconnected
-        if (IsMultiplayerMultiPakConnected == null)
+        if (IsMultiplayerConnected == null)
         {
-            MultiplayerMultiPakLostConnectionTimer = 0;
+            MultiplayerLostConnectionTimer = 0;
 
             if (ReturningFromMultiplayerGame)
             {
-                if (MultiplayerMultiPakConnectionTimer == 20)
+                if (MultiplayerConnectionTimer == 20)
                 {
                     if (PreviousMultiplayerText != 1)
                         SetMultiplayerText(0, false);
 
                     PreviousMultiplayerText = 1;
-                    MultiplayerMultiPakConnectionTimer++;
+                    MultiplayerConnectionTimer++;
                 }
-                else if (MultiplayerMultiPakConnectionTimer > 20)
+                else if (MultiplayerConnectionTimer > 20)
                 {
-                    if (MultiplayerMultiPakPlayersOffsetY < 70)
-                        MultiplayerMultiPakPlayersOffsetY += 4;
+                    if (MultiplayerPlayersOffsetY < 70)
+                        MultiplayerPlayersOffsetY += 4;
                     else
-                        MultiplayerMultiPakPlayersOffsetY = 70;
+                        MultiplayerPlayersOffsetY = 70;
                 }
                 else
                 {
-                    MultiplayerMultiPakConnectionTimer++;
+                    MultiplayerConnectionTimer++;
                 }
             }
             else
             {
-                if (MultiplayerMultiPakConnectionTimer == 10)
+                if (MultiplayerConnectionTimer == 10)
                 {
                     if (PreviousMultiplayerText != 1)
                         SetMultiplayerText(0, false);
 
                     PreviousMultiplayerText = 1;
-                    MultiplayerMultiPakConnectionTimer++;
+                    MultiplayerConnectionTimer++;
                 }
-                else if (MultiplayerMultiPakConnectionTimer > 10)
+                else if (MultiplayerConnectionTimer > 10)
                 {
-                    if (MultiplayerMultiPakPlayersOffsetY < 70)
-                        MultiplayerMultiPakPlayersOffsetY += 4;
+                    if (MultiplayerPlayersOffsetY < 70)
+                        MultiplayerPlayersOffsetY += 4;
                     else
-                        MultiplayerMultiPakPlayersOffsetY = 70;
+                        MultiplayerPlayersOffsetY = 70;
                 }
                 else
                 {
-                    MultiplayerMultiPakConnectionTimer++;
+                    MultiplayerConnectionTimer++;
                 }
             }
         }
         // Lost connection
-        else if (IsMultiplayerMultiPakConnected == false)
+        else if (IsMultiplayerConnected == false)
         {
-            if (MultiplayerMultiPakLostConnectionTimer < 10)
+            if (MultiplayerLostConnectionTimer < 10)
             {
-                MultiplayerMultiPakLostConnectionTimer++;
+                MultiplayerLostConnectionTimer++;
             }
             else
             {
-                IsMultiplayerMultiPakConnected = null;
-                MultiplayerMultiPakConnectionTimer = 0;
-                MultiplayerMultiPakLostConnectionTimer = 0;
+                IsMultiplayerConnected = null;
+                MultiplayerConnectionTimer = 0;
+                MultiplayerLostConnectionTimer = 0;
                 RSMultiplayer.Reset();
                 InititialGameTime = GameTime.ElapsedFrames;
             }
@@ -407,13 +409,13 @@ public partial class MenuAll
         // Connected
         else if (RSMultiplayer.MubState == MubState.Connected)
         {
-            MultiplayerMultiPakLostConnectionTimer = 0;
+            MultiplayerLostConnectionTimer = 0;
 
             if (RSMultiplayer.PlayersCount > 1)
             {
-                if (MultiplayerMultiPakConnectionTimer < 30)
+                if (MultiplayerConnectionTimer < 30)
                 {
-                    MultiplayerMultiPakConnectionTimer++;
+                    MultiplayerConnectionTimer++;
                 }
                 else
                 {
@@ -438,28 +440,28 @@ public partial class MenuAll
 
                     Data.MultiplayerPlayerSelection.CurrentAnimation = RSMultiplayer.MachineId;
 
-                    MultiplayerMultiPakPlayersOffsetY -= 4;
+                    MultiplayerPlayersOffsetY -= 4;
 
-                    if (MultiplayerMultiPakPlayersOffsetY < 0)
-                        MultiplayerMultiPakPlayersOffsetY = 0;
+                    if (MultiplayerPlayersOffsetY < 0)
+                        MultiplayerPlayersOffsetY = 0;
                 }
             }
         }
         else if (RSMultiplayer.MubState < MubState.Connected)
         {
-            if (MultiplayerMultiPakPlayersOffsetY < 70)
-                MultiplayerMultiPakPlayersOffsetY += 4;
+            if (MultiplayerPlayersOffsetY < 70)
+                MultiplayerPlayersOffsetY += 4;
             else
-                MultiplayerMultiPakPlayersOffsetY = 70;
+                MultiplayerPlayersOffsetY = 70;
 
-            MultiplayerMultiPakConnectionTimer = 30;
+            MultiplayerConnectionTimer = 30;
         }
         else if (RSMultiplayer.MubState > MubState.Connected)
         {
-            if (MultiplayerMultiPakPlayersOffsetY < 70)
-                MultiplayerMultiPakPlayersOffsetY += 4;
+            if (MultiplayerPlayersOffsetY < 70)
+                MultiplayerPlayersOffsetY += 4;
             else
-                MultiplayerMultiPakPlayersOffsetY = 70;
+                MultiplayerPlayersOffsetY = 70;
         }
 
         // Master
@@ -516,8 +518,8 @@ public partial class MenuAll
             }
         }
 
-        if (IsMultiplayerMultiPakConnected == true && GameTime.ElapsedFrames - LastConnectionTime > 15)
-            IsMultiplayerMultiPakConnected = false;
+        if (IsMultiplayerConnected == true && GameTime.ElapsedFrames - LastConnectionTime > 15)
+            IsMultiplayerConnected = false;
 
         if (RSMultiplayer.MubState == MubState.EstablishConnections)
         {
@@ -525,18 +527,18 @@ public partial class MenuAll
                 // TODO: Why is id 4 valid?
                 (RSMultiplayer.MachineId is >= 1 and <= 4 && GameTime.ElapsedFrames - InititialGameTime > 55))
             {
-                IsMultiplayerMultiPakConnected = null;
-                MultiplayerMultiPakConnectionTimer = 0;
-                MultiplayerMultiPakLostConnectionTimer = 0;
+                IsMultiplayerConnected = null;
+                MultiplayerConnectionTimer = 0;
+                MultiplayerLostConnectionTimer = 0;
                 RSMultiplayer.Reset();
                 InititialGameTime = GameTime.ElapsedFrames;
             }
         }
         else if (RSMultiplayer.MubState >= MubState.Error)
         {
-            IsMultiplayerMultiPakConnected = null;
-            MultiplayerMultiPakConnectionTimer = ReturningFromMultiplayerGame ? (byte)20 : (byte)10;
-            MultiplayerMultiPakLostConnectionTimer = 0;
+            IsMultiplayerConnected = null;
+            MultiplayerConnectionTimer = ReturningFromMultiplayerGame ? (byte)20 : (byte)10;
+            MultiplayerLostConnectionTimer = 0;
             RSMultiplayer.Reset();
             InititialGameTime = GameTime.ElapsedFrames;
         }
@@ -549,12 +551,12 @@ public partial class MenuAll
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
 
-        Data.MultiplayerPlayerSelection.ScreenPos = Data.MultiplayerPlayerSelection.ScreenPos with { Y = 40 - MultiplayerMultiPakPlayersOffsetY };
-        Data.MultiplayerPlayerNumberIcons.ScreenPos = Data.MultiplayerPlayerNumberIcons.ScreenPos with { Y = 22 - MultiplayerMultiPakPlayersOffsetY };
-        Data.MultiplayerPlayerSelectionHighlight.ScreenPos = Data.MultiplayerPlayerSelectionHighlight.ScreenPos with { Y = 26 - MultiplayerMultiPakPlayersOffsetY };
+        Data.MultiplayerPlayerSelection.ScreenPos = Data.MultiplayerPlayerSelection.ScreenPos with { Y = 40 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerPlayerNumberIcons.ScreenPos = Data.MultiplayerPlayerNumberIcons.ScreenPos with { Y = 22 - MultiplayerPlayersOffsetY };
+        Data.MultiplayerPlayerSelectionHighlight.ScreenPos = Data.MultiplayerPlayerSelectionHighlight.ScreenPos with { Y = 26 - MultiplayerPlayersOffsetY };
 
         foreach (AnimatedObject obj in Data.MultiplayerPlayerSelectionIcons)
-            obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerMultiPakPlayersOffsetY };
+            obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerPlayersOffsetY };
 
         DrawMutliplayerText();
         AnimationPlayer.Play(Data.MultiplayerPlayerSelection);
@@ -584,7 +586,7 @@ public partial class MenuAll
         field_0xe1 = 0;
 
         Data.MultiplayerSinglePakPlayers.CurrentAnimation = 11;
-        MultiplayerSinglePakPlayersOffsetY = 0x46;
+        SinglePakPlayersOffsetY = 0x46;
 
         CurrentStepAction = Step_TransitionToMultiplayerSinglePak;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
@@ -610,7 +612,7 @@ public partial class MenuAll
             CurrentStepAction = Step_MultiplayerSinglePak;
         }
 
-        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - MultiplayerSinglePakPlayersOffsetY };
+        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - SinglePakPlayersOffsetY };
 
         DrawMutliplayerText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
@@ -637,7 +639,7 @@ public partial class MenuAll
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
 
-        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - MultiplayerSinglePakPlayersOffsetY };
+        Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - SinglePakPlayersOffsetY };
 
         if (NextMultiplayerTextId == -1)
             DrawMutliplayerText();
@@ -658,10 +660,10 @@ public partial class MenuAll
             CurrentStepAction = NextStepAction;
         }
 
-        if (MultiplayerSinglePakPlayersOffsetY <= 70)
-            MultiplayerSinglePakPlayersOffsetY += 8;
+        if (SinglePakPlayersOffsetY <= 70)
+            SinglePakPlayersOffsetY += 8;
         else
-            MultiplayerSinglePakPlayersOffsetY = 70;
+            SinglePakPlayersOffsetY = 70;
 
         DrawMutliplayerText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
