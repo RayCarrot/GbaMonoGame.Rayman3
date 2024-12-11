@@ -34,23 +34,23 @@ public partial class MenuAll : Frame, IHasPlayfield
         GameLogoMovementXCountdown = 0;
         GameLogoYOffset = 0;
         StemMode = 0;
-        field_0x70 = 0xff;
-        field_0x71 = 0;
-        //field_0x72 = 0;
+        IsMultiplayerMultiPakConnected = null;
+        MultiplayerMultiPakConnectionTimer = 0;
+        MultiplayerMultiPakLostConnectionTimer = 0;
         MultiplayerGameType = MultiplayerGameType.RayTag;
         MultiplayerMapId = 0;
-        //field_0x80 = 0;
+        field_0x80 = 0;
         IsLoadingMultiplayerMap = false;
         ShouldMultiplayerTextBlink = false;
-        //finishedLyChallenge1 = false;
-        //finishedLyChallenge2 = false;
-        //hasAllCages = 0;
-        field_0xe3 = false;
+        FinishedLyChallenge1 = false;
+        FinishedLyChallenge2 = false;
+        HasAllCages = false;
+        ReturningFromMultiplayerGame = false;
         Slots = new Slot[3];
         HasLoadedGameInfo = false;
         IsLoadingSlot = false;
         InitialPage = initialPage;
-        field_0x66 = 0;
+        PreviousMultiplayerText = 0;
     }
 
     #endregion
@@ -74,11 +74,18 @@ public partial class MenuAll : Frame, IHasPlayfield
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
     
-    private uint InititialGameTime { get; set; }
+    private uint InititialGameTime { get; set; } // TODO: Multiplayer
 
     private Page InitialPage { get; set; }
 
     private bool IsLoadingMultiplayerMap { get; set; }
+
+    private bool HasLoadedGameInfo { get; set; }
+    private Slot[] Slots { get; }
+
+    private bool FinishedLyChallenge1 { get; set; }
+    private bool FinishedLyChallenge2 { get; set; }
+    private bool HasAllCages { get; set; }
 
     #endregion
 
@@ -300,6 +307,34 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     #region Public Methods
 
+    public void LoadGameInfo()
+    {
+        if (HasLoadedGameInfo)
+            return;
+
+        GameInfo.Init();
+        HasLoadedGameInfo = true;
+
+        for (int i = 0; i < 3; i++)
+        {
+            bool loaded = GameInfo.Load(i);
+
+            if (GameInfo.PersistentInfo.Lives != 0 && loaded)
+                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedCages(), GameInfo.PersistentInfo.Lives);
+            else
+                Slots[i] = null;
+
+            if (GameInfo.PersistentInfo.FinishedLyChallenge1)
+                FinishedLyChallenge1 = true;
+
+            if (GameInfo.PersistentInfo.FinishedLyChallenge2)
+                FinishedLyChallenge2 = true;
+
+            if (Slots[i]?.CagesCount == 50)
+                HasAllCages = true;
+        }
+    }
+
     public override void Init()
     {
         LoadGameInfo();
@@ -329,13 +364,13 @@ public partial class MenuAll : Frame, IHasPlayfield
                 CurrentStepAction = Step_InitializeTransitionToOptions;
                 break;
 
-            case Page.MultiPak1:
+            case Page.MultiPak:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
-                // CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPak; // TODO: Implement
+                CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
                 break;
 
-            case Page.MultiPak2:
+            case Page.MultiPakLostConnection:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
                 // CurrentStepAction = FUN_08008248; // TODO: Implement
@@ -430,8 +465,8 @@ public partial class MenuAll : Frame, IHasPlayfield
         SelectLanguage,
         SelectGameMode,
         Options,
-        MultiPak1,
-        MultiPak2,
+        MultiPak,
+        MultiPakLostConnection,
         NGage, // TODO: What is this? N-Gage loads this first
     }
 

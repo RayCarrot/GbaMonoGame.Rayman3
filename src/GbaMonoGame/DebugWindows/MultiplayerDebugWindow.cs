@@ -15,6 +15,17 @@ public class MultiplayerDebugWindow : DebugWindow
 
         ImGui.BeginDisabled(!RSMultiplayer.IsActive);
 
+        if (ImGui.BeginCombo("State", RSMultiplayer.MubState.ToString()))
+        {
+            foreach (MubState state in Enum.GetValues<MubState>())
+            {
+                if (ImGui.Selectable(state.ToString(), RSMultiplayer.MubState == state))
+                    RSMultiplayer.MubState = state;
+            }
+
+            ImGui.EndCombo();
+        }
+
         int playersCount = RSMultiplayer.PlayersCount;
         if (ImGui.SliderInt("PlayersCount", ref playersCount, 0, RSMultiplayer.MaxPlayersCount))
         {

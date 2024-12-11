@@ -9,8 +9,6 @@ public partial class MenuAll
 {
     #region Private Properties
 
-    private bool HasLoadedGameInfo { get; set; }
-    private Slot[] Slots { get; }
     private bool IsLoadingSlot { get; set; }
 
     private byte StartEraseCursorTargetIndex { get; set; }
@@ -57,29 +55,6 @@ public partial class MenuAll
                     StartEraseCursorCurrentIndex = StartEraseCursorTargetIndex;
                 }
             }
-        }
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public void LoadGameInfo()
-    {
-        if (HasLoadedGameInfo)
-            return;
-
-        GameInfo.Init();
-        HasLoadedGameInfo = true;
-
-        for (int i = 0; i < 3; i++)
-        {
-            bool loaded = GameInfo.Load(i);
-
-            if (GameInfo.PersistentInfo.Lives != 0 && loaded)
-                Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedCages(), GameInfo.PersistentInfo.Lives);
-            else
-                Slots[i] = null;
         }
     }
 

@@ -18,6 +18,12 @@ public static class MultiplayerManager
         PlayersCount = RSMultiplayer.PlayersCount;
     }
 
+    public static void UpdateFromRSMultiplayer()
+    {
+        MachineId = RSMultiplayer.MachineId;
+        PlayersCount = RSMultiplayer.PlayersCount;
+    }
+
     public static uint GetMachineTimer()
     {
         return MachineTimers[MachineId];
