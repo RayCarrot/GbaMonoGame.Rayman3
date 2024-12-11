@@ -644,13 +644,7 @@ public partial class MenuAll
 
         if (TransitionValue == 152 && field_0x80)
         {
-            // TODO: Disable for now to avoid freeze
-            //for (int id = 0; id < RSMultiplayer.PlayersCount; id++)
-            //{
-            //    while (RSMultiplayer.IsPacketPending(id))
-            //        RSMultiplayer.ReleasePacket(id);
-            //}
-
+            MultiplayerManager.DiscardPendingPackets();
             field_0x80 = false;
         }
 
@@ -713,6 +707,8 @@ public partial class MenuAll
                     CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakTypeSelection;
                     SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
                 }
+
+                MultiplayerManager.InvalidateCurrentFrameInputs();
             }
             else
             {

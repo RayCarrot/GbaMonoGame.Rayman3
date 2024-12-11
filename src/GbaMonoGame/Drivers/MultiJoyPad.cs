@@ -61,12 +61,40 @@ public static class MultiJoyPad
         ValidFlags[machineId][frame] = true;
     }
 
+    public static GbaInput GetInput(int machineId, uint machineTimer)
+    {
+        return JoyPads[machineId][machineTimer % BufferedFramesCount].KeyStatus;
+    }
+
     public static SimpleJoyPad GetSimpleJoyPadForCurrentFrame(int machineId)
     {
         if (machineId is < 0 or >= MaxPlayersCount)
             throw new Exception("Invalid machine id");
 
         return JoyPads[machineId][MultiplayerManager.GetMachineTimer() % BufferedFramesCount];
+    }
+
+    public static bool IsValid(int machineId, uint bufferIndex)
+    {
+        return ValidFlags[machineId][bufferIndex];
+    }
+
+    public static uint? GetNextInvalidTime(int machineId, uint machineTimer)
+    {
+        for (int i = 0; i < BufferedFramesCount; i++)
+        {
+            uint bufferIndex = (uint)((machineTimer + i) % BufferedFramesCount);
+            if (!IsValid(machineId, bufferIndex))
+                return bufferIndex;
+        }
+
+        return null;
+    }
+
+    public static void InvalidateJoyPads(uint machineTimer)
+    {
+        for (int id = 0; id < RSMultiplayer.MaxPlayersCount; id++)
+            ValidFlags[id][machineTimer % BufferedFramesCount] = false;
     }
 
     public static bool IsButtonPressed(int machineId, GbaInput gbaInput)

@@ -1,24 +1,9 @@
-﻿using System.Collections.Generic;
-using BinarySerializer.Ubisoft.GbaEngine;
+﻿using BinarySerializer.Ubisoft.GbaEngine;
 
 namespace GbaMonoGame;
 
 public class SimpleJoyPad
 {
-    private static Dictionary<GbaInput, Input> GbaInputMapping { get; } = new()
-    {
-        [GbaInput.A] = Input.Gba_A,
-        [GbaInput.B] = Input.Gba_B,
-        [GbaInput.Select] = Input.Gba_Select,
-        [GbaInput.Start] = Input.Gba_Start,
-        [GbaInput.Right] = Input.Gba_Right,
-        [GbaInput.Left] = Input.Gba_Left,
-        [GbaInput.Up] = Input.Gba_Up,
-        [GbaInput.Down] = Input.Gba_Down,
-        [GbaInput.R] = Input.Gba_R,
-        [GbaInput.L] = Input.Gba_L,
-    };
-
     public GbaInput KeyStatus { get; set; }
     public GbaInput KeyTriggers { get; set; } // Just pressed
 
@@ -39,13 +24,7 @@ public class SimpleJoyPad
 
         if (ReplayData == null)
         {
-            inputs = GbaInput.Valid;
-
-            foreach (KeyValuePair<GbaInput, Input> input in GbaInputMapping)
-            {
-                if (InputManager.IsButtonPressed(input.Value))
-                    inputs |= input.Key;
-            }
+            inputs = InputManager.GetGbaInputs();
         }
         else
         {
@@ -56,12 +35,6 @@ public class SimpleJoyPad
             else
                 ReplayDataIndex++;
         }
-
-        // Cancel out if opposite directions are pressed
-        if ((inputs & (GbaInput.Right | GbaInput.Left)) == (GbaInput.Right | GbaInput.Left))
-            inputs &= ~(GbaInput.Right | GbaInput.Left);
-        if ((inputs & (GbaInput.Up | GbaInput.Down)) == (GbaInput.Up | GbaInput.Down))
-            inputs &= ~(GbaInput.Up | GbaInput.Down);
 
         KeyTriggers = inputs ^ KeyStatus;
         KeyStatus = inputs;
