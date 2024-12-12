@@ -19,6 +19,7 @@ public partial class MenuAll
     private int PreviousMultiplayerText { get; set; }
     private int NextMultiplayerTextId { get; set; }
     
+    private uint MultiplayerInititialGameTime { get; set; }
     private int MultiplayerPlayersOffsetY { get; set; }
     private bool ReturningFromMultiplayerGame { get; set; }
     private bool? IsMultiplayerConnected { get; set; }
@@ -281,7 +282,7 @@ public partial class MenuAll
             CurrentAnimation = 10
         };
 
-        if (InitialPage == Page.MultiPak)
+        if (InitialPage == Page.Multiplayer)
         {
             for (int i = 0; i < 5; i++)
                 Data.MultiplayerTexts[i].Text = "";
@@ -442,7 +443,7 @@ public partial class MenuAll
                 MultiplayerConnectionTimer = 0;
                 MultiplayerLostConnectionTimer = 0;
                 RSMultiplayer.Reset();
-                InititialGameTime = GameTime.ElapsedFrames;
+                MultiplayerInititialGameTime = GameTime.ElapsedFrames;
             }
         }
         // Connected
@@ -544,7 +545,7 @@ public partial class MenuAll
             else if (RSMultiplayer.MubState == MubState.EstablishConnections && RSMultiplayer.PlayersCount > 1)
             {
                 RSMultiplayer.Connect();
-                InititialGameTime = GameTime.ElapsedFrames;
+                MultiplayerInititialGameTime = GameTime.ElapsedFrames;
             }
         }
         // Slave
@@ -562,15 +563,15 @@ public partial class MenuAll
 
         if (RSMultiplayer.MubState == MubState.EstablishConnections)
         {
-            if ((!RSMultiplayer.IsSlave && GameTime.ElapsedFrames - InititialGameTime > 50) ||
+            if ((!RSMultiplayer.IsSlave && GameTime.ElapsedFrames - MultiplayerInititialGameTime > 50) ||
                 // TODO: Why is id 4 valid?
-                (RSMultiplayer.MachineId is >= 1 and <= 4 && GameTime.ElapsedFrames - InititialGameTime > 55))
+                (RSMultiplayer.MachineId is >= 1 and <= 4 && GameTime.ElapsedFrames - MultiplayerInititialGameTime > 55))
             {
                 IsMultiplayerConnected = null;
                 MultiplayerConnectionTimer = 0;
                 MultiplayerLostConnectionTimer = 0;
                 RSMultiplayer.Reset();
-                InititialGameTime = GameTime.ElapsedFrames;
+                MultiplayerInititialGameTime = GameTime.ElapsedFrames;
             }
         }
         else if (RSMultiplayer.MubState >= MubState.Error)
@@ -579,7 +580,7 @@ public partial class MenuAll
             MultiplayerConnectionTimer = ReturningFromMultiplayerGame ? (byte)20 : (byte)10;
             MultiplayerLostConnectionTimer = 0;
             RSMultiplayer.Reset();
-            InititialGameTime = GameTime.ElapsedFrames;
+            MultiplayerInititialGameTime = GameTime.ElapsedFrames;
         }
 
         if (JoyPad.IsButtonJustPressed(GbaInput.B))
@@ -1005,6 +1006,54 @@ public partial class MenuAll
 
     #endregion
 
+    #region Multi Pak Lost Connection Steps
+
+    private void Step_InitializeMultiplayerLostConnection()
+    {
+        if (InitialPage == Page.MultiplayerLostConnection)
+        {
+            InitialPage = Page.SelectLanguage;
+            CurrentStepAction = Step_MultiplayerLostConnection;
+            SetMultiplayerText(1, true);
+        }
+        else
+        {
+            CurrentStepAction = Step_TransitionToMultiplayerMultiPakPlayerSelection;
+            SetMultiplayerText(0, false);
+            SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
+        }
+
+        SetBackgroundPalette(2);
+    }
+
+    private void Step_MultiplayerLostConnection()
+    {
+        if (JoyPad.IsButtonJustPressed(GbaInput.Start))
+            CurrentStepAction = Step_TransitionOutOfMultiplayerLostConnection;
+
+        DrawMutliplayerText();
+    }
+
+    private void Step_TransitionOutOfMultiplayerLostConnection()
+    {
+        TransitionValue += 4;
+
+        if (TransitionValue <= 160)
+        {
+            Playfield.Camera.GetCluster(1).Position += new Vector2(0, -4);
+        }
+        else if (TransitionValue >= 220)
+        {
+            TransitionValue = 0;
+            NextStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+            CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+        }
+
+        DrawMutliplayerText();
+    }
+
+    #endregion
+
     #region Single Pak Steps
 
     private void Step_InitializeTransitionToMultiplayerSinglePak()
@@ -1063,7 +1112,7 @@ public partial class MenuAll
         if (JoyPad.IsButtonJustPressed(GbaInput.B))
         {
             RSMultiplayer.Init();
-            InititialGameTime = GameTime.ElapsedFrames;
+            MultiplayerInititialGameTime = GameTime.ElapsedFrames;
             NextStepAction = Step_InitializeTransitionToMultiplayer;
             CurrentStepAction = Step_TransitionOutOfMultiplayerSinglePak;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);

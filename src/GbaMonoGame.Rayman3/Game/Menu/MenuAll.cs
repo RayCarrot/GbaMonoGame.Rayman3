@@ -16,7 +16,6 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public MenuAll(Page initialPage)
     {
-        // TODO: Implement all
         WheelRotation = 0;
         SelectedOption = 0;
         PrevSelectedOption = 0;
@@ -27,7 +26,6 @@ public partial class MenuAll : Frame, IHasPlayfield
         TransitionValue = 0;
         MultiplayerPlayersOffsetY = 70;
         SinglePakPlayersOffsetY = 70;
-        //field_0x1f = 0;
         GameLogoMovementXOffset = 3;
         GameLogoMovementWidth = 6;
         PrevGameTime = 0;
@@ -74,8 +72,6 @@ public partial class MenuAll : Frame, IHasPlayfield
     private int WheelRotation { get; set; }
     private int SteamTimer { get; set; }
     
-    private uint InititialGameTime { get; set; } // TODO: Multiplayer
-
     private Page InitialPage { get; set; }
 
     private bool IsLoadingMultiplayerMap { get; set; }
@@ -147,22 +143,6 @@ public partial class MenuAll : Frame, IHasPlayfield
                 data: index,
                 createObjFunc: static i => new PaletteTexture2D(GetBackgroundPalette(i))),
             PaletteIndex: 0);
-    }
-
-    private void LoadPlayfield()
-    {
-        PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
-        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
-        Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
-        Playfield.Camera.FixedResolution = true;
-
-        SetBackgroundPalette(3);
-
-        Gfx.ClearColor = Color.Black;
-
-        Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
-        Playfield.Camera.GetCluster(1).Position = new Vector2(0, 160);
-        Playfield.Camera.GetCluster(2).Position = Vector2.Zero;
     }
 
     private void ResetStem()
@@ -345,7 +325,19 @@ public partial class MenuAll : Frame, IHasPlayfield
         Data = new MenuData(MultiplayerPlayersOffsetY, SinglePakPlayersOffsetY);
         WheelRotation = 0;
 
-        LoadPlayfield();
+        PlayfieldResource menuPlayField = Storage.LoadResource<PlayfieldResource>(GameResource.MenuPlayfield);
+        Playfield = TgxPlayfield.Load<TgxPlayfield2D>(menuPlayField);
+        Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
+        Playfield.Camera.FixedResolution = true;
+
+        SetBackgroundPalette(3);
+
+        Gfx.ClearColor = Color.Black;
+
+        Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
+        Playfield.Camera.GetCluster(1).Position = new Vector2(0, 160);
+        Playfield.Camera.GetCluster(2).Position = Vector2.Zero;
+
         Playfield.Step();
 
         switch (InitialPage)
@@ -365,16 +357,16 @@ public partial class MenuAll : Frame, IHasPlayfield
                 CurrentStepAction = Step_InitializeTransitionToOptions;
                 break;
 
-            case Page.MultiPak:
+            case Page.Multiplayer:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
                 CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
                 break;
 
-            case Page.MultiPakLostConnection:
+            case Page.MultiplayerLostConnection:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
-                // CurrentStepAction = FUN_08008248; // TODO: Implement
+                CurrentStepAction = Step_InitializeMultiplayerLostConnection;
                 break;
         }
 
@@ -387,7 +379,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         RSMultiplayer.UnInit();
         RSMultiplayer.Init();
-        InititialGameTime = GameTime.ElapsedFrames;
+        MultiplayerInititialGameTime = GameTime.ElapsedFrames;
         MultiplayerInfo.Init();
         MultiplayerManager.Init();
 
@@ -466,8 +458,8 @@ public partial class MenuAll : Frame, IHasPlayfield
         SelectLanguage,
         SelectGameMode,
         Options,
-        MultiPak,
-        MultiPakLostConnection,
+        Multiplayer,
+        MultiplayerLostConnection,
         NGage, // TODO: What is this? N-Gage loads this first
     }
 

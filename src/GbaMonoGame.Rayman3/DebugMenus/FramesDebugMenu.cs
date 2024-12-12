@@ -10,10 +10,17 @@ public class FramesDebugMenu : DebugMenu
     private FrameMenuItem[] Menu { get; } =
     {
         new("Intro", () => new Intro()),
-        new("Menu", () => new MenuAll(MenuAll.Page.SelectLanguage)),
         new("GameCubeMenu", () => new GameCubeMenu()),
         new("Game Over", () => new GameOver()),
         new("Level Select", () => new LevelSelect()),
+        new("Menu", null, new FrameMenuItem[]
+        {
+            new("Language", () => new MenuAll(MenuAll.Page.SelectLanguage)),
+            new("Game Mode", () => new MenuAll(MenuAll.Page.SelectGameMode)),
+            new("Options", () => new MenuAll(MenuAll.Page.Options)),
+            new("Multiplayer", () => new MenuAll(MenuAll.Page.Multiplayer)),
+            new("Multiplayer Lost Connection", () => new MenuAll(MenuAll.Page.MultiplayerLostConnection)),
+        }),
         new("Story", null, new FrameMenuItem[]
         {
             new("NGage Splash Screens", () => new NGageSplashScreensAct()),
