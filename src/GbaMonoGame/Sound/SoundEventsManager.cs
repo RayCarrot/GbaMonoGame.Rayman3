@@ -6,16 +6,6 @@ namespace GbaMonoGame;
 
 // TODO: Find better C# audio library since the MonoGame one is too limiting. We need to support loop points and ideally fade-out.
 
-// === INFO ON SOUNDS ===
-// The original sound effects in the game are .aif files. These appear directly as such in the Digiblast version, while in the N-Gage
-// version they were converted to .wav files. The N-Gage version also has 4 additional sound effects not in other versions. On GBA
-// the sounds are stored in the MIDI format used by the MP2K sound engine. This version has more variants of the same sound effects,
-// with each played with a different pitch to add some variation.
-// The sounds in this project were extracted from the GBA ROM using https://github.com/ipatix/agbplay. This allows the different variants
-// of each sound to be retained. The file names were taken from the MIDI files in Rayman 4 DS. The Digiblast version also has file names,
-// but only for the original .aif files and is thus missing the ones for the different sound variants.
-// For the N-Gage version we read the .wav sound effects directly, while using the GBA rip for the music files (since those are stored
-// as .XM MIDI files on N-Gage and Digiblast).
 public abstract class SoundEventsManager
 {
     #region Public Properties

@@ -121,6 +121,15 @@ Various minor changes have been made to the code to modernize it in C# and reduc
 
 Similarly there is now a class for each instance of a finite-state machine which handles things like changing the current state. This was most likely done using macros in the original GBA version. States can now also be null which avoids having to declare empty state functions.
 
+## Sounds
+### GBA
+In the GBA version all sounds are stored as MIDI data using the MP2K sound engine. Thanks to Rayman 4 DS including the original sound files and projects we have a good idea of how the files were originally stored. Sound effects were sampled from .aif files while the music is fully sequenced from different instruments, also stored as .aif files. There is one MIDI file for each music track while sound effects can have multiple MIDI files using different settings, such as the pitch.
+
+For this port we sadly can't play the sounds directly from the ROM, so the sounds have been extracted using agbplay to PCM16 .wav files with loop points (thanks to Miles!). They've then been named based on the original .mid file names from Rayman 4 DS. In the code there is then a table which matches the song resource id with the .wav files so they can be played.
+
+### N-Gage
+In the N-Gage version the sound effects and music are handled differently. The music is stored as .xm files, while the sound effects are stored as .wav files and appear to be converted from the original .aif sound samples. Because of this it lacks the multiple variants of sound effects which the GBA MIDI had. The file names, which here are only used for debugging purposes due to the sounds being read directly from the data, come from the Digiblast version thanks to them being stored in the same alphabetical order. The N-Gage version also has 4 additional sound effects which we sadly lack the names for.
+
 ## Decompiling
 The engine is being recreated thanks to Ghidra allowing the original game's code to be decompiled. Both the GBA and N-Gage versions are being used to recreate the code, so that any differences between them can be correctly handled. The N-Gage version is also easier to decompile due to it having fewer compiler optimizations, such as no function inlining.
 
