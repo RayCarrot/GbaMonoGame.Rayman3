@@ -1,9 +1,11 @@
-# Rayman 3 GBA port to MonoGame
+# Rayman 3 Readvanced
+![Title screen](img/logo/rayman_3_readvanced.png)
+
 This project is a recreation of the Game Boy Advance and N-Gage versions of Rayman 3 to [MonoGame](https://monogame.net), with the goal of porting the game to PC and other platforms. The original ROM is required to play the game since this project does not contain the game assets.
 
 This is not meant to be a traditional decompilation, but rather a recreation of the game in C#. However, the game code is written to be functionally identical to the original code and much of the same structure of the original engine is kept, as seen by decompiling the game using Ghidra.
 
-![Title screen](img/title_screen.png)
+![Title screen](img/screenshots/title_screen.png)
 *The goal is to have the game be functionally identical to the original GBA game, while modernizing the code and including optional game enhancements.*
 
 You can view the current progress of this port under [Progress](PROGRESS).
@@ -18,7 +20,7 @@ This version contains several optional enhancements over the original game. The 
 
 Besides graphical enhancements there are various quality of life improvements and optional gameplay tweaks which can be toggled. There is also an assortment of bonus features, such as built-in achievements and more.
 
-![Zoomed out example](img/zoom_out.png)
+![Zoomed out example](img/screenshots/zoom_out.png)
 *The game can render in higher resolution and different aspect ratios.*
 
 ## Playing
@@ -68,8 +70,15 @@ You can also launch the game with a BizHawk .bk2 TAS file which will have it pla
 ## Debug mode
 Pressing the `tab` key while playing will toggle the debug mode. This is set up using ImGUI and is meant to help debugging the game.
 
-![Debug mode](img/debug_mode.png)
+![Debug mode](img/screenshots/debug_mode.png)
 *The debug mode allows for visualization and editing of the current engine data and state.*
+
+## Credits
+- **RayCarrot**: Main developer, game formats reverse engineering
+- **Droolie**: Game formats reverse engineering
+- **XanderNT**: Rayman 3 Readvanced logo
+- **Miles**: Extracting the GBA sounds
+- **Robin**: General MonoGame and shader help
 
 ## Want to help?
 Do you want to help out? Feel free to contact me if so! This is currently a side project and might take a long time to finish, especially when being worked on by only myself.
