@@ -26,7 +26,7 @@
 | ---------------------- | ------- | -------------------------------------------- |
 | Intro                  | 🟩     |                                              |
 | MenuAll                | 🟨     | Not implemented on N-Gage                    |
-| GameCubeMenu           | 🟨     | Not implemented transitions                  |
+| GameCubeMenu           | 🟩     |                                              |
 | Act                    | 🟩     |                                              |
 | GameOver               | 🟩     |                                              |
 | Credits                | 🟥     |                                              |
