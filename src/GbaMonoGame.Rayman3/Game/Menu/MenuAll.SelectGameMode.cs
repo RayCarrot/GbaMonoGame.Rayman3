@@ -181,7 +181,7 @@ public partial class MenuAll
             NextStepAction = SelectedOption switch
             {
                 0 => Step_InitializeTransitionToSinglePlayer,
-                1 => Step_InitializeTransitionToMultiplayer,
+                1 => Step_InitializeTransitionToMultiplayerModeSelection,
                 2 => Step_InitializeTransitionToOptions,
                 _ => throw new Exception("Invalid game mode")
             };

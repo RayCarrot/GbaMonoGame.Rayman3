@@ -147,9 +147,9 @@ public partial class MenuAll
 
     #endregion
 
-    #region Main Steps
+    #region Mode Selection Steps
 
-    private void Step_InitializeTransitionToMultiplayer()
+    private void Step_InitializeTransitionToMultiplayerModeSelection()
     {
         Data.MultiplayerModeSelection.CurrentAnimation = Localization.LanguageUiIndex * 2;
 
@@ -157,7 +157,7 @@ public partial class MenuAll
         if (Localization.Language == 0)
             Data.MultiplayerModeSelection.ScreenPos = Data.MultiplayerModeSelection.ScreenPos with { X = 86 };
 
-        CurrentStepAction = Step_TransitionToMultiplayer;
+        CurrentStepAction = Step_TransitionToMultiplayerModeSelection;
         SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         
         IsLoadingMultiplayerMap = true;
@@ -166,7 +166,7 @@ public partial class MenuAll
         SetBackgroundPalette(1);
     }
 
-    private void Step_TransitionToMultiplayer()
+    private void Step_TransitionToMultiplayerModeSelection()
     {
         TransitionValue += 4;
 
@@ -176,13 +176,13 @@ public partial class MenuAll
         if (TransitionValue >= 160)
         {
             TransitionValue = 0;
-            CurrentStepAction = Step_Multiplayer;
+            CurrentStepAction = Step_MultiplayerModeSelection;
         }
 
         AnimationPlayer.Play(Data.MultiplayerModeSelection);
     }
 
-    private void Step_Multiplayer()
+    private void Step_MultiplayerModeSelection()
     {
         if (JoyPad.IsButtonJustPressed(GbaInput.Up) || JoyPad.IsButtonJustPressed(GbaInput.Down))
         {
@@ -192,7 +192,7 @@ public partial class MenuAll
         else if (JoyPad.IsButtonJustPressed(GbaInput.B))
         {
             NextStepAction = Step_InitializeTransitionToSelectGameMode;
-            CurrentStepAction = Step_TransitionOutOfMultiplayer;
+            CurrentStepAction = Step_TransitionOutOfMultiplayerModeSelection;
 
             TransitionOutCursorAndStem();
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
@@ -208,7 +208,7 @@ public partial class MenuAll
                 _ => throw new Exception("Invalid multiplayer mode")
             };
 
-            CurrentStepAction = Step_TransitionOutOfMultiplayer;
+            CurrentStepAction = Step_TransitionOutOfMultiplayerModeSelection;
 
             TransitionOutCursorAndStem();
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
@@ -217,7 +217,7 @@ public partial class MenuAll
         AnimationPlayer.Play(Data.MultiplayerModeSelection);
     }
 
-    private void Step_TransitionOutOfMultiplayer()
+    private void Step_TransitionOutOfMultiplayerModeSelection()
     {
         TransitionValue += 4;
 
@@ -586,7 +586,7 @@ public partial class MenuAll
         if (JoyPad.IsButtonJustPressed(GbaInput.B))
         {
             SelectOption(0, false);
-            NextStepAction = Step_InitializeTransitionToMultiplayer;
+            NextStepAction = Step_InitializeTransitionToMultiplayerModeSelection;
             CurrentStepAction = Step_TransitionOutOfMultiplayerMultiPakPlayerSelection;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
@@ -1113,7 +1113,7 @@ public partial class MenuAll
         {
             RSMultiplayer.Init();
             MultiplayerInititialGameTime = GameTime.ElapsedFrames;
-            NextStepAction = Step_InitializeTransitionToMultiplayer;
+            NextStepAction = Step_InitializeTransitionToMultiplayerModeSelection;
             CurrentStepAction = Step_TransitionOutOfMultiplayerSinglePak;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store01_Mix01);
         }
