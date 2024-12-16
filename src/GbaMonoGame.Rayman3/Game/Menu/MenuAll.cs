@@ -201,11 +201,11 @@ public partial class MenuAll : Frame, IHasPlayfield
                 baseY = 67;
                 lineHeight = 18;
             }
-            // TODO: Implement
-            //else if (CurrentStepAction == FUN_08009450)
-            //{
-
-            //}
+            else if (CurrentStepAction == Step_MultiplayerMultiPakMapSelection)
+            {
+                baseY = 67;
+                lineHeight = 20;
+            }
             else
             {
                 baseY = 67;
