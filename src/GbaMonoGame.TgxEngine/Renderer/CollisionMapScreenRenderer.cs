@@ -1,5 +1,4 @@
 ﻿using System;
-using BinarySerializer.Nintendo.GBA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,6 +37,7 @@ public class CollisionMapScreenRenderer : IScreenRenderer
     }
 
     public Vector2 GetSize(GfxScreen screen) => new(Width * Tile.Size, Height * Tile.Size);
+
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
         renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, null, screen.Camera));

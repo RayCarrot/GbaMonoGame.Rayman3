@@ -16,7 +16,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -164,7 +164,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_MoveReverse(FsmAction action)
+    public bool Fsm_MoveReverse(FsmAction action)
     {
         switch (action)
         {
@@ -280,7 +280,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_Stop(FsmAction action)
+    public bool Fsm_Stop(FsmAction action)
     {
         switch (action)
         {
@@ -333,7 +333,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_Burn(FsmAction action)
+    public bool Fsm_Burn(FsmAction action)
     {
         switch (action)
         {
@@ -401,7 +401,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_Respawn(FsmAction action)
+    public bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {
@@ -436,7 +436,7 @@ public partial class MovingPlatform
         return true;
     }
 
-    private bool Fsm_MoveAccelerated(FsmAction action)
+    public bool Fsm_MoveAccelerated(FsmAction action)
     {
         switch (action)
         {
@@ -513,22 +513,22 @@ public partial class MovingPlatform
                 if (IsAccelerating)
                 {
                     if (Math.Abs(PlatformSpeed) < 1)
-                        PlatformSpeed += AcceleratedInfos[currentActionId].Acceleration;
+                        PlatformSpeed += _acceleratedInfos[currentActionId].Acceleration;
                 }
                 else
                 {
                     if (Math.Abs(PlatformSpeed) > 0.0625)
-                        PlatformSpeed -= AcceleratedInfos[currentActionId].Deceleration;
+                        PlatformSpeed -= _acceleratedInfos[currentActionId].Deceleration;
                 }
 
                 if (IsAccelerating)
                 {
-                    PhysicalType type = Scene.GetPhysicalType(Position + AcceleratedInfos[currentActionId].DecelerationDistance);
+                    PhysicalType type = Scene.GetPhysicalType(Position + _acceleratedInfos[currentActionId].DecelerationDistance);
                     if (IsDirectionalType(type))
                         IsAccelerating = false;
                 }
 
-                if (CurrentDirectionalType == AcceleratedInfos[currentActionId].NextType)
+                if (CurrentDirectionalType == _acceleratedInfos[currentActionId].NextType)
                 {
                     State.MoveTo(Fsm_MoveAccelerated);
                     return false;

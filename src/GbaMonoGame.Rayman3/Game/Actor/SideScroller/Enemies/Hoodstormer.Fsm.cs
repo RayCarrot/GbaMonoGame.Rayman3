@@ -27,7 +27,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -57,7 +57,7 @@ public partial class Hoodstormer
     }
 
     // Unused
-    private bool Fsm_Taunt(FsmAction action)
+    public bool Fsm_Taunt(FsmAction action)
     {
         switch (action)
         {
@@ -84,7 +84,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private bool Fsm_Fly(FsmAction action)
+    public bool Fsm_Fly(FsmAction action)
     {
         switch (action)
         {
@@ -120,7 +120,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -157,7 +157,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private bool Fsm_FlyAway(FsmAction action)
+    public bool Fsm_FlyAway(FsmAction action)
     {
         switch (action)
         {
@@ -188,7 +188,7 @@ public partial class Hoodstormer
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

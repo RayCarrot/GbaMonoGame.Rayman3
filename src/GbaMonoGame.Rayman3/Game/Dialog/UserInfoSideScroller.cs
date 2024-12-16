@@ -63,7 +63,7 @@ public class UserInfoSideScroller : Dialog
     public SwitchBar SwitchBar { get; }
     public Bar BossBar { get; }
     public CagesBar CagesBar { get; }
-    private BlueLumBar BlueLumBar { get; }
+    public BlueLumBar BlueLumBar { get; }
 
     public Bar GetLumsBar() => LumsBar != null ? LumsBar : Lums1000Bar;
 

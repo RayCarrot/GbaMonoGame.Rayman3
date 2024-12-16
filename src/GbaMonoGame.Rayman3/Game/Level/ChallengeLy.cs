@@ -6,7 +6,7 @@ public class ChallengeLy : FrameSideScroller
 {
     public ChallengeLy(MapId mapId) : base(mapId) { }
 
-    private int Timer { get; set; }
+    public int Timer { get; set; }
 
     public override void Init()
     {

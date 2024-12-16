@@ -10,8 +10,8 @@ public abstract class InteractableActor : ActionActor
     protected InteractableActor(int instanceId, Scene2D scene, ActorResource actorResource, AnimatedObject animatedObject)
         : base(instanceId, scene, actorResource, animatedObject)
     {
-        AnimationBoxTable = new BoxTable();
-        AnimatedObject.BoxTable = AnimationBoxTable;
+        _animationBoxTable = new BoxTable();
+        AnimatedObject.BoxTable = _animationBoxTable;
 
         _debugAttackBoxAObject = new DebugBoxAObject()
         {
@@ -25,14 +25,13 @@ public abstract class InteractableActor : ActionActor
         };
     }
 
+    private readonly BoxTable _animationBoxTable;
     private readonly DebugBoxAObject _debugAttackBoxAObject;
     private readonly DebugBoxAObject _debugVulnerabilityBoxAObject;
 
-    private BoxTable AnimationBoxTable { get; }
-
     public virtual Box GetAttackBox()
     {
-        Box box = AnimationBoxTable.AttackBox;
+        Box box = _animationBoxTable.AttackBox;
 
         if (AnimatedObject.FlipX)
             box = box.FlipX();
@@ -45,7 +44,7 @@ public abstract class InteractableActor : ActionActor
 
     public virtual Box GetVulnerabilityBox()
     {
-        Box box = AnimationBoxTable.VulnerabilityBox;
+        Box box = _animationBoxTable.VulnerabilityBox;
 
         if (AnimatedObject.FlipX)
             box = box.FlipX();
@@ -60,12 +59,12 @@ public abstract class InteractableActor : ActionActor
     {
         base.DrawDebugBoxes(animationPlayer);
 
-        _debugAttackBoxAObject.Position = Position + AnimationBoxTable.AttackBox.Position - Scene.Playfield.Camera.Position;
-        _debugAttackBoxAObject.Size = AnimationBoxTable.AttackBox.Size;
+        _debugAttackBoxAObject.Position = Position + _animationBoxTable.AttackBox.Position - Scene.Playfield.Camera.Position;
+        _debugAttackBoxAObject.Size = _animationBoxTable.AttackBox.Size;
         animationPlayer.PlayFront(_debugAttackBoxAObject);
 
-        _debugVulnerabilityBoxAObject.Position = Position + AnimationBoxTable.VulnerabilityBox.Position - Scene.Playfield.Camera.Position;
-        _debugVulnerabilityBoxAObject.Size = AnimationBoxTable.VulnerabilityBox.Size;
+        _debugVulnerabilityBoxAObject.Position = Position + _animationBoxTable.VulnerabilityBox.Position - Scene.Playfield.Camera.Position;
+        _debugVulnerabilityBoxAObject.Size = _animationBoxTable.VulnerabilityBox.Size;
         animationPlayer.PlayFront(_debugVulnerabilityBoxAObject);
     }
 }

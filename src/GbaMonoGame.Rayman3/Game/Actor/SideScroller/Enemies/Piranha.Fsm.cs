@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Piranha
 {
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -33,7 +33,7 @@ public partial class Piranha
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -74,7 +74,7 @@ public partial class Piranha
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

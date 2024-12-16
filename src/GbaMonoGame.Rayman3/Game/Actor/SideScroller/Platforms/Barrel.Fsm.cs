@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Barrel
 {
-    private bool Fsm_WaitForHit(FsmAction action)
+    public bool Fsm_WaitForHit(FsmAction action)
     {
         switch (action)
         {
@@ -32,7 +32,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -83,7 +83,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_FallToBreak(FsmAction action)
+    public bool Fsm_FallToBreak(FsmAction action)
     {
         switch (action)
         {
@@ -108,7 +108,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_Break(FsmAction action)
+    public bool Fsm_Break(FsmAction action)
     {
         switch (action)
         {
@@ -133,7 +133,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_FallIntoWater(FsmAction action)
+    public bool Fsm_FallIntoWater(FsmAction action)
     {
         switch (action)
         {
@@ -182,7 +182,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_LandInWater(FsmAction action)
+    public bool Fsm_LandInWater(FsmAction action)
     {
         switch (action)
         {
@@ -215,7 +215,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_WaitInWater(FsmAction action)
+    public bool Fsm_WaitInWater(FsmAction action)
     {
         switch (action)
         {
@@ -258,7 +258,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_MoveForwardInWater(FsmAction action)
+    public bool Fsm_MoveForwardInWater(FsmAction action)
     {
         switch (action)
         {
@@ -313,7 +313,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_MoveBackwardsInWater(FsmAction action)
+    public bool Fsm_MoveBackwardsInWater(FsmAction action)
     {
         switch (action)
         {
@@ -354,7 +354,7 @@ public partial class Barrel
         return true;
     }
 
-    private bool Fsm_StopMoving(FsmAction action)
+    public bool Fsm_StopMoving(FsmAction action)
     {
         switch (action)
         {

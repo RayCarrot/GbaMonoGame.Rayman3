@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class SpikyBag
 {
-    private bool Fsm_Stationary(FsmAction action)
+    public bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -29,7 +29,7 @@ public partial class SpikyBag
         return true;
     }
 
-    private bool Fsm_BeginSwing(FsmAction action)
+    public bool Fsm_BeginSwing(FsmAction action)
     {
         switch (action)
         {
@@ -59,7 +59,7 @@ public partial class SpikyBag
         return true;
     }
 
-    private bool Fsm_Swing(FsmAction action)
+    public bool Fsm_Swing(FsmAction action)
     {
         switch (action)
         {

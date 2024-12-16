@@ -17,7 +17,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -73,7 +73,7 @@ public partial class FlyingBomb
 
                     Rayman rayman = (Rayman)Scene.MainActor;
 
-                    if (rayman.IsInCutsceneState &&
+                    if (rayman.State == rayman.Fsm_Cutscene &&
                         Math.Abs(Position.X - Scene.MainActor.Position.X) < 300)
                     {
                         Destroyed = true;
@@ -126,7 +126,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -153,7 +153,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Shake(FsmAction action)
+    public bool Fsm_Shake(FsmAction action)
     {
         switch (action)
         {
@@ -199,7 +199,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -271,7 +271,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Stationary(FsmAction action)
+    public bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -306,7 +306,7 @@ public partial class FlyingBomb
         return true;
     }
 
-    private bool Fsm_Destroyed(FsmAction action)
+    public bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {

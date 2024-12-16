@@ -17,14 +17,10 @@ public class FrameMode7 : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Protected Properties
-
-    protected Scene2D Scene { get; set; }
-    protected Action CurrentStepAction { get; set; }
-
-    #endregion
-
     #region Public Properties
+
+    public Scene2D Scene { get; set; }
+    public Action CurrentStepAction { get; set; }
 
     public TransitionsFX TransitionsFX { get; set; }
     public PauseDialog PauseDialog { get; set; }
@@ -98,7 +94,7 @@ public class FrameMode7 : Frame, IHasScene, IHasPlayfield
 
     #region Steps
 
-    protected void Step_Normal()
+    public void Step_Normal()
     {
         Scene.Step();
 

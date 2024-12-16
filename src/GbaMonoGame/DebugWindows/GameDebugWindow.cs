@@ -14,7 +14,7 @@ public class GameDebugWindow : DebugWindow
         GameRenderTarget = gameRenderTarget;
     }
 
-    private Point PreviousWindowSize { get; set; }
+    private Point _previousWindowSize;
 
     public override string Name => "Game";
     public override bool CanClose => false;
@@ -23,7 +23,7 @@ public class GameDebugWindow : DebugWindow
     public void RefreshSize()
     {
         // Reset previous size to force it to refresh
-        PreviousWindowSize = Point.Zero;
+        _previousWindowSize = Point.Zero;
     }
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
@@ -32,9 +32,9 @@ public class GameDebugWindow : DebugWindow
             (int)ImGui.GetWindowContentRegionMax().X - (int)ImGui.GetWindowContentRegionMin().X,
             (int)ImGui.GetWindowContentRegionMax().Y - (int)ImGui.GetWindowContentRegionMin().Y);
 
-        if (newSize != PreviousWindowSize)
+        if (newSize != _previousWindowSize)
         {
-            PreviousWindowSize = newSize;
+            _previousWindowSize = newSize;
             GameRenderTarget.ResizeGame(newSize);
         }
 

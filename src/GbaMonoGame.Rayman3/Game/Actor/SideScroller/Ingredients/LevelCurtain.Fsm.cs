@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class LevelCurtain
 {
-    private bool Fsm_Locked(FsmAction action)
+    public bool Fsm_Locked(FsmAction action)
     {
         switch (action)
         {
@@ -43,7 +43,7 @@ public partial class LevelCurtain
         return true;
     }
 
-    private bool Fsm_Unlocked(FsmAction action)
+    public bool Fsm_Unlocked(FsmAction action)
     {
         switch (action)
         {
@@ -68,7 +68,8 @@ public partial class LevelCurtain
                     }
                     else
                     {
-                        if (ActionId != 33 && !((Rayman)Scene.MainActor).IsInDefaultState)
+                        Rayman rayman = (Rayman)Scene.MainActor;
+                        if (ActionId != 33 && rayman.State != rayman.Fsm_Default)
                             ActionId = 33;
                         else if (IsActionFinished)
                             ActionId = InitialActionId;
@@ -101,7 +102,7 @@ public partial class LevelCurtain
         return true;
     }
 
-    private bool Fsm_EnterCurtain(FsmAction action)
+    public bool Fsm_EnterCurtain(FsmAction action)
     {
         switch (action)
         {
@@ -151,7 +152,7 @@ public partial class LevelCurtain
         return true;
     }
 
-    private bool Fsm_TransitionToLevel(FsmAction action)
+    public bool Fsm_TransitionToLevel(FsmAction action)
     {
         switch (action)
         {
@@ -161,7 +162,7 @@ public partial class LevelCurtain
                 break;
 
             case FsmAction.Step:
-                if (!((World)Frame.Current).IsTransitioningOut())
+                if (((World)Frame.Current).FinishedTransitioningOut)
                 {
                     State.MoveTo(Fsm_Unlocked);
                     return false;

@@ -156,7 +156,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_LevelStart(FsmAction action)
+    public bool Fsm_LevelStart(FsmAction action)
     {
         switch (action)
         {
@@ -223,7 +223,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Default(FsmAction action)
+    public bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -450,7 +450,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_StandingNearEdge(FsmAction action)
+    public bool Fsm_StandingNearEdge(FsmAction action)
     {
         switch (action)
         {
@@ -554,7 +554,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Walk(FsmAction action)
+    public bool Fsm_Walk(FsmAction action)
     {
         switch (action)
         {
@@ -826,7 +826,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Jump(FsmAction action)
+    public bool Fsm_Jump(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -943,7 +943,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_JumpSlide(FsmAction action)
+    public bool Fsm_JumpSlide(FsmAction action)
     {
         switch (action)
         {
@@ -1028,7 +1028,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_HangOnEdge(FsmAction action)
+    public bool Fsm_HangOnEdge(FsmAction action)
     {
         switch (action)
         {
@@ -1091,7 +1091,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {
@@ -1175,7 +1175,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Helico(FsmAction action)
+    public bool Fsm_Helico(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -1275,7 +1275,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_SuperHelico(FsmAction action)
+    public bool Fsm_SuperHelico(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -1511,7 +1511,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_StopHelico(FsmAction action)
+    public bool Fsm_StopHelico(FsmAction action)
     {
         switch (action)
         {
@@ -1568,7 +1568,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_TimeoutHelico(FsmAction action)
+    public bool Fsm_TimeoutHelico(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -1672,7 +1672,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Crouch(FsmAction action)
+    public bool Fsm_Crouch(FsmAction action)
     {
         switch (action)
         {
@@ -1790,7 +1790,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Crawl(FsmAction action)
+    public bool Fsm_Crawl(FsmAction action)
     {
         switch (action)
         {
@@ -1908,7 +1908,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -2220,7 +2220,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_BodyShotAttack(FsmAction action)
+    public bool Fsm_BodyShotAttack(FsmAction action)
     {
         switch (action)
         {
@@ -2261,7 +2261,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_QuickFinishBodyShotAttack(FsmAction action)
+    public bool Fsm_QuickFinishBodyShotAttack(FsmAction action)
     {
         switch (action)
         {
@@ -2290,7 +2290,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_WallJump(FsmAction action)
+    public bool Fsm_WallJump(FsmAction action)
     {
         switch (action)
         {
@@ -2328,7 +2328,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_WallJumpIdle(FsmAction action)
+    public bool Fsm_WallJumpIdle(FsmAction action)
     {
         switch (action)
         {
@@ -2397,7 +2397,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_WallJumpFall(FsmAction action)
+    public bool Fsm_WallJumpFall(FsmAction action)
     {
         switch (action)
         {
@@ -2433,7 +2433,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Climb(FsmAction action)
+    public bool Fsm_Climb(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -2721,7 +2721,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Hang(FsmAction action)
+    public bool Fsm_Hang(FsmAction action)
     {
         switch (action)
         {
@@ -2803,7 +2803,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_HangMove(FsmAction action)
+    public bool Fsm_HangMove(FsmAction action)
     {
         switch (action)
         {
@@ -2884,7 +2884,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Swing(FsmAction action)
+    public bool Fsm_Swing(FsmAction action)
     {
         CameraSideScroller cam = (CameraSideScroller)Scene.Camera;
 
@@ -3066,7 +3066,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Bounce(FsmAction action)
+    public bool Fsm_Bounce(FsmAction action)
     {
         switch (action)
         {
@@ -3100,7 +3100,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_PickUpObject(FsmAction action)
+    public bool Fsm_PickUpObject(FsmAction action)
     {
         switch (action)
         {
@@ -3158,7 +3158,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_CatchObject(FsmAction action)
+    public bool Fsm_CatchObject(FsmAction action)
     {
         switch (action)
         {
@@ -3220,7 +3220,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_CarryObject(FsmAction action)
+    public bool Fsm_CarryObject(FsmAction action)
     {
         switch (action)
         {
@@ -3300,7 +3300,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_WalkWithObject(FsmAction action)
+    public bool Fsm_WalkWithObject(FsmAction action)
     {
         switch (action)
         {
@@ -3401,7 +3401,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_ThrowObject(FsmAction action)
+    public bool Fsm_ThrowObject(FsmAction action)
     {
         switch (action)
         {
@@ -3518,7 +3518,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_FlyWithKeg(FsmAction action)
+    public bool Fsm_FlyWithKeg(FsmAction action)
     {
         switch (action)
         {
@@ -3654,7 +3654,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_EndMap(FsmAction action)
+    public bool Fsm_EndMap(FsmAction action)
     {
         switch (action)
         {
@@ -3909,7 +3909,7 @@ public partial class Rayman
                     }
                     else if (GameInfo.MapId is MapId.World1 or MapId.World2 or MapId.World3 or MapId.World4)
                     {
-                        if (!((World)Frame.Current).IsTransitioningOut())
+                        if (((World)Frame.Current).FinishedTransitioningOut)
                             GameInfo.LoadLevel(MapId.WorldMap);
                     }
                     else
@@ -3929,7 +3929,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -3955,7 +3955,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_HitKnockback(FsmAction action)
+    public bool Fsm_HitKnockback(FsmAction action)
     {
         switch (action)
         {
@@ -4107,7 +4107,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
@@ -4174,7 +4174,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_MultiplayerDying(FsmAction action)
+    public bool Fsm_MultiplayerDying(FsmAction action)
     {
         switch (action)
         {
@@ -4202,7 +4202,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Cutscene(FsmAction action)
+    public bool Fsm_Cutscene(FsmAction action)
     {
         switch (action)
         {
@@ -4258,7 +4258,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_Stop(FsmAction action)
+    public bool Fsm_Stop(FsmAction action)
     {
         switch (action)
         {
@@ -4310,7 +4310,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_EnterLevelCurtain(FsmAction action)
+    public bool Fsm_EnterLevelCurtain(FsmAction action)
     {
         switch (action)
         {
@@ -4334,7 +4334,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_LockedLevelCurtain(FsmAction action)
+    public bool Fsm_LockedLevelCurtain(FsmAction action)
     {
         switch (action)
         {
@@ -4362,7 +4362,7 @@ public partial class Rayman
         return true;
     }
 
-    private bool Fsm_RidingWalkingShell(FsmAction action)
+    public bool Fsm_RidingWalkingShell(FsmAction action)
     {
         switch (action)
         {

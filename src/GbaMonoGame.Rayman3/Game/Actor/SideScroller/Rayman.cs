@@ -163,20 +163,6 @@ public sealed partial class Rayman : MovableActor
     public byte field23_0x98 { get; set; }
     public bool IsSuperHelicoActive { get; set; }
 
-    // TODO: Maybe we should just make the state methods public to avoid this?
-    public bool IsInDefaultState => State == Fsm_Default;
-    public bool IsInCutsceneState => State == Fsm_Cutscene;
-    public bool IsInDyingState => State == Fsm_Dying;
-    public bool IsInEndMapState => State == Fsm_EndMap;
-    public bool IsInCrouchState => State == Fsm_Crouch || State == Fsm_Crawl;
-    public bool IsInHangOnEdgeState => State == Fsm_HangOnEdge;
-
-    // Disable collision when debug mode is on
-    public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
-    public override Box GetVulnerabilityBox() => Debug_NoClip ? Box.Empty : base.GetVulnerabilityBox();
-    public override Box GetDetectionBox() => Debug_NoClip ? Box.Empty : base.GetDetectionBox();
-    public override Box GetActionBox() => Debug_NoClip ? Box.Empty : base.GetActionBox();
-
     private void EnableCheats()
     {
         for (int i = 0; i < 3; i++)
@@ -1667,6 +1653,12 @@ public sealed partial class Rayman : MovableActor
     {
         GameInfo.Powers |= powers;
     }
+
+    // Disable collision when debug mode is on
+    public override Box GetAttackBox() => Debug_NoClip ? Box.Empty : base.GetAttackBox();
+    public override Box GetVulnerabilityBox() => Debug_NoClip ? Box.Empty : base.GetVulnerabilityBox();
+    public override Box GetDetectionBox() => Debug_NoClip ? Box.Empty : base.GetDetectionBox();
+    public override Box GetActionBox() => Debug_NoClip ? Box.Empty : base.GetActionBox();
 
     public override void Init(ActorResource actorResource)
     {

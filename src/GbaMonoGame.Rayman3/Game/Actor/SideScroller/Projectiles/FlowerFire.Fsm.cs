@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class FlowerFire
 {
-    private bool Fsm_Default(FsmAction action)
+    public bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -34,7 +34,7 @@ public partial class FlowerFire
         return true;
     }
 
-    private bool Fsm_End(FsmAction action)
+    public bool Fsm_End(FsmAction action)
     {
         switch (action)
         {

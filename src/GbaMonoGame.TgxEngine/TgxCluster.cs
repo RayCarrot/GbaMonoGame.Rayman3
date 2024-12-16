@@ -21,7 +21,7 @@ public class TgxCluster
 
     private Vector2 _position;
 
-    private List<TgxGameLayer> Layers { get; }
+    public List<TgxGameLayer> Layers { get; }
 
     public Vector2 Size { get; }
 
@@ -50,17 +50,11 @@ public class TgxCluster
     {
         Layers.Add(layer);
     }
-
-    public IReadOnlyList<TgxGameLayer> GetLayers()
-    {
-        return Layers;
-    }
-
+    
     public bool IsOnLimit(Edge limit)
     {
         Vector2 maxPos = MaxPosition;
 
-        // TODO: Doesn't work very well with floats, because it can get stuck on .999. Fix by using our own scrollfactor?
         return limit switch
         {
             // In the game these are == checks, but since we're dealing with floats here they're <= and >=

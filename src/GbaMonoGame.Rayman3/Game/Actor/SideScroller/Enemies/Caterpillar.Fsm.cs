@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Caterpillar
 {
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -60,7 +60,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -130,7 +130,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_AttackReturn(FsmAction action)
+    public bool Fsm_AttackReturn(FsmAction action)
     {
         switch (action)
         {
@@ -180,7 +180,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_Projectile(FsmAction action)
+    public bool Fsm_Projectile(FsmAction action)
     {
         switch (action)
         {
@@ -247,7 +247,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_ProjectileReturn(FsmAction action)
+    public bool Fsm_ProjectileReturn(FsmAction action)
     {
         switch (action)
         {
@@ -319,7 +319,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_PickedUp(FsmAction action)
+    public bool Fsm_PickedUp(FsmAction action)
     {
         switch (action)
         {
@@ -339,7 +339,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_ThrownUp(FsmAction action)
+    public bool Fsm_ThrownUp(FsmAction action)
     {
         switch (action)
         {
@@ -387,7 +387,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_ThrownForward(FsmAction action)
+    public bool Fsm_ThrownForward(FsmAction action)
     {
         switch (action)
         {
@@ -422,7 +422,7 @@ public partial class Caterpillar
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

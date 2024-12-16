@@ -52,7 +52,7 @@ public class PlayfieldDebugWindow : DebugWindow
                 ImGui.Text($"{(i == 0 ? "Main" : $"{i}")}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{String.Join(", ", cluster.GetLayers().Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
+                ImGui.Text($"{String.Join(", ", cluster.Layers.Where(x => x is TgxTileLayer).Select(x => ((TgxTileLayer)x).LayerId))}");
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"{cluster.Position.X:0.00} x {cluster.Position.Y:0.00}");

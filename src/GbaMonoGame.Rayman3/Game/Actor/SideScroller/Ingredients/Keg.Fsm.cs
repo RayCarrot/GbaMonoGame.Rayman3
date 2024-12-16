@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Keg
 {
-    private bool Fsm_WaitingToFall(FsmAction action)
+    public bool Fsm_WaitingToFall(FsmAction action)
     {
         switch (action)
         {
@@ -52,7 +52,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_Falling(FsmAction action)
+    public bool Fsm_Falling(FsmAction action)
     {
         switch (action)
         {
@@ -89,7 +89,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_InitBossMachine(FsmAction action)
+    public bool Fsm_InitBossMachine(FsmAction action)
     {
         switch (action)
         {
@@ -143,7 +143,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -170,7 +170,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_PickedUp(FsmAction action)
+    public bool Fsm_PickedUp(FsmAction action)
     {
         switch (action)
         {
@@ -190,7 +190,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_Drop(FsmAction action)
+    public bool Fsm_Drop(FsmAction action)
     {
         switch (action)
         {
@@ -228,7 +228,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_ThrownUp(FsmAction action)
+    public bool Fsm_ThrownUp(FsmAction action)
     {
         switch (action)
         {
@@ -302,7 +302,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_ThrownForward(FsmAction action)
+    public bool Fsm_ThrownForward(FsmAction action)
     {
         switch (action)
         {
@@ -363,7 +363,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_Respawn(FsmAction action)
+    public bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {
@@ -420,7 +420,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_Fly(FsmAction action)
+    public bool Fsm_Fly(FsmAction action)
     {
         switch (action)
         {
@@ -490,7 +490,7 @@ public partial class Keg
         return true;
     }
 
-    private bool Fsm_FallFromFlight(FsmAction action)
+    public bool Fsm_FallFromFlight(FsmAction action)
     {
         switch (action)
         {

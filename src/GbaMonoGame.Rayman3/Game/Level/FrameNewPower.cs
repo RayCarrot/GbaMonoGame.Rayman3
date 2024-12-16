@@ -16,18 +16,13 @@ public class FrameNewPower : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Private Properties
-
-    private MapId OriginalMapId { get; }
-    private Scene2D Scene { get; set; }
-    private ushort Timer { get; set; }
-    private bool HasStoppedMusic { get; set; }
-
-    #endregion
-
     #region Public Properties
 
+    public MapId OriginalMapId { get; }
+    public Scene2D Scene { get; set; }
     public TransitionsFX TransitionsFX { get; set; }
+    public ushort Timer { get; set; }
+    public bool HasStoppedMusic { get; set; }
 
     #endregion
 

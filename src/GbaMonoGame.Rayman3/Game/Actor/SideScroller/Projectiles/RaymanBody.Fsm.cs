@@ -65,7 +65,7 @@ public partial class RaymanBody
         return true;
     }
 
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -95,7 +95,7 @@ public partial class RaymanBody
         return true;
     }
 
-    private bool Fsm_MoveForward(FsmAction action)
+    public bool Fsm_MoveForward(FsmAction action)
     {
         switch (action)
         {
@@ -162,7 +162,7 @@ public partial class RaymanBody
         return true;
     }
 
-    private bool Fsm_MoveBackwards(FsmAction action)
+    public bool Fsm_MoveBackwards(FsmAction action)
     {
         switch (action)
         {
@@ -264,7 +264,7 @@ public partial class RaymanBody
         return true;
     }
 
-    private bool Fsm_HitEffect(FsmAction action)
+    public bool Fsm_HitEffect(FsmAction action)
     {
         switch (action)
         {

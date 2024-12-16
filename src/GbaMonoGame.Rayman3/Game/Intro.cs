@@ -16,22 +16,22 @@ public class Intro : Frame, IHasPlayfield
 
     #endregion
 
-    #region Public Properties
+    #region Properties
 
-    private AnimationPlayer AnimationPlayer { get; set; }
-    private TgxPlayfield2D Playfield { get; set; }
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public TgxPlayfield2D Playfield { get; set; }
 
-    private Action CurrentStepAction { get; set; }
-    private MenuAll Menu { get; set; }
-    private AnimatedObject PressStartObj { get; set; }
-    private AnimatedObject GameloftLogoObj { get; set; }
-    private AnimatedObject BlackLumAndLogoObj { get; set; }
-    private int Timer { get; set; }
-    private int AlphaTimer { get; set; }
-    private int ScrollY { get; set; }
-    private bool IsSkipping { get; set; }
-    private int PaletteFadeValue { get; set; }
-    private int SkippedTimer { get; set; }
+    public Action CurrentStepAction { get; set; }
+    public MenuAll Menu { get; set; }
+    public AnimatedObject PressStartObj { get; set; }
+    public AnimatedObject GameloftLogoObj { get; set; }
+    public AnimatedObject BlackLumAndLogoObj { get; set; }
+    public int Timer { get; set; }
+    public int AlphaTimer { get; set; }
+    public int ScrollY { get; set; }
+    public bool IsSkipping { get; set; }
+    public int PaletteFadeValue { get; set; }
+    public int SkippedTimer { get; set; }
 
     #endregion
 

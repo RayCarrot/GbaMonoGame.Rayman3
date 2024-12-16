@@ -23,7 +23,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -54,7 +54,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_MoveDown(FsmAction action)
+    public bool Fsm_MoveDown(FsmAction action)
     {
         switch (action)
         {
@@ -99,7 +99,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_MoveUp(FsmAction action)
+    public bool Fsm_MoveUp(FsmAction action)
     {
         switch (action)
         {
@@ -144,7 +144,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -175,7 +175,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_TurnAround(FsmAction action)
+    public bool Fsm_TurnAround(FsmAction action)
     {
         switch (action)
         {
@@ -211,7 +211,7 @@ public partial class ZombieChicken
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

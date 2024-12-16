@@ -18,12 +18,28 @@ public sealed partial class MovingPlatform : MovableActor
         Setup();
     }
 
-    private readonly Dictionary<Action, AcceleratedInfo> AcceleratedInfos = new()
+    private readonly Dictionary<Action, AcceleratedInfo> _acceleratedInfos = new()
     {
-        [Action.MoveAccelerated_Left] = new AcceleratedInfo(-0x800 / (float)0x10000, -0x500 / (float)0x10000, new Vector2(-24, 0), PhysicalTypeValue.MovingPlatform_Right),
-        [Action.MoveAccelerated_Right] = new AcceleratedInfo(0x800 / (float)0x10000, 0x500 / (float)0x10000, new Vector2(24, 0), PhysicalTypeValue.MovingPlatform_Left),
-        [Action.MoveAccelerated_Up] = new AcceleratedInfo(-0x800 / (float)0x10000, -0x500 / (float)0x10000, new Vector2(0, -24), PhysicalTypeValue.MovingPlatform_Down),
-        [Action.MoveAccelerated_Down] = new AcceleratedInfo(0x800 / (float)0x10000, 0x500 / (float)0x10000, new Vector2(0, 24), PhysicalTypeValue.MovingPlatform_Up),
+        [Action.MoveAccelerated_Left] = new AcceleratedInfo(
+            Acceleration: MathHelpers.FromFixedPoint(-0x800), 
+            Deceleration: MathHelpers.FromFixedPoint(-0x500), 
+            DecelerationDistance: new Vector2(-24, 0), 
+            NextType: PhysicalTypeValue.MovingPlatform_Right),
+        [Action.MoveAccelerated_Right] = new AcceleratedInfo(
+            Acceleration: MathHelpers.FromFixedPoint(0x800), 
+            Deceleration: MathHelpers.FromFixedPoint(0x500), 
+            DecelerationDistance: new Vector2(24, 0), 
+            NextType: PhysicalTypeValue.MovingPlatform_Left),
+        [Action.MoveAccelerated_Up] = new AcceleratedInfo(
+            Acceleration: MathHelpers.FromFixedPoint(-0x800), 
+            Deceleration: MathHelpers.FromFixedPoint(-0x500), 
+            DecelerationDistance: new Vector2(0, -24), 
+            NextType: PhysicalTypeValue.MovingPlatform_Down),
+        [Action.MoveAccelerated_Down] = new AcceleratedInfo(
+            Acceleration: MathHelpers.FromFixedPoint(0x800), 
+            Deceleration: MathHelpers.FromFixedPoint(0x500), 
+            DecelerationDistance: new Vector2(0, 24), 
+            NextType: PhysicalTypeValue.MovingPlatform_Up),
     };
 
     public ActorResource Resource { get; }
@@ -115,7 +131,7 @@ public sealed partial class MovingPlatform : MovableActor
         Action currentActionId = ActionId == Action.Impact ? ActionAfterImpact : ActionId;
 
         PhysicalTypeValue[] rotationTable =
-        {
+        [
             PhysicalTypeValue.MovingPlatform_DownLeft,
             PhysicalTypeValue.MovingPlatform_Down,
             PhysicalTypeValue.MovingPlatform_DownRight,
@@ -123,8 +139,8 @@ public sealed partial class MovingPlatform : MovableActor
             PhysicalTypeValue.MovingPlatform_UpRight,
             PhysicalTypeValue.MovingPlatform_Up,
             PhysicalTypeValue.MovingPlatform_UpLeft,
-            PhysicalTypeValue.MovingPlatform_Left,
-        };
+            PhysicalTypeValue.MovingPlatform_Left
+        ];
 
         int tableStartIndex = currentActionId switch
         {

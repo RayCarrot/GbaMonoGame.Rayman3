@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Machine
 {
-    private bool Fsm_Init(FsmAction action)
+    public bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -72,7 +72,7 @@ public partial class Machine
         return true;
     }
 
-    private bool Fsm_CogWheelSpinning(FsmAction action)
+    public bool Fsm_CogWheelSpinning(FsmAction action)
     {
         switch (action)
         {
@@ -123,7 +123,7 @@ public partial class Machine
         return true;
     }
 
-    private bool Fsm_PartDestroyed(FsmAction action)
+    public bool Fsm_PartDestroyed(FsmAction action)
     {
         switch (action)
         {
@@ -159,7 +159,7 @@ public partial class Machine
         return true;
     }
 
-    private bool Fsm_CannonIntro(FsmAction action)
+    public bool Fsm_CannonIntro(FsmAction action)
     {
         switch (action)
         {
@@ -220,7 +220,7 @@ public partial class Machine
         return true;
     }
 
-    private bool Fsm_CannonFire(FsmAction action)
+    public bool Fsm_CannonFire(FsmAction action)
     {
         switch (action)
         {
@@ -270,7 +270,8 @@ public partial class Machine
                              (Timer > 380 && BossHealth == 2) || 
                              (Timer > 330 && BossHealth == 1))
                     {
-                        if (!((Rayman)Scene.MainActor).IsInCutsceneState)
+                        Rayman rayman = (Rayman)Scene.MainActor;
+                        if (rayman.State != rayman.Fsm_Cutscene)
                         {
                             ActionId = Action.CannonBeginFire;
                             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MachAtk1_Mix01);
@@ -294,7 +295,7 @@ public partial class Machine
         return true;
     }
 
-    private bool Fsm_CannonDestroyed(FsmAction action)
+    public bool Fsm_CannonDestroyed(FsmAction action)
     {
         switch (action)
         {
@@ -310,7 +311,7 @@ public partial class Machine
                 if (Scene.MainActor.Speed.Y == 0)
                 {
                     Rayman rayman = (Rayman)Scene.MainActor;
-                    if (!rayman.IsInDyingState && !rayman.IsInEndMapState)
+                    if (rayman.State != rayman.Fsm_Dying && rayman.State != rayman.Fsm_EndMap)
                         rayman.ProcessMessage(this, Message.Main_LevelEnd);
                 }
 
@@ -326,9 +327,9 @@ public partial class Machine
                     {
                         // TODO: This makes no sense - why is only X set on certain frames??
                         if (BossHealth % 4 == 0 && BossHealth < 30)
-                            explosion.Position = explosion.Position with { X = Position.X + 16 + ExplosionOffsets[BossHealth % 8].X };
+                            explosion.Position = explosion.Position with { X = Position.X + 16 + _explosionOffsets[BossHealth % 8].X };
                         
-                        explosion.Position = explosion.Position with { Y = Position.Y + 32 - ExplosionOffsets[BossHealth % 8].Y };
+                        explosion.Position = explosion.Position with { Y = Position.Y + 32 - _explosionOffsets[BossHealth % 8].Y };
                     }
 
                     BossHealth++;

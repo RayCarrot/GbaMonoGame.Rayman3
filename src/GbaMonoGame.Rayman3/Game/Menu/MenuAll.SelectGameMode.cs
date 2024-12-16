@@ -7,14 +7,14 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class MenuAll
 {
-    #region Private Properties
+    #region Properties
 
-    private int GameLogoYOffset { get; set; }
-    private int OtherGameLogoValue { get; set; }
-    private int GameLogoSinValue { get; set; }
-    private int GameLogoMovementXOffset { get; set; }
-    private int GameLogoMovementWidth { get; set; }
-    private int GameLogoMovementXCountdown { get; set; }
+    public int GameLogoYOffset { get; set; }
+    public int OtherGameLogoValue { get; set; }
+    public int GameLogoSinValue { get; set; }
+    public int GameLogoMovementXOffset { get; set; }
+    public int GameLogoMovementWidth { get; set; }
+    public int GameLogoMovementXCountdown { get; set; }
 
     #endregion
 

@@ -16,7 +16,7 @@ public class LoggerDebugWindow : DebugWindow
         Logger.Log += Logger_Log;
     }
 
-    private readonly List<Log> _logs = new();
+    private readonly List<Log> _logs = [];
 
     private readonly Dictionary<LogType, Vector4> _colors = new()
     {

@@ -22,7 +22,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_PreInit(FsmAction action)
+    public bool Fsm_PreInit(FsmAction action)
     {
         switch (action)
         {
@@ -44,7 +44,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_Init(FsmAction action)
+    public bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -71,7 +71,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_WaitToSpawn(FsmAction action)
+    public bool Fsm_WaitToSpawn(FsmAction action)
     {
         switch (action)
         {
@@ -97,7 +97,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_MoveIn(FsmAction action)
+    public bool Fsm_MoveIn(FsmAction action)
     {
         switch (action)
         {
@@ -220,7 +220,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_Talk(FsmAction action)
+    public bool Fsm_Talk(FsmAction action)
     {
         switch (action)
         {
@@ -302,7 +302,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_AvoidAttack(FsmAction action)
+    public bool Fsm_AvoidAttack(FsmAction action)
     {
         switch (action)
         {
@@ -351,7 +351,7 @@ public partial class Murfy
         return true;
     }
 
-    private bool Fsm_Leave(FsmAction action)
+    public bool Fsm_Leave(FsmAction action)
     {
         switch (action)
         {

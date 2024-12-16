@@ -16,6 +16,7 @@ public class TextureScreenRenderer : IScreenRenderer
     public Rectangle TextureRectangle { get; set; }
 
     public Vector2 GetSize(GfxScreen screen) => TextureRectangle.Size.ToVector2();
+
     public void Draw(GfxRenderer renderer, GfxScreen screen, Vector2 position, Color color)
     {
         renderer.BeginRender(new RenderOptions(screen.IsAlphaBlendEnabled, PaletteTexture, screen.Camera));

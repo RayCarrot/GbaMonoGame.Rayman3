@@ -32,7 +32,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_Intro(FsmAction action)
+    public bool Fsm_Intro(FsmAction action)
     {
         switch (action)
         {
@@ -98,7 +98,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_Default(FsmAction action)
+    public bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -175,7 +175,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_BeginMoveAway(FsmAction action)
+    public bool Fsm_BeginMoveAway(FsmAction action)
     {
         switch (action)
         {
@@ -211,7 +211,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_MoveAway(FsmAction action)
+    public bool Fsm_MoveAway(FsmAction action)
     {
         switch (action)
         {
@@ -312,7 +312,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_MoveBack(FsmAction action)
+    public bool Fsm_MoveBack(FsmAction action)
     {
         switch (action)
         {
@@ -348,7 +348,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_CreateSkullPlatform(FsmAction action)
+    public bool Fsm_CreateSkullPlatform(FsmAction action)
     {
         switch (action)
         {
@@ -465,7 +465,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -616,7 +616,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_SwitchSide(FsmAction action)
+    public bool Fsm_SwitchSide(FsmAction action)
     {
         switch (action)
         {
@@ -683,7 +683,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_StandAside(FsmAction action)
+    public bool Fsm_StandAside(FsmAction action)
     {
         switch (action)
         {
@@ -721,7 +721,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_CheckComplete(FsmAction action)
+    public bool Fsm_CheckComplete(FsmAction action)
     {
         switch (action)
         {
@@ -737,10 +737,11 @@ public partial class Jano
                 if (Position.X < 1900)
                     Position += new Vector2(2, 0);
 
+                Rayman rayman = (Rayman)Scene.MainActor;
                 if (CheckCurrentPhase() == 4 && 
                     Position.X > 1750 && 
                     Scene.MainActor.Speed.Y == 0 &&
-                    !((Rayman)Scene.MainActor).IsInHangOnEdgeState)
+                    rayman.State != rayman.Fsm_HangOnEdge)
                 {
                     State.MoveTo(Fsm_Complete);
                     return false;
@@ -761,7 +762,7 @@ public partial class Jano
         return true;
     }
 
-    private bool Fsm_Complete(FsmAction action)
+    public bool Fsm_Complete(FsmAction action)
     {
         switch (action)
         {

@@ -44,7 +44,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {
@@ -85,7 +85,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -133,7 +133,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Jump(FsmAction action)
+    public bool Fsm_Jump(FsmAction action)
     {
         switch (action)
         {
@@ -162,12 +162,13 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
             case FsmAction.Init:
-                HighShot = Position.Y >= Scene.MainActor.Position.Y && !((Rayman)Scene.MainActor).IsInCrouchState;
+                Rayman rayman = (Rayman)Scene.MainActor;
+                HighShot = Position.Y >= Scene.MainActor.Position.Y && rayman.State != rayman.Fsm_Crouch && rayman.State != rayman.Fsm_Crawl;
 
                 if (HighShot)
                     ActionId = Position.X - Scene.MainActor.Position.X < 0 ? Action.ShootHigh_Right : Action.ShootHigh_Left;
@@ -205,7 +206,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -241,7 +242,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_HitKnockBack(FsmAction action)
+    public bool Fsm_HitKnockBack(FsmAction action)
     {
         switch (action)
         {
@@ -286,7 +287,7 @@ public partial class SilverPirate
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

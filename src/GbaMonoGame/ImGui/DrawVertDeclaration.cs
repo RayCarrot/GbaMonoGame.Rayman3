@@ -5,10 +5,6 @@ namespace GbaMonoGame;
 
 public static class DrawVertDeclaration
 {
-    public static readonly VertexDeclaration Declaration;
-
-    public static readonly int Size;
-
     static DrawVertDeclaration()
     {
         unsafe { Size = sizeof(ImDrawVert); }
@@ -26,4 +22,7 @@ public static class DrawVertDeclaration
             new VertexElement(16, VertexElementFormat.Color, VertexElementUsage.Color, 0)
         );
     }
+
+    public static VertexDeclaration Declaration { get; }
+    public static int Size { get; }
 }

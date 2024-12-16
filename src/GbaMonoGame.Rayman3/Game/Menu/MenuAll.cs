@@ -53,48 +53,44 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     #endregion
 
-    #region Private Properties
-
-    private AnimationPlayer AnimationPlayer { get; set; }
-    private TgxPlayfield2D Playfield { get; set; }
-    private TransitionsFX TransitionsFX { get; set; }
-
-    private MenuData Data { get; set; }
-    private Action CurrentStepAction { get; set; }
-    private Action NextStepAction { get; set; }
-
-    private int PrevSelectedOption { get; set; }
-    private int SelectedOption { get; set; }
-    private int StemMode { get; set; }
-
-    private int TransitionValue { get; set; }
-    private uint PrevGameTime { get; set; }
-    private int WheelRotation { get; set; }
-    private int SteamTimer { get; set; }
-    
-    private Page InitialPage { get; set; }
-
-    private bool IsLoadingMultiplayerMap { get; set; }
-
-    private bool HasLoadedGameInfo { get; set; }
-    private Slot[] Slots { get; }
-    private bool IsStartingGame { get; set; }
-
-    private bool FinishedLyChallenge1 { get; set; }
-    private bool FinishedLyChallenge2 { get; set; }
-    private bool HasAllCages { get; set; }
-
-    #endregion
-
-    #region Interface Properties
+    #region Properties
 
     TgxPlayfield IHasPlayfield.Playfield => Playfield;
 
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public TgxPlayfield2D Playfield { get; set; }
+    public TransitionsFX TransitionsFX { get; set; }
+
+    public MenuData Data { get; set; }
+    public Action CurrentStepAction { get; set; }
+    public Action NextStepAction { get; set; }
+
+    public int PrevSelectedOption { get; set; }
+    public int SelectedOption { get; set; }
+    public int StemMode { get; set; }
+
+    public int TransitionValue { get; set; }
+    public uint PrevGameTime { get; set; }
+    public int WheelRotation { get; set; }
+    public int SteamTimer { get; set; }
+
+    public Page InitialPage { get; set; }
+
+    public bool IsLoadingMultiplayerMap { get; set; }
+
+    public bool HasLoadedGameInfo { get; set; }
+    public Slot[] Slots { get; }
+    public bool IsStartingGame { get; set; }
+
+    public bool FinishedLyChallenge1 { get; set; }
+    public bool FinishedLyChallenge2 { get; set; }
+    public bool HasAllCages { get; set; }
+
     #endregion
 
-    #region Private Methods
+    #region Methods
 
-    private static RGB555Color[] GetBackgroundPalette(int index)
+    public static RGB555Color[] GetBackgroundPalette(int index)
     {
         RGB555Color[] colors = index switch
         {
@@ -131,7 +127,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         return allColors;
     }
 
-    private void SetBackgroundPalette(int index)
+    public void SetBackgroundPalette(int index)
     {
         GbaVram vram = Playfield.Vram;
         TextureScreenRenderer renderer = (TextureScreenRenderer)Playfield.TileLayers[0].Screen.Renderer;
@@ -145,13 +141,13 @@ public partial class MenuAll : Frame, IHasPlayfield
             PaletteIndex: 0);
     }
 
-    private void ResetStem()
+    public void ResetStem()
     {
         StemMode = 1;
         Data.Stem.CurrentAnimation = 12;
     }
 
-    private void ManageCursorAndStem()
+    public void ManageCursorAndStem()
     {
         if (StemMode == 0)
         {
@@ -256,7 +252,7 @@ public partial class MenuAll : Frame, IHasPlayfield
             AnimationPlayer.Play(Data.Cursor);
     }
 
-    private void TransitionOutCursorAndStem()
+    public void TransitionOutCursorAndStem()
     {
         if (StemMode is 2 or 3)
         {
@@ -272,7 +268,7 @@ public partial class MenuAll : Frame, IHasPlayfield
             Data.Stem.CurrentAnimation = 15;
     }
 
-    private void SelectOption(int selectedOption, bool playSound)
+    public void SelectOption(int selectedOption, bool playSound)
     {
         if (StemMode is 2 or 3)
         {
@@ -283,10 +279,6 @@ public partial class MenuAll : Frame, IHasPlayfield
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__MenuMove);
         }
     }
-
-    #endregion
-
-    #region Public Methods
 
     public void LoadGameInfo()
     {
@@ -463,7 +455,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         NGage, // TODO: What is this? N-Gage loads this first
     }
 
-    private record Slot(int LumsCount, int CagesCount, int LivesCount);
+    public record Slot(int LumsCount, int CagesCount, int LivesCount);
 
     #endregion
 }

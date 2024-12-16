@@ -14,8 +14,8 @@ public class AnimatedTilekitManager
         TileRenderers = new List<TileMapScreenRenderer>();
     }
 
-    private TileKitAnimation[] Animations { get; }
-    private List<TileMapScreenRenderer> TileRenderers { get; }
+    public TileKitAnimation[] Animations { get; }
+    public List<TileMapScreenRenderer> TileRenderers { get; }
 
     public void AddRenderer(TileMapScreenRenderer renderer)
     {
@@ -46,17 +46,5 @@ public class AnimatedTilekitManager
                 }
             }
         }
-    }
-
-    private class TileKitAnimation
-    {
-        public TileKitAnimation(AnimatedTileKit tileKit)
-        {
-            TileKit = tileKit;
-        }
-
-        public AnimatedTileKit TileKit { get; }
-        public byte Frame { get; set; }
-        public byte Timer { get; set; }
     }
 }

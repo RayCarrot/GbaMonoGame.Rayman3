@@ -29,7 +29,7 @@ public partial class SpikyFlyingBomb
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -71,7 +71,7 @@ public partial class SpikyFlyingBomb
         return true;
     }
 
-    private bool Fsm_Destroyed(FsmAction action)
+    public bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {
@@ -100,12 +100,12 @@ public partial class SpikyFlyingBomb
     }
 
     // FUN_08049b58
-    private bool FUN_10010ac4(FsmAction action)
+    public bool FUN_10010ac4(FsmAction action)
     {
         throw new NotImplementedException();
     }
 
-    private bool Fsm_Stationary(FsmAction action)
+    public bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {

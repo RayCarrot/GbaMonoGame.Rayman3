@@ -8,29 +8,29 @@ namespace GbaMonoGame.Rayman3;
 public class FramesDebugMenu : DebugMenu
 {
     private FrameMenuItem[] Menu { get; } =
-    {
+    [
         new("Intro", () => new Intro()),
         new("GameCubeMenu", () => new GameCubeMenu()),
         new("Game Over", () => new GameOver()),
         new("Level Select", () => new LevelSelect()),
-        new("Menu", null, new FrameMenuItem[]
-        {
+        new("Menu", null, 
+        [
             new("Language", () => new MenuAll(MenuAll.Page.SelectLanguage)),
             new("Game Mode", () => new MenuAll(MenuAll.Page.SelectGameMode)),
             new("Options", () => new MenuAll(MenuAll.Page.Options)),
             new("Multiplayer", () => new MenuAll(MenuAll.Page.Multiplayer)),
-            new("Multiplayer Lost Connection", () => new MenuAll(MenuAll.Page.MultiplayerLostConnection)),
-        }),
-        new("Story", null, new FrameMenuItem[]
-        {
+            new("Multiplayer Lost Connection", () => new MenuAll(MenuAll.Page.MultiplayerLostConnection))
+        ]),
+        new("Story", null, 
+        [
             new("NGage Splash Screens", () => new NGageSplashScreensAct()),
             new("Act #1", () => new Act1()),
             new("Act #2", () => new Act2()),
             new("Act #3", () => new Act3()),
             new("Act #4", () => new Act4()),
             new("Act #5", () => new Act5()),
-            new("Act #6", () => new Act6()),
-        }),
+            new("Act #6", () => new Act6())
+        ]),
         new("Levels", null, 
             GameInfo.Levels.
             Select((_, i) => new FrameMenuItem(((MapId)i).ToString(), () =>
@@ -81,8 +81,8 @@ public class FramesDebugMenu : DebugMenu
                 MapId.WorldMap => true,
                 _ => false
             })).
-            ToArray()),
-    };
+            ToArray())
+    ];
 
     public override string Name => "Frames";
 

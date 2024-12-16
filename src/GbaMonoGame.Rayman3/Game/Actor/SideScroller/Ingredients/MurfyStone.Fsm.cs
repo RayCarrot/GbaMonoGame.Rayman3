@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class MurfyStone
 {
-    private bool Fsm_Default(FsmAction action)
+    public bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {
@@ -23,7 +23,7 @@ public partial class MurfyStone
                         
                         Timer = 0;
 
-                        if (Scene.MainActor is Rayman { IsInDefaultState: true })
+                        if (Scene.MainActor is Rayman rayman && rayman.State == rayman.Fsm_Default)
                             RaymanIdleTimer++;
                         else
                             RaymanIdleTimer = 0;
@@ -45,7 +45,7 @@ public partial class MurfyStone
                 }
                 else
                 {
-                    if (HasTriggered && Scene.MainActor is not Rayman { IsInDefaultState: true })
+                    if (HasTriggered && (Scene.MainActor is not Rayman rayman || rayman.State != rayman.Fsm_Default))
                     {
                         HasTriggered = false;
                         RaymanIdleTimer = 0;

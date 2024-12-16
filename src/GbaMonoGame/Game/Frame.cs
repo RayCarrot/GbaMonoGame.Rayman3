@@ -2,7 +2,7 @@
 
 /// <summary>
 /// A frame is the most important object in this engine, determining how the game loop is handled. Only one frame
-/// object can be active at once and is used for the current state of the game, such as a level, menu, cutscene etc.
+/// instance can be active at once and is used for the current state of the game, such as a level, menu, cutscene etc.
 /// </summary>
 public abstract class Frame
 {

@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Sphere
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -32,7 +32,7 @@ public partial class Sphere
         return true;
     }
 
-    private bool Fsm_PickedUp(FsmAction action)
+    public bool Fsm_PickedUp(FsmAction action)
     {
         switch (action)
         {
@@ -52,7 +52,7 @@ public partial class Sphere
         return true;
     }
 
-    private bool Fsm_Drop(FsmAction action)
+    public bool Fsm_Drop(FsmAction action)
     {
         switch (action)
         {
@@ -80,7 +80,7 @@ public partial class Sphere
         return true;
     }
 
-    private bool Fsm_ThrownUp(FsmAction action)
+    public bool Fsm_ThrownUp(FsmAction action)
     {
         switch (action)
         {
@@ -141,7 +141,7 @@ public partial class Sphere
         return true;
     }
 
-    private bool Fsm_ThrownForward(FsmAction action)
+    public bool Fsm_ThrownForward(FsmAction action)
     {
         switch (action)
         {
@@ -193,7 +193,7 @@ public partial class Sphere
         return true;
     }
 
-    private bool Fsm_Respawn(FsmAction action)
+    public bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {

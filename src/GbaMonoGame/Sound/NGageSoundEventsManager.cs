@@ -24,7 +24,7 @@ public class NGageSoundEventsManager : SoundEventsManager
 
             if (loadedSounds.TryGetValue(evt.SoundResourceId, out SoundEffect snd))
             {
-                SoundResources[evt.SoundResourceId] = snd;
+                _soundResources[evt.SoundResourceId] = snd;
             }
             else
             {
@@ -42,18 +42,18 @@ public class NGageSoundEventsManager : SoundEventsManager
 
                 snd.Name = songTable[evt.SoundResourceId];
                 loadedSounds[evt.SoundResourceId] = snd;
-                SoundResources[evt.SoundResourceId] = snd;
+                _soundResources[evt.SoundResourceId] = snd;
             }
         }
     }
 
     #endregion
 
-    #region Private Properties
+    #region Private Fields
 
-    private Dictionary<int, SoundEffect> SoundResources { get; } = new();
-    private ActiveSong ActiveMusic { get; set; }
-    private Dictionary<int, ActiveSong> ActiveSoundEffects { get; } = new(); // On N-Gage this is max 64 songs, but we don't need that limit
+    private readonly Dictionary<int, SoundEffect> _soundResources = new();
+    private ActiveSong _activeMusic;
+    private readonly Dictionary<int, ActiveSong> _activeSoundEffects = new(); // On N-Gage this is max 64 songs, but we don't need that limit
 
     #endregion
 
@@ -70,7 +70,7 @@ public class NGageSoundEventsManager : SoundEventsManager
     {
         // TODO: If song does not loop and prev song loops then the game saves it and continues playing when current song stops (see spheres in bad dreams)
 
-        SoundEffect sndEffect = SoundResources[evt.SoundResourceId];
+        SoundEffect sndEffect = _soundResources[evt.SoundResourceId];
         SoundEffectInstance sndEffectInstance = sndEffect.CreateInstance();
 
         ActiveSong song = new()
@@ -88,16 +88,16 @@ public class NGageSoundEventsManager : SoundEventsManager
         // Only one music track can play at a time
         if (evt.IsMusic)
         {
-            ActiveMusic?.SoundInstance.Dispose();
-            ActiveMusic = song;
+            _activeMusic?.SoundInstance.Dispose();
+            _activeMusic = song;
         }
         // Only one sound effect of the same type can play at a time
         else
         {
-            if (ActiveSoundEffects.TryGetValue(evt.SoundResourceId, out ActiveSong existingSong))
+            if (_activeSoundEffects.TryGetValue(evt.SoundResourceId, out ActiveSong existingSong))
                 existingSong.SoundInstance.Dispose();
 
-            ActiveSoundEffects[evt.SoundResourceId] = song;
+            _activeSoundEffects[evt.SoundResourceId] = song;
         }
 
         UpdateVolume(song);
@@ -108,18 +108,18 @@ public class NGageSoundEventsManager : SoundEventsManager
     {
         if (evt.IsMusic)
         {
-            if (ActiveMusic != null && ActiveMusic.SoundResourceId == evt.SoundResourceId)
+            if (_activeMusic != null && _activeMusic.SoundResourceId == evt.SoundResourceId)
             {
-                ActiveMusic.SoundInstance.Dispose();
-                ActiveMusic = null;
+                _activeMusic.SoundInstance.Dispose();
+                _activeMusic = null;
             }
         }
         else
         {
-            if (ActiveSoundEffects.TryGetValue(evt.SoundResourceId, out ActiveSong sfx))
+            if (_activeSoundEffects.TryGetValue(evt.SoundResourceId, out ActiveSong sfx))
             {
                 sfx.SoundInstance.Dispose();
-                ActiveSoundEffects.Remove(evt.SoundResourceId);
+                _activeSoundEffects.Remove(evt.SoundResourceId);
             }
         }
     }
@@ -148,25 +148,25 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     protected override void RefreshEventSetImpl()
     {
-        if (ActiveMusic != null)
+        if (_activeMusic != null)
         {
-            UpdateVolume(ActiveMusic);
+            UpdateVolume(_activeMusic);
 
-            if (ActiveMusic.SoundInstance.State == SoundState.Stopped && !ActiveMusic.Loop)
+            if (_activeMusic.SoundInstance.State == SoundState.Stopped && !_activeMusic.Loop)
             {
-                ActiveMusic.SoundInstance.Dispose();
-                ActiveMusic = null;
+                _activeMusic.SoundInstance.Dispose();
+                _activeMusic = null;
             }
         }
 
-        foreach (ActiveSong sfx in ActiveSoundEffects.Values.ToArray())
+        foreach (ActiveSong sfx in _activeSoundEffects.Values.ToArray())
         {
             UpdateVolume(sfx);
 
             if (sfx.SoundInstance.State == SoundState.Stopped && !sfx.Loop)
             {
                 sfx.SoundInstance.Dispose();
-                ActiveSoundEffects.Remove(sfx.SoundResourceId);
+                _activeSoundEffects.Remove(sfx.SoundResourceId);
             }
         }
     }
@@ -194,9 +194,9 @@ public class NGageSoundEventsManager : SoundEventsManager
         NGageSoundEvent evt = Engine.Loader.NGage_SoundEvents[soundEventId];
 
         if (evt.IsMusic)
-            return ActiveMusic != null && ActiveMusic.SoundResourceId == evt.SoundResourceId;
+            return _activeMusic != null && _activeMusic.SoundResourceId == evt.SoundResourceId;
         else
-            return ActiveSoundEffects.ContainsKey(evt.SoundResourceId);
+            return _activeSoundEffects.ContainsKey(evt.SoundResourceId);
     }
 
     protected override void SetSoundPitchImpl(short soundEventId, float pitch) { }
@@ -221,23 +221,23 @@ public class NGageSoundEventsManager : SoundEventsManager
 
     protected override void ForcePauseAllSongsImpl()
     {
-        ActiveMusic?.SoundInstance.Pause();
+        _activeMusic?.SoundInstance.Pause();
 
-        foreach (ActiveSong sfx in ActiveSoundEffects.Values)
+        foreach (ActiveSong sfx in _activeSoundEffects.Values)
             sfx.SoundInstance.Pause();
     }
 
     protected override void ForceResumeAllSongsImpl()
     {
-        ActiveMusic?.SoundInstance.Resume();
+        _activeMusic?.SoundInstance.Resume();
 
-        foreach (ActiveSong sfx in ActiveSoundEffects.Values)
+        foreach (ActiveSong sfx in _activeSoundEffects.Values)
             sfx.SoundInstance.Resume();
     }
 
     protected override SoundEffect GetSoundByNameImpl(string name)
     {
-        return SoundResources.Values.First(x => x.Name == name);
+        return _soundResources.Values.First(x => x.Name == name);
     }
 
     protected override void DrawDebugLayoutImpl()
@@ -250,24 +250,24 @@ public class NGageSoundEventsManager : SoundEventsManager
             ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableHeadersRow();
 
-            if (ActiveMusic != null)
+            if (_activeMusic != null)
             {
                 ImGui.TableNextRow();
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{ActiveMusic.SoundResourceId}");
+                ImGui.Text($"{_activeMusic.SoundResourceId}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{ActiveMusic.SoundEffect.Name}");
+                ImGui.Text($"{_activeMusic.SoundEffect.Name}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{ActiveMusic.SoundInstance.State}");
+                ImGui.Text($"{_activeMusic.SoundInstance.State}");
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"{ActiveMusic.SoundEffect.Duration.TotalSeconds:F}");
+                ImGui.Text($"{_activeMusic.SoundEffect.Duration.TotalSeconds:F}");
             }
 
-            foreach (ActiveSong playingSong in ActiveSoundEffects.Values)
+            foreach (ActiveSong playingSong in _activeSoundEffects.Values)
             {
                 ImGui.TableNextRow();
 

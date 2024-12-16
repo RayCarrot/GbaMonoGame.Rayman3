@@ -27,7 +27,7 @@ public sealed partial class CameraSideScroller : CameraActor2D
     }
 
     private static readonly float[] ShakeTable =
-    {
+    [
         1.00f, 2.00f, 4.00f, 6.00f,
         6.00f, 6.00f, 6.00f, 6.00f,
         5.75f, 5.50f, 5.25f, 5.00f,
@@ -35,8 +35,8 @@ public sealed partial class CameraSideScroller : CameraActor2D
         3.75f, 3.50f, 3.25f, 3.00f,
         2.75f, 2.50f, 2.25f, 2.00f,
         1.75f, 1.50f, 1.25f, 1.00f,
-        0.75f, 0.50f, 0.25f, 0.00f,
-    };
+        0.75f, 0.50f, 0.25f, 0.00f
+    ];
 
     private float ScaledHorizontalOffset => ScaleXValue(HorizontalOffset);
     private float ScaledTargetY => ScaleYValue(TargetY);

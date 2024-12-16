@@ -15,35 +15,31 @@ public partial class TextBoxDialog : Dialog
 
     #endregion
 
-    #region Private Properties
+    #region Public Properties
 
-    private AnimatedObject Canvas { get; set; }
-    private AnimatedObject RaymanIcon { get; set; }
-    private SpriteTextObject[] TextObjects { get; set; } // One for every line of text
-    private AnimatedObject MurfyIcon { get; set; }
-    private AnimatedObject LyIcon { get; set; }
-    private AnimatedObject TeensiesIcon { get; set; }
+    public AnimatedObject Canvas { get; set; }
+    public AnimatedObject RaymanIcon { get; set; }
+    public SpriteTextObject[] TextObjects { get; set; } // One for every line of text
+    public AnimatedObject MurfyIcon { get; set; }
+    public AnimatedObject LyIcon { get; set; }
+    public AnimatedObject TeensiesIcon { get; set; }
 
-    private bool ShouldPlayedLySound { get; set; } = true;
-    private bool ShouldPlayRaymanSound { get; set; } = true;
-    private bool ShouldPlayedMurfySound { get; set; } = true;
-    private int OffsetY { get; set; } = 45;
-    private int IconAnimationTimer { get; set; } = 60;
-    private byte Timer { get; set; }
-    private Rayman3SoundEvent NextSoundEvent { get; set; } = Rayman3SoundEvent.None;
-    private float TextTransitionValue { get; set; } = 1;
-    private bool IsShowingCutsceneCharacter { get; set; }
-    private bool NextText { get; set; }
+    public bool ShouldPlayedLySound { get; set; } = true;
+    public bool ShouldPlayRaymanSound { get; set; } = true;
+    public bool ShouldPlayedMurfySound { get; set; } = true;
+    public int OffsetY { get; set; } = 45;
+    public int IconAnimationTimer { get; set; } = 60;
+    public byte Timer { get; set; }
+    public Rayman3SoundEvent NextSoundEvent { get; set; } = Rayman3SoundEvent.None;
+    public float TextTransitionValue { get; set; } = 1;
+    public bool IsShowingCutsceneCharacter { get; set; }
+    public bool NextText { get; set; }
 
-    private int TextBankId { get; set; }
-    private int TextId { get; set; }
-    private TextBoxCutsceneCharacter CutsceneCharacter { get; set; }
-    private int CurrentTextLine { get; set; }
-    private string[] CurrentText { get; set; }
-
-    #endregion
-
-    #region Public Methods
+    public int TextBankId { get; set; }
+    public int TextId { get; set; }
+    public TextBoxCutsceneCharacter CutsceneCharacter { get; set; }
+    public int CurrentTextLine { get; set; }
+    public string[] CurrentText { get; set; }
 
     public bool IsFinished { get; private set; }
 
@@ -51,7 +47,7 @@ public partial class TextBoxDialog : Dialog
 
     #region Private Methods
 
-    public void UpdateText(int textObjectIndex)
+    private void UpdateText(int textObjectIndex)
     {
         CurrentText = Localization.GetText(TextBankId, TextId);
 

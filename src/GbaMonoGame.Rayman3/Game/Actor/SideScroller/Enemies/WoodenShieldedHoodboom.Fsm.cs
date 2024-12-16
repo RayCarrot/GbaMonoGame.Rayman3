@@ -25,7 +25,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -105,7 +105,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_PrepareGrenade(FsmAction action)
+    public bool Fsm_PrepareGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -137,7 +137,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_ThrowGrenade(FsmAction action)
+    public bool Fsm_ThrowGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -195,7 +195,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -268,7 +268,7 @@ public partial class WoodenShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

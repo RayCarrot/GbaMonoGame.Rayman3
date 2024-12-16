@@ -7,7 +7,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class BouncyPlatform
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -90,7 +90,7 @@ public partial class BouncyPlatform
         return true;
     }
 
-    private bool Fsm_Bounce(FsmAction action)
+    public bool Fsm_Bounce(FsmAction action)
     {
         switch (action)
         {

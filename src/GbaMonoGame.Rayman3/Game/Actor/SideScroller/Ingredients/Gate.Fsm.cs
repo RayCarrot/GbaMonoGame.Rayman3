@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Gate
 {
-    private bool Fsm_Closed(FsmAction action)
+    public bool Fsm_Closed(FsmAction action)
     {
         switch (action)
         {
@@ -29,7 +29,7 @@ public partial class Gate
         return true;
     }
 
-    private bool Fsm_Opening(FsmAction action)
+    public bool Fsm_Opening(FsmAction action)
     {
         switch (action)
         {
@@ -57,7 +57,7 @@ public partial class Gate
         return true;
     }
 
-    private bool Fsm_Open(FsmAction action)
+    public bool Fsm_Open(FsmAction action)
     {
         switch (action)
         {
@@ -81,7 +81,7 @@ public partial class Gate
         return true;
     }
 
-    private bool Fsm_Closing(FsmAction action)
+    public bool Fsm_Closing(FsmAction action)
     {
         switch (action)
         {

@@ -85,7 +85,7 @@ public class GfxRenderer
     #region Draw
 
     // NOTE: Previously each Draw call started by checking CurrentCamera.IsVisible to avoid drawing sprites off-screen. However, the
-    //       engine itself handles it by "framing" objects and thus avoiding drawing anything off screen, making this redundant.
+    //       engine itself handles it by "framing" objects and thus avoiding drawing anything off-screen, making this redundant.
 
     public void Draw(Texture2D texture, Vector2 position, Color? color = null)
     {

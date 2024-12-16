@@ -2,7 +2,7 @@
 
 public partial class Bats
 {
-    private bool Fsm_FlyWait(FsmAction action)
+    public bool Fsm_FlyWait(FsmAction action)
     {
         switch (action)
         {
@@ -34,7 +34,7 @@ public partial class Bats
         return true;
     }
 
-    private bool Fsm_FlyStart(FsmAction action)
+    public bool Fsm_FlyStart(FsmAction action)
     {
         switch (action)
         {
@@ -60,7 +60,7 @@ public partial class Bats
         return true;
     }
 
-    private bool Fsm_FlyAway(FsmAction action)
+    public bool Fsm_FlyAway(FsmAction action)
     {
         switch (action)
         {
@@ -121,7 +121,7 @@ public partial class Bats
         return true;
     }
 
-    private bool Fsm_StationaryWait(FsmAction action)
+    public bool Fsm_StationaryWait(FsmAction action)
     {
         switch (action)
         {
@@ -145,7 +145,7 @@ public partial class Bats
         return true;
     }
 
-    private bool Fsm_StationaryFlap(FsmAction action)
+    public bool Fsm_StationaryFlap(FsmAction action)
     {
         switch (action)
         {

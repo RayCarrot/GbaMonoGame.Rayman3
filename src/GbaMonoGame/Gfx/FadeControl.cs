@@ -15,7 +15,7 @@ public readonly struct FadeControl
         Flags = flags;
     }
 
-    public static FadeControl None => new();
+    public static FadeControl None { get; } = new();
 
     public FadeMode Mode { get; init; }
     public FadeFlags Flags { get; init; } // Simplified way of setting a target

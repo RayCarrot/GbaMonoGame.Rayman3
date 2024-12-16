@@ -55,7 +55,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -136,7 +136,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_PrepareGrenade(FsmAction action)
+    public bool Fsm_PrepareGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -165,7 +165,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_ThrowGrenade(FsmAction action)
+    public bool Fsm_ThrowGrenade(FsmAction action)
     {
         switch (action)
         {
@@ -223,7 +223,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_GuardAbove(FsmAction action)
+    public bool Fsm_GuardAbove(FsmAction action)
     {
         switch (action)
         {
@@ -253,7 +253,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_GuardBelow(FsmAction action)
+    public bool Fsm_GuardBelow(FsmAction action)
     {
         switch (action)
         {
@@ -283,7 +283,7 @@ public partial class MetalShieldedHoodboom
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

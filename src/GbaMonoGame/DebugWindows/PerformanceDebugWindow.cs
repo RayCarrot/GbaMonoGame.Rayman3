@@ -6,33 +6,33 @@ namespace GbaMonoGame;
 
 public class PerformanceDebugWindow : DebugWindow
 {
-    private Graph FrameRateGraph { get; } = new(200);
-    private Graph SkippedDrawsGraph { get; } = new(200);
-    private Graph MemoryUsageGraph { get; } = new(200);
-    private Graph UpdateTimeGraph { get; } = new(200);
-    private Graph DrawCallsGraph { get; } = new(200);
-    
-    private int MinorFrameRateDrops { get; set; }
-    private int MediumFrameRateDrops { get; set; }
-    private int MajorFrameRateDrops { get; set; }
+    private readonly Graph _frameRateGraph = new(200);
+    private readonly Graph _skippedDrawsGraph = new(200);
+    private readonly Graph _memoryUsageGraph = new(200);
+    private readonly Graph _updateTimeGraph = new(200);
+    private readonly Graph _drawCallsGraph = new(200);
+
+    private int _minorFrameRateDrops;
+    private int _mediumFrameRateDrops;
+    private int _majorFrameRateDrops;
     
     public override string Name => "Performance";
 
     public void AddFps(float fps)
     {
-        FrameRateGraph.Add((float)Math.Round(fps));
+        _frameRateGraph.Add((float)Math.Round(fps));
 
         if (fps < 50)
-            MajorFrameRateDrops++;
+            _majorFrameRateDrops++;
         else if (fps < 57)
-            MediumFrameRateDrops++;
+            _mediumFrameRateDrops++;
         else if (fps < 59)
-            MinorFrameRateDrops++;
+            _minorFrameRateDrops++;
     }
 
     public void AddSkippedDraws(float skippedDraws)
     {
-        SkippedDrawsGraph.Add(skippedDraws);
+        _skippedDrawsGraph.Add(skippedDraws);
     }
 
     public void AddMemoryUsage(float mem)
@@ -40,35 +40,41 @@ public class PerformanceDebugWindow : DebugWindow
         // Get mb from bytes
         mem /= 0x100000;
 
-        MemoryUsageGraph.Add(mem);
+        _memoryUsageGraph.Add(mem);
     }
 
     public void AddUpdateTime(float time)
     {
-        UpdateTimeGraph.Add(time);
+        _updateTimeGraph.Add(time);
     }
 
     public void AddDrawCalls(float drawCalls)
     {
-        DrawCallsGraph.Add(drawCalls);
+        _drawCallsGraph.Add(drawCalls);
     }
 
     public override void Draw(DebugLayout debugLayout, DebugLayoutTextureManager textureManager)
     {
-        FrameRateGraph.Draw("Fps", 0, 60, new System.Numerics.Vector2(800, 80));
-        ImGui.Text($"Major fps drops: {MajorFrameRateDrops}");
-        ImGui.Text($"Medium fps drops: {MediumFrameRateDrops}");
-        ImGui.Text($"Minor fps drops: {MinorFrameRateDrops}");
+        _frameRateGraph.Draw("Fps", 0, 60, new System.Numerics.Vector2(800, 80));
+        ImGui.Text($"Major fps drops: {_majorFrameRateDrops}");
+        ImGui.Text($"Medium fps drops: {_mediumFrameRateDrops}");
+        ImGui.Text($"Minor fps drops: {_minorFrameRateDrops}");
 
         ImGui.Spacing();
 
-        SkippedDrawsGraph.Draw("Skipped draws", 0, 20, new System.Numerics.Vector2(800, 80));
+        _skippedDrawsGraph.Draw("Skipped draws", 0, 20, new System.Numerics.Vector2(800, 80));
+
         ImGui.Spacing();
-        UpdateTimeGraph.Draw("Update time", 0, 1000 / 60f, new System.Numerics.Vector2(800, 80));
+
+        _updateTimeGraph.Draw("Update time", 0, 1000 / 60f, new System.Numerics.Vector2(800, 80));
+        
         ImGui.Spacing();
-        MemoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
+        
+        _memoryUsageGraph.Draw("Memory (mb)", 0, 0x400, new System.Numerics.Vector2(800, 200));
+        
         ImGui.Spacing();
-        DrawCallsGraph.Draw("Draw calls", 0, 500, new System.Numerics.Vector2(800, 80));
+        
+        _drawCallsGraph.Draw("Draw calls", 0, 500, new System.Numerics.Vector2(800, 80));
     }
 
     private class Graph

@@ -17,16 +17,12 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Protected Properties
-
-    protected Scene2D Scene { get; set; }
-    protected Action CurrentStepAction { get; set; }
-
-    protected FadeControl SavedFadeControl { get; set; }
-
-    #endregion
-
     #region Public Properties
+
+    public Scene2D Scene { get; set; }
+    public Action CurrentStepAction { get; set; }
+
+    public FadeControl SavedFadeControl { get; set; }
 
     public bool BlockPause { get; set; }
     public TransitionsFX TransitionsFX { get; set; }
@@ -43,8 +39,6 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
     #endregion
 
     #region Pubic Methods
-
-    public bool IsBusy() => CurrentStepAction != Step_Normal;
 
     public override void Init()
     {
@@ -112,7 +106,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Steps
 
-    private void Step_Normal()
+    public void Step_Normal()
     {
         Scene.Step();
         Scene.Playfield.Step();
@@ -127,7 +121,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         }
     }
 
-    private void Step_Pause_Init()
+    public void Step_Pause_Init()
     {
         SavedFadeControl = Gfx.FadeControl;
 
@@ -147,7 +141,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_AddDialog;
     }
 
-    private void Step_Pause_AddDialog()
+    public void Step_Pause_AddDialog()
     {
         Scene.AddDialog(PauseDialog, true, false);
 
@@ -161,7 +155,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Paused;
     }
 
-    private void Step_Pause_Paused()
+    public void Step_Pause_Paused()
     {
         if (PauseDialog.DrawStep == PauseDialog.PauseDialogDrawStep.Hide)
             CurrentStepAction = Step_Pause_UnInit;
@@ -177,7 +171,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
     }
 
-    private void Step_Pause_UnInit()
+    public void Step_Pause_UnInit()
     {
         Scene.RemoveLastDialog();
 
@@ -197,7 +191,7 @@ public abstract class FrameWorldSideScroller : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Resume;
     }
 
-    private void Step_Pause_Resume()
+    public void Step_Pause_Resume()
     {
         Gfx.FadeControl = SavedFadeControl;
         Gfx.Fade = 0;

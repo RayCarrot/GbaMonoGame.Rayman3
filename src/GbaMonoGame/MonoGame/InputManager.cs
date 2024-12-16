@@ -7,7 +7,7 @@ namespace GbaMonoGame;
 
 public static class InputManager
 {
-    private static Dictionary<GbaInput, Input> GbaInputMapping { get; } = new()
+    private static readonly Dictionary<GbaInput, Input> _gbaInputMapping = new()
     {
         [GbaInput.A] = Input.Gba_A,
         [GbaInput.B] = Input.Gba_B,
@@ -21,10 +21,10 @@ public static class InputManager
         [GbaInput.L] = Input.Gba_L,
     };
 
-    private static KeyboardState PreviousKeyboardState { get; set; }
-    private static KeyboardState KeyboardState { get; set; }
-    private static MouseState PreviousMouseState { get; set; }
-    private static MouseState MouseState { get; set; }
+    private static KeyboardState _previousKeyboardState;
+    private static KeyboardState _keyboardState;
+    private static MouseState _previousMouseState;
+    private static MouseState _mouseState;
 
     public static Vector2 MouseOffset { get; set; }
 
@@ -62,10 +62,10 @@ public static class InputManager
     }
     public static Keys GetKey(Input input) => Engine.Config.Controls[input];
 
-    public static bool IsButtonPressed(Keys input) => KeyboardState.IsKeyDown(input);
-    public static bool IsButtonReleased(Keys input) => KeyboardState.IsKeyUp(input);
-    public static bool IsButtonJustPressed(Keys input) => KeyboardState.IsKeyDown(input) && PreviousKeyboardState.IsKeyUp(input);
-    public static bool IsButtonJustReleased(Keys input) => KeyboardState.IsKeyUp(input) && PreviousKeyboardState.IsKeyDown(input);
+    public static bool IsButtonPressed(Keys input) => _keyboardState.IsKeyDown(input);
+    public static bool IsButtonReleased(Keys input) => _keyboardState.IsKeyUp(input);
+    public static bool IsButtonJustPressed(Keys input) => _keyboardState.IsKeyDown(input) && _previousKeyboardState.IsKeyUp(input);
+    public static bool IsButtonJustReleased(Keys input) => _keyboardState.IsKeyUp(input) && _previousKeyboardState.IsKeyDown(input);
 
     public static bool IsButtonPressed(Input input) => IsButtonPressed(GetKey(input));
     public static bool IsButtonReleased(Input input) => IsButtonReleased(GetKey(input));
@@ -76,7 +76,7 @@ public static class InputManager
     {
         GbaInput inputs = GbaInput.Valid;
 
-        foreach (KeyValuePair<GbaInput, Input> input in GbaInputMapping)
+        foreach (KeyValuePair<GbaInput, Input> input in _gbaInputMapping)
         {
             if (IsButtonPressed(input.Value))
                 inputs |= input.Key;
@@ -92,18 +92,18 @@ public static class InputManager
     }
 
     public static bool IsMouseOnScreen(GfxCamera camera) => camera.IsVisible(GetMousePosition(camera));
-    public static Vector2 GetMousePosition(GfxCamera camera) => camera.ToWorldPosition(MouseState.Position.ToVector2() + MouseOffset);
-    public static Vector2 GetMousePositionDelta(GfxCamera camera) => camera.ToWorldPosition(MouseState.Position.ToVector2()) -
-                                                                     camera.ToWorldPosition(PreviousMouseState.Position.ToVector2());
-    public static int GetMouseWheelDelta() => MouseState.ScrollWheelValue - PreviousMouseState.ScrollWheelValue;
-    public static MouseState GetMouseState() => MouseState;
+    public static Vector2 GetMousePosition(GfxCamera camera) => camera.ToWorldPosition(_mouseState.Position.ToVector2() + MouseOffset);
+    public static Vector2 GetMousePositionDelta(GfxCamera camera) => camera.ToWorldPosition(_mouseState.Position.ToVector2()) -
+                                                                     camera.ToWorldPosition(_previousMouseState.Position.ToVector2());
+    public static int GetMouseWheelDelta() => _mouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue;
+    public static MouseState GetMouseState() => _mouseState;
 
     public static void Update()
     {
-        PreviousKeyboardState = KeyboardState;
-        KeyboardState = Keyboard.GetState();
+        _previousKeyboardState = _keyboardState;
+        _keyboardState = Keyboard.GetState();
 
-        PreviousMouseState = MouseState;
-        MouseState = Mouse.GetState();
+        _previousMouseState = _mouseState;
+        _mouseState = Mouse.GetState();
     }
 }

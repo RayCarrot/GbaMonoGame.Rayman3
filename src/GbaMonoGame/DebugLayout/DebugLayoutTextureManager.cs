@@ -12,7 +12,7 @@ public class DebugLayoutTextureManager
     }
 
     private readonly ImGuiRenderer _guiRenderer;
-    private readonly List<IntPtr> _textures = new();
+    private readonly List<IntPtr> _textures = [];
 
     public IntPtr BindTexture(Texture2D texture)
     {

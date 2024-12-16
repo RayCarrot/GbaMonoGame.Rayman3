@@ -7,7 +7,7 @@ public class MechModel
 {
     public MechModel()
     {
-        InitActions =
+        _initActions =
         [
             Reset,
             UseConstantSpeed,
@@ -46,7 +46,7 @@ public class MechModel
         ];
     }
 
-    private Action<float[], int>[] InitActions { get; }
+    private readonly Action<float[], int>[] _initActions;
 
     public Vector2 Speed { get; set; }
     public Vector2 Acceleration { get; set; }
@@ -522,12 +522,12 @@ public class MechModel
 
     public void Init(int type, float[] mechParams)
     {
-        InitActions[type](mechParams, 0);
+        _initActions[type](mechParams, 0);
     }
 
     public void Init(int type)
     {
-        InitActions[type](null, 0);
+        _initActions[type](null, 0);
     }
 
     public void Reset()

@@ -17,20 +17,16 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #endregion
 
-    #region Protected Properties
-
-    protected CircleTransitionScreenEffect CircleTransitionScreenEffect { get; set; }
-    protected int CircleTransitionValue { get; set; }
-    protected TransitionMode CircleTransitionMode { get; set; }
-
-    protected FadeControl SavedFadeControl { get; set; }
-
-    #endregion
-
     #region Public Properties
 
     public Scene2D Scene { get; set; }
     public Action CurrentStepAction { get; set; }
+
+    public CircleTransitionScreenEffect CircleTransitionScreenEffect { get; set; }
+    public int CircleTransitionValue { get; set; }
+    public TransitionMode CircleTransitionMode { get; set; }
+
+    public FadeControl SavedFadeControl { get; set; }
 
     public TransitionsFX TransitionsFX { get; set; }
     public UserInfoSideScroller UserInfo { get; set; }
@@ -330,7 +326,7 @@ public class FrameSideScroller : Frame, IHasScene, IHasPlayfield
 
     #region Enums
 
-    protected enum TransitionMode
+    public enum TransitionMode
     {
         None = 0,
         FinishedIn = 1,

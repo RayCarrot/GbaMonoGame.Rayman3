@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class SphereBase
 {
-    private bool Fsm_Deactivated(FsmAction action)
+    public bool Fsm_Deactivated(FsmAction action)
     {
         switch (action)
         {
@@ -52,7 +52,7 @@ public partial class SphereBase
         return true;
     }
 
-    private bool Fsm_Activating(FsmAction action)
+    public bool Fsm_Activating(FsmAction action)
     {
         switch (action)
         {
@@ -87,7 +87,7 @@ public partial class SphereBase
         return true;
     }
 
-    private bool Fsm_Activated(FsmAction action)
+    public bool Fsm_Activated(FsmAction action)
     {
         switch (action)
         {

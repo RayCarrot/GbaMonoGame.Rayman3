@@ -18,10 +18,10 @@ public partial class PauseDialog : Dialog
     public SpriteTextObject[] SleepModeTexts { get; set; }
 
     // N-Gage exclusive
-    private AnimatedObject SelectSymbol { get; set; }
-    private AnimatedObject BackSymbol { get; set; }
-    private AnimatedObject MusicVolume { get; set; }
-    private AnimatedObject SfxVolume { get; set; }
+    public AnimatedObject SelectSymbol { get; set; }
+    public AnimatedObject BackSymbol { get; set; }
+    public AnimatedObject MusicVolume { get; set; }
+    public AnimatedObject SfxVolume { get; set; }
 
     // Custom properties to simulate sleep mode
     public bool IsInSleepMode { get; set; }

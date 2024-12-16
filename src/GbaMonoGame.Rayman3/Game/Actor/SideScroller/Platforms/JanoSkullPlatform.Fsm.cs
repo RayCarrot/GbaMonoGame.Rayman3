@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class JanoSkullPlatform
 {
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -105,7 +105,7 @@ public partial class JanoSkullPlatform
         return true;
     }
 
-    private bool Fsm_Stationary(FsmAction action)
+    public bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -250,7 +250,7 @@ public partial class JanoSkullPlatform
         return true;
     }
 
-    private bool Fsm_SolidMove(FsmAction action)
+    public bool Fsm_SolidMove(FsmAction action)
     {
         switch (action)
         {
@@ -306,7 +306,7 @@ public partial class JanoSkullPlatform
         return true;
     }
 
-    private bool Fsm_TimeOut(FsmAction action)
+    public bool Fsm_TimeOut(FsmAction action)
     {
         switch (action)
         {
@@ -330,7 +330,7 @@ public partial class JanoSkullPlatform
         return true;
     }
 
-    private bool Fsm_DespawnDown(FsmAction action)
+    public bool Fsm_DespawnDown(FsmAction action)
     {
         switch (action)
         {
@@ -381,7 +381,7 @@ public partial class JanoSkullPlatform
         return true;
     }
 
-    private bool Fsm_FallDown(FsmAction action)
+    public bool Fsm_FallDown(FsmAction action)
     {
         switch (action)
         {

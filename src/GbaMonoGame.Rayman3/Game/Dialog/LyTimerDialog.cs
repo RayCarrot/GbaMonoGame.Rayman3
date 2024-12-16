@@ -7,7 +7,7 @@ public class LyTimerDialog : Dialog
 {
     public LyTimerDialog(Scene2D scene) : base(scene) { }
 
-    private TimerBar TimerBar { get; set; }
+    public TimerBar TimerBar { get; set; }
 
     protected override bool ProcessMessageImpl(object sender, Message message, object param) => false;
 

@@ -19,63 +19,72 @@ public static class Gfx
         Pixel.SetData([Color.White]);
     }
 
+    /// <summary>
+    /// A texture which is a single uncolored 1x1 pixel. Useful for drawing shapes.
+    /// </summary>
     public static Texture2D Pixel { get; }
+
+    /// <summary>
+    /// The shader to use when applying a palette to a texture.
+    /// </summary>
     public static Effect PaletteShader { get; private set; }
 
     /// <summary>
     /// The game screens. These are the equivalent of backgrounds on the GBA
     /// and there are always 4 of these.
     /// </summary>
-    private static Dictionary<int, GfxScreen> Screens { get; } = new();
+    public static Dictionary<int, GfxScreen> Screens { get; } = [];
 
     /// <summary>
     /// The game sprites. These are the equivalent of objects on the GBA.
     /// Unlike the GBA there is no defined maximum sprite count.
     /// </summary>
-    private static List<Sprite> Sprites { get; } = new();
+    public static List<Sprite> Sprites { get; } = [];
 
     /// <summary>
     /// Same as <see cref="Sprites"/>, but for sprites which are added in
     /// last. Sometimes the game adds sprites at the end of OAM to make
     /// sure they get a different priority.
     /// </summary>
-    private static List<Sprite> BackSprites { get; } = new();
+    public static List<Sprite> BackSprites { get; } = [];
 
-    private static ScreenEffect ScreenEffect { get; set; }
+    /// <summary>
+    /// The screen effect to apply, or null if there is none. This is used
+    /// in place for screen effects made using GBA features such as windows.
+    /// </summary>
+    public static ScreenEffect ScreenEffect { get; set; }
 
-    public static Color Color { get; set; } = Color.White; // Color of all textures, can be used to simulate fading a palette
-    public static Color ClearColor { get; set; } = Color.Black; // Background palette color 0 on GBA. This is not implemented on the N-Gage.
-    public static float Fade { get; set; } = 0; // The equivalent of BLDY on GBA. This is not implemented on the N-Gage.
+    /// <summary>
+    /// The color to draw textures with. This can be used to simulate fading a palette.
+    /// </summary>
+    public static Color Color { get; set; } = Color.White;
+
+    /// <summary>
+    /// The screen color. On GBA this is set from background palette color 0, while on
+    /// N-Gage it's unimplemented. Normally this is set to black.
+    /// </summary>
+    public static Color ClearColor { get; set; } = Color.Black;
+
+    /// <summary>
+    /// The fade coefficient, a value between 0 and 1. This is the equivalent to BLDY
+    /// on GBA and is not implemented on N-Gage.
+    /// </summary>
+    public static float Fade { get; set; }
+    
+    /// <summary>
+    /// Same as <see cref="Fade"/>, but using a range of 0 to 16.
+    /// </summary>
     public static float GbaFade
     {
         get => Fade * 16;
         set => Fade = value / 16;
     }
-    public static FadeControl FadeControl { get; set; } // The equivalent of BLDCNT on GBA. This is not implemented on the N-Gage.
 
-    public static void Load(Effect paletteShader)
-    {
-        PaletteShader = paletteShader;
-    }
-
-    public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
-    public static GfxScreen GetScreen(int id) => Screens[id];
-    public static IEnumerable<GfxScreen> GetScreens() => Screens.Values;
-    public static void ClearScreens() => Screens.Clear();
-
-    public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
-    public static void AddBackSprite(Sprite sprite) => BackSprites.Add(sprite);
-    public static IEnumerable<Sprite> GetSprites() => Sprites;
-    public static void ClearSprites()
-    {
-        Sprites.Clear();
-        BackSprites.Clear();
-    }
-
-    // Used in place for screen effects made using GBA features such as windows
-    public static ScreenEffect GetScreenEffect() => ScreenEffect;
-    public static void SetScreenEffect(ScreenEffect screenEffect) => ScreenEffect = screenEffect;
-    public static void ClearScreenEffect() => ScreenEffect = null;
+    /// <summary>
+    /// This defines how the <see cref="Fade"/> is applied and is the equivalent of
+    /// BLDCNT on GBA. This is not implemented on N-Gage.
+    /// </summary>
+    public static FadeControl FadeControl { get; set; }
 
     private static void DrawFade(GfxRenderer renderer)
     {
@@ -92,13 +101,33 @@ public static class Gfx
                 case FadeMode.BrightnessIncrease:
                     renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.White * Fade);
                     break;
-                
+
                 case FadeMode.BrightnessDecrease:
                     renderer.DrawFilledRectangle(Vector2.Zero, Engine.ScreenCamera.Resolution, Color.Black * Fade);
                     break;
             }
         }
     }
+
+    public static void Load(Effect paletteShader)
+    {
+        PaletteShader = paletteShader;
+    }
+
+    public static void AddScreen(GfxScreen screen) => Screens.Add(screen.Id, screen);
+    public static GfxScreen GetScreen(int id) => Screens[id];
+    public static void ClearScreens() => Screens.Clear();
+
+    public static void AddSprite(Sprite sprite) => Sprites.Add(sprite);
+    public static void AddBackSprite(Sprite sprite) => BackSprites.Add(sprite);
+    public static void ClearSprites()
+    {
+        Sprites.Clear();
+        BackSprites.Clear();
+    }
+
+    public static void SetScreenEffect(ScreenEffect screenEffect) => ScreenEffect = screenEffect;
+    public static void ClearScreenEffect() => ScreenEffect = null;
 
     public static void Draw(GfxRenderer renderer)
     {

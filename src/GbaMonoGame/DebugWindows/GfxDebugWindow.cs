@@ -72,7 +72,7 @@ public class GfxDebugWindow : DebugWindow
                 ImGui.Spacing();
                 ImGui.SeparatorText("Effects");
 
-                ImGui.Text($"Screen effect: {Gfx.GetScreenEffect()?.GetType().Name}");
+                ImGui.Text($"Screen effect: {Gfx.ScreenEffect?.GetType().Name}");
                 ImGui.Text($"Color: {Gfx.Color}");
 
                 ImGui.EndTabItem();
@@ -95,7 +95,7 @@ public class GfxDebugWindow : DebugWindow
                     ImGui.TableSetupColumn("Renderer");
                     ImGui.TableHeadersRow();
 
-                    foreach (GfxScreen screen in Gfx.GetScreens().OrderBy(x => x.Id))
+                    foreach (GfxScreen screen in Gfx.Screens.Values.OrderBy(x => x.Id))
                     {
                         ImGui.TableNextRow();
 
@@ -150,7 +150,7 @@ public class GfxDebugWindow : DebugWindow
                     ImGui.TableSetupColumn("Camera");
                     ImGui.TableHeadersRow();
 
-                    foreach (Sprite sprite in Gfx.GetSprites())
+                    foreach (Sprite sprite in Gfx.Sprites)
                     {
                         ImGui.TableNextRow();
 
@@ -177,12 +177,5 @@ public class GfxDebugWindow : DebugWindow
 
             ImGui.EndTabBar();
         }
-
-        // TODO: Implement way to view sprites
-        /*
-        ImGui.Spacing();
-        ImGui.Spacing();
-        ImGui.SeparatorText("Sprites");
-        */
     }
 }

@@ -7,11 +7,11 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class MenuAll
 {
-    #region Private Properties
+    #region Properties
 
-    private byte StartEraseCursorTargetIndex { get; set; }
-    private byte StartEraseCursorCurrentIndex { get; set; }
-    private byte EraseSaveStage { get; set; }
+    public byte StartEraseCursorTargetIndex { get; set; }
+    public byte StartEraseCursorCurrentIndex { get; set; }
+    public byte EraseSaveStage { get; set; }
 
     #endregion
 

@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Teensies
 {
-    private bool Fsm_WaitMaster(FsmAction action)
+    public bool Fsm_WaitMaster(FsmAction action)
     {
         switch (action)
         {
@@ -61,7 +61,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_World1IntroText(FsmAction action)
+    public bool Fsm_World1IntroText(FsmAction action)
     {
         switch (action)
         {
@@ -100,7 +100,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_ShowRequirementMetText(FsmAction action)
+    public bool Fsm_ShowRequirementMetText(FsmAction action)
     {
         switch (action)
         {
@@ -144,7 +144,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_ExitedRequirementMetText(FsmAction action)
+    public bool Fsm_ExitedRequirementMetText(FsmAction action)
     {
         switch (action)
         {
@@ -165,7 +165,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_ShowRequirementNotMetText(FsmAction action)
+    public bool Fsm_ShowRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -207,7 +207,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_WaitExitRequirementNotMetText(FsmAction action)
+    public bool Fsm_WaitExitRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -233,7 +233,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_ExitedRequirementNotMetText(FsmAction action)
+    public bool Fsm_ExitedRequirementNotMetText(FsmAction action)
     {
         switch (action)
         {
@@ -262,7 +262,7 @@ public partial class Teensies
     }
 
     // Appears unused
-    private bool Fsm_VictoryDance(FsmAction action)
+    public bool Fsm_VictoryDance(FsmAction action)
     {
         switch (action)
         {
@@ -284,7 +284,7 @@ public partial class Teensies
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {

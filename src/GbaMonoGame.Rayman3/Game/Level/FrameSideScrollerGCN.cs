@@ -14,10 +14,10 @@ public class FrameSideScrollerGCN : FrameSideScroller
         GcnMapId = gcnMapId;
     }
 
-    private GameCubeMap Map { get; }
+    public GameCubeMap Map { get; }
 
-    private MapId PreviousMapId { get; set; }
-    private Power PreviousPowers { get; set; }
+    public MapId PreviousMapId { get; set; }
+    public Power PreviousPowers { get; set; }
 
     public int GcnMapId { get; }
     public GameCubeMapInfo MapInfo { get; }

@@ -4,6 +4,8 @@ namespace GbaMonoGame.Engine2d;
 
 public abstract class Object
 {
+    protected abstract bool ProcessMessageImpl(object sender, Message message, object param);
+
     public void ProcessMessage(object sender, Message message) => ProcessMessage(sender, message, null);
     public void ProcessMessage(object sender, Message message, object param)
     {
@@ -12,8 +14,6 @@ public abstract class Object
 
         ProcessMessageImpl(sender, message, param);
     }
-
-    protected abstract bool ProcessMessageImpl(object sender, Message message, object param);
 
     public virtual void DrawDebugLayout(DebugLayout debugLayout, DebugLayoutTextureManager textureManager) { }
 }

@@ -19,7 +19,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_PreInit(FsmAction action)
+    public bool Fsm_PreInit(FsmAction action)
     {
         switch (action)
         {
@@ -48,7 +48,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_WaitForConnection(FsmAction action)
+    public bool Fsm_WaitForConnection(FsmAction action)
     {
         switch (action)
         {
@@ -112,7 +112,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_ConnectionLost(FsmAction action)
+    public bool Fsm_ConnectionLost(FsmAction action)
     {
         switch (action)
         {
@@ -145,7 +145,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_Exit(FsmAction action)
+    public bool Fsm_Exit(FsmAction action)
     {
         switch (action)
         {
@@ -176,7 +176,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_Connected(FsmAction action)
+    public bool Fsm_Connected(FsmAction action)
     {
         switch (action)
         {
@@ -251,7 +251,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_DownloadMapInfo(FsmAction action)
+    public bool Fsm_DownloadMapInfo(FsmAction action)
     {
         switch (action)
         {
@@ -307,7 +307,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_DownloadMapInfoAck(FsmAction action)
+    public bool Fsm_DownloadMapInfoAck(FsmAction action)
     {
         switch (action)
         {
@@ -358,7 +358,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_SelectMap(FsmAction action)
+    public bool Fsm_SelectMap(FsmAction action)
     {
         switch (action)
         {
@@ -500,7 +500,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_DownloadMap(FsmAction action)
+    public bool Fsm_DownloadMap(FsmAction action)
     {
         switch (action)
         {
@@ -576,7 +576,7 @@ public partial class GameCubeMenu
         return true;
     }
 
-    private bool Fsm_DownloadMapAck(FsmAction action)
+    public bool Fsm_DownloadMapAck(FsmAction action)
     {
         switch (action)
         {

@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class BreakableDoor
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -32,7 +32,7 @@ public partial class BreakableDoor
         return true;
     }
 
-    private bool Fsm_Break(FsmAction action)
+    public bool Fsm_Break(FsmAction action)
     {
         switch (action)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using BinarySerializer.Nintendo.GBA;
 
 namespace GbaMonoGame.Engine2d;
 

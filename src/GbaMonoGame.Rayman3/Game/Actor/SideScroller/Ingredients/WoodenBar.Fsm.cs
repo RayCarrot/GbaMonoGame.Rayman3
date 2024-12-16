@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class WoodenBar
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -39,7 +39,7 @@ public partial class WoodenBar
         return true;
     }
 
-    private bool Fsm_Grabbed(FsmAction action)
+    public bool Fsm_Grabbed(FsmAction action)
     {
         switch (action)
         {

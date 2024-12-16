@@ -7,6 +7,7 @@ public static class MultiJoyPad
 {
     static MultiJoyPad()
     {
+        // Create arrays
         JoyPads = new SimpleJoyPad[MaxPlayersCount][];
         for (int i = 0; i < JoyPads.Length; i++)
             JoyPads[i] = new SimpleJoyPad[BufferedFramesCount];
@@ -21,9 +22,9 @@ public static class MultiJoyPad
     private const int BufferedFramesCount = 4;
     private const int MaxPlayersCount = RSMultiplayer.MaxPlayersCount;
 
-    private static SimpleJoyPad[][] JoyPads { get; }
-    private static bool[][] ValidFlags { get; }
-    private static bool[] FirstReadFlags { get; }
+    public static SimpleJoyPad[][] JoyPads { get; }
+    public static bool[][] ValidFlags { get; }
+    public static bool[] FirstReadFlags { get; }
 
     public static void Init()
     {

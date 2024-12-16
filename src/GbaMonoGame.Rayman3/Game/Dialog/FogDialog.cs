@@ -9,14 +9,12 @@ public class FogDialog : Dialog
 {
     public FogDialog(Scene2D scene) : base(scene)
     {
-        Playfield = scene.Playfield;
         ShouldDraw = true;
     }
 
-    private TgxPlayfield Playfield { get; }
-    private AObjectFog Fog { get; set; }
-    private float ScrollX { get; set; }
-    private int ScrollSpeed { get; set; }
+    public AObjectFog Fog { get; set; }
+    public float ScrollX { get; set; }
+    public int ScrollSpeed { get; set; }
 
     public bool ShouldDraw { get; set; }
 
@@ -32,7 +30,7 @@ public class FogDialog : Dialog
             ObjPriority = 63,
             IsAlphaBlendEnabled = true,
             GbaAlpha = 6,
-            Camera = Playfield.Camera
+            Camera = Scene.Playfield.Camera
         };
 
         ScrollX = 0;
@@ -46,10 +44,10 @@ public class FogDialog : Dialog
         if (!ShouldDraw) 
             return;
         
-        Vector2 camPos = Playfield.Camera.Position;
-        int height = Playfield.PhysicalLayer.PixelHeight;
+        Vector2 camPos = Scene.Playfield.Camera.Position;
+        int height = Scene.Playfield.PhysicalLayer.PixelHeight;
 
-        if (height - 32 < camPos.Y + Playfield.Camera.Resolution.Y)
+        if (height - 32 < camPos.Y + Scene.Playfield.Camera.Resolution.Y)
         {
             // What the game does:
             // Fog.ScreenPos = new Vector2(512 - (camPos.X + ScrollX) % 512, height - camPos.Y - 32);

@@ -8,17 +8,17 @@ namespace GbaMonoGame.Rayman3;
 
 public class GameOver : Frame
 {
-    private AnimationPlayer AnimationPlayer { get; set; }
-    private TransitionsFX TransitionsFX { get; set; }
-    private AnimatedObject Rayman { get; set; }
-    private AnimatedObject Countdown1 { get; set; }
-    private AnimatedObject Countdown2 { get; set; }
-    private AnimatedObject Butterfly1 { get; set; }
-    private AnimatedObject Butterfly2 { get; set; }
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public TransitionsFX TransitionsFX { get; set; }
+    public AnimatedObject Rayman { get; set; }
+    public AnimatedObject Countdown1 { get; set; }
+    public AnimatedObject Countdown2 { get; set; }
+    public AnimatedObject Butterfly1 { get; set; }
+    public AnimatedObject Butterfly2 { get; set; }
 
-    private GameOverMode Mode { get; set; }
-    private bool IsCountdownFacingRight { get; set; }
-    private int Timer { get; set; }
+    public GameOverMode Mode { get; set; }
+    public bool IsCountdownFacingRight { get; set; }
+    public int Timer { get; set; }
 
     private void NextRaymanIdleAnimation()
     {
@@ -340,7 +340,7 @@ public class GameOver : Frame
         AnimationPlayer.Execute();
     }
 
-    private enum GameOverMode
+    public enum GameOverMode
     {
         Intro = 0,
         Countdown = 1,

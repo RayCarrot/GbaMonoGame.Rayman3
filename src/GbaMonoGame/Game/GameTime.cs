@@ -18,7 +18,7 @@ public static class GameTime
     /// <summary>
     /// Updates the tracked game time by one frame if not paused.
     /// </summary>
-    internal static void Update()
+    public static void Update()
     {
         if (!IsPaused)
             ElapsedFrames++;

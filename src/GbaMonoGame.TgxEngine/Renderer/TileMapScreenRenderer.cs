@@ -26,10 +26,10 @@ public class TileMapScreenRenderer : IScreenRenderer
         PaletteTexture = paletteTexture;
         Is8Bit = is8Bit;
 
-        ReplacedTiles = new Dictionary<int, int>();
+        _replacedTiles = new Dictionary<int, int>();
     }
 
-    private Dictionary<int, int> ReplacedTiles { get; }
+    private readonly Dictionary<int, int> _replacedTiles;
 
     public Pointer CachePointer { get; }
     public int Width { get; }
@@ -58,7 +58,7 @@ public class TileMapScreenRenderer : IScreenRenderer
 
     public void ReplaceTile(int originalTileIndex, int newTileIndex)
     {
-        ReplacedTiles[originalTileIndex] = newTileIndex;
+        _replacedTiles[originalTileIndex] = newTileIndex;
     }
 
     public Vector2 GetSize(GfxScreen screen) => new(Width * Tile.Size, Height * Tile.Size);
@@ -88,7 +88,7 @@ public class TileMapScreenRenderer : IScreenRenderer
 
                 if (tileIndex != 0)
                 {
-                    if (ReplacedTiles.TryGetValue(tileIndex, out int newTileIndex))
+                    if (_replacedTiles.TryGetValue(tileIndex, out int newTileIndex))
                         tileIndex = newTileIndex;
 
                     Texture2D tex = textureCache.GetOrCreateObject(

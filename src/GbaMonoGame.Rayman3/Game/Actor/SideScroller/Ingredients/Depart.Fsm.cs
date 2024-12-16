@@ -2,7 +2,7 @@
 
 public partial class Depart
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {

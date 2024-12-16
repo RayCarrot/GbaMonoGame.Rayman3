@@ -53,7 +53,7 @@ public class PaletteTexture2D : Texture2D
                 texColorIndex++;
             }
 
-            if ((texColorIndex % 16) != 0)
+            if (texColorIndex % 16 != 0)
                 throw new Exception("Invalid palette size");
         }
 

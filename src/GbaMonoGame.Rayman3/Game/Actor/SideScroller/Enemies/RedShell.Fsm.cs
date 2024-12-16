@@ -34,7 +34,7 @@ public partial class RedShell
         return true;
     }
 
-    private bool Fsm_WaitingToCharge(FsmAction action)
+    public bool Fsm_WaitingToCharge(FsmAction action)
     {
         switch (action)
         {
@@ -74,7 +74,7 @@ public partial class RedShell
         return true;
     }
 
-    private bool Fsm_WaitingToPatrol(FsmAction action)
+    public bool Fsm_WaitingToPatrol(FsmAction action)
     {
         switch (action)
         {
@@ -98,7 +98,7 @@ public partial class RedShell
         return true;
     }
 
-    private bool Fsm_Sleeping(FsmAction action)
+    public bool Fsm_Sleeping(FsmAction action)
     {
         switch (action)
         {
@@ -138,7 +138,7 @@ public partial class RedShell
         return true;
     }
 
-    private bool Fsm_ChargeAttack(FsmAction action)
+    public bool Fsm_ChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -205,7 +205,7 @@ public partial class RedShell
         return true;
     }
 
-    private bool Fsm_Patrolling(FsmAction action)
+    public bool Fsm_Patrolling(FsmAction action)
     {
         switch (action)
         {

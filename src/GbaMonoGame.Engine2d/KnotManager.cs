@@ -21,7 +21,7 @@ public class KnotManager
         Knots = sceneResource.Knots;
 
         // Create a special knot with every object which we use when loading all objects at once
-        FullKnot = new Knot
+        _fullKnot = new Knot
         {
             ActorsCount = (byte)ActorsCount,
             CaptorsCount = (byte)CaptorsCount,
@@ -32,9 +32,9 @@ public class KnotManager
 
     #endregion
 
-    #region Private Properties
+    #region Private Fields
 
-    private Knot FullKnot { get; }
+    private readonly Knot _fullKnot;
 
     #endregion
 
@@ -122,7 +122,7 @@ public class KnotManager
 
         if (keepObjectsActive)
         {
-            knot = FullKnot;
+            knot = _fullKnot;
         }
         else
         {

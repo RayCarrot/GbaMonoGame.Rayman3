@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Arrive
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -30,7 +30,7 @@ public partial class Arrive
         return true;
     }
 
-    private bool Fsm_IdleWithLink(FsmAction action)
+    public bool Fsm_IdleWithLink(FsmAction action)
     {
         switch (action)
         {
@@ -95,7 +95,7 @@ public partial class Arrive
         return true;
     }
 
-    private bool Fsm_Cutscene(FsmAction action)
+    public bool Fsm_Cutscene(FsmAction action)
     {
         switch (action)
         {
@@ -119,7 +119,7 @@ public partial class Arrive
         return true;
     }
 
-    private bool Fsm_EndLevel(FsmAction action)
+    public bool Fsm_EndLevel(FsmAction action)
     {
         switch (action)
         {

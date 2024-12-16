@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class CameraSideScroller
 {
-    private bool Fsm_Follow(FsmAction action)
+    public bool Fsm_Follow(FsmAction action)
     {
         switch (action)
         {
@@ -200,7 +200,7 @@ public partial class CameraSideScroller
         return true;
     }
 
-    private bool Fsm_MoveToTarget(FsmAction action)
+    public bool Fsm_MoveToTarget(FsmAction action)
     {
         switch (action)
         {

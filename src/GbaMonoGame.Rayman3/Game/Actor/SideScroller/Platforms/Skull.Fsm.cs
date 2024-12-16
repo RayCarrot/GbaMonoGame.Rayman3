@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Skull
 {
-    private bool Fsm_Spawn(FsmAction action)
+    public bool Fsm_Spawn(FsmAction action)
     {
         switch (action)
         {
@@ -45,7 +45,7 @@ public partial class Skull
     }
 
     // Unused
-    private bool Fsm_Rotate(FsmAction action)
+    public bool Fsm_Rotate(FsmAction action)
     {
         switch (action)
         {
@@ -99,7 +99,7 @@ public partial class Skull
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -136,7 +136,7 @@ public partial class Skull
         return true;
     }
 
-    private bool Fsm_Stationary(FsmAction action)
+    public bool Fsm_Stationary(FsmAction action)
     {
         switch (action)
         {
@@ -195,7 +195,7 @@ public partial class Skull
         return true;
     }
 
-    private bool Fsm_Despawn(FsmAction action)
+    public bool Fsm_Despawn(FsmAction action)
     {
         switch (action)
         {
@@ -242,7 +242,7 @@ public partial class Skull
         return true;
     }
 
-    private bool Fsm_SolidMove(FsmAction action)
+    public bool Fsm_SolidMove(FsmAction action)
     {
         switch (action)
         {

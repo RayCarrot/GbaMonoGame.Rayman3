@@ -9,37 +9,29 @@ namespace GbaMonoGame.Rayman3;
 
 public abstract class Act : Frame
 {
-    #region Private Properties
+    #region Properties
 
-    private TransitionsFX TransitionsFX { get; set; }
-    private ActResource ActResource { get; set; }
-    private AnimationPlayer AnimationPlayer { get; set; }
-    private GfxScreen BitmapScreen { get; set; }
+    public TransitionsFX TransitionsFX { get; set; }
+    public ActResource ActResource { get; set; }
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public GfxScreen BitmapScreen { get; set; }
 
-    private SpriteTextObject[] TextObjects { get; set; } // One for every line of text
-    private AnimatedObject NextTextSymbol { get; set; }
-    private AnimatedObject SkipSymbol { get; set; } // N-Gage exclusive
+    public SpriteTextObject[] TextObjects { get; set; } // One for every line of text
+    public AnimatedObject NextTextSymbol { get; set; }
+    public AnimatedObject SkipSymbol { get; set; } // N-Gage exclusive
 
-    private ushort CurrentFrameIndex { get; set; }
-    private ushort CurrentTextLine { get; set; }
-    private string[] CurrentText { get; set; }
+    public ushort CurrentFrameIndex { get; set; }
+    public ushort CurrentTextLine { get; set; }
+    public string[] CurrentText { get; set; }
 
-    private bool IsFadingOut { get; set; }
+    public bool IsFadingOut { get; set; }
 
-    private bool IsTransitioningTextOut { get; set; }
-    private bool IsTransitioningTextIn { get; set; }
-    private byte TransitionTextOutDelay { get; set; }
-    private float TextTransitionValue { get; set; } = 1;
+    public bool IsTransitioningTextOut { get; set; }
+    public bool IsTransitioningTextIn { get; set; }
+    public byte TransitionTextOutDelay { get; set; }
+    public float TextTransitionValue { get; set; } = 1;
 
-    #endregion
-
-    #region Protected Properties
-
-    protected bool IsAutomatic { get; set; } // N-Gage exclusive
-
-    #endregion
-
-    #region Public Properties
+    public bool IsAutomatic { get; set; } // N-Gage exclusive
 
     public bool IsFinished { get; private set; }
 

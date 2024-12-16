@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Ly
 {
-    private bool Fsm_Init(FsmAction action)
+    public bool Fsm_Init(FsmAction action)
     {
         switch (action)
         {
@@ -27,7 +27,7 @@ public partial class Ly
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -51,7 +51,7 @@ public partial class Ly
         return true;
     }
 
-    private bool Fsm_Talk(FsmAction action)
+    public bool Fsm_Talk(FsmAction action)
     {
         switch (action)
         {
@@ -108,7 +108,7 @@ public partial class Ly
         return true;
     }
 
-    private bool Fsm_GivePower(FsmAction action)
+    public bool Fsm_GivePower(FsmAction action)
     {
         switch (action)
         {
@@ -175,7 +175,7 @@ public partial class Ly
         return true;
     }
 
-    private bool Fsm_RaymanReceivePower(FsmAction action)
+    public bool Fsm_RaymanReceivePower(FsmAction action)
     {
         switch (action)
         {
@@ -208,7 +208,7 @@ public partial class Ly
         return true;
     }
 
-    private bool Fsm_Leave(FsmAction action)
+    public bool Fsm_Leave(FsmAction action)
     {
         switch (action)
         {

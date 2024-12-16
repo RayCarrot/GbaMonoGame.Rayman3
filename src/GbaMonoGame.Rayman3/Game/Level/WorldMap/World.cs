@@ -13,16 +13,16 @@ public class World : FrameWorldSideScroller
     // NOTE: The game uses 16, but it only updates every 2 frames. We instead update every frame.
     private const int PaletteFadeMaxValue = 16 * 2;
 
-    private Action CurrentExStepAction { get; set; }
-    private Action NextExStepAction { get; set; }
-    
-    private uint MurfyTimer { get; set; }
-    private TextBoxDialog TextBox { get; set; }
-    private byte MurfyLevelCurtainTargetId { get; set; }
-    private byte MurfyId { get; set; }
+    public Action CurrentExStepAction { get; set; }
+    public Action NextExStepAction { get; set; }
 
-    private int PaletteFadeValue { get; set; }
-    private bool FinishedTransitioningOut { get; set; }
+    public uint MurfyTimer { get; set; }
+    public TextBoxDialog TextBox { get; set; }
+    public byte MurfyLevelCurtainTargetId { get; set; }
+    public byte MurfyId { get; set; }
+
+    public int PaletteFadeValue { get; set; }
+    public bool FinishedTransitioningOut { get; set; }
 
     public void InitEntering()
     {
@@ -43,8 +43,6 @@ public class World : FrameWorldSideScroller
         UserInfo.Hide = true;
         BlockPause = true;
     }
-
-    public bool IsTransitioningOut() => !FinishedTransitioningOut;
 
     public override void Init()
     {
@@ -183,19 +181,19 @@ public class World : FrameWorldSideScroller
     {
         base.Step();
 
-        if (!IsBusy())
+        if (CurrentStepAction == Step_Normal)
             CurrentExStepAction?.Invoke();
     }
 
     #region Steps
 
-    private void StepEx_MoveInCurtains()
+    public void StepEx_MoveInCurtains()
     {
         if (UserInfo.HasFinishedMovingInCurtains())
             CurrentExStepAction = StepEx_FadeIn;
     }
 
-    private void StepEx_FadeIn()
+    public void StepEx_FadeIn()
     {
         // In the original code this function is actually two step functions
         // that it cycles between every second frame. The first one modifies
@@ -216,7 +214,7 @@ public class World : FrameWorldSideScroller
         }
     }
 
-    private void StepEx_FadeOut()
+    public void StepEx_FadeOut()
     {
         // In the original code this function is actually two step functions
         // that it cycles between every second frame. The first one modifies
@@ -236,13 +234,13 @@ public class World : FrameWorldSideScroller
         }
     }
 
-    private void StepEx_MoveOutCurtains()
+    public void StepEx_MoveOutCurtains()
     {
         if (UserInfo.HasFinishedMovingOutCurtains())
             FinishedTransitioningOut = true;
     }
 
-    private void StepEx_SpawnMurfy()
+    public void StepEx_SpawnMurfy()
     {
         Murfy murfy = Scene.GetGameObject<Murfy>(MurfyId);
         murfy.TargetActor = Scene.GetGameObject<BaseActor>(MurfyLevelCurtainTargetId);
@@ -256,7 +254,7 @@ public class World : FrameWorldSideScroller
         MurfyTimer = 0;
     }
 
-    private void StepEx_MurfyIntroCutscene()
+    public void StepEx_MurfyIntroCutscene()
     {
         if (MurfyTimer == 0)
         {
@@ -281,7 +279,7 @@ public class World : FrameWorldSideScroller
         }
     }
 
-    private void StepEx_MurfyBonusLevelCutscene()
+    public void StepEx_MurfyBonusLevelCutscene()
     {
         if (MurfyTimer == 0)
         {
@@ -307,7 +305,7 @@ public class World : FrameWorldSideScroller
         }
     }
 
-    private void StepEx_MurfyFadeOut()
+    public void StepEx_MurfyFadeOut()
     {
         if (TransitionsFX.IsFadeOutFinished)
         {
@@ -319,7 +317,7 @@ public class World : FrameWorldSideScroller
         }
     }
 
-    private void StepEx_MurfyFadeIn()
+    public void StepEx_MurfyFadeIn()
     {
         if (TransitionsFX.IsFadeInFinished)
         {

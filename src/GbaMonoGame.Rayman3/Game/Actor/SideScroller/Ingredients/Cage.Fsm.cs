@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Cage
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -41,7 +41,7 @@ public partial class Cage
         return true;
     }
 
-    private bool Fsm_Blink(FsmAction action)
+    public bool Fsm_Blink(FsmAction action)
     {
         switch (action)
         {
@@ -77,7 +77,7 @@ public partial class Cage
         return true;
     }
 
-    private bool Fsm_Damaged(FsmAction action)
+    public bool Fsm_Damaged(FsmAction action)
     {
         switch (action)
         {
@@ -110,7 +110,7 @@ public partial class Cage
         return true;
     }
 
-    private bool Fsm_IdleDamaged(FsmAction action)
+    public bool Fsm_IdleDamaged(FsmAction action)
     {
         switch (action)
         {
@@ -142,7 +142,7 @@ public partial class Cage
         return true;
     }
 
-    private bool Fsm_Destroyed(FsmAction action)
+    public bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {

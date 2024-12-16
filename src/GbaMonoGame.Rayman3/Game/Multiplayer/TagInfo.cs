@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace GbaMonoGame.Rayman3;
@@ -15,12 +14,12 @@ public class TagInfo
         Timer = 0;
     }
 
-    private List<LumPosition> LumsTable { get; }
+    public List<LumPosition> LumsTable { get; }
 
     // TODO: Name these. Why is field8 never set?
-    private int field7_0xd { get; set; }
-    private int field8_0xe { get; set; }
-    private List<int> ItemsIdList { get; }
+    public int field7_0xd { get; set; }
+    public int field8_0xe { get; set; }
+    public List<int> ItemsIdList { get; }
 
     private uint Timer { get; set; }
 
@@ -115,17 +114,5 @@ public class TagInfo
             field7_0xd = rand;
             return rand;
         }
-    }
-
-    private class LumPosition
-    {
-        public LumPosition(int instanceId, Vector2 position)
-        {
-            InstanceId = instanceId;
-            Position = position;
-        }
-
-        public int InstanceId { get; }
-        public Vector2 Position { get; }
     }
 }

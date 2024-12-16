@@ -6,14 +6,14 @@ namespace GbaMonoGame.Rayman3;
 
 public static class LevelMusicManager
 {
-    private static short OverridenSoundEvent { get; set; }
-    private static byte Timer { get; set; }
+    public static short OverridenSoundEvent { get; set; }
+    public static byte Timer { get; set; }
 
     // Flags
-    private static bool IsPlayingSpecialMusic { get; set; }
-    private static bool IsCooldown { get; set; }
-    private static bool ShouldPlaySpecialMusic { get; set; }
-    private static bool HasOverridenLevelMusic { get; set; }
+    public static bool IsPlayingSpecialMusic { get; set; }
+    public static bool IsCooldown { get; set; }
+    public static bool ShouldPlaySpecialMusic { get; set; }
+    public static bool HasOverridenLevelMusic { get; set; }
 
     public static void Init()
     {

@@ -2,8 +2,8 @@
 
 public class NGageSplashScreensAct : Act
 {
-    private int Timer { get; set; }
-    private int Screen { get; set; }
+    public int Timer { get; set; }
+    public int Screen { get; set; }
 
     private void NextScreen()
     {

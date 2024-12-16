@@ -8,43 +8,43 @@ public class LevelInfoBar : Bar
 {
     public LevelInfoBar(Scene2D scene) : base(scene)
     {
-        LevelMaps = new[]
-        {
-            new[] { MapId.WoodLight_M1, MapId.WoodLight_M2 },
-            new[] { MapId.FairyGlade_M1, MapId.FairyGlade_M2 },
-            new[] { MapId.MarshAwakening1 },
-            new[] { MapId.SanctuaryOfBigTree_M1, MapId.SanctuaryOfBigTree_M2 },
-            new[] { MapId.BossMachine },
-            new[] { MapId.Bonus1 },
+        LevelMaps =
+        [
+            [MapId.WoodLight_M1, MapId.WoodLight_M2],
+            [MapId.FairyGlade_M1, MapId.FairyGlade_M2],
+            [MapId.MarshAwakening1],
+            [MapId.SanctuaryOfBigTree_M1, MapId.SanctuaryOfBigTree_M2],
+            [MapId.BossMachine],
+            [MapId.Bonus1],
 
-            new[] { MapId.MissileRace1 },
-            new[] { MapId.EchoingCaves_M1, MapId.EchoingCaves_M2 },
-            new[] { MapId.CavesOfBadDreams_M1, MapId.CavesOfBadDreams_M2 },
-            new[] { MapId.MenhirHills_M1, MapId.MenhirHills_M2 },
-            new[] { MapId.MarshAwakening2 },
-            new[] { MapId.BossBadDreams },
-            new[] { MapId.Bonus2 },
-            new[] { MapId.ChallengeLy1 },
+            [MapId.MissileRace1],
+            [MapId.EchoingCaves_M1, MapId.EchoingCaves_M2],
+            [MapId.CavesOfBadDreams_M1, MapId.CavesOfBadDreams_M2],
+            [MapId.MenhirHills_M1, MapId.MenhirHills_M2],
+            [MapId.MarshAwakening2],
+            [MapId.BossBadDreams],
+            [MapId.Bonus2],
+            [MapId.ChallengeLy1],
 
-            new[] { MapId.SanctuaryOfRockAndLava_M1, MapId.SanctuaryOfRockAndLava_M2, MapId.SanctuaryOfRockAndLava_M3 },
-            new[] { MapId.BeneathTheSanctuary_M1, MapId.BeneathTheSanctuary_M2 },
-            new[] { MapId.ThePrecipice_M1, MapId.ThePrecipice_M2 },
-            new[] { MapId.TheCanopy_M1, MapId.TheCanopy_M2 },
-            new[] { MapId.SanctuaryOfStoneAndFire_M1, MapId.SanctuaryOfStoneAndFire_M2, MapId.SanctuaryOfStoneAndFire_M3 },
-            new[] { MapId.BossRockAndLava },
-            new[] { MapId.Bonus3 },
+            [MapId.SanctuaryOfRockAndLava_M1, MapId.SanctuaryOfRockAndLava_M2, MapId.SanctuaryOfRockAndLava_M3],
+            [MapId.BeneathTheSanctuary_M1, MapId.BeneathTheSanctuary_M2],
+            [MapId.ThePrecipice_M1, MapId.ThePrecipice_M2],
+            [MapId.TheCanopy_M1, MapId.TheCanopy_M2],
+            [MapId.SanctuaryOfStoneAndFire_M1, MapId.SanctuaryOfStoneAndFire_M2, MapId.SanctuaryOfStoneAndFire_M3],
+            [MapId.BossRockAndLava],
+            [MapId.Bonus3],
 
-            new[] { MapId.TombOfTheAncients_M1, MapId.TombOfTheAncients_M2 },
-            new[] { MapId.IronMountains_M1, MapId.IronMountains_M2 },
-            new[] { MapId.MissileRace2 },
-            new[] { MapId.PirateShip_M1, MapId.PirateShip_M2 },
-            new[] { MapId.BossScaleMan },
-            new[] { MapId.BossFinal_M1 },
-            new[] { MapId.Bonus4 },
-            new[] { MapId.ChallengeLy2 },
-            new[] { MapId._1000Lums },
-            new[] { MapId.ChallengeLyGCN },
-        };
+            [MapId.TombOfTheAncients_M1, MapId.TombOfTheAncients_M2],
+            [MapId.IronMountains_M1, MapId.IronMountains_M2],
+            [MapId.MissileRace2],
+            [MapId.PirateShip_M1, MapId.PirateShip_M2],
+            [MapId.BossScaleMan],
+            [MapId.BossFinal_M1],
+            [MapId.Bonus4],
+            [MapId.ChallengeLy2],
+            [MapId._1000Lums],
+            [MapId.ChallengeLyGCN]
+        ];
 
         WaitTimer = 0;
         LevelInfoBarDrawStep = BarDrawStep.Hide;

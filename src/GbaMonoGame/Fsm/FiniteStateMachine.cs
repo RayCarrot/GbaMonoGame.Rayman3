@@ -1,14 +1,13 @@
-﻿using System.Reflection;
-
-namespace GbaMonoGame;
+﻿namespace GbaMonoGame;
 
 #pragma warning disable CS0660, CS0661
 public class FiniteStateMachine
 #pragma warning restore CS0660, CS0661
 {
-    private Fsm CurrentState { get; set; }
-
-    public MethodInfo GetCurrentStateMethodInfo() => CurrentState?.Method;
+    /// <summary>
+    /// The current state, or null if there is none
+    /// </summary>
+    public Fsm CurrentState { get; set; }
 
     /// <summary>
     /// Sets the current state without uninitializing the previous one
@@ -49,10 +48,10 @@ public class FiniteStateMachine
         return !(stateMachine == state);
     }
 
-    public delegate bool Fsm(FsmAction action);
-
     public override string ToString()
     {
         return CurrentState?.Method.Name ?? "None";
     }
+
+    public delegate bool Fsm(FsmAction action);
 }

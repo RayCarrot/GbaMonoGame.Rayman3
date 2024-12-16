@@ -56,10 +56,6 @@ public abstract class ActionActor : BaseActor
 
     public bool NewAction { get; set; }
 
-    public virtual Box GetDetectionBox() => _detectionBox.Offset(Position);
-    public virtual Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
-    public virtual Box GetActionBox() => _actionBox.Offset(Position);
-
     protected override bool ProcessMessageImpl(object sender, Message message, object param)
     {
         // Intercept messages
@@ -108,10 +104,9 @@ public abstract class ActionActor : BaseActor
         }
     }
 
-    public override void Step()
-    {
-        ChangeAction();
-    }
+    public virtual Box GetDetectionBox() => _detectionBox.Offset(Position);
+    public virtual Box SetDetectionBox(Box detectionBox) => _detectionBox = detectionBox;
+    public virtual Box GetActionBox() => _actionBox.Offset(Position);
 
     public void ChangeAction()
     {
@@ -141,6 +136,11 @@ public abstract class ActionActor : BaseActor
             HitPoints -= damage;
         else
             HitPoints = 0;
+    }
+
+    public override void Step()
+    {
+        ChangeAction();
     }
 
     public PhysicalType GetPhysicalGroundType()

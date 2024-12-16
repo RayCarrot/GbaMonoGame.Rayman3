@@ -11,9 +11,11 @@ public static class FontManager
 {
     private const int CharsPerRow = 16;
 
-    private static LoadedFont Font8 { get; set; }
-    private static LoadedFont Font16 { get; set; }
-    private static LoadedFont Font32 { get; set; }
+    private static LoadedFont _font8;
+    private static LoadedFont _font16;
+    private static LoadedFont _font32;
+
+    public static Encoding Encoding { get; } = Encoding.GetEncoding(1252);
 
     private static Texture2D CreateFontTexture(Font font, Color foreground, Color background)
     {
@@ -99,27 +101,30 @@ public static class FontManager
         return rects;
     }
 
-    internal static void Load(Font font8, Font font16, Font font32)
+    public static void Load(Font font8, Font font16, Font font32)
     {
-        Font8 = new LoadedFont(font8, CreateFontTexture(font8, Color.White, Color.Transparent), GetFontCharacterRectangles(font8));
-        Font16 = new LoadedFont(font16, CreateFontTexture(font16, Color.White, Color.Transparent), GetFontCharacterRectangles(font16));
-        Font32 = new LoadedFont(font32, CreateFontTexture(font32, Color.White, Color.Transparent), GetFontCharacterRectangles(font32));
+        _font8 = new LoadedFont(font8, CreateFontTexture(font8, Color.White, Color.Transparent), GetFontCharacterRectangles(font8));
+        _font16 = new LoadedFont(font16, CreateFontTexture(font16, Color.White, Color.Transparent), GetFontCharacterRectangles(font16));
+        _font32 = new LoadedFont(font32, CreateFontTexture(font32, Color.White, Color.Transparent), GetFontCharacterRectangles(font32));
     }
 
     public static byte[] GetTextBytes(string text)
     {
-        return Encoding.GetEncoding(1252).GetBytes(text);
+        return Encoding.GetBytes(text);
     }
 
-    public static int GetStringWidth(FontSize fontSize, string text) => GetStringWidth(fontSize, GetTextBytes(text));
+    public static int GetStringWidth(FontSize fontSize, string text)
+    {
+        return GetStringWidth(fontSize, GetTextBytes(text));
+    }
 
     public static int GetStringWidth(FontSize fontSize, byte[] textBytes)
     {
         LoadedFont loadedFont = fontSize switch
         {
-            FontSize.Font8 => Font8,
-            FontSize.Font16 => Font16,
-            FontSize.Font32 => Font32,
+            FontSize.Font8 => _font8,
+            FontSize.Font16 => _font16,
+            FontSize.Font32 => _font32,
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
@@ -135,24 +140,27 @@ public static class FontManager
     {
         LoadedFont loadedFont = fontSize switch
         {
-            FontSize.Font8 => Font8,
-            FontSize.Font16 => Font16,
-            FontSize.Font32 => Font32,
+            FontSize.Font8 => _font8,
+            FontSize.Font16 => _font16,
+            FontSize.Font32 => _font32,
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
         return loadedFont.Font.CharacterHeight;
     }
 
-    public static byte[][] GetWrappedStringLines(FontSize fontSize, string text, float width) => GetWrappedStringLines(fontSize, GetTextBytes(text), width);
+    public static byte[][] GetWrappedStringLines(FontSize fontSize, string text, float width)
+    {
+        return GetWrappedStringLines(fontSize, GetTextBytes(text), width);
+    }
 
     public static byte[][] GetWrappedStringLines(FontSize fontSize, byte[] textBytes, float width)
     {
         LoadedFont loadedFont = fontSize switch
         {
-            FontSize.Font8 => Font8,
-            FontSize.Font16 => Font16,
-            FontSize.Font32 => Font32,
+            FontSize.Font8 => _font8,
+            FontSize.Font16 => _font16,
+            FontSize.Font32 => _font32,
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 
@@ -194,13 +202,21 @@ public static class FontManager
         return lines.ToArray();
     }
 
-    public static Sprite GetCharacterSprite(byte c, FontSize fontSize, ref Vector2 position, int priority, AffineMatrix? affineMatrix, float? alpha, Color color, GfxCamera camera)
+    public static Sprite GetCharacterSprite(
+        byte c, 
+        FontSize fontSize, 
+        ref Vector2 position, 
+        int priority, 
+        AffineMatrix? affineMatrix, 
+        float? alpha, 
+        Color color, 
+        GfxCamera camera)
     {
         LoadedFont loadedFont = fontSize switch
         {
-            FontSize.Font8 => Font8,
-            FontSize.Font16 => Font16,
-            FontSize.Font32 => Font32,
+            FontSize.Font8 => _font8,
+            FontSize.Font16 => _font16,
+            FontSize.Font32 => _font32,
             _ => throw new ArgumentOutOfRangeException(nameof(fontSize), fontSize, null)
         };
 

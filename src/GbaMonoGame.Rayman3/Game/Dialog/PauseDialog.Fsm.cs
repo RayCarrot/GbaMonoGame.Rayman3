@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class PauseDialog
 {
-    private bool Fsm_CheckSelection(FsmAction action)
+    public bool Fsm_CheckSelection(FsmAction action)
     {
         switch (action)
         {
@@ -210,7 +210,7 @@ public partial class PauseDialog
         return true;
     }
 
-    private bool Fsm_SleepMode(FsmAction action)
+    public bool Fsm_SleepMode(FsmAction action)
     {
         // This is implemented differently in the original game. It has loops where it calls
         // vsync here and does bios calls to trigger the sleep mode. We just try and simulate
@@ -252,7 +252,7 @@ public partial class PauseDialog
         return true;
     }
 
-    private bool Fsm_QuitGame(FsmAction action)
+    public bool Fsm_QuitGame(FsmAction action)
     {
         switch (action)
         {

@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class BreakableGround
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -44,7 +44,7 @@ public partial class BreakableGround
         return true;
     }
 
-    private bool Fsm_Destroyed(FsmAction action)
+    public bool Fsm_Destroyed(FsmAction action)
     {
         switch (action)
         {
@@ -80,7 +80,7 @@ public partial class BreakableGround
         return true;
     }
 
-    private bool Fsm_MultiplayerRespawn(FsmAction action)
+    public bool Fsm_MultiplayerRespawn(FsmAction action)
     {
         switch (action)
         {

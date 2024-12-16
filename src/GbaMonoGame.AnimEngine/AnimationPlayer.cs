@@ -8,58 +8,58 @@ public class AnimationPlayer
     public AnimationPlayer(bool is8Bit, Action<short> soundEventCallback)
     {
         Is8Bit = is8Bit;
-        SoundEventCallback = soundEventCallback;
+        _soundEventCallback = soundEventCallback;
 
-        UnsortedObjects = new List<AObject>();
-        SortedObjects = new List<AObject>();
+        _unsortedObjects = new List<AObject>();
+        _sortedObjects = new List<AObject>();
     }
 
-    private Action<short> SoundEventCallback { get; }
-    private List<AObject> UnsortedObjects { get; }
-    private List<AObject> SortedObjects { get; }
+    private readonly Action<short> _soundEventCallback;
+    private readonly List<AObject> _unsortedObjects;
+    private readonly List<AObject> _sortedObjects;
 
     public bool Is8Bit { get; }
 
     public void SoundEventRequest(short soundId)
     {
-        SoundEventCallback?.Invoke(soundId);
+        _soundEventCallback?.Invoke(soundId);
     }
 
     // NOTE: A bit unsure what to name this. Same as the normal Play function, but without sorting and drawn first.
     public void PlayFront(AObject obj)
     {
-        UnsortedObjects.Insert(0, obj);
+        _unsortedObjects.Insert(0, obj);
     }
 
     public void Play(AObject obj)
     {
-        for (int i = 0; i < SortedObjects.Count; i++)
+        for (int i = 0; i < _sortedObjects.Count; i++)
         {
-            if (SortedObjects[i].Priority >= obj.Priority)
+            if (_sortedObjects[i].Priority >= obj.Priority)
             {
-                SortedObjects.Insert(i, obj);
+                _sortedObjects.Insert(i, obj);
                 return;
             }
         }
 
-        SortedObjects.Add(obj);
+        _sortedObjects.Add(obj);
     }
 
     public void Execute()
     {
-        foreach (AObject obj in UnsortedObjects)
+        foreach (AObject obj in _unsortedObjects)
             obj.Execute(SoundEventRequest);
 
-        foreach (AObject obj in SortedObjects)
+        foreach (AObject obj in _sortedObjects)
             obj.Execute(SoundEventRequest);
 
-        UnsortedObjects.Clear();
-        SortedObjects.Clear();
+        _unsortedObjects.Clear();
+        _sortedObjects.Clear();
     }
 
     public void Clear()
     {
-        UnsortedObjects.Clear();
-        SortedObjects.Clear();
+        _unsortedObjects.Clear();
+        _sortedObjects.Clear();
     }
 }

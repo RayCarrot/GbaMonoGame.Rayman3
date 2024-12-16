@@ -29,8 +29,8 @@ public sealed partial class Machine : MovableActor
     }
 
     // For some reason this array has 10 entries, but only 8 are ever used
-    private static Vector2[] ExplosionOffsets { get; } =
-    {
+    private static readonly Vector2[] _explosionOffsets =
+    [
         new(-5, 5),
         new(7, 12),
         new(-20, 50),
@@ -40,8 +40,8 @@ public sealed partial class Machine : MovableActor
         new(-10, 18),
         new(5, 55),
         new(-34, 20),
-        new(60, 32),
-    };
+        new(60, 32)
+    ];
 
     public ActorResource Resource { get; }
     public TextBoxDialog TextBox { get; set; }

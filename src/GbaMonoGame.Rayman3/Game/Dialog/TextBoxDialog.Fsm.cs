@@ -4,7 +4,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class TextBoxDialog
 {
-    private bool Fsm_MoveIn(FsmAction action)
+    public bool Fsm_MoveIn(FsmAction action)
     {
         switch (action)
         {
@@ -33,7 +33,7 @@ public partial class TextBoxDialog
         return true;
     }
 
-    private bool Fsm_WaitForNextText(FsmAction action)
+    public bool Fsm_WaitForNextText(FsmAction action)
     {
         switch (action)
         {
@@ -59,7 +59,7 @@ public partial class TextBoxDialog
         return true;
     }
 
-    private bool Fsm_TransitionTextOut(FsmAction action)
+    public bool Fsm_TransitionTextOut(FsmAction action)
     {
         switch (action)
         {
@@ -108,7 +108,7 @@ public partial class TextBoxDialog
         return true;
     }
 
-    private bool Fsm_TransitionTextIn(FsmAction action)
+    public bool Fsm_TransitionTextIn(FsmAction action)
     {
         switch (action)
         {
@@ -169,7 +169,7 @@ public partial class TextBoxDialog
         return true;
     }
 
-    private bool Fsm_MoveOut(FsmAction action)
+    public bool Fsm_MoveOut(FsmAction action)
     {
         switch (action)
         {

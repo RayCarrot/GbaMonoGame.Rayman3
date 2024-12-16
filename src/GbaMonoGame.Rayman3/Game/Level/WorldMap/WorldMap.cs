@@ -865,7 +865,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
 
     #region Steps
 
-    private void StepEx_UnlockWorld2()
+    public void StepEx_UnlockWorld2()
     {
         float xPos = BaseObjPos.X - ScrollX;
         Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
@@ -907,7 +907,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         StepVolcanoGlow();
     }
 
-    private void StepEx_UnlockWorld3()
+    public void StepEx_UnlockWorld3()
     {
         float xPos = BaseObjPos.X - ScrollX;
         Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
@@ -951,7 +951,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         StepVolcanoGlow();
     }
 
-    private void StepEx_UnlockWorld4()
+    public void StepEx_UnlockWorld4()
     {
         float xPos = BaseObjPos.X - ScrollX;
         Rayman.ScreenPos = Rayman.ScreenPos with { X = xPos };
@@ -997,7 +997,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         StepVolcanoGlow();
     }
 
-    private void StepEx_Play()
+    public void StepEx_Play()
     {
         if (SelectedWorldType == WorldType.None && CircleWipeTransitionMode == TransitionMode.None)
         {
@@ -1315,7 +1315,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         ManageCheats();
     }
 
-    private void StepEx_EnterWorld()
+    public void StepEx_EnterWorld()
     {
         // NOTE: The game only updates this every 4 frames
         const int factor = 4;
@@ -1365,7 +1365,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.PlayFront(FullWorldName);
     }
 
-    private void StepEx_EnterGameCubeMenu()
+    public void StepEx_EnterGameCubeMenu()
     {
         // Wait
         if (EnterGameCubeMenuStep == 0)
@@ -1461,7 +1461,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Play(GameCubeSparkles);
     }
 
-    private void Step_Normal()
+    public void Step_Normal()
     {
         Scene.Step();
 
@@ -1503,7 +1503,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         }
     }
 
-    private void Step_Pause_Init()
+    public void Step_Pause_Init()
     {
         SavedFadeControl = Gfx.FadeControl;
 
@@ -1523,7 +1523,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_AddDialog;
     }
 
-    private void Step_Pause_AddDialog()
+    public void Step_Pause_AddDialog()
     {
         Scene.AddDialog(PauseDialog, true, false);
         Scene.Step();
@@ -1533,7 +1533,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Paused;
     }
 
-    private void Step_Pause_Paused()
+    public void Step_Pause_Paused()
     {
         if (PauseDialog.DrawStep == PauseDialog.PauseDialogDrawStep.Hide)
             CurrentStepAction = Step_Pause_UnInit;
@@ -1549,7 +1549,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         Scene.AnimationPlayer.Execute();
     }
 
-    private void Step_Pause_UnInit()
+    public void Step_Pause_UnInit()
     {
         Scene.RemoveLastDialog();
         Scene.RefreshDialogs();
@@ -1567,7 +1567,7 @@ public class WorldMap : Frame, IHasScene, IHasPlayfield
         CurrentStepAction = Step_Pause_Resume;
     }
 
-    private void Step_Pause_Resume()
+    public void Step_Pause_Resume()
     {
         Gfx.FadeControl = SavedFadeControl;
         Gfx.Fade = 0;

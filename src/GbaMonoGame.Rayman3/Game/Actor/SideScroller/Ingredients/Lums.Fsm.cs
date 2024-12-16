@@ -6,7 +6,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Lums
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -69,7 +69,7 @@ public partial class Lums
         return true;
     }
 
-    private bool Fsm_Collected(FsmAction action)
+    public bool Fsm_Collected(FsmAction action)
     {
         switch (action)
         {
@@ -167,7 +167,7 @@ public partial class Lums
         return true;
     }
 
-    private bool Fsm_Respawn(FsmAction action)
+    public bool Fsm_Respawn(FsmAction action)
     {
         switch (action)
         {
@@ -207,7 +207,7 @@ public partial class Lums
     }
 
     // TODO: Implement
-    private bool FUN_0805ed40(FsmAction action) => true;
-    private bool FUN_0805e83c(FsmAction action) => true;
-    private bool FUN_0805e844(FsmAction action) => true;
+    public bool FUN_0805ed40(FsmAction action) => true;
+    public bool FUN_0805e83c(FsmAction action) => true;
+    public bool FUN_0805e844(FsmAction action) => true;
 }

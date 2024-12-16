@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class FallingNet
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -31,7 +31,7 @@ public partial class FallingNet
         return true;
     }
 
-    private bool Fsm_Timed(FsmAction action)
+    public bool Fsm_Timed(FsmAction action)
     {
         switch (action)
         {
@@ -73,7 +73,7 @@ public partial class FallingNet
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {

@@ -41,7 +41,7 @@ public sealed partial class MechanicalPlatform : MovableActor
             case Message.Hit:
                 RaymanBody body = (RaymanBody)param;
                 if ((Scene.MainActor.LinkedMovementActor == this || IsSolid) && 
-                    !body.IsInMoveBackwardsState)
+                    body.State != body.Fsm_MoveBackwards)
                 {
                     float yDist = InitialPosition.Y - Position.Y;
 

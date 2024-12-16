@@ -39,7 +39,7 @@ public class Sprite
         if (textureRectangle == Rectangle.Empty)
             textureRectangle = Texture.Bounds;
 
-        Vector2 origin = new(textureRectangle.Width / 2f, textureRectangle.Height / 2f);
+        Vector2 center = new(textureRectangle.Width / 2f, textureRectangle.Height / 2f);
 
         SpriteEffects effects = SpriteEffects.None;
         if ((AffineMatrix?.FlipX ?? false) ^ FlipX)
@@ -63,10 +63,10 @@ public class Sprite
 
         renderer.Draw(
             texture: Texture, 
-            position: Center ? Position + origin : Position, 
+            position: Center ? Position + center : Position, 
             sourceRectangle: textureRectangle, 
             rotation: rotation, 
-            origin: Center ? origin : Vector2.Zero, 
+            origin: Center ? center : Vector2.Zero, 
             scale: scale, 
             effects: effects, 
             color: color);

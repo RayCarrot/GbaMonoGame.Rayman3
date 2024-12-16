@@ -13,7 +13,7 @@ public partial class Grenade
         return true;
     }
 
-    private bool Fsm_Default(FsmAction action)
+    public bool Fsm_Default(FsmAction action)
     {
         switch (action)
         {

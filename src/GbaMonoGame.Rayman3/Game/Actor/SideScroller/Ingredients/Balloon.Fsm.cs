@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class Balloon
 {
-    private bool Fsm_Inflate(FsmAction action)
+    public bool Fsm_Inflate(FsmAction action)
     {
         switch (action)
         {
@@ -37,7 +37,7 @@ public partial class Balloon
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -93,7 +93,7 @@ public partial class Balloon
         return true;
     }
 
-    private bool Fsm_Bounce(FsmAction action)
+    public bool Fsm_Bounce(FsmAction action)
     {
         switch (action)
         {
@@ -139,7 +139,7 @@ public partial class Balloon
         return true;
     }
 
-    private bool Fsm_Pop(FsmAction action)
+    public bool Fsm_Pop(FsmAction action)
     {
         switch (action)
         {

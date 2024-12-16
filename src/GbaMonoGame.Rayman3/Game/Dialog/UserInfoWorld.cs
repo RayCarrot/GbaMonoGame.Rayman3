@@ -32,12 +32,12 @@ public class UserInfoWorld : Dialog
     public BlueLumBar BlueLumBar { get; }
     public WorldNameBar WorldNameBar { get; }
 
-    private bool ShouldPlayCurtainAnimation { get; set; }
-    
+    public bool ShouldPlayCurtainAnimation { get; set; }
+
     // The game only has a single animated object, but we split it into two in order
     // to support different screen resolutions (so it fills the width of the screen)
-    private AnimatedObject CurtainsLeft { get; set; }
-    private AnimatedObject CurtainsRight { get; set; }
+    public AnimatedObject CurtainsLeft { get; set; }
+    public AnimatedObject CurtainsRight { get; set; }
 
     public bool Hide { get; set; }
 

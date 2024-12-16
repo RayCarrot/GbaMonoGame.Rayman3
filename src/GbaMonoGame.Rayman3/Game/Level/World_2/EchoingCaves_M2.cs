@@ -9,8 +9,8 @@ public class EchoingCaves_M2 : FrameSideScroller
 {
     public EchoingCaves_M2(MapId mapId) : base(mapId) { }
 
-    private ushort LightningTime { get; set; }
-    private ushort Timer { get; set; }
+    public ushort LightningTime { get; set; }
+    public ushort Timer { get; set; }
 
     private void InitScene()
     {

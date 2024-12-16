@@ -22,31 +22,31 @@ public partial class GameCubeMenu : Frame
 
     #region Private Properties
 
-    private AnimationPlayer AnimationPlayer { get; set; }
-    private TransitionsFX TransitionsFX { get; set; }
-    private GameCubeMenuData Data { get; set; }
+    public AnimationPlayer AnimationPlayer { get; set; }
+    public TransitionsFX TransitionsFX { get; set; }
+    public GameCubeMenuData Data { get; set; }
     public FiniteStateMachine State { get; } = new();
 
     public GameCubeMenuTransitionInScreenEffect TransitionInScreenEffect { get; set; }
     public GameCubeMenuTransitionOutScreenEffect TransitionOutScreenEffect { get; set; }
 
-    private bool UseJoyBus { get; set; }
-    private JoyBus JoyBus { get; set; }
-    private bool IsJoyBusActive { get; set; }
-    private bool WaitingForConnection { get; set; }
-    private int MapScroll { get; set; }
-    private int SelectedMap { get; set; }
-    private byte GbaUnlockFlags { get; set; }
-    private byte GcnUnlockFlags { get; set; }
-    private bool IsShowingLyChallengeUnlocked { get; set; }
-    private bool IsActive { get; set; }
-    private int WheelRotation { get; set; }
-    private int Timer { get; set; }
-    private int MapInfoFileSize { get; set; }
+    public bool UseJoyBus { get; set; }
+    public JoyBus JoyBus { get; set; }
+    public bool IsJoyBusActive { get; set; }
+    public bool WaitingForConnection { get; set; }
+    public int MapScroll { get; set; }
+    public int SelectedMap { get; set; }
+    public byte GbaUnlockFlags { get; set; }
+    public byte GcnUnlockFlags { get; set; }
+    public bool IsShowingLyChallengeUnlocked { get; set; }
+    public bool IsActive { get; set; }
+    public int WheelRotation { get; set; }
+    public int Timer { get; set; }
+    public int MapInfoFileSize { get; set; }
 
     // Downloaded
-    private GameCubeMapInfos MapInfos { get; set; }
-    private GameCubeMap Map { get; set; }
+    public GameCubeMapInfos MapInfos { get; set; }
+    public GameCubeMap Map { get; set; }
 
     #endregion
 

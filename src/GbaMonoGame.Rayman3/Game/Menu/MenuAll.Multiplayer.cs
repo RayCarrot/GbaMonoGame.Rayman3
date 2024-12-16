@@ -13,27 +13,27 @@ public partial class MenuAll
 
     #endregion
 
-    #region Private Properties
+    #region Properties
 
-    private bool ShouldMultiplayerTextBlink { get; set; }
-    private int PreviousMultiplayerText { get; set; }
-    private int NextMultiplayerTextId { get; set; }
-    
-    private uint MultiplayerInititialGameTime { get; set; }
-    private int MultiplayerPlayersOffsetY { get; set; }
-    private bool ReturningFromMultiplayerGame { get; set; }
-    private bool? IsMultiplayerConnected { get; set; }
-    private byte MultiplayerConnectionTimer { get; set; }
-    private byte MultiplayerLostConnectionTimer { get; set; }
-    private uint LastConnectionTime { get; set; }
-    private byte MultiplayerMapHighlightValue { get; set; }
-    private bool field_0x80 { get; set; } // TODO: Name
-    private MultiplayerGameType MultiplayerGameType { get; set; }
-    private int MultiplayerMapId { get; set; }
+    public bool ShouldMultiplayerTextBlink { get; set; }
+    public int PreviousMultiplayerText { get; set; }
+    public int NextMultiplayerTextId { get; set; }
 
-    private int SinglePakPlayersOffsetY { get; set; }
-    private byte MultiplayerSinglePakConnectionTimer { get; set; }
-    private byte field_0xe1 { get; set; } // TODO: Name
+    public uint MultiplayerInititialGameTime { get; set; }
+    public int MultiplayerPlayersOffsetY { get; set; }
+    public bool ReturningFromMultiplayerGame { get; set; }
+    public bool? IsMultiplayerConnected { get; set; }
+    public byte MultiplayerConnectionTimer { get; set; }
+    public byte MultiplayerLostConnectionTimer { get; set; }
+    public uint LastConnectionTime { get; set; }
+    public byte MultiplayerMapHighlightValue { get; set; }
+    public bool field_0x80 { get; set; } // TODO: Name
+    public MultiplayerGameType MultiplayerGameType { get; set; }
+    public int MultiplayerMapId { get; set; }
+
+    public int SinglePakPlayersOffsetY { get; set; }
+    public byte MultiplayerSinglePakConnectionTimer { get; set; }
+    public byte field_0xe1 { get; set; } // TODO: Name
 
     #endregion
 

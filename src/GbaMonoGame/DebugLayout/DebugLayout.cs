@@ -10,8 +10,8 @@ namespace GbaMonoGame;
 
 public class DebugLayout
 {
-    private readonly List<DebugWindow> _windows = new();
-    private readonly List<DebugMenu> _menus = new();
+    private readonly List<DebugWindow> _windows = [];
+    private readonly List<DebugMenu> _menus = [];
     private DebugLayoutTextureManager _textureManager;
     private ImGuiRenderer _guiRenderer;
 
@@ -110,5 +110,4 @@ public class DebugLayout
                 window.DrawGame(renderer);
         }
     }
-
 }

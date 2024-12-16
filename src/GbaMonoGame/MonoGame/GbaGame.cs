@@ -25,7 +25,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-
+        
         SetFramerate(Framerate);
     }
 
@@ -156,7 +156,10 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         if (!HasLoadedGameInstallation)
             return;
 
-        Engine.GameViewPort.Resize(GetResolution().ToVector2(), InputManager.IsButtonPressed(Keys.LeftShift) && !_isChangingResolution, changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
+        Engine.GameViewPort.Resize(
+            newScreenSize: GetResolution().ToVector2(), 
+            maintainScreenRatio: InputManager.IsButtonPressed(Keys.LeftShift) && !_isChangingResolution, 
+            changeScreenSizeCallback: x => SetResolution(x.ToRoundedPoint(), false));
         SaveWindowState();
         Engine.SaveConfig();
     }
@@ -167,7 +170,7 @@ public abstract class GbaGame : Microsoft.Xna.Framework.Game
         {
             _selectedGameInstallation = gameInstallation;
 
-            // TODO: If this throws the exception might get swallowed
+            // TODO: If this throws then the exception might get swallowed
             // Load the selected game installation
             _loadingGameInstallationTask = Task.Run(() => Engine.LoadGameInstallation(_selectedGameInstallation));
         }

@@ -22,10 +22,12 @@ public partial class WalkingShell
 
         if (State != Fsm_Idle && State != Fsm_Loop)
         {
+            Rayman rayman = (Rayman)Scene.MainActor;
+
             if (IsHitBreakableDoor() ||
                 Speed.X == 0 ||
                 CurrentType == PhysicalTypeValue.Water ||
-                ((Rayman)Scene.MainActor).IsInDyingState)
+                rayman.State == rayman.Fsm_Dying)
             {
                 if (IsRaymanMounted)
                     Scene.MainActor.ReceiveDamage(3);
@@ -50,7 +52,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -95,7 +97,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Move(FsmAction action)
+    public bool Fsm_Move(FsmAction action)
     {
         switch (action)
         {
@@ -174,7 +176,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Boost(FsmAction action)
+    public bool Fsm_Boost(FsmAction action)
     {
         switch (action)
         {
@@ -260,7 +262,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Jump(FsmAction action)
+    public bool Fsm_Jump(FsmAction action)
     {
         switch (action)
         {
@@ -363,7 +365,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Loop(FsmAction action)
+    public bool Fsm_Loop(FsmAction action)
     {
         switch (action)
         {
@@ -458,7 +460,7 @@ public partial class WalkingShell
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {

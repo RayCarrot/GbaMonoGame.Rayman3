@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class FallingPlatform
 {
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -41,7 +41,7 @@ public partial class FallingPlatform
         return true;
     }
 
-    private bool Fsm_Timed(FsmAction action)
+    public bool Fsm_Timed(FsmAction action)
     {
         switch (action)
         {
@@ -96,7 +96,7 @@ public partial class FallingPlatform
     }
 
     // Unused
-    private bool Fsm_BeginFall(FsmAction action)
+    public bool Fsm_BeginFall(FsmAction action)
     {
         switch (action)
         {
@@ -128,7 +128,7 @@ public partial class FallingPlatform
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {

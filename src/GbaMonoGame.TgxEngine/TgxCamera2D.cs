@@ -12,8 +12,8 @@ public class TgxCamera2D : TgxCamera
     private bool _fixedResolution;
     private Vector2? _maxResolution;
 
-    private TgxCluster MainCluster { get; set; }
-    private List<TgxCluster> Clusters { get; } = new();
+    private TgxCluster _mainCluster;
+    private readonly List<TgxCluster> _clusters = [];
 
     /// <summary>
     /// Indicates if the resolution is fixed to the original screen resolution. This is
@@ -45,13 +45,13 @@ public class TgxCamera2D : TgxCamera
 
     public override Vector2 Position
     {
-        get => MainCluster.Position;
+        get => _mainCluster.Position;
         set
         {
             TgxCluster mainCluster = GetMainCluster();
             mainCluster.Position = value;
 
-            foreach (TgxCluster cluster in Clusters)
+            foreach (TgxCluster cluster in _clusters)
             {
                 if (cluster.Stationary)
                     continue;
@@ -64,7 +64,7 @@ public class TgxCamera2D : TgxCamera
                 if (cluster.Camera != this && Engine.GameViewPort.GameResolution != Engine.GameViewPort.OriginalGameResolution)
                 {
                     // Determine if the cluster wraps horizontally. We assume that none of them wrap vertically.
-                    bool wrapX = cluster.GetLayers().Any(x => x.PixelWidth < cluster.Size.X);
+                    bool wrapX = cluster.Layers.Any(x => x.PixelWidth < cluster.Size.X);
 
                     if (wrapX)
                     {
@@ -105,7 +105,7 @@ public class TgxCamera2D : TgxCamera
         {
             Vector2 newGameResolution = gameViewPort.GameResolution * Engine.Config.PlayfieldCameraScale;
 
-            Vector2? maxRes = MaxResolution ?? MainCluster?.Size;
+            Vector2? maxRes = MaxResolution ?? _mainCluster?.Size;
             if (maxRes is { } max)
             {
                 if (newGameResolution.X > newGameResolution.Y)
@@ -135,9 +135,9 @@ public class TgxCamera2D : TgxCamera
     public TgxCluster GetCluster(int clusterId)
     {
         if (clusterId == 0)
-            return MainCluster ?? throw new Exception("The main cluster hasn't been added yet");
+            return _mainCluster ?? throw new Exception("The main cluster hasn't been added yet");
         else
-            return Clusters[clusterId - 1];
+            return _clusters[clusterId - 1];
     }
 
     public IEnumerable<TgxCluster> GetClusters(bool includeMain)
@@ -145,22 +145,22 @@ public class TgxCamera2D : TgxCamera
         if (includeMain)
             yield return GetMainCluster();
 
-        foreach (TgxCluster cluster in Clusters)
+        foreach (TgxCluster cluster in _clusters)
             yield return cluster;
     }
 
     public void AddCluster(ClusterResource clusterResource)
     {
-        if (MainCluster == null)
+        if (_mainCluster == null)
         {
-            MainCluster = new TgxCluster(clusterResource, this);
+            _mainCluster = new TgxCluster(clusterResource, this);
 
             if (!FixedResolution)
                 UpdateResolution();
         }
         else
         {
-            Clusters.Add(new TgxCluster(clusterResource, this));
+            _clusters.Add(new TgxCluster(clusterResource, this));
         }
     }
 

@@ -5,14 +5,14 @@ namespace GbaMonoGame.Rayman3;
 
 public static class Localization
 {
-    private static TextBank[] TextBanks { get; set; }
+    private static TextBank[] _textBanks;
 
     public static int Language { get; private set; }
     public static int LanguageUiIndex { get; private set; }
     
     public static string[] GetText(int bankId, int textId)
     {
-        Text text = TextBanks[bankId].Texts[textId];
+        Text text = _textBanks[bankId].Texts[textId];
         
         string[] strings = new string[text.LinesCount];
         for (int i = 0; i < strings.Length; i++)
@@ -26,6 +26,6 @@ public static class Localization
         Language = language;
         LanguageUiIndex = language; // TODO: On N-Gage this is different!
 
-        TextBanks = Engine.Loader.Rayman3_LocalizedTextBanks.TextBanks[language].Value.Select(x => x.Value).ToArray();
+        _textBanks = Engine.Loader.Rayman3_LocalizedTextBanks.TextBanks[language].Value.Select(x => x.Value).ToArray();
     }
 }

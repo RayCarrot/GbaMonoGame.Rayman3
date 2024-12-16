@@ -35,7 +35,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {
@@ -65,7 +65,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_Walk(FsmAction action)
+    public bool Fsm_Walk(FsmAction action)
     {
         switch (action)
         {
@@ -103,7 +103,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_TurnAround(FsmAction action)
+    public bool Fsm_TurnAround(FsmAction action)
     {
         switch (action)
         {
@@ -151,7 +151,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_BeginChargeAttack(FsmAction action)
+    public bool Fsm_BeginChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -181,7 +181,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_ChargeAttack(FsmAction action)
+    public bool Fsm_ChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -242,7 +242,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_TurnAroundFromChargeAttack(FsmAction action)
+    public bool Fsm_TurnAroundFromChargeAttack(FsmAction action)
     {
         switch (action)
         {
@@ -271,7 +271,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -303,7 +303,7 @@ public partial class Slapdash
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {

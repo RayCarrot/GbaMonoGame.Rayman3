@@ -9,9 +9,8 @@ public abstract class Dialog : Object
         Scene = scene;
     }
 
-    protected FiniteStateMachine State { get; } = new();
-
     public Scene2D Scene { get; }
+    public FiniteStateMachine State { get; } = new();
 
     public void Step() => State.Step();
     public abstract void Load();

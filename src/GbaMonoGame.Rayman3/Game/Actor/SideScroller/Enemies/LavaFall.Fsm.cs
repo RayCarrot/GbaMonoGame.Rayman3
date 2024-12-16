@@ -5,7 +5,7 @@ namespace GbaMonoGame.Rayman3;
 
 public partial class LavaFall
 {
-    private bool Fsm_Flow(FsmAction action)
+    public bool Fsm_Flow(FsmAction action)
     {
         switch (action)
         {
@@ -74,7 +74,7 @@ public partial class LavaFall
         return true;
     }
 
-    private bool Fsm_Wait(FsmAction action)
+    public bool Fsm_Wait(FsmAction action)
     {
         switch (action)
         {

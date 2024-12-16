@@ -17,20 +17,24 @@ public class EchoingCaves_M1 : FrameSideScroller
 
     #endregion
 
-    #region Private Properties
+    #region Private Fields
 
-    private const int GateActorId = 1;
-    private int[] SwitchActorIds { get; } = Engine.Settings.Platform switch
+    public const int GateActorId = 1;
+    private readonly int[] SwitchActorIds = Engine.Settings.Platform switch
     {
         Platform.GBA => [22, 23, 28, 50],
         Platform.NGage => [45, 46, 56, 67],
         _ => throw new UnsupportedPlatformException()
     };
 
-    private bool ShouldInitCutscene { get; set; } = true;
-    private Action CurrentCutsceneStepAction { get; set; }
-    private uint Timer { get; set; }
-    private int CameraTargetIndex { get; set; }
+    #endregion
+
+    #region Public Properties
+
+    public bool ShouldInitCutscene { get; set; } = true;
+    public Action CurrentCutsceneStepAction { get; set; }
+    public uint Timer { get; set; }
+    public int CameraTargetIndex { get; set; }
 
     #endregion
 

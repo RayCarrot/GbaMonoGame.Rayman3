@@ -44,7 +44,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Fall(FsmAction action)
+    public bool Fsm_Fall(FsmAction action)
     {
         switch (action)
         {
@@ -79,7 +79,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Idle(FsmAction action)
+    public bool Fsm_Idle(FsmAction action)
     {
         switch (action)
         {
@@ -118,7 +118,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Walk(FsmAction action)
+    public bool Fsm_Walk(FsmAction action)
     {
         switch (action)
         {
@@ -153,7 +153,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Attack(FsmAction action)
+    public bool Fsm_Attack(FsmAction action)
     {
         switch (action)
         {
@@ -197,7 +197,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Hit(FsmAction action)
+    public bool Fsm_Hit(FsmAction action)
     {
         switch (action)
         {
@@ -234,7 +234,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_HitKnockBack(FsmAction action)
+    public bool Fsm_HitKnockBack(FsmAction action)
     {
         switch (action)
         {
@@ -281,7 +281,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_ReturnFromKnockBack(FsmAction action)
+    public bool Fsm_ReturnFromKnockBack(FsmAction action)
     {
         switch (action)
         {
@@ -309,7 +309,7 @@ public partial class RedPirate
         return true;
     }
 
-    private bool Fsm_Dying(FsmAction action)
+    public bool Fsm_Dying(FsmAction action)
     {
         switch (action)
         {
