@@ -14,7 +14,7 @@ public class NGageSplashScreensAct : Act
 
     public override void Init()
     {
-        // TODO: Load settings from save file (volume and language)
+        GameInfo.LoadOptions();
         Init(Engine.Loader.Rayman3_NGageSplashScreens);
         IsAutomatic = true;
     }

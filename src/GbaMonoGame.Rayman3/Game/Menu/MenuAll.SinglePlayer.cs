@@ -280,7 +280,12 @@ public partial class MenuAll
                     TransitionValue = 0;
                     if (StartEraseCursorTargetIndex == 0 && Slots[SelectedOption] != null)
                     {
-                        // TODO: Implement erase save slot
+                        Slots[SelectedOption] = null;
+                        Engine.SaveGame.Slots[SelectedOption] = new SaveGameSlot
+                        {
+                            Lums = new byte[125],
+                            Cages = new byte[7],
+                        };
                     }
                 }
                 break;

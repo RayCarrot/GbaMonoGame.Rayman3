@@ -87,42 +87,25 @@ public static class GameInfo
         PersistentInfo.CompletedGCNBonusLevels = 0;
     }
 
-    public static bool Load(int saveSlot)
+    public static void LoadOptions()
     {
-        string saveFile = Engine.GameInstallation.SaveFilePath;
-        using Context context = Engine.Context;
+        if (Engine.Settings.Platform != Platform.NGage)
+            throw new Exception("Loading options is only supported on N-Gage");
 
-        if (!context.FileExists(saveFile))
-        {
-            if (Engine.Settings.Platform == Platform.GBA)
-            {
-                EEPROMEncoder encoder = new(0x200);
-                context.AddFile(new EncodedLinearFile(context, saveFile, encoder)
-                {
-                    IgnoreCacheOnRead = true
-                });
-            }
-            else
-            {
-                context.AddFile(new LinearFile(context, saveFile)
-                {
-                    IgnoreCacheOnRead = true
-                });
-            }
-        }
+        // NOTE: The game starts by validating the save data, but we skip that
 
-        if (((PhysicalFile)context.GetRequiredFile(saveFile)).SourceFileExists)
-        {
-            // TODO: Try/catch?
-            SaveGame saveGame = FileFactory.Read<SaveGame>(context, saveFile);
-            PersistentInfo = saveGame.Slots[saveSlot];
-            return true;
-        }
-        else
-        {
-            ResetPersistentInfo();
-            return false;
-        }
+        ((NGageSoundEventsManager)SoundEventsManager.Current).MusicVolume = Engine.SaveGame.MusicVolume;
+        ((NGageSoundEventsManager)SoundEventsManager.Current).SfxVolume = Engine.SaveGame.SfxVolume;
+
+        // NOTE: The game seems to ignore the saved language and use the system language each time? But we use the saved one.
+        Localization.SetLanguage(Engine.SaveGame.Language);
+
+        // TODO: Set multiplayer name
+    }
+
+    public static void Load(int saveSlot)
+    {
+        PersistentInfo = Engine.SaveGame.Slots[saveSlot];
     }
 
     public static void Save(int saveSlot)

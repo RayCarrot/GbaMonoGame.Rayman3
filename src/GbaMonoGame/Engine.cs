@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using BinarySerializer;
+using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
+using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -30,6 +32,7 @@ public static class Engine
     public static GameInstallation GameInstallation { get; private set; }
     public static Context Context { get; private set; }
     public static Loader Loader { get; private set; }
+    public static SaveGame SaveGame { get; private set; }
     public static GbaEngineSettings Settings { get; private set; }
 
     #endregion
@@ -69,23 +72,17 @@ public static class Engine
 
     private static void LoadRom()
     {
-        ISerializerLogger serializerLogger = Config.WriteSerializerLog
-            ? new FileSerializerLogger(FileManager.GetDataFile(SerializerLogFileName))
-            : null;
-
-        Context = new Context(String.Empty, serializerLogger: serializerLogger, systemLogger: new BinarySerializerSystemLogger());
-        Settings = new GbaEngineSettings { Game = GameInstallation.Game, Platform = GameInstallation.Platform };
-        Context.AddSettings(Settings);
+        using Context context = Context;
 
         if (GameInstallation.Platform == Platform.GBA)
         {
-            GbaLoader loader = new(Context);
+            GbaLoader loader = new(context);
             loader.LoadFiles(GameInstallation.GameFilePath, cache: true);
             loader.LoadRomHeader(GameInstallation.GameFilePath);
 
             string gameCode = loader.RomHeader.GameCode;
 
-            Context.AddPreDefinedPointers(Settings.Game switch
+            context.AddPreDefinedPointers(Settings.Game switch
             {
                 Game.Rayman3 when gameCode is "AYZP" => DefinedPointers.Rayman3_GBA_EU,
                 //Game.Rayman3 when gameCode is "AYZE" => DefinedPointers.Rayman3_GBA_US, // TODO: Support US version
@@ -99,10 +96,10 @@ public static class Engine
         {
             string dataFileName = Path.ChangeExtension(GameInstallation.GameFilePath, ".dat");
 
-            NGageLoader loader = new(Context);
+            NGageLoader loader = new(context);
             loader.LoadFiles(GameInstallation.GameFilePath, dataFileName, cache: true);
 
-            Context.AddPreDefinedPointers(Settings.Game switch
+            context.AddPreDefinedPointers(Settings.Game switch
             {
                 Game.Rayman3 => DefinedPointers.Rayman3_NGage,
                 _ => throw new Exception($"Unsupported game {Settings.Game}")
@@ -114,6 +111,64 @@ public static class Engine
         else
         {
             throw new UnsupportedPlatformException();
+        }
+    }
+
+    private static void LoadSaveGame()
+    {
+        string saveFile = GameInstallation.SaveFilePath;
+        using Context context = Context;
+
+        PhysicalFile file;
+        if (Settings.Platform == Platform.GBA)
+        {
+            EEPROMEncoder encoder = new(0x200);
+            file = context.AddFile(new EncodedLinearFile(context, saveFile, encoder)
+            {
+                IgnoreCacheOnRead = true
+            });
+        }
+        else
+        {
+            file = context.AddFile(new LinearFile(context, saveFile)
+            {
+                IgnoreCacheOnRead = true
+            });
+        }
+
+        if (file.SourceFileExists)
+        {
+            // TODO: Try/catch?
+            SaveGame = FileFactory.Read<SaveGame>(context, saveFile);
+        }
+        else
+        {
+            SaveGame = new SaveGame
+            {
+                ValidSlots = new bool[3],
+                Slots =
+                [
+                    new SaveGameSlot
+                    {
+                        Lums = new byte[125],
+                        Cages = new byte[7],
+                    },
+                    new SaveGameSlot
+                    {
+                        Lums = new byte[125],
+                        Cages = new byte[7],
+                    },
+                    new SaveGameSlot
+                    {
+                        Lums = new byte[125],
+                        Cages = new byte[7],
+                    },
+                ],
+                MusicVolume = (int)SoundEngineInterface.MaxVolume,
+                SfxVolume = (int)SoundEngineInterface.MaxVolume,
+                Language = 0,
+                MultiplayerName = "Rayman", // TODO: How is this set?
+            };
         }
     }
 
@@ -134,7 +189,17 @@ public static class Engine
     internal static void LoadGameInstallation(GameInstallation gameInstallation)
     {
         GameInstallation = gameInstallation;
+
+        ISerializerLogger serializerLogger = Config.WriteSerializerLog
+            ? new FileSerializerLogger(FileManager.GetDataFile(SerializerLogFileName))
+            : null;
+
+        Context = new Context(String.Empty, serializerLogger: serializerLogger, systemLogger: new BinarySerializerSystemLogger());
+        Settings = new GbaEngineSettings { Game = GameInstallation.Game, Platform = GameInstallation.Platform };
+        Context.AddSettings(Settings);
+
         LoadRom();
+        LoadSaveGame();
     }
 
     internal static void LoadMonoGame(GraphicsDevice graphicsDevice, ContentManager contentManager, ScreenCamera screenCamera, GameViewPort gameViewPort)

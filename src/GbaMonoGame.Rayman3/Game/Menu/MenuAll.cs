@@ -290,9 +290,9 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
-            bool loaded = GameInfo.Load(i);
+            GameInfo.Load(i);
 
-            if (GameInfo.PersistentInfo.Lives != 0 && loaded)
+            if (GameInfo.PersistentInfo.Lives != 0)
                 Slots[i] = new Slot(GameInfo.GetTotalCollectedYellowLums(), GameInfo.GetTotalCollectedCages(), GameInfo.PersistentInfo.Lives);
             else
                 Slots[i] = null;
