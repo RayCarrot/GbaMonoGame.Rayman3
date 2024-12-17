@@ -9,13 +9,13 @@ using Action = System.Action;
 
 namespace GbaMonoGame.Rayman3;
 
-// TODO: Add support for N-Gage menus as well as US version language selection
 public partial class MenuAll : Frame, IHasPlayfield
 {
     #region Constructor
 
     public MenuAll(Page initialPage)
     {
+        // TODO: Update for N-Gage
         WheelRotation = 0;
         SelectedOption = 0;
         PrevSelectedOption = 0;
@@ -64,6 +64,13 @@ public partial class MenuAll : Frame, IHasPlayfield
     public MenuData Data { get; set; }
     public Action CurrentStepAction { get; set; }
     public Action NextStepAction { get; set; }
+
+    public float CursorBaseY { get; } = Engine.Settings.Platform switch
+    {
+        Platform.GBA => 67,
+        Platform.NGage => 77,
+        _ => throw new UnsupportedPlatformException()
+    };
 
     public int PrevSelectedOption { get; set; }
     public int SelectedOption { get; set; }
@@ -157,19 +164,19 @@ public partial class MenuAll : Frame, IHasPlayfield
                 {
                     Data.Cursor.CurrentAnimation = 0;
 
-                    if (Data.Cursor.ScreenPos.Y < 68)
+                    if (Data.Cursor.ScreenPos.Y <= CursorBaseY)
                     {
                         Data.Stem.CurrentAnimation = 15;
                     }
                 }
             }
-            else if (Data.Cursor.ScreenPos.Y >= 68)
+            else if (Data.Cursor.ScreenPos.Y > CursorBaseY)
             {
                 Data.Cursor.ScreenPos -= new Vector2(0, 4);
 
-                if (Data.Cursor.ScreenPos.Y < 68)
+                if (Data.Cursor.ScreenPos.Y <= CursorBaseY)
                 {
-                    Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { Y = 67 };
+                    Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { Y = CursorBaseY };
                     Data.Stem.CurrentAnimation = 15;
                 }
             }
@@ -193,30 +200,19 @@ public partial class MenuAll : Frame, IHasPlayfield
         }
         else if (StemMode == 2)
         {
-            int baseY;
             int lineHeight;
-
             if (CurrentStepAction == Step_SinglePlayer)
-            {
-                baseY = 67;
                 lineHeight = 18;
-            }
             else if (CurrentStepAction == Step_MultiplayerMultiPakMapSelection)
-            {
-                baseY = 67;
                 lineHeight = 20;
-            }
             else
-            {
-                baseY = 67;
                 lineHeight = 16;
-            }
 
             if (SelectedOption != PrevSelectedOption)
             {
                 if (SelectedOption < PrevSelectedOption)
                 {
-                    int yPos = SelectedOption * lineHeight + baseY;
+                    float yPos = SelectedOption * lineHeight + CursorBaseY;
 
                     if (yPos < Data.Cursor.ScreenPos.Y)
                     {
@@ -230,7 +226,7 @@ public partial class MenuAll : Frame, IHasPlayfield
                 }
                 else
                 {
-                    int yPos = SelectedOption * lineHeight + baseY;
+                    float yPos = SelectedOption * lineHeight + CursorBaseY;
 
                     if (yPos > Data.Cursor.ScreenPos.Y)
                     {
@@ -254,7 +250,7 @@ public partial class MenuAll : Frame, IHasPlayfield
 
     public void TransitionOutCursorAndStem()
     {
-        if (StemMode is 2 or 3)
+        if (Engine.Settings.Platform == Platform.NGage || StemMode is 2 or 3)
         {
             PrevSelectedOption = SelectedOption;
             SelectedOption = 0;
@@ -264,13 +260,13 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         Data.Stem.CurrentAnimation = 1;
 
-        if (Data.Cursor.ScreenPos.Y < 68 && Data.Cursor.CurrentAnimation != 16)
+        if (Data.Cursor.ScreenPos.Y <= CursorBaseY && Data.Cursor.CurrentAnimation != 16)
             Data.Stem.CurrentAnimation = 15;
     }
 
     public void SelectOption(int selectedOption, bool playSound)
     {
-        if (StemMode is 2 or 3)
+        if (Engine.Settings.Platform == Platform.NGage || StemMode is 2 or 3)
         {
             PrevSelectedOption = SelectedOption;
             SelectedOption = selectedOption;
@@ -290,6 +286,9 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         for (int i = 0; i < 3; i++)
         {
+            if (Engine.Settings.Platform == Platform.NGage && !Engine.SaveGame.ValidSlots[i])
+                continue;
+
             GameInfo.Load(i);
 
             if (GameInfo.PersistentInfo.Lives != 0)
@@ -297,14 +296,17 @@ public partial class MenuAll : Frame, IHasPlayfield
             else
                 Slots[i] = null;
 
-            if (GameInfo.PersistentInfo.FinishedLyChallenge1)
-                FinishedLyChallenge1 = true;
+            if (Engine.Settings.Platform == Platform.GBA)
+            {
+                if (GameInfo.PersistentInfo.FinishedLyChallenge1)
+                    FinishedLyChallenge1 = true;
 
-            if (GameInfo.PersistentInfo.FinishedLyChallenge2)
-                FinishedLyChallenge2 = true;
+                if (GameInfo.PersistentInfo.FinishedLyChallenge2)
+                    FinishedLyChallenge2 = true;
 
-            if (Slots[i]?.CagesCount == 50)
-                HasAllCages = true;
+                if (Slots[i]?.CagesCount == 50)
+                    HasAllCages = true;
+            }
         }
     }
 
@@ -322,8 +324,6 @@ public partial class MenuAll : Frame, IHasPlayfield
         Engine.GameViewPort.SetResolutionBoundsToOriginalResolution();
         Playfield.Camera.FixedResolution = true;
 
-        SetBackgroundPalette(3);
-
         Gfx.ClearColor = Color.Black;
 
         Playfield.Camera.GetMainCluster().Position = Vector2.Zero;
@@ -335,7 +335,12 @@ public partial class MenuAll : Frame, IHasPlayfield
         switch (InitialPage)
         {
             case Page.SelectLanguage:
-                CurrentStepAction = Step_SelectLanguage;
+                CurrentStepAction = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => Step_SelectLanguage,
+                    Platform.NGage => Step_InitializeTransitionToSelectLanguage,
+                    _ => throw new UnsupportedPlatformException()
+                };
                 SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Switch1_Mix03);
                 break;
 
@@ -352,13 +357,24 @@ public partial class MenuAll : Frame, IHasPlayfield
             case Page.Multiplayer:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
-                CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
+                CurrentStepAction = Engine.Settings.Platform switch
+                {
+                    Platform.GBA => Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection,
+                    Platform.NGage => Step_InitializeTransitionToMultiplayerMultiPakTypeSelection,
+                    _ => throw new UnsupportedPlatformException()
+                };
                 break;
 
             case Page.MultiplayerLostConnection:
                 IsLoadingMultiplayerMap = true;
                 Playfield.TileLayers[3].Screen.IsEnabled = false;
                 CurrentStepAction = Step_InitializeMultiplayerLostConnection;
+                break;
+
+            // N-Gage exclusive
+            case Page.NGage_FirstPage:
+                Playfield.TileLayers[3].Screen.IsEnabled = false;
+                CurrentStepAction = Step_InitializeFirstPage;
                 break;
         }
 
@@ -371,7 +387,10 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         RSMultiplayer.UnInit();
         RSMultiplayer.Init();
-        MultiplayerInititialGameTime = GameTime.ElapsedFrames;
+
+        if (Engine.Settings.Platform == Platform.GBA)
+            MultiplayerInititialGameTime = GameTime.ElapsedFrames;
+        
         MultiplayerInfo.Init();
         MultiplayerManager.Init();
 
@@ -405,40 +424,97 @@ public partial class MenuAll : Frame, IHasPlayfield
 
         CurrentStepAction();
 
-        if (CurrentStepAction != Step_SelectLanguage)
+        if (Engine.Settings.Platform == Platform.NGage || CurrentStepAction != Step_SelectLanguage)
             ManageCursorAndStem();
+
+        if (Engine.Settings.Platform == Platform.NGage)
+        {
+            Data.SelectSymbol.CurrentAnimation = Localization.LanguageUiIndex;
+            Data.BackSymbol.CurrentAnimation = 5 + Localization.LanguageUiIndex;
+
+            Data.BackSymbol.ScreenPos = Data.BackSymbol.ScreenPos with
+            {
+                X = Localization.LanguageUiIndex switch
+                {
+                    1 => 121,
+                    2 => 126,
+                    3 => 123,
+                    4 => 114,
+                    _ => 135,
+                }
+            };
+
+            AnimationPlayer.PlayFront(Data.SelectSymbol);
+
+            if (CurrentStepAction != Step_SelectGameMode &&
+                CurrentStepAction != Step_InitializeTransitionToSelectGameMode &&
+                CurrentStepAction != Step_TransitionToSelectGameMode &&
+                CurrentStepAction != Step_TransitionOutOfSelectGameMode)
+            {
+                AnimationPlayer.PlayFront(Data.BackSymbol);
+            }
+        }
 
         WheelRotation += 4;
 
         if (WheelRotation >= 2048)
             WheelRotation = 0;
 
-        Data.Wheel1.AffineMatrix = new AffineMatrix(WheelRotation % 256, 1, 1);
-        Data.Wheel2.AffineMatrix = new AffineMatrix(255 - WheelRotation / 2f % 256, 1, 1);
-        Data.Wheel3.AffineMatrix = new AffineMatrix(WheelRotation / 4f % 256, 1, 1);
-        Data.Wheel4.AffineMatrix = new AffineMatrix(WheelRotation / 8f % 256, 1, 1);
-
-        AnimationPlayer.Play(Data.Wheel1);
-        AnimationPlayer.Play(Data.Wheel2);
-        AnimationPlayer.Play(Data.Wheel3);
-        AnimationPlayer.Play(Data.Wheel4);
-
-        if (SteamTimer == 0)
+        if (Engine.Settings.Platform == Platform.GBA)
         {
-            if (!Data.Steam.EndOfAnimation)
+            Data.Wheel1.AffineMatrix = new AffineMatrix(WheelRotation % 256, 1, 1);
+            Data.Wheel2.AffineMatrix = new AffineMatrix(255 - WheelRotation / 2f % 256, 1, 1);
+            Data.Wheel3.AffineMatrix = new AffineMatrix(WheelRotation / 4f % 256, 1, 1);
+            Data.Wheel4.AffineMatrix = new AffineMatrix(WheelRotation / 8f % 256, 1, 1);
+
+            AnimationPlayer.Play(Data.Wheel1);
+            AnimationPlayer.Play(Data.Wheel2);
+            AnimationPlayer.Play(Data.Wheel3);
+            AnimationPlayer.Play(Data.Wheel4);
+
+            if (SteamTimer == 0)
             {
-                AnimationPlayer.Play(Data.Steam);
+                if (!Data.Steam.EndOfAnimation)
+                {
+                    AnimationPlayer.Play(Data.Steam);
+                }
+                else
+                {
+                    SteamTimer = Random.GetNumber(180) + 60; // Value between 60 and 240
+                    Data.Steam.CurrentAnimation = Random.GetNumber(200) < 100 ? 0 : 1;
+                }
             }
             else
             {
-                SteamTimer = Random.GetNumber(180) + 60; // Value between 60 and 240
-                Data.Steam.CurrentAnimation = Random.GetNumber(200) < 100 ? 0 : 1;
+                SteamTimer--;
             }
+        }
+        else if (Engine.Settings.Platform == Platform.NGage)
+        {
+            Data.Wheel2.AffineMatrix = new AffineMatrix(255 - WheelRotation / 2f % 256, 1, 1);
+            Data.Wheel4.AffineMatrix = new AffineMatrix(WheelRotation / 8f % 256, 1, 1);
+
+            AnimationPlayer.Play(Data.Wheel2);
+            AnimationPlayer.Play(Data.Wheel4);
         }
         else
         {
-            SteamTimer--;
+            throw new UnsupportedPlatformException();
         }
+    }
+
+    #endregion
+
+    #region Steps
+
+    // N-Gage exclusive
+    private void Step_InitializeFirstPage()
+    {
+        InitialPage = Page.SelectLanguage;
+
+        // TODO: If the game has failed to load the save file then it transitions to a page where it says the drive is full - re-implement?
+
+        CurrentStepAction = Step_InitializeTransitionToSelectGameMode;
     }
 
     #endregion
@@ -452,7 +528,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         Options,
         Multiplayer,
         MultiplayerLostConnection,
-        NGage, // TODO: What is this? N-Gage loads this first
+        NGage_FirstPage,
     }
 
     public record Slot(int LumsCount, int CagesCount, int LivesCount);

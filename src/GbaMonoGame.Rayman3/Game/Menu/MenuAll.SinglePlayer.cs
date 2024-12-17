@@ -5,6 +5,7 @@ using GbaMonoGame.TgxEngine;
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Add support for N-Gage
 public partial class MenuAll
 {
     #region Properties

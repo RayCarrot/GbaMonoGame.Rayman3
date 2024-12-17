@@ -16,6 +16,20 @@ public partial class MenuAll
     public int GameLogoMovementWidth { get; set; }
     public int GameLogoMovementXCountdown { get; set; }
 
+    public float GameLogoBaseX { get; } = Engine.Settings.Platform switch
+    {
+        Platform.GBA => 174,
+        Platform.NGage => 110,
+        _ => throw new UnsupportedPlatformException()
+    };
+
+    public int GameModeOptionsCount { get; } = Engine.Settings.Platform switch
+    {
+        Platform.GBA => 3,
+        Platform.NGage => 5,
+        _ => throw new UnsupportedPlatformException()
+    };
+
     #endregion
 
     #region Private Methods
@@ -88,7 +102,7 @@ public partial class MenuAll
 
             GameLogoMovementXOffset++;
             PrevGameTime = GameTime.ElapsedFrames;
-            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = 174 + x };
+            Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = GameLogoBaseX + x };
         }
     }
 
@@ -98,14 +112,27 @@ public partial class MenuAll
 
     private void Step_InitializeTransitionToSelectGameMode()
     {
-        Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
+        Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * GameModeOptionsCount + SelectedOption;
 
         // Center sprites if English
         if (Localization.Language == 0)
         {
-            Data.GameModeList.ScreenPos = Data.GameModeList.ScreenPos with { X = 86 };
-            Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { X = 46 };
-            Data.Stem.ScreenPos = Data.Stem.ScreenPos with { X = 60 };
+            if (Engine.Settings.Platform == Platform.GBA)
+            {
+                Data.GameModeList.ScreenPos = Data.GameModeList.ScreenPos with { X = 86 };
+                Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { X = 46 };
+                Data.Stem.ScreenPos = Data.Stem.ScreenPos with { X = 60 };
+            }
+            else if (Engine.Settings.Platform == Platform.NGage)
+            {
+                Data.GameModeList.ScreenPos = Data.GameModeList.ScreenPos with { X = 58 };
+                Data.Cursor.ScreenPos = Data.Cursor.ScreenPos with { X = 18 };
+                Data.Stem.ScreenPos = Data.Stem.ScreenPos with { X = 32 };
+            }
+            else
+            {
+                throw new UnsupportedPlatformException();
+            }
         }
 
         // The game does a bit of a hack to skip the transition if we start at the game mode selection
@@ -125,8 +152,8 @@ public partial class MenuAll
         GameLogoMovementXOffset = 10;
         GameLogoMovementWidth = 10;
         GameLogoMovementXCountdown = 0;
-        Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = 174 };
-        OtherGameLogoValue = 0x14;
+        Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { X = GameLogoBaseX };
+        OtherGameLogoValue = 20;
         GameLogoSinValue = 0;
         GameLogoYOffset = 0;
 
@@ -155,8 +182,8 @@ public partial class MenuAll
         MoveGameLogo();
 
         Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
+        
         AnimationPlayer.Play(Data.GameLogo);
-
         AnimationPlayer.Play(Data.GameModeList);
     }
 
@@ -164,15 +191,15 @@ public partial class MenuAll
     {
         if (JoyPad.IsButtonJustPressed(GbaInput.Up))
         {
-            SelectOption(SelectedOption == 0 ? 2 : SelectedOption - 1, true);
+            SelectOption(SelectedOption == 0 ? GameModeOptionsCount - 1 : SelectedOption - 1, true);
 
-            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
+            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * GameModeOptionsCount + SelectedOption;
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.Down))
         {
-            SelectOption(SelectedOption == 2 ? 0 : SelectedOption + 1, true);
+            SelectOption(SelectedOption == GameModeOptionsCount - 1 ? 0 : SelectedOption + 1, true);
 
-            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * 3 + SelectedOption;
+            Data.GameModeList.CurrentAnimation = Localization.LanguageUiIndex * GameModeOptionsCount + SelectedOption;
         }
         else if (JoyPad.IsButtonJustPressed(GbaInput.A))
         {
@@ -183,6 +210,12 @@ public partial class MenuAll
                 0 => Step_InitializeTransitionToSinglePlayer,
                 1 => Step_InitializeTransitionToMultiplayerModeSelection,
                 2 => Step_InitializeTransitionToOptions,
+
+                // TODO: Implement
+                // N-Gage exclusive
+                //3 => Step_InitializeTransitionToHelp,
+                //4 => Step_InitializeTransitionToQuit,
+                
                 _ => throw new Exception("Invalid game mode")
             };
 
@@ -197,6 +230,7 @@ public partial class MenuAll
         AnimationPlayer.Play(Data.GameModeList);
 
         MoveGameLogo();
+
         Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
     }
@@ -205,13 +239,13 @@ public partial class MenuAll
     {
         TransitionValue += 4;
 
-        if (TransitionValue <= 160)
+        if (TransitionValue <= Engine.ScreenCamera.Resolution.Y)
         {
             TgxCluster cluster = Playfield.Camera.GetCluster(1);
             cluster.Position -= new Vector2(0, 4);
             Data.GameLogo.ScreenPos = Data.GameLogo.ScreenPos with { Y = 16 - TransitionValue / 2f };
         }
-        else if (TransitionValue >= 220)
+        else if (TransitionValue >= Engine.ScreenCamera.Resolution.Y + 60)
         {
             TransitionValue = 0;
             CurrentStepAction = NextStepAction;
@@ -220,6 +254,7 @@ public partial class MenuAll
         AnimationPlayer.Play(Data.GameModeList);
 
         MoveGameLogo();
+
         Data.GameLogo.FrameChannelSprite(); // NOTE The game gives the bounding box a width of 255 instead of 240 here
         AnimationPlayer.Play(Data.GameLogo);
     }

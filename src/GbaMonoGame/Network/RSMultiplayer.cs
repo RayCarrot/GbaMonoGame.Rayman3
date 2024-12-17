@@ -1,5 +1,6 @@
 ﻿namespace GbaMonoGame;
 
+// TODO: Update for N-Gage
 // TODO: Implement. This handles receiving and sending packets of data between machines.
 public static class RSMultiplayer
 {

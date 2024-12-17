@@ -3,6 +3,7 @@ using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 
 namespace GbaMonoGame.Rayman3;
 
+// TODO: Add support for N-Gage
 public partial class MenuAll
 {
     #region Private Properties

@@ -69,7 +69,7 @@ public class Intro : Frame, IHasPlayfield
         Menu = new MenuAll(Engine.Settings.Platform switch
         {
             Platform.GBA => MenuAll.Page.SelectLanguage,
-            Platform.NGage => MenuAll.Page.NGage,
+            Platform.NGage => MenuAll.Page.NGage_FirstPage,
             _ => throw new UnsupportedPlatformException(),
         });
         Menu.LoadGameInfo();
