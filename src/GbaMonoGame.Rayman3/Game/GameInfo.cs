@@ -1,6 +1,4 @@
 ﻿using System;
-using BinarySerializer;
-using BinarySerializer.Nintendo.GBA;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
 
@@ -41,6 +39,42 @@ public static class GameInfo
 
     public static LevelInfo Level => Levels[(int)MapId];
     public static LevelInfo[] Levels => Engine.Loader.Rayman3_LevelInfo;
+
+    private static SaveGameSlot CloneSaveGameSlot(SaveGameSlot slot)
+    {
+        byte[] lums = new byte[slot.Lums.Length];
+        Array.Copy(slot.Lums, lums, lums.Length);
+
+        byte[] cages = new byte[slot.Cages.Length];
+        Array.Copy(slot.Cages, cages, cages.Length);
+
+        return new SaveGameSlot
+        {
+            Lums = lums,
+            Cages = cages,
+            LastPlayedLevel = slot.LastPlayedLevel,
+            LastCompletedLevel = slot.LastCompletedLevel,
+            Lives = slot.Lives,
+            FinishedLyChallenge1 = slot.FinishedLyChallenge1,
+            FinishedLyChallenge2 = slot.FinishedLyChallenge2,
+            FinishedLyChallengeGCN = slot.FinishedLyChallengeGCN,
+            UnlockedBonus1 = slot.UnlockedBonus1,
+            UnlockedBonus2 = slot.UnlockedBonus2,
+            UnlockedBonus3 = slot.UnlockedBonus3,
+            UnlockedBonus4 = slot.UnlockedBonus4,
+            UnlockedWorld2 = slot.UnlockedWorld2,
+            UnlockedWorld3 = slot.UnlockedWorld3,
+            UnlockedWorld4 = slot.UnlockedWorld4,
+            PlayedWorld2Unlock = slot.PlayedWorld2Unlock,
+            PlayedWorld3Unlock = slot.PlayedWorld3Unlock,
+            PlayedWorld4Unlock = slot.PlayedWorld4Unlock,
+            PlayedAct4 = slot.PlayedAct4,
+            PlayedMurfyWorldHelp = slot.PlayedMurfyWorldHelp,
+            UnlockedFinalBoss = slot.UnlockedFinalBoss,
+            UnlockedLyChallengeGCN = slot.UnlockedLyChallengeGCN,
+            CompletedGCNBonusLevels = slot.CompletedGCNBonusLevels
+        };
+    }
 
     public static void Init()
     {
@@ -105,7 +139,7 @@ public static class GameInfo
 
     public static void Load(int saveSlot)
     {
-        PersistentInfo = Engine.SaveGame.Slots[saveSlot];
+        PersistentInfo = CloneSaveGameSlot(Engine.SaveGame.Slots[saveSlot]);
     }
 
     public static void Save(int saveSlot)
