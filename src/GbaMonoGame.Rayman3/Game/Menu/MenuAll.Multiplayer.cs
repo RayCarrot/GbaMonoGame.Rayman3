@@ -1,7 +1,6 @@
 ﻿using System;
 using BinarySerializer.Ubisoft.GbaEngine;
 using BinarySerializer.Ubisoft.GbaEngine.Rayman3;
-using GbaMonoGame.AnimEngine;
 
 namespace GbaMonoGame.Rayman3;
 
@@ -15,10 +14,6 @@ public partial class MenuAll
     #endregion
 
     #region Properties
-
-    public bool ShouldMultiplayerTextBlink { get; set; }
-    public int PreviousMultiplayerText { get; set; }
-    public int NextMultiplayerTextId { get; set; }
 
     public uint MultiplayerInititialGameTime { get; set; }
     public int MultiplayerPlayersOffsetY { get; set; }
@@ -39,36 +34,6 @@ public partial class MenuAll
     #endregion
 
     #region Private Methods
-
-    private void SetMultiplayerText(int textId, bool blink)
-    {
-        ShouldMultiplayerTextBlink = blink;
-
-        string[] text = Localization.GetText(11, textId);
-
-        int unusedLines = Data.MultiplayerTexts.Length - text.Length;
-        for (int i = 0; i < Data.MultiplayerTexts.Length; i++)
-        {
-            if (i < unusedLines)
-            {
-                Data.MultiplayerTexts[i].Text = "";
-            }
-            else
-            {
-                Data.MultiplayerTexts[i].Text = text[i - unusedLines];
-                Data.MultiplayerTexts[i].ScreenPos = new Vector2(140 - Data.MultiplayerTexts[i].GetStringWidth() / 2f, 32 + i * 16);
-            }
-        }
-    }
-
-    private void DrawMutliplayerText()
-    {
-        if (!ShouldMultiplayerTextBlink || (GameTime.ElapsedFrames & 0x10) != 0)
-        {
-            foreach (SpriteTextObject text in Data.MultiplayerTexts)
-                AnimationPlayer.Play(text);
-        }
-    }
 
     private void ReadIncomingPackets()
     {
@@ -286,7 +251,7 @@ public partial class MenuAll
         if (InitialPage == Page.Multiplayer)
         {
             for (int i = 0; i < 5; i++)
-                Data.MultiplayerTexts[i].Text = "";
+                Data.Texts[i].Text = "";
 
             CurrentStepAction = Step_MultiplayerMultiPakPlayerSelection;
             InitialPage = Page.SelectLanguage;
@@ -296,7 +261,7 @@ public partial class MenuAll
         }
         else
         {
-            SetMultiplayerText(0, false);
+            SetText(0, false);
             CurrentStepAction = Step_TransitionToMultiplayerMultiPakPlayerSelection;
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
             ReturningFromMultiplayerGame = false;
@@ -308,7 +273,7 @@ public partial class MenuAll
 
         MultiplayerGameType = MultiplayerGameType.RayTag;
         MultiplayerMapId = 0;
-        PreviousMultiplayerText = 0;
+        PreviousTextId = 0;
     }
 
     private void Step_TransitionToMultiplayerMultiPakPlayerSelection()
@@ -329,9 +294,9 @@ public partial class MenuAll
             if (RSMultiplayer.PlayersCount > 1)
             {
                 if (RSMultiplayer.IsMaster)
-                    SetMultiplayerText(2, true); // Press START
+                    SetText(2, true); // Press START
                 else
-                    SetMultiplayerText(3, false); // Please Wait...
+                    SetText(3, false); // Please Wait...
 
                 Data.MultiplayerPlayerNumberIcons.CurrentAnimation = 3 + RSMultiplayer.PlayersCount;
 
@@ -367,7 +332,7 @@ public partial class MenuAll
         foreach (AnimatedObject obj in Data.MultiplayerPlayerSelectionIcons)
             obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerPlayersOffsetY };
 
-        DrawMutliplayerText();
+        DrawText();
         AnimationPlayer.Play(Data.MultiplayerPlayerSelection);
         AnimationPlayer.Play(Data.MultiplayerPlayerNumberIcons);
 
@@ -390,10 +355,10 @@ public partial class MenuAll
             {
                 if (MultiplayerConnectionTimer == 20)
                 {
-                    if (PreviousMultiplayerText != 1)
-                        SetMultiplayerText(0, false);
+                    if (PreviousTextId != 1)
+                        SetText(0, false);
 
-                    PreviousMultiplayerText = 1;
+                    PreviousTextId = 1;
                     MultiplayerConnectionTimer++;
                 }
                 else if (MultiplayerConnectionTimer > 20)
@@ -412,10 +377,10 @@ public partial class MenuAll
             {
                 if (MultiplayerConnectionTimer == 10)
                 {
-                    if (PreviousMultiplayerText != 1)
-                        SetMultiplayerText(0, false);
+                    if (PreviousTextId != 1)
+                        SetText(0, false);
 
-                    PreviousMultiplayerText = 1;
+                    PreviousTextId = 1;
                     MultiplayerConnectionTimer++;
                 }
                 else if (MultiplayerConnectionTimer > 10)
@@ -462,17 +427,17 @@ public partial class MenuAll
                 {
                     if (RSMultiplayer.IsMaster)
                     {
-                        if (PreviousMultiplayerText != 2)
-                            SetMultiplayerText(2, true); // Press START
+                        if (PreviousTextId != 2)
+                            SetText(2, true); // Press START
 
-                        PreviousMultiplayerText = 2;
+                        PreviousTextId = 2;
                     }
                     else
                     {
-                        if (PreviousMultiplayerText != 3)
-                            SetMultiplayerText(3, false); // Please Wait...
+                        if (PreviousTextId != 3)
+                            SetText(3, false); // Please Wait...
 
-                        PreviousMultiplayerText = 3;
+                        PreviousTextId = 3;
                     }
 
                     Data.MultiplayerPlayerNumberIcons.CurrentAnimation = 3 + RSMultiplayer.PlayersCount;
@@ -599,7 +564,7 @@ public partial class MenuAll
         foreach (AnimatedObject obj in Data.MultiplayerPlayerSelectionIcons)
             obj.ScreenPos = obj.ScreenPos with { Y = 49 - MultiplayerPlayersOffsetY };
 
-        DrawMutliplayerText();
+        DrawText();
         AnimationPlayer.Play(Data.MultiplayerPlayerSelection);
         AnimationPlayer.Play(Data.MultiplayerPlayerNumberIcons);
 
@@ -1015,12 +980,12 @@ public partial class MenuAll
         {
             InitialPage = Page.SelectLanguage;
             CurrentStepAction = Step_MultiplayerLostConnection;
-            SetMultiplayerText(1, true);
+            SetText(1, true);
         }
         else
         {
             CurrentStepAction = Step_TransitionToMultiplayerMultiPakPlayerSelection;
-            SetMultiplayerText(0, false);
+            SetText(0, false);
             SoundEventsManager.ProcessEvent(Rayman3SoundEvent.Play__Store02_Mix02);
         }
 
@@ -1032,7 +997,7 @@ public partial class MenuAll
         if (JoyPad.IsButtonJustPressed(GbaInput.Start))
             CurrentStepAction = Step_TransitionOutOfMultiplayerLostConnection;
 
-        DrawMutliplayerText();
+        DrawText();
     }
 
     private void Step_TransitionOutOfMultiplayerLostConnection()
@@ -1050,7 +1015,7 @@ public partial class MenuAll
             CurrentStepAction = Step_InitializeTransitionToMultiplayerMultiPakPlayerSelection;
         }
 
-        DrawMutliplayerText();
+        DrawText();
     }
 
     #endregion
@@ -1059,10 +1024,10 @@ public partial class MenuAll
 
     private void Step_InitializeTransitionToMultiplayerSinglePak()
     {
-        SetMultiplayerText(3, false); // Please Wait...
+        SetText(3, false); // Please Wait...
 
         MultiplayerSinglePakConnectionTimer = 125;
-        NextMultiplayerTextId = -1;
+        NextTextId = -1;
         field_0xe1 = 0;
 
         Data.MultiplayerSinglePakPlayers.CurrentAnimation = 11;
@@ -1073,7 +1038,7 @@ public partial class MenuAll
 
         SetBackgroundPalette(2);
 
-        PreviousMultiplayerText = 0;
+        PreviousTextId = 0;
     }
 
     private void Step_TransitionToMultiplayerSinglePak()
@@ -1094,7 +1059,7 @@ public partial class MenuAll
 
         Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - SinglePakPlayersOffsetY };
 
-        DrawMutliplayerText();
+        DrawText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
     }
 
@@ -1102,10 +1067,10 @@ public partial class MenuAll
     {
         // TODO: Implement
 
-        if (NextMultiplayerTextId != -1)
+        if (NextTextId != -1)
         {
-            SetMultiplayerText(NextMultiplayerTextId, false);
-            NextMultiplayerTextId = -1;
+            SetText(NextTextId, false);
+            NextTextId = -1;
         }
 
         // TODO: Implement
@@ -1121,8 +1086,8 @@ public partial class MenuAll
 
         Data.MultiplayerSinglePakPlayers.ScreenPos = Data.MultiplayerSinglePakPlayers.ScreenPos with { Y = 40 - SinglePakPlayersOffsetY };
 
-        if (NextMultiplayerTextId == -1)
-            DrawMutliplayerText();
+        if (NextTextId == -1)
+            DrawText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
     }
 
@@ -1145,7 +1110,7 @@ public partial class MenuAll
         else
             SinglePakPlayersOffsetY = 70;
 
-        DrawMutliplayerText();
+        DrawText();
         AnimationPlayer.Play(Data.MultiplayerSinglePakPlayers);
     }
 

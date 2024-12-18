@@ -242,10 +242,10 @@ public class MenuData
                 CurrentAnimation = 40
             };
 
-            MultiplayerTexts = new SpriteTextObject[5];
-            for (int i = 0; i < MultiplayerTexts.Length; i++)
+            Texts = new SpriteTextObject[5];
+            for (int i = 0; i < Texts.Length; i++)
             {
-                MultiplayerTexts[i] = new SpriteTextObject()
+                Texts[i] = new SpriteTextObject()
                 {
                     BgPriority = 3,
                     ObjPriority = 0,
@@ -496,7 +496,7 @@ public class MenuData
             // TODO: multiplayerConnectionSelection
             // TODO: startEraseSelection
             // TODO: startEraseCursor
-            // TODO: multiplayerTexts
+            // TODO: texts
             // TODO: field_0x8c8
             // TODO: field_0x8f0
             // TODO: field_0x920
@@ -535,7 +535,7 @@ public class MenuData
     public AnimatedObject MultiplayerModeSelection { get; }
     public AnimatedObject StartEraseSelection { get; }
     public AnimatedObject StartEraseCursor { get; }
-    public SpriteTextObject[] MultiplayerTexts { get; }
+    public SpriteTextObject[] Texts { get; }
     public AnimatedObject MultiplayerPlayerSelection { get; set; }
     public AnimatedObject MultiplayerPlayerNumberIcons { get; set; }
     public AnimatedObject[] MultiplayerPlayerSelectionIcons { get; set; }

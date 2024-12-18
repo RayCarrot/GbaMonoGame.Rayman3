@@ -39,7 +39,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         MultiplayerMapId = 0;
         field_0x80 = false;
         IsLoadingMultiplayerMap = false;
-        ShouldMultiplayerTextBlink = false;
+        ShouldTextBlink = false;
         FinishedLyChallenge1 = false;
         FinishedLyChallenge2 = false;
         HasAllCages = false;
@@ -48,7 +48,7 @@ public partial class MenuAll : Frame, IHasPlayfield
         HasLoadedGameInfo = false;
         IsStartingGame = false;
         InitialPage = initialPage;
-        PreviousMultiplayerText = 0;
+        PreviousTextId = 0;
     }
 
     #endregion
@@ -76,6 +76,10 @@ public partial class MenuAll : Frame, IHasPlayfield
     public int SelectedOption { get; set; }
     public int StemMode { get; set; }
 
+    public bool ShouldTextBlink { get; set; }
+    public int PreviousTextId { get; set; }
+    public int NextTextId { get; set; }
+
     public int TransitionValue { get; set; }
     public uint PrevGameTime { get; set; }
     public int WheelRotation { get; set; }
@@ -96,6 +100,38 @@ public partial class MenuAll : Frame, IHasPlayfield
     #endregion
 
     #region Methods
+
+    // TODO: Update for N-Gage
+    public void SetText(int textId, bool blink)
+    {
+        ShouldTextBlink = blink;
+
+        string[] text = Localization.GetText(11, textId);
+
+        int unusedLines = Data.Texts.Length - text.Length;
+        for (int i = 0; i < Data.Texts.Length; i++)
+        {
+            if (i < unusedLines)
+            {
+                Data.Texts[i].Text = "";
+            }
+            else
+            {
+                Data.Texts[i].Text = text[i - unusedLines];
+                Data.Texts[i].ScreenPos = new Vector2(140 - Data.Texts[i].GetStringWidth() / 2f, 32 + i * 16);
+            }
+        }
+    }
+
+    // TODO: Update for N-Gage
+    public void DrawText()
+    {
+        if (!ShouldTextBlink || (GameTime.ElapsedFrames & 0x10) != 0)
+        {
+            foreach (SpriteTextObject text in Data.Texts)
+                AnimationPlayer.Play(text);
+        }
+    }
 
     public static RGB555Color[] GetBackgroundPalette(int index)
     {
